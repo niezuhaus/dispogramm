@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Inject, ViewChild} from '@angular/core';
-import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from "@angular/material/legacy-dialog";
-import {MatLegacyButton as MatButton} from "@angular/material/legacy-button";
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatButton } from '@angular/material/button';
 import {Job} from "../classes/Job";
 import {Messenger} from "../classes/Messenger";
 
