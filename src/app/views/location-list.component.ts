@@ -3,11 +3,11 @@ import {MatLegacyTable as MatTable, MatLegacyTableDataSource as MatTableDataSour
 import {MatSort} from '@angular/material/sort';
 import {LocationDialogComponent} from "../dialogs/location-dialog.component";
 import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import {MatLegacyPaginator as MatPaginator} from "@angular/material/legacy-paginator";
+import { MatPaginator } from '@angular/material/paginator';
 import {Location} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {GC} from "../common/GC";
-import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
+import { MatMenuTrigger } from '@angular/material/menu';
 import {Geolocation} from "../classes/Geolocation";
 import {TitleComponent} from "./app.component";
 

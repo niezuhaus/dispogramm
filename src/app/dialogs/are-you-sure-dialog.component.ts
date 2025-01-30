@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Inject, ViewChild} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import {Job} from "../classes/Job";
 import {Messenger} from "../classes/Messenger";

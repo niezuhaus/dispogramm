@@ -6,9 +6,9 @@ import {RawConfig} from "../common/interfaces";
 import {zip} from "rxjs";
 import {setItem} from "../UTIL";
 import {SpecialPrice} from "../classes/SpecialPrice";
-import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
+import { MatMenuTrigger } from '@angular/material/menu';
 import {Zone} from "../classes/Zone";
-import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from "@angular/material/legacy-dialog";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-config-dialog',

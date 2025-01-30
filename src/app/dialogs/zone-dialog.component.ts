@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
-import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from "@angular/material/legacy-dialog";
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {Zone} from "../classes/Zone";
 import {Job} from "../classes/Job";
 import {GC} from "../common/GC";
-import {MatLegacyTable as MatTable} from "@angular/material/legacy-table";
+import { MatTable } from '@angular/material/table';
 import {LngLatBoundsLike, Map} from "mapbox-gl";
 import {initMap} from "../UTIL";
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";

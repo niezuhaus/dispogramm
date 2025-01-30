@@ -1,11 +1,11 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Job} from "../classes/Job";
-import {MatLegacyTableDataSource as MatTableDataSource} from "@angular/material/legacy-table";
+import { MatTableDataSource } from '@angular/material/table';
 import {GC} from "../common/GC";
 import {MatSort} from "@angular/material/sort";
 import {Price} from "../classes/Price";
-import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef} from "@angular/material/legacy-dialog";
-import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 import {Shift} from "../classes/Shift";
 import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
 import {FormControl, Validators} from "@angular/forms";

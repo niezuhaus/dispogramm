@@ -1,14 +1,14 @@
 import {Component, EventEmitter, Inject, ViewChild, OnDestroy, OnInit, Output} from '@angular/core';
 import {LocType} from '../common/interfaces';
 import {Job} from "../classes/Job";
-import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from '@angular/material/legacy-dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {initMap, setMarker} from '../UTIL';
 import {MatButtonToggleGroup} from '@angular/material/button-toggle';
 import mapboxgl, {LngLat} from "mapbox-gl";
 import {GC} from "../common/GC";
 import {SearchinputComponent} from "../views/newtour/inputfield/searchinput/searchinput.component";
 import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
-import {MatLegacyTableDataSource as MatTableDataSource} from "@angular/material/legacy-table";
+import { MatTableDataSource } from '@angular/material/table';
 import {Geolocation, Station} from "../classes/Geolocation";
 import {Client} from "../classes/Client";
 

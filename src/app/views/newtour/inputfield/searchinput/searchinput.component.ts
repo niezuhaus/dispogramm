@@ -5,7 +5,7 @@ import {Client} from "../../../../classes/Client";
 import {GeoCodingStrategy, LocType, SpecialPriceType,} from '../../../../common/interfaces';
 import {Messenger} from "../../../../classes/Messenger";
 import {Job} from "../../../../classes/Job";
-import {MatLegacyAutocompleteTrigger as MatAutocompleteTrigger} from '@angular/material/legacy-autocomplete';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import {InputFieldComponent} from "../input-field.component";
 import {GC} from "../../../../common/GC";
 import {HttpService} from "../../../../http.service";
