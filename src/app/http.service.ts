@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {Observable, of, switchMap, take, tap, zip} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {
