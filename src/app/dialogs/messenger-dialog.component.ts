@@ -12,8 +12,8 @@ import {MatTabGroup} from "@angular/material/tabs";
 import {MatInput} from "@angular/material/input";
 
 @Component({
-  selector: 'app-edit-messenger-dialog',
-  template: `
+    selector: 'app-edit-messenger-dialog',
+    template: `
     <mat-tab-group dynamicHeight [selectedIndex]="data?.selectedIndex || 0" #tabgroup style="color: black" [headerPosition]="">
       <mat-tab [label]="new ? 'neue kurier:in' : messenger.nickname + ' bearbeiten'">
         <div class="flex flex-row">
@@ -236,7 +236,8 @@ import {MatInput} from "@angular/material/input";
       </mat-menu>
     </div>
   `,
-  styles: []
+    styles: [],
+    standalone: false
 })
 export class MessengerDialogComponent implements OnInit {
 

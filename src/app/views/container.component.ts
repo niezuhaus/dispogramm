@@ -11,8 +11,8 @@ import {Zone} from "../classes/Zone";
 import {ZoneDialogComponent} from "../dialogs/zone-dialog.component";
 
 @Component({
-  selector: 'app-container',
-  template: `
+    selector: 'app-container',
+    template: `
     <div
       class="container flex align-items-center justify-content-center"
       [class.new]="new"
@@ -90,7 +90,7 @@ import {ZoneDialogComponent} from "../dialogs/zone-dialog.component";
       <div *ngIf="!new && hover"><i class="pencil bi bi-pencil" (click)="openEditDialog()"></i></div>
     </div>
   `,
-  styles: [`
+    styles: [`
     @import "../../const.scss";
 
     .container {
@@ -121,7 +121,8 @@ import {ZoneDialogComponent} from "../dialogs/zone-dialog.component";
       color: $fex-dark;
     }
   `
-  ]
+    ],
+    standalone: false
 })
 export class ContainerComponent implements OnInit {
   @Input() client: Client;

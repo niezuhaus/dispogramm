@@ -15,9 +15,10 @@ import {Zone} from "../../../../classes/Zone";
 import { log } from 'console';
 
 @Component({
-  selector: 'searchinput',
-  templateUrl: './searchinput.component.html',
-  styleUrls: ['./searchinput.component.scss']
+    selector: 'searchinput',
+    templateUrl: './searchinput.component.html',
+    styleUrls: ['./searchinput.component.scss'],
+    standalone: false
 })
 
 export class SearchinputComponent implements OnInit {

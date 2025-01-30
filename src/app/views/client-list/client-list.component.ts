@@ -15,8 +15,8 @@ import {TitleComponent} from "../app.component";
 import {MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
-  selector: 'app-overview',
-  template: `
+    selector: 'app-overview',
+    template: `
     <div class="flex flex-row">
       <div class="flex p-3 w-100 justify-content-between align-items-center">
 <!--        <button (click)="exportClients()" mat-raised-button class="fex-button">-->
@@ -126,7 +126,8 @@ import {MatMenuTrigger} from "@angular/material/menu";
       </mat-menu>
     </div>
   `,
-  styleUrls: ['./client-list.component.scss']
+    styleUrls: ['./client-list.component.scss'],
+    standalone: false
 })
 
 export class ClientListComponent extends TitleComponent implements OnInit {

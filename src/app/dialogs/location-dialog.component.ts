@@ -13,8 +13,8 @@ import {Geolocation, Station} from "../classes/Geolocation";
 import {Client} from "../classes/Client";
 
 @Component({
-  selector: 'app-edit-location-dialog',
-  template: `
+    selector: 'app-edit-location-dialog',
+    template: `
     <div style="width: 760px">
       <mat-tab-group dynamicHeight>
         <mat-tab [label]="newLocation ? 'neuen standort erstellen' : 'standort bearbeiten'"
@@ -140,7 +140,7 @@ import {Client} from "../classes/Client";
 
     </div>
   `,
-  styles: [`
+    styles: [`
     * {
       flex-direction: column;
     }
@@ -155,7 +155,8 @@ import {Client} from "../classes/Client";
     #mapEdit {
       height: 25vh;
     }
-  `]
+  `],
+    standalone: false
 })
 export class LocationDialogComponent implements OnInit, OnDestroy {
 

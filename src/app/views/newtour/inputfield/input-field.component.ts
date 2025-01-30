@@ -8,15 +8,16 @@ import {GC} from "../../../common/GC";
 import {Geolocation} from "../../../classes/Geolocation";
 
 @Component({
-  selector: 'app-inputfield',
-  templateUrl: './input-field.component.html',
-  styles: [`
+    selector: 'app-inputfield',
+    templateUrl: './input-field.component.html',
+    styles: [`
     @import "../../../../const.scss";
 
     .blue {
       color: $fex-dark;
     }
-  `]
+  `],
+    standalone: false
 })
 
 export class InputFieldComponent implements OnInit {

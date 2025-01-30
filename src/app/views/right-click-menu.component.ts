@@ -14,8 +14,8 @@ import {TourplanItem} from "../classes/TourplanItem";
 import {Zone} from "../classes/Zone";
 
 @Component({
-  selector: 'right-click-menu',
-  template: `
+    selector: 'right-click-menu',
+    template: `
     <button *ngIf="!dispatcher && !price" mat-menu-item>
       <i
         class="whitespace-pre-wrap"
@@ -268,7 +268,7 @@ import {Zone} from "../classes/Zone";
       <i>- keine optionen verfügbar -</i>
     </button>
   `,
-  styles: [`
+    styles: [`
     @import "/src/const.scss";
 
     .colour {
@@ -283,7 +283,8 @@ import {Zone} from "../classes/Zone";
       border: 2px solid white;
       outline: 3px solid #494949;
     }
-  `]
+  `],
+    standalone: false
 })
 export class RightClickMenuComponent implements OnInit {
 

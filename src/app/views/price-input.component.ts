@@ -3,8 +3,8 @@ import {PriceType} from "../common/interfaces";
 import {Price} from "../classes/Price";
 
 @Component({
-  selector: 'app-price-input',
-  template: `
+    selector: 'app-price-input',
+    template: `
     <mat-form-field class="price" [style.width.px]="width || 30">
       <mat-label>{{label}}</mat-label>
       <input
@@ -18,7 +18,8 @@ import {Price} from "../classes/Price";
         (keyup)="touched.emit(true); price.setByString(input.value, false)">
     </mat-form-field>
   `,
-  styles: []
+    styles: [],
+    standalone: false
 })
 
 export class PriceInputComponent implements OnInit {

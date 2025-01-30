@@ -43,9 +43,10 @@ import {Zones} from "../../common/zones";
 import {AreYouSureDialogComponent} from "../../dialogs/are-you-sure-dialog.component";
 
 @Component({
-  selector: 'newtour',
-  templateUrl: './newtour.component.html',
-  styleUrls: ['./newtour.component.scss']
+    selector: 'newtour',
+    templateUrl: './newtour.component.html',
+    styleUrls: ['./newtour.component.scss'],
+    standalone: false
 })
 
 export class NewtourComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {

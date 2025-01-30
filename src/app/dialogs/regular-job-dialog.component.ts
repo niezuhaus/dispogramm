@@ -7,8 +7,8 @@ import {FormControl, Validators} from "@angular/forms";
 import {RegularJob} from "../classes/Job";
 
 @Component({
-  selector: 'app-regular-job-options-dialog',
-  template: `
+    selector: 'app-regular-job-options-dialog',
+    template: `
     <h3 class="mb-3">festtour optionen</h3>
     <div class="flex flex-column">
       <mat-form-field>
@@ -118,7 +118,7 @@ import {RegularJob} from "../classes/Job";
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     @import "../../const.scss";
 
     h3 {
@@ -134,7 +134,8 @@ import {RegularJob} from "../classes/Job";
       padding: 0 10px;
       min-width: 90px;
     }
-  `]
+  `],
+    standalone: false
 })
 export class RegularJobDialogComponent implements OnInit {
   regularJob: RegularJob;

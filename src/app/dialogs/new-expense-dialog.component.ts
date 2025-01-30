@@ -5,8 +5,8 @@ import {Job} from "../classes/Job";
 import {Expense} from "../classes/Expense";
 
 @Component({
-  selector: 'app-new-expense-dialog',
-  template: `
+    selector: 'app-new-expense-dialog',
+    template: `
     <h1 mat-dialog-title>{{expense?.id ? 'auslage bearbeiten' : 'neue auslage hinzufügen'}}</h1>
 
 <!--    <div style="width: fit-content;">-->
@@ -42,7 +42,8 @@ import {Expense} from "../classes/Expense";
       </div>
     </div>
   `,
-  styles: []
+    styles: [],
+    standalone: false
 })
 export class NewExpenseDialogComponent implements OnInit {
 

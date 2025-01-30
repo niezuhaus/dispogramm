@@ -11,8 +11,8 @@ import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
 import {FormControl, Validators} from "@angular/forms";
 
 @Component({
-  selector: 'app-checkout-dialog',
-  template: `
+    selector: 'app-checkout-dialog',
+    template: `
     <div style="min-width: 600px">
       <div class="flex flex-row justify-content-between">
         <div>
@@ -173,8 +173,8 @@ import {FormControl, Validators} from "@angular/forms";
       </mat-menu>
     </div>
   `,
-  styles: [
-    `
+    styles: [
+        `
               @import "../../const.scss";
         
               #sum {
@@ -192,7 +192,8 @@ import {FormControl, Validators} from "@angular/forms";
                 border-radius: 14px;
               }
             `
-  ]
+    ],
+    standalone: false
 })
 export class CheckoutDialogComponent implements OnInit {
 

@@ -10,8 +10,8 @@ import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
 import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
 
 @Component({
-  selector: 'app-zone-dialog',
-  template: `
+    selector: 'app-zone-dialog',
+    template: `
     <div style="width: 70vw">
       <h1 mat-dialog-title>zone speichern</h1>
       <div class="flex flex-row justify-content-between align-items-baseline">
@@ -58,7 +58,7 @@ import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     #mapcontainer {
       position: relative;
       width: calc(100% + 48px);
@@ -68,7 +68,8 @@ import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
     #map {
       height: 60vh;
     }
-  `]
+  `],
+    standalone: false
 })
 export class ZoneDialogComponent implements OnInit, AfterViewInit {
 

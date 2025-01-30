@@ -5,8 +5,8 @@ import {ActivatedRoute} from "@angular/router";
 import {ConfigDialogComponent} from "../dialogs/config-dialog.component";
 
 @Component({
-  selector: 'app-loading',
-  template: `
+    selector: 'app-loading',
+    template: `
     <div class="flex flex-column align-items-center justify-content-center w-100"
          style="position: absolute; background: white; z-index: 101; height: 100%">
       <div class="loadingScreen" style="position:relative; bottom: 50px" *ngIf="backendIP() && !cantConnect() && !apiKeysMissing">
@@ -70,7 +70,7 @@ import {ConfigDialogComponent} from "../dialogs/config-dialog.component";
     </div>
 
   `,
-  styles: [`
+    styles: [`
     .emoji {
       font-size: 26px;
     }
@@ -79,7 +79,8 @@ import {ConfigDialogComponent} from "../dialogs/config-dialog.component";
       margin: unset;
     }
   `
-  ]
+    ],
+    standalone: false
 })
 
 export class LoadingComponent implements OnInit {

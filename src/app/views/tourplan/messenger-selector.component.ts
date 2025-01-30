@@ -9,8 +9,8 @@ import {SearchinputComponent} from "../newtour/inputfield/searchinput/searchinpu
 import {TourplanItem} from "../../classes/TourplanItem";
 
 @Component({
-  selector: 'messenger-selector',
-  template: `
+    selector: 'messenger-selector',
+    template: `
     <div class="flex flex-row justify-around align-items-center">
       <button *ngIf="messengersNotCheckedIn() && !item._messenger" mat-button (click)="openCheckInDialog()">
         kurier:innen einchecken
@@ -65,7 +65,7 @@ import {TourplanItem} from "../../classes/TourplanItem";
       </button>
     </div>
   `,
-  styles: [`
+    styles: [`
     @import "../../../const.scss";
 
     .active {
@@ -77,7 +77,8 @@ import {TourplanItem} from "../../classes/TourplanItem";
       background: white;
       color: $gray;
     }
-  `]
+  `],
+    standalone: false
 })
 export class MessengerSelectorComponent implements OnInit {
 

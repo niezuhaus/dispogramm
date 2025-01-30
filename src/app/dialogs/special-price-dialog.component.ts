@@ -4,8 +4,8 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {SearchinputComponent} from "../views/newtour/inputfield/searchinput/searchinput.component";
 
 @Component({
-  selector: 'app-special-price-dialog',
-  template: `
+    selector: 'app-special-price-dialog',
+    template: `
     <h1 mat-dialog-title>{{new ? 'neuen sonderpreis erstellen' : 'sonderpreis bearbeiten'}}</h1>
 
     <div #newExtraPrice class="flex flex-column">
@@ -109,8 +109,8 @@ import {SearchinputComponent} from "../views/newtour/inputfield/searchinput/sear
       sonderpreis speichern
     </button>
   `,
-  styles: [
-  ]
+    styles: [],
+    standalone: false
 })
 export class SpecialPriceDialogComponent {
 

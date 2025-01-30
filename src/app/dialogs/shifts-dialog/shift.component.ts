@@ -7,8 +7,8 @@ import {removeItem} from "../../UTIL";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 
 @Component({
-  selector: 'shift',
-  template: `
+    selector: 'shift',
+    template: `
     <div class="mr-3 flex-row" style="width: 150px">
       <button
         mat-button class="mr-2"
@@ -81,8 +81,8 @@ import {debounceTime, distinctUntilChanged} from "rxjs/operators";
       </div>
     </button>
   `,
-  styles: [
-  ]
+    styles: [],
+    standalone: false
 })
 export class ShiftComponent implements OnInit {
 

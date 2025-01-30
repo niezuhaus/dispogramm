@@ -29,8 +29,8 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
 
 
 @Component({
-  selector: 'app-location-list',
-  template: `
+    selector: 'app-location-list',
+    template: `
     <div class="flex flex-row justify-content-between">
       <div class="flex flex-row p-3 w-100">
         <mat-form-field class="w-50" style="max-width: 200px">
@@ -140,8 +140,9 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
       </mat-menu>
     </div>
   `,
-  styles: [`
-  `]
+    styles: [`
+  `],
+    standalone: false
 })
 
 export class LocationListComponent extends TitleComponent implements OnInit {

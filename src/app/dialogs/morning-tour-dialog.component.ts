@@ -7,8 +7,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import {TourplanItem} from "../classes/TourplanItem";
 
 @Component({
-  selector: 'app-edit-posttour-dialog',
-  template: `
+    selector: 'app-edit-posttour-dialog',
+    template: `
     <h1 mat-dialog-title>
       {{data.name}}
     </h1>
@@ -90,7 +90,8 @@ import {TourplanItem} from "../classes/TourplanItem";
       </mat-menu>
     </div>
   `,
-  styles: []
+    styles: [],
+    standalone: false
 })
 export class MorningTourDialogComponent implements OnInit {
 

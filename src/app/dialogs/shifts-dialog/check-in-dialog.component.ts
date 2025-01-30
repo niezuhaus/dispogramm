@@ -7,8 +7,8 @@ import {MatSelect} from "@angular/material/select";
 import {Shift} from "../../classes/Shift";
 
 @Component({
-  selector: 'change-user-dialog',
-  template: `
+    selector: 'change-user-dialog',
+    template: `
     <h1 *ngIf="data?.morning" mat-dialog-title style="max-width: 400px;">guten morgen! wer ist heute am start?</h1>
     <h1 *ngIf="!data?.morning" mat-dialog-title style="max-width: 400px;">wer ist in der schicht?</h1>
     <div id="change-user-content" class="mt-2 justify-content-around" style="min-width: 400px">
@@ -63,7 +63,7 @@ import {Shift} from "../../classes/Shift";
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     @import "../../../const.scss";
 
     * {
@@ -88,7 +88,8 @@ import {Shift} from "../../classes/Shift";
     .svg {
       background-color: $fex-light !important;
     }
-  `]
+  `],
+    standalone: false
 })
 export class CheckInDialog {
 

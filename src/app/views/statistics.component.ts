@@ -4,8 +4,8 @@ import {GC} from "../common/GC";
 import {TitleComponent} from "./app.component";
 
 @Component({
-  selector: 'app-statistics',
-  template: `
+    selector: 'app-statistics',
+    template: `
     <h2 class="mt-3 ml-3">
       Wochenstatistik
     </h2>
@@ -16,7 +16,8 @@ import {TitleComponent} from "./app.component";
       <svg id="day" style="width: 100%; height: 500px"></svg>
     </div>
   `,
-  styles: []
+    styles: [],
+    standalone: false
 })
 export class StatisticsComponent extends TitleComponent implements OnInit, AfterViewInit {
 

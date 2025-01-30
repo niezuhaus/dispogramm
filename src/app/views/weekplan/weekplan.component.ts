@@ -15,9 +15,10 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import {Note} from "../../classes/Note";
 
 @Component({
-  selector: 'app-weekplan',
-  templateUrl: './weekplan.component.html',
-  styleUrls: ['./weekplan.component.scss']
+    selector: 'app-weekplan',
+    templateUrl: './weekplan.component.html',
+    styleUrls: ['./weekplan.component.scss'],
+    standalone: false
 })
 export class WeekplanComponent extends TitleComponent implements OnInit, AfterViewInit {
 
