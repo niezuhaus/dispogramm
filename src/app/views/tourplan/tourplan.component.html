@@ -37,8 +37,8 @@
       </div>
     </div>
     <div class="ml-5" *ngIf="items.length > 0">
-      <mat-chip-list selectable multiple>
-        <mat-chip
+      <mat-chip-listbox selectable multiple>
+        <mat-chip-option
           #f="matChip"
           *ngFor="let filter of filterStrategies; let i = index"
           color="primary"
@@ -46,8 +46,8 @@
           (click)="filter.selected = !filter.selected; filterJobsByKeyword(); filterStatus[i] = filter.selected; saveFilterStatus();">
           <i *ngIf="filter.selected" class="mr-2 bi bi-check"></i>
           <div [innerHTML]="filter.name(filter.selected)"></div>
-        </mat-chip>
-      </mat-chip-list>
+        </mat-chip-option>
+      </mat-chip-listbox>
     </div>
   </div>
 

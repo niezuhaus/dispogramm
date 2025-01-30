@@ -20,9 +20,12 @@ $my-theme: mat.define-light-theme((
   )
 ));
 
-@include mat.legacy-core-theme($my-theme);
+@include mat.core-theme($my-theme);
 
+/* TODO(mdc-migration): Remove all-legacy-component-themes once all legacy components are migrated */
 @include mat.all-legacy-component-themes($my-theme);
+
+@include mat.all-component-themes($my-theme);
 
 
 @font-face {
@@ -192,11 +195,11 @@ td:not(.mat-calendar-body-cell-container, .mat-calendar-body-label, .weekplancel
   padding: 3px 10px !important;
 }
 
-th.mat-header-cell:last-of-type {
+th.mat-mdc-header-cell:last-of-type {
   padding: 0 !important;
 }
 
-.mat-dialog-container {
+.mat-mdc-dialog-container {
   overflow-x: clip !important;
 }
 
@@ -208,7 +211,7 @@ th.mat-header-cell:last-of-type {
   justify-content: center;
 }
 
-.mat-paginator-icon {
+.mat-mdc-paginator-icon {
   color: rgba(0, 0, 0, .54);
 }
 
@@ -232,44 +235,49 @@ th.mat-header-cell:last-of-type {
   bottom: 8px;
 }
 
-.mat-input-element:disabled {
+.mat-mdc-input-element:disabled {
   color: $gray !important;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .mat-form-field-wrapper {
   width: 100% !important;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .time .mat-form-field-flex {
   max-width: 5em;
 }
 
-.mat-input-element {
+.mat-mdc-input-element {
   color: black !important;
 }
 
-.mat-icon-button {
+.mat-mdc-icon-button {
   justify-content: space-around;
   color: white !important;
 }
 
-.mat-button, .border-solid {
+.mat-mdc-button, .border-solid {
   border: 2px solid black;
 }
 
-.mat-button > span > i {
+.mat-mdc-button > span > i {
   margin: 10px 0;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 div.mat-form-field-infix {
   padding-right: 20px;
   width: unset;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
 .mat-tab-body-wrapper {
     margin-top: 13px;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
 .mat-tab-body-content {
   overflow-x: hidden !important;
   display: flex;
@@ -278,6 +286,7 @@ div.mat-form-field-infix {
   transform: none;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
 .mat-button-toggle-label-content {
   display: flex !important;
   align-items: center !important;
@@ -340,11 +349,11 @@ i.bi.small {
   margin-right: 5px;
 }
 
-.mat-menu-panel {
+.mat-mdc-menu-panel {
   //max-width: unset !important;
 }
 
-.mat-menu-item {
+.mat-mdc-menu-item {
   display: flex !important;
   align-items: center !important;
 }
@@ -442,34 +451,39 @@ i.bi.small {
   background-color: rgba(0, 0, 0, 0.12) !important;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
 .mat-option-text {
   display: flex !important;
   flex-direction: column !important;
   line-height: normal;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
 .detailedOption .mat-option-text {
   flex-direction: row !important;
   justify-content: space-between;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .date .mat-form-field-flex {
   max-width: 10em;
 }
 
-.mat-select-panel {
+.mat-mdc-select-panel {
   max-width: unset !important;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
 .mat-select-value {
   width: 100%;
 }
 
-.mat-option.mat-active {
+.mat-mdc-option.mat-active {
   background: $option-active;
 }
 
-.mat-option:hover:not(.mat-option-disabled) {
+/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
+.mat-mdc-option:hover:not(.mat-option-disabled) {
   background: $option-hover;
 }
 
@@ -477,11 +491,13 @@ i.bi.small {
   height: fit-content !important;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
 .info-option > .mat-option-text {
   padding: 10px 0;
   width: 100%;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .mat-form-field-flex, .mat-form-field-appearance-standard {
   padding-top: 0 !important;
 }

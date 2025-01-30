@@ -25,10 +25,10 @@ import {debounceTime} from "rxjs/operators";
   `,
   styles: [
     `
-      .time {
-        width: 105%;
-      }
-    `
+              .time {
+                width: 105%;
+              }
+            `
   ]
 })
 export class TimepickerComponent implements OnInit {

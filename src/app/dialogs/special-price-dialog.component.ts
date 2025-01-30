@@ -61,16 +61,16 @@ import {SearchinputComponent} from "../views/newtour/inputfield/searchinput/sear
       <hr>
       <p>kund:innen</p>
 
-      <mat-chip-list *ngIf="specialPrice.clients.length" selectable multiple class="mb-4">
-        <mat-chip
+      <mat-chip-listbox *ngIf="specialPrice.clients.length" selectable multiple class="mb-4">
+        <mat-chip-option
           *ngFor="let client of specialPrice.clients"
           (removed)="specialPrice.clients.findAndRemove(client)">
           {{client.name}}
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
           </button>
-        </mat-chip>
-      </mat-chip-list>
+        </mat-chip-option>
+      </mat-chip-listbox>
 
       <searchinput
         #searchbar
@@ -85,16 +85,16 @@ import {SearchinputComponent} from "../views/newtour/inputfield/searchinput/sear
       <hr>
       <p>zonen</p>
 
-      <mat-chip-list *ngIf="specialPrice.zones.length" selectable multiple class="mb-4">
-        <mat-chip
+      <mat-chip-listbox *ngIf="specialPrice.zones.length" selectable multiple class="mb-4">
+        <mat-chip-option
           *ngFor="let zone of specialPrice.zones"
           (removed)="specialPrice.zones.findAndRemove(zone)">
           {{zone.name}}
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
           </button>
-        </mat-chip>
-      </mat-chip-list>
+        </mat-chip-option>
+      </mat-chip-listbox>
 
       <searchinput
         #zoneSearchbar

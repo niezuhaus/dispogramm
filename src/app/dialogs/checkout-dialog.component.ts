@@ -175,23 +175,23 @@ import {FormControl, Validators} from "@angular/forms";
   `,
   styles: [
     `
-      @import "../../const.scss";
-
-      #sum {
-        width: calc(100% + 48px);
-        position: relative;
-        left: -24px;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-      }
-
-      #times {
-        border: $fex-dark 4px solid;
-        border-radius: 14px;
-      }
-    `
+              @import "../../const.scss";
+        
+              #sum {
+                width: calc(100% + 48px);
+                position: relative;
+                left: -24px;
+                color: white;
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+              }
+        
+              #times {
+                border: $fex-dark 4px solid;
+                border-radius: 14px;
+              }
+            `
   ]
 })
 export class CheckoutDialogComponent implements OnInit {

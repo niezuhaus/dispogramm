@@ -1,6 +1,6 @@
 import {Injectable, Component, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {Client} from "../../classes/Client";
 import {DateAdapter} from '@angular/material/core';
@@ -12,7 +12,7 @@ import {Location} from "@angular/common";
 import {ClientComponent} from "./client/client.component";
 import {Price} from "../../classes/Price";
 import {TitleComponent} from "../app.component";
-import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
+import {MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
   selector: 'app-overview',

@@ -13,8 +13,8 @@ import {Price} from "../classes/Price";
 import {ChangeDetectorRef, EventEmitter} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {catchError, Observable, of, zip} from "rxjs";
-import {MatLegacySnackBar as MatSnackBar} from "@angular/material/legacy-snack-bar";
-import {MatLegacyDialog as MatDialog} from "@angular/material/legacy-dialog";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
 import {LngLat} from "mapbox-gl";
 import {map} from "rxjs/operators";
 import {

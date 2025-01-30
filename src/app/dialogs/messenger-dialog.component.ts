@@ -5,11 +5,11 @@ import {GC} from "../common/GC";
 import {Price} from "../classes/Price";
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
-import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
+import {MatMenuTrigger} from "@angular/material/menu";
 import {Shift} from "../classes/Shift";
 import {Messenger} from "../classes/Messenger";
-import {MatLegacyTabGroup as MatTabGroup} from "@angular/material/legacy-tabs";
-import {MatLegacyInput as MatInput} from "@angular/material/legacy-input";
+import {MatTabGroup} from "@angular/material/tabs";
+import {MatInput} from "@angular/material/input";
 
 @Component({
   selector: 'app-edit-messenger-dialog',

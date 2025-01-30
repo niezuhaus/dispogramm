@@ -1,9 +1,9 @@
 import {Component, Inject, ViewChild} from '@angular/core';
 import {removeItem, setItem} from "../../UTIL";
 import {GC, ShiftType} from "../../common/GC";
-import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from "@angular/material/legacy-dialog";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {TimepickerComponent} from "../../views/timepicker.component";
-import {MatLegacySelect as MatSelect} from "@angular/material/legacy-select";
+import {MatSelect} from "@angular/material/select";
 import {Shift} from "../../classes/Shift";
 
 @Component({
