@@ -9,9 +9,9 @@ import {
 } from '@angular/core';
 import {GC} from '../common/GC';
 import {HttpService} from '../http.service';
-import {MatDialog} from "@angular/material/dialog";
+import {MatLegacyDialog as MatDialog} from "@angular/material/legacy-dialog";
 import {CheckInDialog} from "../dialogs/shifts-dialog/check-in-dialog.component";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatLegacySnackBar as MatSnackBar} from "@angular/material/legacy-snack-bar";
 import {ActivatedRoute, Router} from "@angular/router";
 import {getItem} from "../UTIL";
 import {ConfigDialogComponent} from "../dialogs/config-dialog.component";

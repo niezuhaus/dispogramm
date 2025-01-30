@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Inject, OnInit} from '@angular/core';
 import {Day} from "../common/interfaces";
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from "@angular/material/legacy-dialog";
 import {GC} from "../common/GC";
 import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
 import {FormControl, Validators} from "@angular/forms";

@@ -36,7 +36,7 @@ import {
   Position,
 } from "@turf/turf";
 import {Geolocation, Station} from "../../classes/Geolocation";
-import {MatDialogRef} from "@angular/material/dialog";
+import {MatLegacyDialogRef as MatDialogRef} from "@angular/material/legacy-dialog";
 import {CheckInDialog} from "../../dialogs/shifts-dialog/check-in-dialog.component";
 import {TitleComponent} from "../app.component";
 import {Zones} from "../../common/zones";

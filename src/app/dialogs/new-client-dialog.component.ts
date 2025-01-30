@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Inject} from '@angular/core';
 import {GC} from "../common/GC";
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from "@angular/material/legacy-dialog";
 import {Geolocation} from "../classes/Geolocation";
 import {Client} from "../classes/Client";
 

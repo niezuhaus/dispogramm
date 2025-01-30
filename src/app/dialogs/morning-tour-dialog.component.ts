@@ -1,9 +1,9 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
+import {MatLegacyTableDataSource as MatTableDataSource} from "@angular/material/legacy-table";
 import {MatSort} from "@angular/material/sort";
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from "@angular/material/legacy-dialog";
 import {GC} from "../common/GC";
-import {MatMenuTrigger} from "@angular/material/menu";
+import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
 import {TourplanItem} from "../classes/TourplanItem";
 
 @Component({

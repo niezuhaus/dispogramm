@@ -1,15 +1,15 @@
 import {Component, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from "@angular/material/legacy-dialog";
 import {Job} from "../classes/Job";
 import {GC} from "../common/GC";
 import {Price} from "../classes/Price";
-import {MatTable, MatTableDataSource} from "@angular/material/table";
+import {MatLegacyTable as MatTable, MatLegacyTableDataSource as MatTableDataSource} from "@angular/material/legacy-table";
 import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
-import {MatMenuTrigger} from "@angular/material/menu";
+import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
 import {Shift} from "../classes/Shift";
 import {Messenger} from "../classes/Messenger";
-import {MatTabGroup} from "@angular/material/tabs";
-import {MatInput} from "@angular/material/input";
+import {MatLegacyTabGroup as MatTabGroup} from "@angular/material/legacy-tabs";
+import {MatLegacyInput as MatInput} from "@angular/material/legacy-input";
 
 @Component({
   selector: 'app-edit-messenger-dialog',

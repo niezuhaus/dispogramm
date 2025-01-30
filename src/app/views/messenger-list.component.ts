@@ -4,7 +4,7 @@ import {MessengerDialogComponent} from "../dialogs/messenger-dialog.component";
 import {MatSort} from "@angular/material/sort";
 import {TitleComponent} from "./app.component";
 import {Messenger} from "../classes/Messenger";
-import {MatMenuTrigger} from "@angular/material/menu";
+import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
 
 @Component({
   selector: 'app-messenger-list',

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {DateAdapter} from "@angular/material/core";
-import {MatInput} from "@angular/material/input";
+import {MatLegacyInput as MatInput} from "@angular/material/legacy-input";
 import {debounceTime} from "rxjs/operators";
 
 @Component({

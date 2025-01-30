@@ -11,7 +11,7 @@ import {zip} from "rxjs";
 import {TourplanItem} from "../../classes/TourplanItem";
 import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
-import {MatMenuTrigger} from "@angular/material/menu";
+import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
 import {Note} from "../../classes/Note";
 
 @Component({

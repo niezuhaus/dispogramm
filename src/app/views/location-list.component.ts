@@ -1,13 +1,13 @@
 import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {MatTable, MatTableDataSource} from '@angular/material/table';
+import {MatLegacyTable as MatTable, MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {MatSort} from '@angular/material/sort';
 import {LocationDialogComponent} from "../dialogs/location-dialog.component";
 import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import {MatPaginator} from "@angular/material/paginator";
+import {MatLegacyPaginator as MatPaginator} from "@angular/material/legacy-paginator";
 import {Location} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {GC} from "../common/GC";
-import {MatMenuTrigger} from "@angular/material/menu";
+import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
 import {Geolocation} from "../classes/Geolocation";
 import {TitleComponent} from "./app.component";
 

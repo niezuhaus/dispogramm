@@ -2,8 +2,8 @@ import {Component, OnInit, Input, ViewChild, Output, EventEmitter} from '@angula
 import {SearchinputComponent} from './searchinput/searchinput.component';
 import {LocType} from '../../../common/interfaces';
 import {Client} from "../../../classes/Client";
-import {MatSelect} from '@angular/material/select';
-import {MatOption} from '@angular/material/core';
+import {MatLegacySelect as MatSelect} from '@angular/material/legacy-select';
+import {MatLegacyOption as MatOption} from '@angular/material/legacy-core';
 import {GC} from "../../../common/GC";
 import {Geolocation} from "../../../classes/Geolocation";
 

@@ -1,15 +1,15 @@
 import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Job} from "../../classes/Job";
-import {MatTable, MatTableDataSource} from '@angular/material/table';
+import {MatLegacyTable as MatTable, MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {MatSort} from '@angular/material/sort';
 import {Location} from '@angular/common';
 import {DatepickerComponent} from '../datepicker.component';
 import {ActivatedRoute} from '@angular/router';
 import {GC, ShiftType} from "../../common/GC";
-import {MatPaginator} from "@angular/material/paginator";
+import {MatLegacyPaginator as MatPaginator} from "@angular/material/legacy-paginator";
 import {SearchinputComponent} from "../newtour/inputfield/searchinput/searchinput.component";
 import {Price} from "../../classes/Price";
-import {MatMenuTrigger} from "@angular/material/menu";
+import {MatLegacyMenuTrigger as MatMenuTrigger} from "@angular/material/legacy-menu";
 import {Shift} from "../../classes/Shift";
 import {TitleComponent} from "../app.component";
 import {Note} from "../../classes/Note";
