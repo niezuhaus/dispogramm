@@ -1,12 +1,14 @@
 @use '@angular/material' as mat;
-@import "bootstrap-icons/font/bootstrap-icons.css";
-@import "src/const.scss";
-@import "src/lib/core/theming/_palette.scss";
-@import '@angular/material/theming';
-@import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+@use "bootstrap-icons/font/bootstrap-icons.css";
+@use "src/const.scss";
+@use "src/lib/core/theming/_palette.scss";
+@use '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+
+/* Importing Bootstrap SCSS file. */
+@use 'bootstrap/scss/bootstrap';
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; 
 
 $fex-primary: mat.m2-define-palette($fex-primary-palette, 500);
 $fex-accent: mat.m2-define-palette($fex-accent-palette, 500, 700, 900);
@@ -627,6 +629,3 @@ i.bi.small {
   left: calc(50vw - 40px);
   top: calc(50vh - 50px);
 }
-
-/* Importing Bootstrap SCSS file. */
-@import 'bootstrap/scss/bootstrap';

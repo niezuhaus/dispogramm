@@ -26,7 +26,7 @@ import {Price} from "../../classes/Price";
 import {Job, RegularJob} from "../../classes/Job";
 import {RegularJobDialogComponent} from "../../dialogs/regular-job-dialog.component";
 import {NewClientDialogComponent} from "../../dialogs/new-client-dialog.component";
-import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import {ZoneDialogComponent} from "../../dialogs/zone-dialog.component";
 import {
   Feature,

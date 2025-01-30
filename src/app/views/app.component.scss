@@ -1,4 +1,4 @@
-@import "../../const";
+@use "../../const";
 
 #header {
   position: absolute;
@@ -6,7 +6,7 @@
   left: 0;
   width: 100vw;
   color: white;
-  background-color: $fex-light;
+  background-color: const.$fex-light;
   z-index: 2;
 }
 
@@ -78,7 +78,7 @@ app-inputfield {
 /* underline border color on focused */
 /*TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
 ::ng-deep .mat-focused .mat-form-field-underline .mat-form-field-ripple {
-  background-color: $fex-dark !important;
+  background-color: const.$fex-dark !important;
 }
 
 .truncate {

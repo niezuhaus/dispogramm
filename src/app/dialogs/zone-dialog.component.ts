@@ -6,7 +6,7 @@ import {GC} from "../common/GC";
 import { MatTable } from '@angular/material/table';
 import {LngLatBoundsLike, Map} from "mapbox-gl";
 import {initMap} from "../UTIL";
-import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
 
 @Component({

@@ -175,7 +175,7 @@ import {FormControl, Validators} from "@angular/forms";
   `,
     styles: [
         `
-              @import "../../const.scss";
+              @use "../../const.scss";
         
               #sum {
                 width: calc(100% + 48px);
