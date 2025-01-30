@@ -8,11 +8,11 @@
 @tailwind components;
 @tailwind utilities;
 
-$fex-primary: mat.define-palette($fex-primary-palette, 500);
-$fex-accent: mat.define-palette($fex-accent-palette, 500, 700, 900);
-$fex-warn: mat.define-palette($fex-warn-palette, 500);
+$fex-primary: mat.m2-define-palette($fex-primary-palette, 500);
+$fex-accent: mat.m2-define-palette($fex-accent-palette, 500, 700, 900);
+$fex-warn: mat.m2-define-palette($fex-warn-palette, 500);
 
-$my-theme: mat.define-light-theme((
+$my-theme: mat.m2-define-light-theme((
   color: (
     primary: $fex-primary,
     accent: $fex-accent,
