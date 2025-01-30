@@ -20,7 +20,9 @@ $my-theme: mat.m2-define-light-theme((
   )
 ));
 
-@include mat.core-theme($my-theme);
+// @include mat.core-theme($my-theme);
+@include mat.elevation-classes();
+@include mat.app-background();
 
 /* TODO(mdc-migration): Remove all-legacy-component-themes once all legacy components are migrated */
 @include mat.all-legacy-component-themes($my-theme);
