@@ -1,35 +1,48 @@
 @use '@angular/material' as mat;
 @use "bootstrap-icons/font/bootstrap-icons.css";
-@use "src/const.scss";
-@use "src/lib/core/theming/_palette.scss";
+@use "../src/const.scss" as const;
+@use "../src/lib/core/theming/_palette.scss";
 @use '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+@use '../_theme-colors' as fex-theme;
 
 /* Importing Bootstrap SCSS file. */
 @use 'bootstrap/scss/bootstrap';
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
 
-$fex-primary: mat.m2-define-palette($fex-primary-palette, 500);
-$fex-accent: mat.m2-define-palette($fex-accent-palette, 500, 700, 900);
-$fex-warn: mat.m2-define-palette($fex-warn-palette, 500);
+html {
+  @include mat.theme((
+    color: (
+      primary: fex-theme.$primary-palette,
+      tertiary: fex-theme.$tertiary-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
 
-$my-theme: mat.m2-define-light-theme((
-  color: (
-    primary: $fex-primary,
-    accent: $fex-accent,
-    warn: $fex-warn,
-  )
-));
+
+// $fex-primary: mat.m2-define-palette($fex-primary-palette, 500);
+// $fex-accent: mat.m2-define-palette($fex-accent-palette, 500, 700, 900);
+// $fex-warn: mat.m2-define-palette($fex-warn-palette, 500);
+
+// $my-theme: mat.m2-define-light-theme((
+//   color: (
+//     primary: $fex-primary,
+//     accent: $fex-accent,
+//     warn: $fex-warn,
+//   )
+// ));
 
 // @include mat.core-theme($my-theme);
-@include mat.elevation-classes();
-@include mat.app-background();
+// @include mat.elevation-classes();
+// @include mat.app-background();
 
 /* TODO(mdc-migration): Remove all-legacy-component-themes once all legacy components are migrated */
-@include mat.all-legacy-component-themes($my-theme);
+// @include mat.all-legacy-component-themes($my-theme);
 
-@include mat.all-component-themes($my-theme);
+// @include mat.all-component-themes($my-theme);
 
 
 @font-face {
@@ -81,36 +94,36 @@ body {
 }
 
 .fex-dark {
-  background-color: $fex-dark;
+  background-color: const.$fex-dark;
 }
 
 .color-fex-dark {
-  color: $fex-dark;
+  color: const.$fex-dark;
 }
 
 .fex-light {
-  color: $fex-light !important;
+  color: const.$fex-light !important;
 }
 
 .background-fex-light {
-  background-color: $fex-light !important;
+  background-color: const.$fex-light !important;
 }
 
 .fex-sparkling {
-  color: $fex-sparkling !important;
+  color: const.$fex-sparkling !important;
 }
 
 .fex-accent {
-  color: $accent !important;
+  color: const.$accent !important;
 }
 
 .fex-warn {
-  color: $warn;
+  color: const.$warn;
 }
 
 h1 {
   font-size: 2rem;
-  color: $fex-light;
+  color: const.$fex-light;
 }
 
 h2 {
@@ -118,7 +131,7 @@ h2 {
 }
 
 a:not(a.fex-warn, a.fex-accent, a.color-fex-dark) {
-  color: $fex-dark !important;
+  color: const.$fex-dark !important;
 }
 
 a {
@@ -127,7 +140,7 @@ a {
 }
 
 a:hover {
-  color: $fex-light !important;
+  color: const.$fex-light !important;
   text-decoration: none;
 }
 
@@ -137,23 +150,23 @@ p.noMargin {
 
 .hightlight {
   height: fit-content;
-  border: 2px solid $fex-dark;
+  border: 2px solid const.$fex-dark;
   border-radius: 5px;
-  color: $fex-dark;
+  color: const.$fex-dark;
   padding: 5px;
   white-space: nowrap;
 }
 
 .expense {
   height: fit-content;
-  border: 2px dashed $fex-dark;
+  border: 2px dashed const.$fex-dark;
   border-radius: 13px;
   white-space: nowrap;
 }
 
 .phoneNumber {
   padding: 6px;
-  background: $fex-light;
+  background: const.$fex-light;
   border-radius: 10px;
   color: white;
   line-height: 8px;
@@ -240,7 +253,7 @@ th.mat-mdc-header-cell:last-of-type {
 }
 
 .mat-mdc-input-element:disabled {
-  color: $gray !important;
+  color: const.$gray !important;
 }
 
 /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
@@ -333,7 +346,7 @@ i.bi.small {
 }
 
 .bi-x:hover {
-  color: $fex-dark;
+  color: const.$fex-dark;
 }
 
 .bi-box-arrow-up-right {
@@ -341,7 +354,7 @@ i.bi.small {
 }
 
 .bi-checked {
-  color: $fex-light;
+  color: const.$fex-light;
 }
 
 .bi-unchecked {
@@ -363,15 +376,15 @@ i.bi.small {
 }
 
 .client-tone {
-  color: $client-tone;
+  color: const.$client-tone;
 }
 
 .delivery-tone {
-  color: $delivery-tone;
+  color: const.$delivery-tone;
 }
 
 .pickup-tone {
-  color: $pickup-tone;
+  color: const.$pickup-tone;
 }
 
 .bi-circle-fill {
@@ -380,7 +393,7 @@ i.bi.small {
 
 .fex-button {
   color: white !important;
-  background-color: $fex-dark;
+  background-color: const.$fex-dark;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -396,7 +409,7 @@ i.bi.small {
 
 .fex-accent-button {
   color: white !important;
-  background-color: $accent;
+  background-color: const.$accent;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -405,15 +418,15 @@ i.bi.small {
 .lex-button {
   margin-right: 20px !important;
   color: white !important;
-  background-color: $lex;
+  background-color: const.$lex;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .fex-button-outline {
-  color: $fex-dark !important;
-  border: 2px solid $fex-dark !important;
+  color: const.$fex-dark !important;
+  border: 2px solid const.$fex-dark !important;
   background-color: white;
   width: fit-content !important;
   height: fit-content !important;
@@ -429,7 +442,7 @@ i.bi.small {
 }
 
 .fex-button-try {
-  background-color: $fex-dark !important;
+  background-color: const.$fex-dark !important;
 }
 
 .fex-button-abort {
@@ -438,7 +451,7 @@ i.bi.small {
 }
 
 .fex-button-warn {
-  background-color: $warn !important;
+  background-color: const.$warn !important;
   color: white !important;
 }
 
@@ -448,7 +461,7 @@ i.bi.small {
 
 .fex-button:not(.dis, .fex-button-warn):hover {
   color: white !important;
-  background-color: $fex-light !important;
+  background-color: const.$fex-light !important;
 }
 
 .fex-button:disabled:hover {
@@ -483,12 +496,12 @@ i.bi.small {
 }
 
 .mat-mdc-option.mat-active {
-  background: $option-active;
+  background: const.$option-active;
 }
 
 /* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
 .mat-mdc-option:hover:not(.mat-option-disabled) {
-  background: $option-hover;
+  background: const.$option-hover;
 }
 
 .info-option {
@@ -511,7 +524,7 @@ i.bi.small {
 }
 
 .ripple {
-  background-color: $fex-dark;
+  background-color: const.$fex-dark;
   color: white;
   cursor: pointer;
 }

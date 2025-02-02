@@ -47,7 +47,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
     </div>
   `,
     styles: [`
-    @import "../../const.scss";
+    @use "../../const.scss" as const;
 
     .out_container {
       margin: auto;
@@ -57,8 +57,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
     }
 
     .messContainer {
-      border: 2px solid $fex-dark;
-      background: $fex-dark;
+      border: 2px solid const.$fex-dark;
+      background: const.$fex-dark;
       color: white;
       border-radius: 10px;
       padding: 13px 15px;

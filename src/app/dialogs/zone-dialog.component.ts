@@ -1,13 +1,11 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {Zone} from "../classes/Zone";
-import {Job} from "../classes/Job";
 import {GC} from "../common/GC";
-import { MatTable } from '@angular/material/table';
 import {LngLatBoundsLike, Map} from "mapbox-gl";
 import {initMap} from "../UTIL";
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 @Component({
     selector: 'app-zone-dialog',

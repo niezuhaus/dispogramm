@@ -64,7 +64,7 @@ import {Shift} from "../../classes/Shift";
     </div>
   `,
     styles: [`
-    @import "../../../const.scss";
+    @use "../../../const.scss" as const;
 
     * {
       display: flex;
@@ -76,7 +76,7 @@ import {Shift} from "../../classes/Shift";
     }
 
     h3 {
-      color: $fex-dark;
+      color: const.$fex-dark;
       font-size: 18px;
     }
 
@@ -86,7 +86,7 @@ import {Shift} from "../../classes/Shift";
     }
 
     .svg {
-      background-color: $fex-light !important;
+      background-color: const.$fex-light !important;
     }
   `],
     standalone: false

@@ -119,10 +119,10 @@ import {RegularJob} from "../classes/Job";
     </div>
   `,
     styles: [`
-    @use "../../const.scss";
+    @use "../../const.scss" as const;
 
     h3 {
-      color: $fex-dark;
+      color: const.$fex-dark;
       font-size: 18px;
     }
 

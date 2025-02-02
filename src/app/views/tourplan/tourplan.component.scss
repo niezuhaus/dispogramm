@@ -1,4 +1,4 @@
-@import "src/const.scss";
+@use "src/const.scss" as const;
 
 td {
   text-align: center;
@@ -38,7 +38,7 @@ h5:not(.normal){
 }
 
 .row_undispatched {
-  background-color: $undispatched;
+  background-color: const.$undispatched;
 }
 
 .row_note {
@@ -56,22 +56,22 @@ h5:not(.normal){
   width: fit-content;
   font-weight: bold;
   align-self: center;
-  background-color: $accent;
+  background-color: const.$accent;
 }
 
 .time-ago_alarm {
-  background-color: $warn !important;
+  background-color: const.$warn !important;
 }
 
 .note {
-  color: $fex-dark;
+  color: const.$fex-dark;
   border-left: 1.2pt dashed #c7c7c7 !important;
   padding-left: 20px;
   font-weight: bold;
 }
 
 .gray {
-  color: $gray !important;
+  color: const.$gray !important;
 }
 
 .grid-container {

@@ -91,7 +91,7 @@ import {ZoneDialogComponent} from "../dialogs/zone-dialog.component";
     </div>
   `,
     styles: [`
-    @import "../../const.scss";
+    @use "../../const.scss" as const;
 
     .container {
       border-radius: 10px;
@@ -101,11 +101,11 @@ import {ZoneDialogComponent} from "../dialogs/zone-dialog.component";
     }
 
     .existing {
-      border: 2px solid $fex-dark;
+      border: 2px solid const.$fex-dark;
     }
 
     .new {
-      border: 2px dotted $fex-dark;
+      border: 2px dotted const.$fex-dark;
       min-width: 120px;
       min-height: 70px;
     }
@@ -118,7 +118,7 @@ import {ZoneDialogComponent} from "../dialogs/zone-dialog.component";
       position: absolute;
       bottom: 5px;
       right: 5px;
-      color: $fex-dark;
+      color: const.$fex-dark;
     }
   `
     ],

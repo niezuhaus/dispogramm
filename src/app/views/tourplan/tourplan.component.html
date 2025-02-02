@@ -39,7 +39,6 @@
     <div class="ml-5" *ngIf="items.length > 0">
       <mat-chip-listbox selectable multiple>
         <mat-chip-option
-          #f="matChip"
           *ngFor="let filter of filterStrategies; let i = index"
           color="primary"
           [selected]="filter.selected"

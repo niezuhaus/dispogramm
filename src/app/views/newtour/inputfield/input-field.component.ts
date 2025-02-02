@@ -11,10 +11,10 @@ import {Geolocation} from "../../../classes/Geolocation";
     selector: 'app-inputfield',
     templateUrl: './input-field.component.html',
     styles: [`
-    @import "../../../../const.scss";
+    @use "../../../../const.scss" as const;
 
     .blue {
-      color: $fex-dark;
+      color: const.$fex-dark;
     }
   `],
     standalone: false

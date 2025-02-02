@@ -1,4 +1,4 @@
-@import "../../../const";
+@use "../../../const" as const;
 
 li {
   list-style-type: disc;
@@ -29,5 +29,5 @@ ul {
 }
 
 .gray {
-  color: $gray !important;
+  color: const.$gray !important;
 }

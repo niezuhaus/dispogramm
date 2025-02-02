@@ -175,7 +175,7 @@ import {FormControl, Validators} from "@angular/forms";
   `,
     styles: [
         `
-              @use "../../const.scss";
+              @use "../../const.scss" as const;
         
               #sum {
                 width: calc(100% + 48px);
@@ -188,7 +188,7 @@ import {FormControl, Validators} from "@angular/forms";
               }
         
               #times {
-                border: $fex-dark 4px solid;
+                border: const.$fex-dark 4px solid;
                 border-radius: 14px;
               }
             `
