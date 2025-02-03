@@ -396,7 +396,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     }
     let modes = MapboxDraw.modes;
     // @ts-ignore
-    modes.static = require('@mapbox/mapbox-gl-draw-static-mode');
+    modes.static = import ('@mapbox/mapbox-gl-draw-static-mode');
 
     this.mapboxDraw = new MapboxDraw({
       displayControlsDefault: false,
