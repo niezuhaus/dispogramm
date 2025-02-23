@@ -4,46 +4,16 @@
 @use "../src/lib/core/theming/_palette.scss";
 @use '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 @use '../_theme-colors' as fex-theme;
+@use 'bootstrap/scss/bootstrap';
 
 /* Importing Bootstrap SCSS file. */
-@use 'bootstrap/scss/bootstrap';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+// @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
 
-html {
-  @include mat.theme((
-    color: (
-      primary: fex-theme.$primary-palette,
-      tertiary: fex-theme.$tertiary-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
-}
-
-
-// $fex-primary: mat.m2-define-palette($fex-primary-palette, 500);
-// $fex-accent: mat.m2-define-palette($fex-accent-palette, 500, 700, 900);
-// $fex-warn: mat.m2-define-palette($fex-warn-palette, 500);
-
-// $my-theme: mat.m2-define-light-theme((
-//   color: (
-//     primary: $fex-primary,
-//     accent: $fex-accent,
-//     warn: $fex-warn,
-//   )
-// ));
-
-// @include mat.core-theme($my-theme);
-// @include mat.elevation-classes();
-// @include mat.app-background();
-
-/* TODO(mdc-migration): Remove all-legacy-component-themes once all legacy components are migrated */
-// @include mat.all-legacy-component-themes($my-theme);
-
-// @include mat.all-component-themes($my-theme);
-
+$custom-primary: mat.define-palette(mat.$blue-palette);
+$custom-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$custom-warn: mat.define-palette(mat.$red-palette);
 
 @font-face {
   font-family: 'Material Icons';
@@ -91,6 +61,9 @@ body {
   flex-direction: column;
   justify-content: space-between;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
 }
 
 .fex-dark {
@@ -364,10 +337,6 @@ i.bi.small {
 .bi-context {
   font-size: 13px;
   margin-right: 5px;
-}
-
-.mat-mdc-menu-panel {
-  //max-width: unset !important;
 }
 
 .mat-mdc-menu-item {
