@@ -12,7 +12,6 @@ import {HttpService} from "../../../../http.service";
 import {Geolocation, Station} from "../../../../classes/Geolocation";
 import {FormControl, Validators} from "@angular/forms";
 import {Zone} from "../../../../classes/Zone";
-import { log } from 'console';
 
 @Component({
     selector: 'searchinput',

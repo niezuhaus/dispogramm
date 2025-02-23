@@ -386,7 +386,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   // MAP
   /** initializes the map */
   initMap(): void {
-    this.mapGL = initMap({
+    this.mapGL = initMap({ 
       lnglat: GC.INIT_MAPCENTER,
       zoom: GC.INIT_ZOOM,
       container: 'map'

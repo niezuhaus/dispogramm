@@ -4,7 +4,6 @@ import {RegularJobDialogComponent} from "../dialogs/regular-job-dialog.component
 import {Day, IdObject} from "./interfaces";
 import {Injectable} from "@angular/core";
 import {Price} from "../classes/Price";
-import { log } from "console";
 
 declare global {
   interface Array<T> {
