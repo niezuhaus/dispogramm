@@ -1,15 +1,17 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Zone} from "../classes/Zone";
+import {Job} from "../classes/Job";
 import {GC} from "../common/GC";
+import {MatTable} from "@angular/material/table";
 import {LngLatBoundsLike, Map} from "mapbox-gl";
 import {initMap} from "../UTIL";
+import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
 import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 @Component({
-    selector: 'app-zone-dialog',
-    template: `
+  selector: 'app-zone-dialog',
+  template: `
     <div style="width: 70vw">
       <h1 mat-dialog-title>zone speichern</h1>
       <div class="flex flex-row justify-content-between align-items-baseline">
@@ -56,7 +58,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     #mapcontainer {
       position: relative;
       width: calc(100% + 48px);
@@ -66,8 +68,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
     #map {
       height: 60vh;
     }
-  `],
-    standalone: false
+  `]
 })
 export class ZoneDialogComponent implements OnInit, AfterViewInit {
 

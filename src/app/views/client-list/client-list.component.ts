@@ -1,6 +1,6 @@
 import {Injectable, Component, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {Client} from "../../classes/Client";
 import {DateAdapter} from '@angular/material/core';
@@ -15,8 +15,8 @@ import {TitleComponent} from "../app.component";
 import {MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
-    selector: 'app-overview',
-    template: `
+  selector: 'app-overview',
+  template: `
     <div class="flex flex-row">
       <div class="flex p-3 w-100 justify-content-between align-items-center">
 <!--        <button (click)="exportClients()" mat-raised-button class="fex-button">-->
@@ -126,8 +126,7 @@ import {MatMenuTrigger} from "@angular/material/menu";
       </mat-menu>
     </div>
   `,
-    styleUrls: ['./client-list.component.scss'],
-    standalone: false
+  styleUrls: ['./client-list.component.scss']
 })
 
 export class ClientListComponent extends TitleComponent implements OnInit {

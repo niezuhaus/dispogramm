@@ -4,7 +4,7 @@ import {HttpService} from '../../../http.service';
 import {Observable, zip} from 'rxjs';
 import {Contact} from "../../../classes/Contact";
 import {Job, RegularJob} from "../../../classes/Job";
-import { MatTableDataSource, MatTable } from '@angular/material/table';
+import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {DateAdapter} from '@angular/material/core';
 import {MatSort} from "@angular/material/sort";
 import {AreYouSureDialogComponent} from "../../../dialogs/are-you-sure-dialog.component";
@@ -12,17 +12,16 @@ import {GC} from "../../../common/GC";
 import {map} from "rxjs/operators";
 import {Price} from "../../../classes/Price";
 import {Location} from "@angular/common";
-import { MatMenuTrigger } from '@angular/material/menu';
+import {MatMenuTrigger} from "@angular/material/menu";
 import {Geolocation} from "../../../classes/Geolocation";
 import {AsyncTitleComponent} from "../../app.component";
 import {Client} from "../../../classes/Client";
 import {LexContact, LexInvoice} from "../../../classes/LexInvoice";
 
 @Component({
-    selector: 'app-client',
-    templateUrl: 'client.component.html',
-    styleUrls: ['client.component.scss'],
-    standalone: false
+  selector: 'app-client',
+  templateUrl: 'client.component.html',
+  styleUrls: ['client.component.scss']
 })
 
 export class ClientComponent extends AsyncTitleComponent implements OnInit, AfterViewInit {

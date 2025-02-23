@@ -26,7 +26,7 @@ import {Price} from "../../classes/Price";
 import {Job, RegularJob} from "../../classes/Job";
 import {RegularJobDialogComponent} from "../../dialogs/regular-job-dialog.component";
 import {NewClientDialogComponent} from "../../dialogs/new-client-dialog.component";
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
 import {ZoneDialogComponent} from "../../dialogs/zone-dialog.component";
 import {
   Feature,
@@ -36,17 +36,16 @@ import {
   Position,
 } from "@turf/turf";
 import {Geolocation, Station} from "../../classes/Geolocation";
-import { MatDialogRef } from '@angular/material/dialog';
+import {MatDialogRef} from "@angular/material/dialog";
 import {CheckInDialog} from "../../dialogs/shifts-dialog/check-in-dialog.component";
 import {TitleComponent} from "../app.component";
 import {Zones} from "../../common/zones";
 import {AreYouSureDialogComponent} from "../../dialogs/are-you-sure-dialog.component";
 
 @Component({
-    selector: 'newtour',
-    templateUrl: './newtour.component.html',
-    styleUrls: ['./newtour.component.scss'],
-    standalone: false
+  selector: 'newtour',
+  templateUrl: './newtour.component.html',
+  styleUrls: ['./newtour.component.scss']
 })
 
 export class NewtourComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -386,7 +385,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   // MAP
   /** initializes the map */
   initMap(): void {
-    this.mapGL = initMap({ 
+    this.mapGL = initMap({
       lnglat: GC.INIT_MAPCENTER,
       zoom: GC.INIT_ZOOM,
       container: 'map'
@@ -396,7 +395,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     }
     let modes = MapboxDraw.modes;
     // @ts-ignore
-    modes.static = import ('@mapbox/mapbox-gl-draw-static-mode');
+    modes.static = require('@mapbox/mapbox-gl-draw-static-mode');
 
     this.mapboxDraw = new MapboxDraw({
       displayControlsDefault: false,

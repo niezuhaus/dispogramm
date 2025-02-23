@@ -4,6 +4,7 @@ import {RegularJobDialogComponent} from "../dialogs/regular-job-dialog.component
 import {Day, IdObject} from "./interfaces";
 import {Injectable} from "@angular/core";
 import {Price} from "../classes/Price";
+import { log } from "console";
 
 declare global {
   interface Array<T> {
@@ -483,7 +484,7 @@ Date.prototype.timeAgo = function () {
   let format;
   while (i + 1 < timeFormats.length) {
     format = timeFormats[i++];
-    if (seconds < Number(format[0])) {
+    if (seconds < format[0]) {
       if (typeof format[2] === 'string') {
         return format[listChoice].toString();
       } else {
@@ -586,16 +587,11 @@ Number.prototype.round = function (digits: number) {
 }
 
 Number.prototype.isBetween = function (firstEnd, secondEnd) {
-  const num = this as number;
-  return (firstEnd < num && num < secondEnd) || (firstEnd > num && num > secondEnd);
+  return (firstEnd < this && this < secondEnd) || (firstEnd > this && this > secondEnd);
 }
 
-/** 
- * wenn der wert kleiner als min ist, wird min zurückgegeben
-*/
 Number.prototype.clamp = function (min, max) {
-  const num = this as number;
-  return num < min ? min : num > max ? max : num;
+  return this < min ? min : this > max ? max : this as number;
 }
 
 Number.prototype.map = function (fromLow, fromUp, toLow, toUp) {

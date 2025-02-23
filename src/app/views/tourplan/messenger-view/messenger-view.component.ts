@@ -3,8 +3,8 @@ import {Messenger} from "../../../classes/Messenger";
 import {GC} from "../../../common/GC";
 
 @Component({
-    selector: 'app-messenger-view',
-    template: `
+  selector: 'app-messenger-view',
+  template: `
     <div>
       <div *ngFor="let messenger of list" class="grid-container">
         <div class="mr-2 flex flex-row">
@@ -28,8 +28,8 @@ import {GC} from "../../../common/GC";
       </div>
     </div>
   `,
-    styles: [],
-    standalone: false
+  styles: [
+  ]
 })
 export class MessengerViewComponent {
 

@@ -1,20 +1,20 @@
 import {Component, EventEmitter, Inject, ViewChild, OnDestroy, OnInit, Output} from '@angular/core';
 import {LocType} from '../common/interfaces';
 import {Job} from "../classes/Job";
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {initMap, setMarker} from '../UTIL';
 import {MatButtonToggleGroup} from '@angular/material/button-toggle';
 import mapboxgl, {LngLat} from "mapbox-gl";
 import {GC} from "../common/GC";
 import {SearchinputComponent} from "../views/newtour/inputfield/searchinput/searchinput.component";
 import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
-import { MatTableDataSource } from '@angular/material/table';
+import {MatTableDataSource} from "@angular/material/table";
 import {Geolocation, Station} from "../classes/Geolocation";
 import {Client} from "../classes/Client";
 
 @Component({
-    selector: 'app-edit-location-dialog',
-    template: `
+  selector: 'app-edit-location-dialog',
+  template: `
     <div style="width: 760px">
       <mat-tab-group dynamicHeight>
         <mat-tab [label]="newLocation ? 'neuen standort erstellen' : 'standort bearbeiten'"
@@ -140,7 +140,7 @@ import {Client} from "../classes/Client";
 
     </div>
   `,
-    styles: [`
+  styles: [`
     * {
       flex-direction: column;
     }
@@ -155,8 +155,7 @@ import {Client} from "../classes/Client";
     #mapEdit {
       height: 25vh;
     }
-  `],
-    standalone: false
+  `]
 })
 export class LocationDialogComponent implements OnInit, OnDestroy {
 

@@ -1,4 +1,4 @@
-@use "../../../const" as const;
+@import "../../../const";
 
 li {
   list-style-type: disc;
@@ -16,7 +16,7 @@ ul {
   background: rgba(128, 97, 175, 0.07);
 }
 
-.mat-mdc-row:nth-child(even) {
+.mat-row:nth-child(even) {
   background: #eeed;
 }
 
@@ -29,5 +29,5 @@ ul {
 }
 
 .gray {
-  color: const.$gray !important;
+  color: $gray !important;
 }

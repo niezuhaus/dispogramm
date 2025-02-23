@@ -23,6 +23,7 @@ import {map} from "rxjs/operators";
 import {Zone} from "./Zone";
 import {SpecialPrice} from "./SpecialPrice";
 import {CalendarRangeDialogComponent} from "../dialogs/calendar-range-dialog/calendar-range-dialog.component";
+import { log } from "console";
 
 export abstract class AbstractJob {
   center: Station; // clients position NOT necessarily the center
@@ -30,7 +31,7 @@ export abstract class AbstractJob {
   deliveries: Geolocation[];
   client: Client;
   id: string;
-  name: string; 
+  name: string;
   price: Price = new Price();
 
   get _showPrice() {return this.price}

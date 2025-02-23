@@ -1,4 +1,4 @@
-@use "src/const.scss" as const;
+@import "src/const.scss";
 
 * {
   display: flex;
@@ -34,7 +34,7 @@ app-inputfield {
 }
 
 .flashButton {
-  background-color: const.$fex-dark;
+  background-color: $fex-dark;
   margin-right: 20px;
   justify-content: center;
   align-items: center;
@@ -57,12 +57,12 @@ app-inputfield {
 }
 
 .dBranch {
-  color: const.$delivery-tone;
+  color: $delivery-tone;
   cursor: pointer;
 }
 
 .pBranch {
-  color: const.$pickup-tone;
+  color: $pickup-tone;
   cursor: pointer;
 }
 
@@ -106,9 +106,9 @@ app-inputfield {
 }
 
 .priceActive {
-  border: 2px solid const.$billing;
+  border: 2px solid $billing;
 }
 
 .gray {
-  color: const.$gray !important;
+  color: $gray !important;
 }

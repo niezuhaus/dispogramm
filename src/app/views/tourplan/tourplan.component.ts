@@ -1,6 +1,6 @@
 import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Job} from "../../classes/Job";
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {Location} from '@angular/common';
 import {DatepickerComponent} from '../datepicker.component';
@@ -29,10 +29,9 @@ import {
 
 
 @Component({
-    selector: 'tourplan',
-    templateUrl: './tourplan.component.html',
-    styleUrls: ['./tourplan.component.scss'],
-    standalone: false
+  selector: 'tourplan',
+  templateUrl: './tourplan.component.html',
+  styleUrls: ['./tourplan.component.scss']
 })
 
 export class TourplanComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {

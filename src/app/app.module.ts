@@ -1,7 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgModule} from '@angular/core';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 import {AppRoutingModule, routingComponents} from './app-routing.module';
 import {AppComponent} from './views/app.component';
 import {InputFieldComponent} from './views/newtour/inputfield/input-field.component';
@@ -13,8 +13,7 @@ import {MatSliderModule} from '@angular/material/slider';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {DateAdapter, MatNativeDateModule, MatRippleModule} from '@angular/material/core';
-import {MatOptionModule} from '@angular/material/core';
+import {DateAdapter, MatNativeDateModule, MatOptionModule, MatRippleModule} from '@angular/material/core';
 import {MatSelectModule} from '@angular/material/select';
 import {MatButtonModule} from '@angular/material/button';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
@@ -54,7 +53,9 @@ import {ZoneDialogComponent} from './dialogs/zone-dialog.component';
 import {MatMenuModule} from "@angular/material/menu";
 import {CheckoutDialogComponent} from './dialogs/checkout-dialog.component';
 import {CustomDateAdapter} from "./common/prototypes";
+import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {environment} from '../environments/environment';
+import {provideAuth, getAuth} from '@angular/fire/auth';
 import {MorningTourDialogComponent} from './dialogs/morning-tour-dialog.component';
 import {ShiftsWithoutEndDialogComponent} from './dialogs/shifts-without-end-dialog.component';
 import {MatExpansionModule} from "@angular/material/expansion";
@@ -69,86 +70,97 @@ import {MatChipsModule} from "@angular/material/chips";
 import {SpecialPriceDialogComponent} from './dialogs/special-price-dialog.component';
 import {ShiftComponent} from './dialogs/shifts-dialog/shift.component';
 import {CalendarRangeDialogComponent} from './dialogs/calendar-range-dialog/calendar-range-dialog.component';
+import {MatCardModule} from "@angular/material/card";
 import {
   InlineRangeCalendarComponent
 } from './dialogs/calendar-range-dialog/inline-range-calendar/inline-range-calendar.component';
 import {MessengerViewComponent} from './views/tourplan/messenger-view/messenger-view.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
 
-@NgModule({ declarations: [
-        AppComponent,
-        InputFieldComponent,
-        SearchinputComponent,
-        ClientListComponent,
-        routingComponents,
-        LocationDialogComponent,
-        NewClientDialogComponent,
-        DescriptionComponent,
-        DatepickerComponent,
-        ContainerComponent,
-        AreYouSureDialogComponent,
-        CheckInDialog,
-        MessengerSelectorComponent,
-        TimepickerComponent,
-        NewShiftComponent,
-        MessengerListComponent,
-        MessengerDialogComponent,
-        RegularJobDialogComponent,
-        LoadingComponent,
-        BikeComponent,
-        ConfigDialogComponent,
-        PriceInputComponent,
-        ZoneDialogComponent,
-        CheckoutDialogComponent,
-        MorningTourDialogComponent,
-        ShiftsWithoutEndDialogComponent,
-        ContactDialogComponent,
-        WeekplanComponent,
-        RightClickMenuComponent,
-        NewExpenseDialogComponent,
-        StatisticsComponent,
-        SpecialPriceDialogComponent,
-        ShiftComponent,
-        CalendarRangeDialogComponent,
-        InlineRangeCalendarComponent,
-        MessengerViewComponent,
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatCheckboxModule,
-        MatSliderModule,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatOptionModule,
-        MatSelectModule,
-        MatButtonModule,
-        MatAutocompleteModule,
-        MatSlideToggleModule,
-        MatButtonToggleModule,
-        MatIconModule,
-        MatProgressSpinnerModule,
-        MatRippleModule,
-        DragDropModule,
-        MatSortModule,
-        MatTableModule,
-        MatDialogModule,
-        MatSnackBarModule,
-        MatNativeDateModule,
-        MatPaginatorModule,
-        MatTooltipModule,
-        MatTabsModule,
-        MatProgressBarModule,
-        MatMenuModule,
-        MatExpansionModule,
-        MatDividerModule,
-        NgbModule,
-        MatChipsModule,
-        MatSidenavModule], providers: [HttpService,
-        { provide: MatPaginatorIntl, useClass: fexPaginator },
-        { provide: DateAdapter, useClass: CustomDateAdapter }, provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [
+    AppComponent,
+    InputFieldComponent,
+    SearchinputComponent,
+    ClientListComponent,
+    routingComponents,
+    LocationDialogComponent,
+    NewClientDialogComponent,
+    DescriptionComponent,
+    DatepickerComponent,
+    ContainerComponent,
+    AreYouSureDialogComponent,
+    CheckInDialog,
+    MessengerSelectorComponent,
+    TimepickerComponent,
+    NewShiftComponent,
+    MessengerListComponent,
+    MessengerDialogComponent,
+    RegularJobDialogComponent,
+    LoadingComponent,
+    BikeComponent,
+    ConfigDialogComponent,
+    PriceInputComponent,
+    ZoneDialogComponent,
+    CheckoutDialogComponent,
+    MorningTourDialogComponent,
+    ShiftsWithoutEndDialogComponent,
+    ContactDialogComponent,
+    WeekplanComponent,
+    RightClickMenuComponent,
+    NewExpenseDialogComponent,
+    StatisticsComponent,
+    SpecialPriceDialogComponent,
+    ShiftComponent,
+    CalendarRangeDialogComponent,
+    InlineRangeCalendarComponent,
+    MessengerViewComponent,
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatCheckboxModule,
+    MatSliderModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+    MatSlideToggleModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatRippleModule,
+    DragDropModule,
+    MatSortModule,
+    MatTableModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatNativeDateModule,
+    MatPaginatorModule,
+    MatTooltipModule,
+    MatTabsModule,
+    MatProgressBarModule,
+    MatMenuModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    MatExpansionModule,
+    MatDividerModule,
+    NgbModule,
+    MatChipsModule,
+    MatCardModule,
+    MatSidenavModule,
+  ],
+  providers: [HttpService,
+    {provide: MatPaginatorIntl, useClass: fexPaginator},
+    {provide: DateAdapter, useClass: CustomDateAdapter}],
+  bootstrap: [AppComponent]
+})
 export class AppModule {
 }

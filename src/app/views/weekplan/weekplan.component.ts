@@ -11,14 +11,13 @@ import {zip} from "rxjs";
 import {TourplanItem} from "../../classes/TourplanItem";
 import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
-import { MatMenuTrigger } from '@angular/material/menu';
+import {MatMenuTrigger} from "@angular/material/menu";
 import {Note} from "../../classes/Note";
 
 @Component({
-    selector: 'app-weekplan',
-    templateUrl: './weekplan.component.html',
-    styleUrls: ['./weekplan.component.scss'],
-    standalone: false
+  selector: 'app-weekplan',
+  templateUrl: './weekplan.component.html',
+  styleUrls: ['./weekplan.component.scss']
 })
 export class WeekplanComponent extends TitleComponent implements OnInit, AfterViewInit {
 

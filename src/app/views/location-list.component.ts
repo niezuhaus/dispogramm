@@ -3,11 +3,11 @@ import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {LocationDialogComponent} from "../dialogs/location-dialog.component";
 import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import { MatPaginator } from '@angular/material/paginator';
+import {MatPaginator} from "@angular/material/paginator";
 import {Location} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {GC} from "../common/GC";
-import { MatMenuTrigger } from '@angular/material/menu';
+import {MatMenuTrigger} from "@angular/material/menu";
 import {Geolocation} from "../classes/Geolocation";
 import {TitleComponent} from "./app.component";
 
@@ -29,8 +29,8 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
 
 
 @Component({
-    selector: 'app-location-list',
-    template: `
+  selector: 'app-location-list',
+  template: `
     <div class="flex flex-row justify-content-between">
       <div class="flex flex-row p-3 w-100">
         <mat-form-field class="w-50" style="max-width: 200px">
@@ -140,9 +140,8 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
       </mat-menu>
     </div>
   `,
-    styles: [`
-  `],
-    standalone: false
+  styles: [`
+  `]
 })
 
 export class LocationListComponent extends TitleComponent implements OnInit {

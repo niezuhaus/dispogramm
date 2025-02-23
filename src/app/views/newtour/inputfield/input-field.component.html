@@ -37,7 +37,7 @@
        class="ml-1"
        #hasback
        (click)="hasback.disabled ? doNothing() : backtourToggle()"
-       [disabled]="!(this.searchinput?.selection) || disabled"
+       [disabled]="!(this.searchinput.selection) || disabled"
        [tabIndex]="-1"
        matTooltip="rücktour hinzufügen">
       <i class="bi bi-arrow-left-right" [class.fex-accent]="hasBacktour" style="color: black"></i>

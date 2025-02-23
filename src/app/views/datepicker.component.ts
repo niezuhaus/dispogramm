@@ -4,8 +4,8 @@ import {GC} from "../common/GC";
 import {MatDatepicker} from "@angular/material/datepicker";
 
 @Component({
-    selector: 'datepicker',
-    template: `
+  selector: 'datepicker',
+  template: `
     <div class="flex py-2 align-items-center">
       <button mat-button class="flex justify-content-around align-items-center" [class.mr-3]="headline"
               (click)="monthly ? previousMonth() : previousDay()" [disabled]="disabled">
@@ -50,8 +50,7 @@ import {MatDatepicker} from "@angular/material/datepicker";
       </div>
     </div>
   `,
-    styles: [],
-    standalone: false
+  styles: []
 })
 export class DatepickerComponent implements OnInit {
 

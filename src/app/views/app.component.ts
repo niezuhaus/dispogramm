@@ -9,9 +9,9 @@ import {
 } from '@angular/core';
 import {GC} from '../common/GC';
 import {HttpService} from '../http.service';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {MatDialog} from "@angular/material/dialog";
 import {CheckInDialog} from "../dialogs/shifts-dialog/check-in-dialog.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActivatedRoute, Router} from "@angular/router";
 import {getItem} from "../UTIL";
 import {ConfigDialogComponent} from "../dialogs/config-dialog.component";
@@ -30,10 +30,9 @@ export abstract class AsyncTitleComponent extends TitleComponent {
 }
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: false
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
 

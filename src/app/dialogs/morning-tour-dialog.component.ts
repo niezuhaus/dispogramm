@@ -1,14 +1,14 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort} from "@angular/material/sort";
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {GC} from "../common/GC";
-import { MatMenuTrigger } from '@angular/material/menu';
+import {MatMenuTrigger} from "@angular/material/menu";
 import {TourplanItem} from "../classes/TourplanItem";
 
 @Component({
-    selector: 'app-edit-posttour-dialog',
-    template: `
+  selector: 'app-edit-posttour-dialog',
+  template: `
     <h1 mat-dialog-title>
       {{data.name}}
     </h1>
@@ -90,8 +90,7 @@ import {TourplanItem} from "../classes/TourplanItem";
       </mat-menu>
     </div>
   `,
-    styles: [],
-    standalone: false
+  styles: []
 })
 export class MorningTourDialogComponent implements OnInit {
 

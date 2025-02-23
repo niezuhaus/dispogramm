@@ -1,14 +1,14 @@
 import {Component, EventEmitter, Inject, OnInit} from '@angular/core';
 import {Day} from "../common/interfaces";
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {GC} from "../common/GC";
 import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
 import {FormControl, Validators} from "@angular/forms";
 import {RegularJob} from "../classes/Job";
 
 @Component({
-    selector: 'app-regular-job-options-dialog',
-    template: `
+  selector: 'app-regular-job-options-dialog',
+  template: `
     <h3 class="mb-3">festtour optionen</h3>
     <div class="flex flex-column">
       <mat-form-field>
@@ -118,11 +118,11 @@ import {RegularJob} from "../classes/Job";
       </div>
     </div>
   `,
-    styles: [`
-    @use "../../const.scss" as const;
+  styles: [`
+    @import "../../const.scss";
 
     h3 {
-      color: const.$fex-dark;
+      color: $fex-dark;
       font-size: 18px;
     }
 
@@ -134,8 +134,7 @@ import {RegularJob} from "../classes/Job";
       padding: 0 10px;
       min-width: 90px;
     }
-  `],
-    standalone: false
+  `]
 })
 export class RegularJobDialogComponent implements OnInit {
   regularJob: RegularJob;

@@ -1,18 +1,18 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Job} from "../classes/Job";
-import { MatTableDataSource } from '@angular/material/table';
+import {MatTableDataSource} from "@angular/material/table";
 import {GC} from "../common/GC";
 import {MatSort} from "@angular/material/sort";
 import {Price} from "../classes/Price";
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MatMenuTrigger} from "@angular/material/menu";
 import {Shift} from "../classes/Shift";
 import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
 import {FormControl, Validators} from "@angular/forms";
 
 @Component({
-    selector: 'app-checkout-dialog',
-    template: `
+  selector: 'app-checkout-dialog',
+  template: `
     <div style="min-width: 600px">
       <div class="flex flex-row justify-content-between">
         <div>
@@ -173,27 +173,26 @@ import {FormControl, Validators} from "@angular/forms";
       </mat-menu>
     </div>
   `,
-    styles: [
-        `
-              @use "../../const.scss" as const;
-        
-              #sum {
-                width: calc(100% + 48px);
-                position: relative;
-                left: -24px;
-                color: white;
-                display: flex;
-                flex-direction: column;
-                text-align: center;
-              }
-        
-              #times {
-                border: const.$fex-dark 4px solid;
-                border-radius: 14px;
-              }
-            `
-    ],
-    standalone: false
+  styles: [
+    `
+      @import "../../const.scss";
+
+      #sum {
+        width: calc(100% + 48px);
+        position: relative;
+        left: -24px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      #times {
+        border: $fex-dark 4px solid;
+        border-radius: 14px;
+      }
+    `
+  ]
 })
 export class CheckoutDialogComponent implements OnInit {
 

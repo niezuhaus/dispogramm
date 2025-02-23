@@ -1,19 +1,29 @@
 @use '@angular/material' as mat;
-@use "bootstrap-icons/font/bootstrap-icons.css";
-@use "../src/const.scss" as const;
-@use "../src/lib/core/theming/_palette.scss";
-@use '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-@use '../_theme-colors' as fex-theme;
-@use 'bootstrap/scss/bootstrap';
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "src/const.scss";
+@import "src/lib/core/theming/_palette.scss";
+@import '@angular/material/theming';
+@import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Importing Bootstrap SCSS file. */
-// @tailwind base;
-// @tailwind components;
-// @tailwind utilities;
+$fex-primary: mat.define-palette($fex-primary-palette, 500);
+$fex-accent: mat.define-palette($fex-accent-palette, 500, 700, 900);
+$fex-warn: mat.define-palette($fex-warn-palette, 500);
 
-$custom-primary: mat.define-palette(mat.$blue-palette);
-$custom-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-$custom-warn: mat.define-palette(mat.$red-palette);
+$my-theme: mat.define-light-theme((
+  color: (
+    primary: $fex-primary,
+    accent: $fex-accent,
+    warn: $fex-warn,
+  )
+));
+
+@include mat.core-theme($my-theme);
+
+@include mat.all-component-themes($my-theme);
+
 
 @font-face {
   font-family: 'Material Icons';
@@ -61,42 +71,39 @@ body {
   flex-direction: column;
   justify-content: space-between;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-
-  background: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
 }
 
 .fex-dark {
-  background-color: const.$fex-dark;
+  background-color: $fex-dark;
 }
 
 .color-fex-dark {
-  color: const.$fex-dark;
+  color: $fex-dark;
 }
 
 .fex-light {
-  color: const.$fex-light !important;
+  color: $fex-light !important;
 }
 
 .background-fex-light {
-  background-color: const.$fex-light !important;
+  background-color: $fex-light !important;
 }
 
 .fex-sparkling {
-  color: const.$fex-sparkling !important;
+  color: $fex-sparkling !important;
 }
 
 .fex-accent {
-  color: const.$accent !important;
+  color: $accent !important;
 }
 
 .fex-warn {
-  color: const.$warn;
+  color: $warn;
 }
 
 h1 {
   font-size: 2rem;
-  color: const.$fex-light;
+  color: $fex-light;
 }
 
 h2 {
@@ -104,7 +111,7 @@ h2 {
 }
 
 a:not(a.fex-warn, a.fex-accent, a.color-fex-dark) {
-  color: const.$fex-dark !important;
+  color: $fex-dark !important;
 }
 
 a {
@@ -113,7 +120,7 @@ a {
 }
 
 a:hover {
-  color: const.$fex-light !important;
+  color: $fex-light !important;
   text-decoration: none;
 }
 
@@ -123,23 +130,23 @@ p.noMargin {
 
 .hightlight {
   height: fit-content;
-  border: 2px solid const.$fex-dark;
+  border: 2px solid $fex-dark;
   border-radius: 5px;
-  color: const.$fex-dark;
+  color: $fex-dark;
   padding: 5px;
   white-space: nowrap;
 }
 
 .expense {
   height: fit-content;
-  border: 2px dashed const.$fex-dark;
+  border: 2px dashed $fex-dark;
   border-radius: 13px;
   white-space: nowrap;
 }
 
 .phoneNumber {
   padding: 6px;
-  background: const.$fex-light;
+  background: $fex-light;
   border-radius: 10px;
   color: white;
   line-height: 8px;
@@ -185,11 +192,11 @@ td:not(.mat-calendar-body-cell-container, .mat-calendar-body-label, .weekplancel
   padding: 3px 10px !important;
 }
 
-th.mat-mdc-header-cell:last-of-type {
+th.mat-header-cell:last-of-type {
   padding: 0 !important;
 }
 
-.mat-mdc-dialog-container {
+.mat-dialog-container {
   overflow-x: clip !important;
 }
 
@@ -201,7 +208,7 @@ th.mat-mdc-header-cell:last-of-type {
   justify-content: center;
 }
 
-.mat-mdc-paginator-icon {
+.mat-paginator-icon {
   color: rgba(0, 0, 0, .54);
 }
 
@@ -225,49 +232,44 @@ th.mat-mdc-header-cell:last-of-type {
   bottom: 8px;
 }
 
-.mat-mdc-input-element:disabled {
-  color: const.$gray !important;
+.mat-input-element:disabled {
+  color: $gray !important;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .mat-form-field-wrapper {
   width: 100% !important;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .time .mat-form-field-flex {
   max-width: 5em;
 }
 
-.mat-mdc-input-element {
+.mat-input-element {
   color: black !important;
 }
 
-.mat-mdc-icon-button {
+.mat-icon-button {
   justify-content: space-around;
   color: white !important;
 }
 
-.mat-mdc-button, .border-solid {
+.mat-button, .border-solid {
   border: 2px solid black;
 }
 
-.mat-mdc-button > span > i {
+.mat-button > span > i {
   margin: 10px 0;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 div.mat-form-field-infix {
   padding-right: 20px;
   width: unset;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
 .mat-tab-body-wrapper {
     margin-top: 13px;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
 .mat-tab-body-content {
   overflow-x: hidden !important;
   display: flex;
@@ -276,7 +278,6 @@ div.mat-form-field-infix {
   transform: none;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
 .mat-button-toggle-label-content {
   display: flex !important;
   align-items: center !important;
@@ -319,7 +320,7 @@ i.bi.small {
 }
 
 .bi-x:hover {
-  color: const.$fex-dark;
+  color: $fex-dark;
 }
 
 .bi-box-arrow-up-right {
@@ -327,7 +328,7 @@ i.bi.small {
 }
 
 .bi-checked {
-  color: const.$fex-light;
+  color: $fex-light;
 }
 
 .bi-unchecked {
@@ -339,21 +340,25 @@ i.bi.small {
   margin-right: 5px;
 }
 
-.mat-mdc-menu-item {
+.mat-menu-panel {
+  //max-width: unset !important;
+}
+
+.mat-menu-item {
   display: flex !important;
   align-items: center !important;
 }
 
 .client-tone {
-  color: const.$client-tone;
+  color: $client-tone;
 }
 
 .delivery-tone {
-  color: const.$delivery-tone;
+  color: $delivery-tone;
 }
 
 .pickup-tone {
-  color: const.$pickup-tone;
+  color: $pickup-tone;
 }
 
 .bi-circle-fill {
@@ -362,7 +367,7 @@ i.bi.small {
 
 .fex-button {
   color: white !important;
-  background-color: const.$fex-dark;
+  background-color: $fex-dark;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -378,7 +383,7 @@ i.bi.small {
 
 .fex-accent-button {
   color: white !important;
-  background-color: const.$accent;
+  background-color: $accent;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -387,15 +392,15 @@ i.bi.small {
 .lex-button {
   margin-right: 20px !important;
   color: white !important;
-  background-color: const.$lex;
+  background-color: $lex;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .fex-button-outline {
-  color: const.$fex-dark !important;
-  border: 2px solid const.$fex-dark !important;
+  color: $fex-dark !important;
+  border: 2px solid $fex-dark !important;
   background-color: white;
   width: fit-content !important;
   height: fit-content !important;
@@ -411,7 +416,7 @@ i.bi.small {
 }
 
 .fex-button-try {
-  background-color: const.$fex-dark !important;
+  background-color: $fex-dark !important;
 }
 
 .fex-button-abort {
@@ -420,7 +425,7 @@ i.bi.small {
 }
 
 .fex-button-warn {
-  background-color: const.$warn !important;
+  background-color: $warn !important;
   color: white !important;
 }
 
@@ -430,60 +435,53 @@ i.bi.small {
 
 .fex-button:not(.dis, .fex-button-warn):hover {
   color: white !important;
-  background-color: const.$fex-light !important;
+  background-color: $fex-light !important;
 }
 
 .fex-button:disabled:hover {
   background-color: rgba(0, 0, 0, 0.12) !important;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
 .mat-option-text {
   display: flex !important;
   flex-direction: column !important;
   line-height: normal;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
 .detailedOption .mat-option-text {
   flex-direction: row !important;
   justify-content: space-between;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .date .mat-form-field-flex {
   max-width: 10em;
 }
 
-.mat-mdc-select-panel {
+.mat-select-panel {
   max-width: unset !important;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
 .mat-select-value {
   width: 100%;
 }
 
-.mat-mdc-option.mat-active {
-  background: const.$option-active;
+.mat-option.mat-active {
+  background: $option-active;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
-.mat-mdc-option:hover:not(.mat-option-disabled) {
-  background: const.$option-hover;
+.mat-option:hover:not(.mat-option-disabled) {
+  background: $option-hover;
 }
 
 .info-option {
   height: fit-content !important;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
 .info-option > .mat-option-text {
   padding: 10px 0;
   width: 100%;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .mat-form-field-flex, .mat-form-field-appearance-standard {
   padding-top: 0 !important;
 }
@@ -493,7 +491,7 @@ i.bi.small {
 }
 
 .ripple {
-  background-color: const.$fex-dark;
+  background-color: $fex-dark;
   color: white;
   cursor: pointer;
 }
@@ -611,3 +609,6 @@ i.bi.small {
   left: calc(50vw - 40px);
   top: calc(50vh - 50px);
 }
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';

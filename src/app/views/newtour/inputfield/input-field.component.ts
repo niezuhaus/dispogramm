@@ -2,22 +2,21 @@ import {Component, OnInit, Input, ViewChild, Output, EventEmitter} from '@angula
 import {SearchinputComponent} from './searchinput/searchinput.component';
 import {LocType} from '../../../common/interfaces';
 import {Client} from "../../../classes/Client";
-import { MatSelect } from '@angular/material/select';
-import { MatOption } from '@angular/material/core';
+import {MatSelect} from '@angular/material/select';
+import {MatOption} from '@angular/material/core';
 import {GC} from "../../../common/GC";
 import {Geolocation} from "../../../classes/Geolocation";
 
 @Component({
-    selector: 'app-inputfield',
-    templateUrl: './input-field.component.html',
-    styles: [`
-    @use "../../../../const.scss" as const;
+  selector: 'app-inputfield',
+  templateUrl: './input-field.component.html',
+  styles: [`
+    @import "../../../../const.scss";
 
     .blue {
-      color: const.$fex-dark;
+      color: $fex-dark;
     }
-  `],
-    standalone: false
+  `]
 })
 
 export class InputFieldComponent implements OnInit {

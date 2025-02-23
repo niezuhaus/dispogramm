@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {GC} from "../../common/GC"; 
+import {GC} from "../../common/GC";
 import {MorningTour} from "../../common/interfaces";
 import {Messenger} from "../../classes/Messenger";
 import {CheckInDialog} from "../../dialogs/shifts-dialog/check-in-dialog.component";
@@ -9,8 +9,8 @@ import {SearchinputComponent} from "../newtour/inputfield/searchinput/searchinpu
 import {TourplanItem} from "../../classes/TourplanItem";
 
 @Component({
-    selector: 'messenger-selector',
-    template: `
+  selector: 'messenger-selector',
+  template: `
     <div class="flex flex-row justify-around align-items-center">
       <button *ngIf="messengersNotCheckedIn() && !item._messenger" mat-button (click)="openCheckInDialog()">
         kurier:innen einchecken
@@ -65,20 +65,19 @@ import {TourplanItem} from "../../classes/TourplanItem";
       </button>
     </div>
   `,
-    styles: [`
-    @use "../../../const.scss" as const;
+  styles: [`
+    @import "../../../const.scss";
 
     .active {
       background: #8363b5;
     }
 
     .inactive {
-      border: 1px solid const.$gray;
+      border: 1px solid $gray;
       background: white;
-      color: const.$gray;
+      color: $gray;
     }
-  `],
-    standalone: false
+  `]
 })
 export class MessengerSelectorComponent implements OnInit {
 
@@ -234,7 +233,7 @@ export class MessengerSelectorComponent implements OnInit {
       this.updateMorningTour(null);
     }
     if (this.item.isMorningTour) {
-      this.item.convertedJobs.map((j): any => j.messenger = null)
+      this.item.convertedJobs.map(j => j.messenger = null)
       zip(this.item.convertedJobs.map(j => j.save())).subscribe(() => {
         GC.tourplan.calcSales();
       })

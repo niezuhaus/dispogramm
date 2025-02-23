@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-shifts-without-end-dialog',
-    template: `
+  selector: 'app-shifts-without-end-dialog',
+  template: `
     <p>
       shifts-without-end-dialog works!
     </p>
   `,
-    styles: [],
-    standalone: false
+  styles: [
+  ]
 })
 export class ShiftsWithoutEndDialogComponent implements OnInit {
 

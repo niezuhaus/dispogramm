@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {DateAdapter} from "@angular/material/core";
-import { MatInput } from '@angular/material/input';
+import {MatInput} from "@angular/material/input";
 import {debounceTime} from "rxjs/operators";
 
 @Component({
-    selector: 'timepicker',
-    template: `
+  selector: 'timepicker',
+  template: `
     <div class="align-items-center">
       <mat-form-field class="time">
         <mat-label>{{this.label}}</mat-label>
@@ -23,14 +23,13 @@ import {debounceTime} from "rxjs/operators";
       </mat-form-field>
     </div>
   `,
-    styles: [
-        `
-              .time {
-                width: 105%;
-              }
-            `
-    ],
-    standalone: false
+  styles: [
+    `
+      .time {
+        width: 105%;
+      }
+    `
+  ]
 })
 export class TimepickerComponent implements OnInit {
 

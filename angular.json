@@ -18,7 +18,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
               "lodash",
@@ -35,13 +35,10 @@
               "earcut",
               "mapbox-gl"
             ],
-            "outputPath": {
-              "base": "dist/dispogramm"
-            },
+            "outputPath": "dist/dispogramm",
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -54,13 +51,7 @@
               "./node_modules/mapbox-gl/dist/mapbox-gl.css",
               "src/assets/bikeLoading.scss"
             ],
-            "scripts": [],
-            "browser": "src/main.ts",
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "."
-              ]
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -85,7 +76,9 @@
               "outputHashing": "all"
             },
             "development": {
+              "buildOptimizer": false,
               "optimization": false,
+              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -97,10 +90,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "dispogramm:build:production"
+              "browserTarget": "dispogramm:build:production"
             },
             "development": {
-              "buildTarget": "dispogramm:build:development"
+              "browserTarget": "dispogramm:build:development"
             }
           },
           "defaultConfiguration": "development",
@@ -111,7 +104,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "dispogramm:build"
+            "browserTarget": "dispogramm:build"
           }
         },
         "test": {

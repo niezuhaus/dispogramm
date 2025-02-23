@@ -47,7 +47,7 @@ export class Messenger implements IdObject {
     if (!this.shift || !end) {
       return;
     }
-    if ([ShiftType.dispoEarly, ShiftType.dispoLate].includes(this.shift.type)) {
+    if ([ShiftType.dispoEarly, ShiftType.dispoLate].includes(15)) {
       this.shift.update(`${this.shift.messenger.nickname} wurde ausgecheckt`, true).subscribe(() => {
         GC.loadShiftsToday(GC.http);
       })

@@ -4,8 +4,8 @@ import {RegularJob} from "../../classes/Job";
 import {DateRange} from "@angular/material/datepicker";
 
 @Component({
-    selector: 'app-calendar-range-dialog',
-    template: `
+  selector: 'app-calendar-range-dialog',
+  template: `
     <h1 mat-dialog-title>{{data.headline}}</h1>
     <div style="width: 400px">
       <app-inline-range-calendar [(range)]="range" (dateSelect)="dateSelected.emit($event)"></app-inline-range-calendar>
@@ -17,8 +17,8 @@ import {DateRange} from "@angular/material/datepicker";
       class="fex-button"
       mat-dialog-close>tour von {{range.start.dateStampShort()}} bis {{range.end.dateStampShort()}} pausieren</button>
   `,
-    styles: [],
-    standalone: false
+  styles: [
+  ]
 })
 export class CalendarRangeDialogComponent {
   range: DateRange<Date>;

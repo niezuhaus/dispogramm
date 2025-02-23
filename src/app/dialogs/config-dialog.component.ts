@@ -6,13 +6,13 @@ import {RawConfig} from "../common/interfaces";
 import {zip} from "rxjs";
 import {setItem} from "../UTIL";
 import {SpecialPrice} from "../classes/SpecialPrice";
-import { MatMenuTrigger } from '@angular/material/menu';
+import {MatMenuTrigger} from "@angular/material/menu";
 import {Zone} from "../classes/Zone";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 @Component({
-    selector: 'app-config-dialog',
-    template: `
+  selector: 'app-config-dialog',
+  template: `
     <h1 mat-dialog-title>einstellungen</h1>
     <div *ngIf="config" class="flex flex-column" style="overflow-y: scroll; overflow-x: hidden; min-width: 500px">
       <mat-tab-group dynamicHeight selectedIndex="{{data?.pageIndex || 0}}">
@@ -548,7 +548,7 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
       </mat-menu>
     </div>
   `,
-    styles: [`
+  styles: [`
     .option {
       display: flex;
       flex-direction: row;
@@ -599,8 +599,7 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
     .priceDes + td {
       border-left: none !important;
     }
-  `],
-    standalone: false
+  `]
 })
 export class ConfigDialogComponent {
   config = GC.config;

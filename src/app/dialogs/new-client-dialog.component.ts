@@ -1,12 +1,12 @@
 import {Component, EventEmitter, Inject} from '@angular/core';
 import {GC} from "../common/GC";
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Geolocation} from "../classes/Geolocation";
 import {Client} from "../classes/Client";
 
 @Component({
-    selector: 'app-new-client-dialog',
-    template: `
+  selector: 'app-new-client-dialog',
+  template: `
     <div style="min-width: 400px">
       <h1 mat-dialog-title>neue kund:in erstellen</h1>
       <div class="m-auto" style="width: fit-content;">
@@ -74,13 +74,12 @@ import {Client} from "../classes/Client";
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     * {
       display: flex;
       flex-direction: column;
     }
-  `],
-    standalone: false
+  `]
 })
 export class NewClientDialogComponent {
   saved = new EventEmitter<{ c: Client; l: Geolocation }>();

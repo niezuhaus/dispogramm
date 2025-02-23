@@ -1,44 +1,43 @@
-@use "src/const.scss" as const;
+@import "src/const.scss";
 
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .mat-form-field-wrapper {
   padding-bottom: 17px;
 }
 
-.mat-mdc-option {
+.mat-option {
   max-width: 400px;
   min-width: 250px;
 }
 
-.mat-mdc-form-field {
+.mat-form-field {
   padding-right: 20px;
 }
 
 .job-option {
-  border-left: 3px solid const.$billing !important;
+  border-left: 3px solid $billing !important;
   min-height: 48px;
   height: unset;
   padding: 8px 5px;
 }
 
 .client-option {
-  border-left: 3px solid const.$client-option !important;
+  border-left: 3px solid $client-option !important;
 }
 
 .location-option {
-  border-left: 3px solid const.$location-option !important;
+  border-left: 3px solid $location-option !important;
 }
 
 .client-client-option {
-  border-left: 3px solid const.$client-client-option !important;
+  border-left: 3px solid $client-client-option !important;
   height: fit-content;
   padding: 6px 15px;
 }
 
 .messenger-option {
-  border-left: 3px solid const.$messenger-option !important;
+  border-left: 3px solid $messenger-option !important;
 }
 
 .zone-option {
-  border-left: 3px solid const.$lex !important;
+  border-left: 3px solid $lex !important;
 }

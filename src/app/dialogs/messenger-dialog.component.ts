@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Job} from "../classes/Job";
 import {GC} from "../common/GC";
 import {Price} from "../classes/Price";
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {AreYouSureDialogComponent} from "./are-you-sure-dialog.component";
 import {MatMenuTrigger} from "@angular/material/menu";
 import {Shift} from "../classes/Shift";
@@ -12,8 +12,8 @@ import {MatTabGroup} from "@angular/material/tabs";
 import {MatInput} from "@angular/material/input";
 
 @Component({
-    selector: 'app-edit-messenger-dialog',
-    template: `
+  selector: 'app-edit-messenger-dialog',
+  template: `
     <mat-tab-group dynamicHeight [selectedIndex]="data?.selectedIndex || 0" #tabgroup style="color: black" [headerPosition]="">
       <mat-tab [label]="new ? 'neue kurier:in' : messenger.nickname + ' bearbeiten'">
         <div class="flex flex-row">
@@ -236,8 +236,7 @@ import {MatInput} from "@angular/material/input";
       </mat-menu>
     </div>
   `,
-    styles: [],
-    standalone: false
+  styles: []
 })
 export class MessengerDialogComponent implements OnInit {
 

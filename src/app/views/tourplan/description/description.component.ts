@@ -8,10 +8,9 @@ import {AreYouSureDialogComponent} from "../../../dialogs/are-you-sure-dialog.co
 import {TourplanItem} from "../../../classes/TourplanItem";
 
 @Component({
-    selector: 'description',
-    templateUrl: './description.component.html',
-    styleUrls: ['./description.component.scss'],
-    standalone: false
+  selector: 'description',
+  templateUrl: './description.component.html',
+  styleUrls: ['./description.component.scss']
 })
 
 export class DescriptionComponent implements OnInit {

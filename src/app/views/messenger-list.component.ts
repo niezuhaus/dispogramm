@@ -4,11 +4,11 @@ import {MessengerDialogComponent} from "../dialogs/messenger-dialog.component";
 import {MatSort} from "@angular/material/sort";
 import {TitleComponent} from "./app.component";
 import {Messenger} from "../classes/Messenger";
-import { MatMenuTrigger } from '@angular/material/menu';
+import {MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
-    selector: 'app-messenger-list',
-    template: `
+  selector: 'app-messenger-list',
+  template: `
     <div class="flex p-4 w-100 justify-content-between align-items-center">
       <a (click)="saveConfig()">{{'inaktive kurier:innen ' + (hideInactive ? 'einblenden' : 'ausblenden')}}</a>
       <!--      <mat-checkbox [checked]="hideInactive()" (click)="saveConfig()">inaktive kurier:innen ausblenden</mat-checkbox>-->
@@ -46,8 +46,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
       </mat-menu>
     </div>
   `,
-    styles: [`
-    @use "../../const.scss" as const;
+  styles: [`
+    @import "../../const.scss";
 
     .out_container {
       margin: auto;
@@ -57,8 +57,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
     }
 
     .messContainer {
-      border: 2px solid const.$fex-dark;
-      background: const.$fex-dark;
+      border: 2px solid $fex-dark;
+      background: $fex-dark;
       color: white;
       border-radius: 10px;
       padding: 13px 15px;
@@ -72,8 +72,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
     .half-transparent {
       opacity: 50%;
     }
-  `],
-    standalone: false
+  `]
 })
 export class MessengerListComponent extends TitleComponent implements OnInit {
 

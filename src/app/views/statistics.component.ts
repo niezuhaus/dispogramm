@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-// import * as d3 from "d3";
+import * as d3 from "d3";
 import {GC} from "../common/GC";
 import {TitleComponent} from "./app.component";
 
 @Component({
-    selector: 'app-statistics',
-    template: `
+  selector: 'app-statistics',
+  template: `
     <h2 class="mt-3 ml-3">
       Wochenstatistik
     </h2>
@@ -16,8 +16,7 @@ import {TitleComponent} from "./app.component";
       <svg id="day" style="width: 100%; height: 500px"></svg>
     </div>
   `,
-    styles: [],
-    standalone: false
+  styles: []
 })
 export class StatisticsComponent extends TitleComponent implements OnInit, AfterViewInit {
 
@@ -44,8 +43,8 @@ export class StatisticsComponent extends TitleComponent implements OnInit, After
       response.forEach(stat => {
         this.weekStats.push({name: stat.day.slice(0, 2) + ' spät', turnover: stat.statistics[1].turnover});
       })
-      // this.createSvg('svg#week');
-      // this.drawBars('svg#week', this.weekStats);
+      this.createSvg('svg#week');
+      this.drawBars('svg#week', this.weekStats);
     })
     GC.http.getDayStatistic().subscribe(response => {
       console.log(response)
@@ -60,50 +59,50 @@ export class StatisticsComponent extends TitleComponent implements OnInit, After
   ngAfterViewInit(): void {
   }
 
-  // private createSvg(name: string): void {
-  //   this.charts.set(name, d3.select(name)
-  //     .append("svg")
-  //     .attr("width", this.width + (this.margin * 2))
-  //     .attr("height", this.height + (this.margin * 2))
-  //     .append("g")
-  //     .attr("transform", "translate(" + this.margin + "," + this.margin + ")")
-  //   );
-  // }
+  private createSvg(name: string): void {
+    this.charts.set(name, d3.select(name)
+      .append("svg")
+      .attr("width", this.width + (this.margin * 2))
+      .attr("height", this.height + (this.margin * 2))
+      .append("g")
+      .attr("transform", "translate(" + this.margin + "," + this.margin + ")")
+    );
+  }
 
-  // private drawBars(name: string, data: any[]): void {
-  //   const svg = this.charts.get(name);
-  //   // Create the X-axis band scale
-  //   const x = d3.scaleBand()
-  //     .range([0, this.width])
-  //     .domain(data.map(d => d.name))
-  //     .padding(0.2);
+  private drawBars(name: string, data: any[]): void {
+    const svg = this.charts.get(name);
+    // Create the X-axis band scale
+    const x = d3.scaleBand()
+      .range([0, this.width])
+      .domain(data.map(d => d.name))
+      .padding(0.2);
 
-  //   // Draw the X-axis on the DOM
-  //   svg.append("g")
-  //     .attr("transform", "translate(0," + this.height + ")")
-  //     .call(d3.axisBottom(x))
-  //     .selectAll("text")
-  //     .attr("transform", "translate(-10,0)rotate(-45)")
-  //     .style("text-anchor", "end");
+    // Draw the X-axis on the DOM
+    svg.append("g")
+      .attr("transform", "translate(0," + this.height + ")")
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end");
 
-  //   // Create the Y-axis band scale
-  //   const y = d3.scaleLinear()
-  //     .domain([0, Math.max(...data.map(d => d.money as number))*1.2])
-  //     .range([this.height, 0]);
+    // Create the Y-axis band scale
+    const y = d3.scaleLinear()
+      .domain([0, Math.max(...data.map(d => d.money as number))*1.2])
+      .range([this.height, 0]);
 
-  //   // Draw the Y-axis on the DOM
-  //   svg.append("g")
-  //     .call(d3.axisLeft(y));
+    // Draw the Y-axis on the DOM
+    svg.append("g")
+      .call(d3.axisLeft(y));
 
-  //   // Create and fill the bars
-  //   svg.selectAll("bars")
-  //     .data(data)
-  //     .enter()
-  //     .append("rect")
-  //     .attr("x", (d: any) => x(d.name))
-  //     .attr("y", (d: any) => y(d.turnover))
-  //     .attr("width", x.bandwidth())
-  //     .attr("height", (d: any) => this.height - y(d.turnover))
-  //     .attr("fill", "#8061af");
-  // }
+    // Create and fill the bars
+    svg.selectAll("bars")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("x", (d: any) => x(d.name))
+      .attr("y", (d: any) => y(d.turnover))
+      .attr("width", x.bandwidth())
+      .attr("height", (d: any) => this.height - y(d.turnover))
+      .attr("fill", "#8061af");
+  }
 }

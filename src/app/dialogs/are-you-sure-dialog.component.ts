@@ -1,12 +1,12 @@
 import {Component, EventEmitter, Inject, ViewChild} from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatButton } from '@angular/material/button';
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MatButton} from "@angular/material/button";
 import {Job} from "../classes/Job";
 import {Messenger} from "../classes/Messenger";
 
 @Component({
-    selector: 'app-are-you-sure-dialog',
-    template: `
+  selector: 'app-are-you-sure-dialog',
+  template: `
     <div class="flex flex-row">
       <div *ngIf="data.warning" class="mr-3 flex fex-warn">
         <i class="bi bi-exclamation-triangle" style="font-size: 30px"></i>
@@ -68,13 +68,12 @@ import {Messenger} from "../classes/Messenger";
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     * {
       display: flex;
       flex-direction: column;
     }
-  `],
-    standalone: false
+  `]
 })
 export class AreYouSureDialogComponent {
 

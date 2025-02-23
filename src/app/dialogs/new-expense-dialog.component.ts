@@ -1,12 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Geolocation} from "../classes/Geolocation";
 import {Job} from "../classes/Job";
 import {Expense} from "../classes/Expense";
 
 @Component({
-    selector: 'app-new-expense-dialog',
-    template: `
+  selector: 'app-new-expense-dialog',
+  template: `
     <h1 mat-dialog-title>{{expense?.id ? 'auslage bearbeiten' : 'neue auslage hinzufügen'}}</h1>
 
 <!--    <div style="width: fit-content;">-->
@@ -42,8 +42,7 @@ import {Expense} from "../classes/Expense";
       </div>
     </div>
   `,
-    styles: [],
-    standalone: false
+  styles: []
 })
 export class NewExpenseDialogComponent implements OnInit {
 

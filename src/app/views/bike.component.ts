@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-    selector: 'bike',
-    template: `
+  selector: 'bike',
+  template: `
     <div class="bike" [class.running]="running" style="z-index: 2" (click)="running = !running">
       <div class="wheel wheel__left" [class.running]="running">
         <div class="spoke spoke__left--1"></div>
@@ -27,8 +27,8 @@ import {Component, Input, OnInit} from '@angular/core';
       <div class="handlebars"></div>
     </div>
   `,
-    styles: [],
-    standalone: false
+  styles: [
+  ]
 })
 export class BikeComponent implements OnInit {
 

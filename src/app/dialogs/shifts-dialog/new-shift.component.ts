@@ -6,8 +6,8 @@ import {GC} from "../../common/GC";
 import {Shift} from "../../classes/Shift";
 
 @Component({
-    selector: 'new-shift-input',
-    template: `
+  selector: 'new-shift-input',
+  template: `
     <div class="flex flex-row align-items-center">
       <mat-form-field class="mr-3" style="width: 120px;">
         <mat-label>schichttyp</mat-label>
@@ -45,8 +45,7 @@ import {Shift} from "../../classes/Shift";
       <div *ngIf="disabled" class="ml-3 fex-warn">bereits eingecheckt</div>
     </div>
   `,
-    styles: [],
-    standalone: false
+  styles: []
 })
 export class NewShiftComponent implements OnInit {
 

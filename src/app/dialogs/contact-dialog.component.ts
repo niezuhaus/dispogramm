@@ -5,8 +5,8 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Client} from "../classes/Client";
 
 @Component({
-    selector: 'app-edit-contact-dialog',
-    template: `
+  selector: 'app-edit-contact-dialog',
+  template: `
     <div>
       <h1 mat-dialog-title>neuen kontakt erstellen</h1>
       <div mat-dialog-content style="width: 300px">
@@ -53,8 +53,7 @@ import {Client} from "../classes/Client";
       </button>
     </div>
   `,
-    styles: [],
-    standalone: false
+  styles: []
 })
 export class ContactDialogComponent implements OnInit {
 

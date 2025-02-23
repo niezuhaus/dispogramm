@@ -5,19 +5,19 @@ import {Client} from "../../../../classes/Client";
 import {GeoCodingStrategy, LocType, SpecialPriceType,} from '../../../../common/interfaces';
 import {Messenger} from "../../../../classes/Messenger";
 import {Job} from "../../../../classes/Job";
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import {MatAutocompleteTrigger} from '@angular/material/autocomplete';
 import {InputFieldComponent} from "../input-field.component";
 import {GC} from "../../../../common/GC";
 import {HttpService} from "../../../../http.service";
 import {Geolocation, Station} from "../../../../classes/Geolocation";
 import {FormControl, Validators} from "@angular/forms";
 import {Zone} from "../../../../classes/Zone";
+import { log } from 'console';
 
 @Component({
-    selector: 'searchinput',
-    templateUrl: './searchinput.component.html',
-    styleUrls: ['./searchinput.component.scss'],
-    standalone: false
+  selector: 'searchinput',
+  templateUrl: './searchinput.component.html',
+  styleUrls: ['./searchinput.component.scss']
 })
 
 export class SearchinputComponent implements OnInit {
