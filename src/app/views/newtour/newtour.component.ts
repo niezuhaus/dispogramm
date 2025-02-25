@@ -8,26 +8,26 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {HttpService} from '../../http.service';
-import {InputFieldComponent} from './inputfield/input-field.component';
-import {Client} from "../../classes/Client";
-import {Extra, IPoint, LocType} from '../../common/interfaces';
-import {Zone} from "../../classes/Zone";
-import {zip} from 'rxjs';
-import {corners, drawText, feature, initMap} from '../../UTIL';
-import {SearchinputComponent} from './inputfield/searchinput/searchinput.component';
-import {ActivatedRoute} from '@angular/router';
-import {LocationDialogComponent} from '../../dialogs/location-dialog.component';
-import {Location} from '@angular/common';
+import { HttpService } from '../../http.service';
+import { InputFieldComponent } from './inputfield/input-field.component';
+import { Client } from "../../classes/Client";
+import { Extra, IPoint, LocType } from '../../common/interfaces';
+import { Zone } from "../../classes/Zone";
+import { zip } from 'rxjs';
+import { corners, drawText, feature, initMap, setItem } from '../../UTIL';
+import { SearchinputComponent } from './inputfield/searchinput/searchinput.component';
+import { ActivatedRoute } from '@angular/router';
+import { LocationDialogComponent } from '../../dialogs/location-dialog.component';
+import { Location } from '@angular/common';
 import * as mapboxgl from "mapbox-gl";
-import {GeoJSONSource, LngLat, Marker, Popup} from "mapbox-gl";
-import {GC} from "../../common/GC";
-import {Price} from "../../classes/Price";
-import {Job, RegularJob} from "../../classes/Job";
-import {RegularJobDialogComponent} from "../../dialogs/regular-job-dialog.component";
-import {NewClientDialogComponent} from "../../dialogs/new-client-dialog.component";
+import { GeoJSONSource, LngLat, Marker, Popup } from "mapbox-gl";
+import { GC } from "../../common/GC";
+import { Price } from "../../classes/Price";
+import { Job, RegularJob } from "../../classes/Job";
+import { RegularJobDialogComponent } from "../../dialogs/regular-job-dialog.component";
+import { NewClientDialogComponent } from "../../dialogs/new-client-dialog.component";
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
-import {ZoneDialogComponent} from "../../dialogs/zone-dialog.component";
+import { ZoneDialogComponent } from "../../dialogs/zone-dialog.component";
 import {
   Feature,
   lineString,
@@ -35,12 +35,14 @@ import {
   Polygon,
   Position,
 } from "@turf/turf";
-import {Geolocation, Station} from "../../classes/Geolocation";
-import {MatDialogRef} from "@angular/material/dialog";
-import {CheckInDialog} from "../../dialogs/shifts-dialog/check-in-dialog.component";
-import {TitleComponent} from "../app.component";
-import {Zones} from "../../common/zones";
-import {AreYouSureDialogComponent} from "../../dialogs/are-you-sure-dialog.component";
+import { Geolocation, Station } from "../../classes/Geolocation";
+import { MatDialogRef } from "@angular/material/dialog";
+import { CheckInDialog } from "../../dialogs/shifts-dialog/check-in-dialog.component";
+import { TitleComponent } from "../app.component";
+import { Zones } from "../../common/zones";
+import { AreYouSureDialogComponent } from "../../dialogs/are-you-sure-dialog.component";
+import { Branch } from 'src/app/classes/Branch';
+import { log } from 'console';
 
 @Component({
   selector: 'newtour',
@@ -56,7 +58,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   job = new Job(null);
   isTemplate: boolean;
 
-// UI VARIABLES
+  // UI VARIABLES
   extras: Extra[] = [];
   locType = LocType;
   pInputs: InputFieldComponent[] = [];
@@ -86,26 +88,27 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   nameFieldVisible = false;
   noteVisible = false;
   dezwoOptions = false;
+  routingActivated = GC.streetRouting;
 
-  get _noteVisible() {return this.job?.description || this.noteVisible};
+  get _noteVisible() { return this.job?.description || this.noteVisible };
 
-  get _nameFieldVisible() {return this.job?.name || this.nameFieldVisible};
+  get _nameFieldVisible() { return this.job?.name || this.nameFieldVisible };
 
-  get configPrices() {return GC.config?.prices};
+  get configPrices() { return GC.config?.prices };
 
-  get dispatcher() {return GC.dispatcherCheckedIn()};
+  get dispatcher() { return GC.dispatcherCheckedIn() };
 
-  get routes() {return GC.routes};
+  get routes() { return GC.routes };
 
-  get isDezwo() {return GC._isDezwo};
+  get isDezwo() { return GC._isDezwo };
 
-  get specialPrices() {return GC.specialPrices};
+  get specialPrices() { return GC.specialPrices };
 
   @ViewChild('map') mapContainer: ElementRef;
   @ViewChild('pickup') pInput: InputFieldComponent;
-  @ViewChild('pickup', {read: ViewContainerRef}) pRef: ViewContainerRef;
+  @ViewChild('pickup', { read: ViewContainerRef }) pRef: ViewContainerRef;
   @ViewChild('delivery') dInput: InputFieldComponent;
-  @ViewChild('delivery', {read: ViewContainerRef}) dRef: ViewContainerRef;
+  @ViewChild('delivery', { read: ViewContainerRef }) dRef: ViewContainerRef;
   @ViewChild('clientInput') cInput: SearchinputComponent;
   @ViewChild('name') name: ElementRef;
   @ViewChild('notes') notes: ElementRef;
@@ -121,46 +124,46 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   ngOnInit(): void {
     if (GC.config) {
       this.extras = [
-        {value: 0, viewValue: 'kein zuschlag', price: GC.config.prices.extras[0]},
-        {value: 1, viewValue: 'last', price: GC.config.prices.extras[1]},
-        {value: 2, viewValue: 'lastenrad', price: GC.config.prices.extras[2]},
-        {value: 3, viewValue: 'carla', price: GC.config.prices.extras[3]},
+        { value: 0, viewValue: 'kein zuschlag', price: GC.config.prices.extras[0] },
+        { value: 1, viewValue: 'last', price: GC.config.prices.extras[1] },
+        { value: 2, viewValue: 'lastenrad', price: GC.config.prices.extras[2] },
+        { value: 3, viewValue: 'carla', price: GC.config.prices.extras[3] },
       ]
     }
   }
 
   ngAfterViewInit(): void {
     GC.loaded().subscribe(() => {
-        if (!this.extras.length) {
-          this.extras = [
-            {value: 0, viewValue: 'kein zuschlag', price: GC.config.prices.extras[0]},
-            {value: 1, viewValue: 'last', price: GC.config.prices.extras[1]},
-            {value: 2, viewValue: 'lastenrad', price: GC.config.prices.extras[2]},
-            {value: 3, viewValue: 'carla', price: GC.config.prices.extras[3]},
-          ]
-        }
-        this.focussedInput = this.cInput;
-        this.pInputs.push(this.pInput);
-        this.dInputs.push(this.dInput);
-        this.initMap();
-        setTimeout(() => {
-          this.route.paramMap.subscribe(params => {
-            const id = params.get('id');
-            if (id?.length && id !== 'undefined') {
-              if (params.get('rj') === 'true') {
-                this.isTemplate = true;
-                this.loadRegularJob(id);
-              } else {
-                this.isTemplate = false;
-                this.loadJobById(id);
-              }
-            } else if (params.get('time')) {
-              this.timeEdited = true;
-              this.job.date = new Date(params.get('time'));
-            }
-          });
-        }, 100)
+      if (!this.extras.length) {
+        this.extras = [
+          { value: 0, viewValue: 'kein zuschlag', price: GC.config.prices.extras[0] },
+          { value: 1, viewValue: 'last', price: GC.config.prices.extras[1] },
+          { value: 2, viewValue: 'lastenrad', price: GC.config.prices.extras[2] },
+          { value: 3, viewValue: 'carla', price: GC.config.prices.extras[3] },
+        ]
       }
+      this.focussedInput = this.cInput;
+      this.pInputs.push(this.pInput);
+      this.dInputs.push(this.dInput);
+      this.initMap();
+      setTimeout(() => {
+        this.route.paramMap.subscribe(params => {
+          const id = params.get('id');
+          if (id?.length && id !== 'undefined') {
+            if (params.get('rj') === 'true') {
+              this.isTemplate = true;
+              this.loadRegularJob(id);
+            } else {
+              this.isTemplate = false;
+              this.loadJobById(id);
+            }
+          } else if (params.get('time')) {
+            this.timeEdited = true;
+            this.job.date = new Date(params.get('time'));
+          }
+        });
+      }, 100)
+    }
     )
   }
 
@@ -177,7 +180,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       this.job = new Job(job).init();
       this.mapGL.on('load', () => {
         this.createUI(this.job);
-        this.refresh({zoom: true, pushPrice: job.price});
+        this.refresh({ zoom: true, pushPrice: job.price });
       });
       if (job.regularJobId) {
         GC.http.getRegularJob(job.regularJobId).subscribe(rj => {
@@ -197,7 +200,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       this.job = HttpService._convertToJobLocally(rj).init();
       this.mapGL.on('load', () => {
         this.createUI(this.job);
-        this.refresh({zoom: true});
+        this.refresh({ zoom: true });
       });
     });
   }
@@ -207,7 +210,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     this.fetchRoute();
     this.resetMap();
     if (this.job._center) {
-      this.job.init(options.pushPrice ? {pushPrice: options.pushPrice} : null);
+      this.job.init(options.pushPrice ? { pushPrice: options.pushPrice } : null);
       this.drawJob(this.job);
     }
     if (options.zoom) {
@@ -243,11 +246,11 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       return;
     }
     this.mapGL
-      .resetNorthPitch({duration: 200})
+      .resetNorthPitch({ duration: 200 })
       .setPitch(0)
       .fitBounds(corners(points), {
         maxZoom: extraZoom ? 16 : 13,
-        padding: {left: 200, top: 200, right: 400, bottom: 200},
+        padding: { left: 200, top: 200, right: 400, bottom: 200 },
         speed: 2.5
       });
   }
@@ -259,7 +262,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
    * @param job the job to be shown
    */
   createUI(job: Job): void {
-    this.resetUI({leaveUrl: true});
+    this.resetUI({ leaveUrl: true });
     this.touched = true;
     if (!this.cInput.selection) {
       this.cInput.selection = job.center;
@@ -338,12 +341,12 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     fieldComp.clientSelected.subscribe((msg) => this.clientSelected(msg));
     fieldComp.selected.subscribe(() => {
       this.touched = true;
-      this.refresh({zoom: true});
+      this.refresh({ zoom: true });
     });
-    fieldComp.resetted.subscribe(() => this.refresh({zoom: true}));
+    fieldComp.resetted.subscribe(() => this.refresh({ zoom: true }));
     fieldComp.backtour.subscribe(() => {
       this.touched = true;
-      this.refresh({zoom: true});
+      this.refresh({ zoom: true });
     });
     fieldComp.register.subscribe(e => this.register(e));
     fieldComp.startedTyping.subscribe(() => this.createInputfield(type));
@@ -433,7 +436,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     this.mapGL.on('load', () => {
       this.loaded = true;
       this.mapGL.resize()
-      this.setPointWithPopUp([{position: [8.80472, 53.08906], name: 'FEX'}]) // FEX
+      this.setPointWithPopUp([{ position: [8.80472, 53.08906], name: 'FEX' }]) // FEX
       if (GC.config.showZonesPermanently) {
         GC.zones.forEach(z => {
           this.toggleZone(z.name);
@@ -475,7 +478,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
             this.cInput.client = c;
           }
           this.createInputfield(this.focussedInput.type);
-          this.refresh({zoom: false})
+          this.refresh({ zoom: false })
         });
     });
 
@@ -497,7 +500,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   createPolygons(features: Polygon[]): void {
     const f = features[features.length - 1];
     console.log(this.mapboxDraw.getAll().features)
-    const zone = new Zone({id: null, name: '', _coordinates: f.coordinates});
+    const zone = new Zone({ id: null, name: '', _coordinates: f.coordinates });
     const dialog = GC.dialog.open(ZoneDialogComponent, {
       data: {
         zone: zone,
@@ -511,7 +514,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   createZone(): void {
-    const zone = new Zone({id: null, name: '', _coordinates: this.polygon});
+    const zone = new Zone({ id: null, name: '', _coordinates: this.polygon });
     const dialog = GC.dialog.open(ZoneDialogComponent, {
       data: {
         zone: zone,
@@ -571,7 +574,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     if (!id) {
       this.polygonIds.set(name, this.mapboxDraw.add(
         line ?
-          lineString(coordinates[0]): // todo ? is it right?
+          lineString(coordinates[0]) : // todo ? is it right?
           polygon(coordinates))[0]);
     } else {
       this.mapboxDraw.delete(id);
@@ -595,12 +598,29 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   /** draws a continuous line between the points of a given array */
-  drawLines(id: string, points: IPoint[]): void {
+  drawAirLines(type: string, branch: Branch): void {
     const array: Position[] = [];
-    points.forEach(p => {
+    branch.routeWithBridges.forEach(p => {
       array.push([p.longitude, p.latitude]);
     });
-    this.changeLayer(id, array);
+    this.changeLayer(type, array);
+  }
+
+  drawRoutes(preparedBranches: { type: string, branch: Branch }[]): void {
+    const branches = preparedBranches.map(pB => { return pB.branch });
+    GC.http.routeJob(branches).subscribe(branchRoutes => {
+      console.log(branchRoutes);
+      
+      branchRoutes.forEach((branchRoute, index) => {
+        branchRoute.forEach(sectionRoute => {
+          this.changeLayer(preparedBranches[index].type, sectionRoute.route.map(p => [p.longitude, p.latitude]));
+        })
+      });
+      console.log(this.job.dBranches);
+      
+      this.job.calcPrice();
+    });
+
   }
 
   changeLayer(id: string, coos: Position[]): void {
@@ -663,18 +683,28 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       return;
     }
     job.getAllStations(true).slice(1).forEach(station => this.setMarker(station));
+
+    let list: { type: string, branch: Branch }[] = [];
     job.pBranches?.branches.forEach((branch, i) => {
-      this.drawLines(`p${i}`, branch.routeWithBridges);
+      list.push({ type: `p${i}`, branch: branch });
     });
     job.dBranches?.branches.forEach((branch, i) => {
-      this.drawLines(`d${i}`, branch.routeWithBridges);
+      list.push({ type: `d${i}`, branch: branch });
     });
     job.pBacktourBranches?.branches.forEach((branch, i) => {
-      this.drawLines(`pb${i}`, branch.routeWithBridges);
+      list.push({ type: `pb${i}`, branch: branch });
     });
     job.dBacktourBranches?.branches.forEach((branch, i) => {
-      this.drawLines(`db${i}`, branch.routeWithBridges);
+      list.push({ type: `db${i}`, branch: branch });
     });
+    if (this.routingActivated) {
+      this.drawRoutes(list);
+    } else {
+      list.forEach(l => {
+        this.drawAirLines(l.type, l.branch);
+      });
+    }
+
     if (!GC.config.showZonesPermanently) {
       job.getZones().forEach(z => {
         this.toggleZone(z.name);
@@ -784,7 +814,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         loc.longitude = newPos.lng.round(5);
       }
       this.changedLocations.push(station);
-      this.refresh({zoom: false})
+      this.refresh({ zoom: false })
     });
 
     this.markerGL.push(marker);
@@ -877,7 +907,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       this.touched = true;
       if (this.job) {
         this.job.regularJob = msg;
-        this.refresh({zoom: false});
+        this.refresh({ zoom: false });
       }
       console.log(this.job.regularJob)
     });
@@ -901,7 +931,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       this.cInput.setSelection(client.l);
       this.cInput.client = client.c;
       this.job.billingTour = client.c.billClient;
-      this.refresh({zoom: false})
+      this.refresh({ zoom: false })
     });
     return dialog;
   }
@@ -919,7 +949,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       } else {
         this.resolveInputfield(station).setSelection(station);
       }
-      this.refresh({zoom: false})
+      this.refresh({ zoom: false })
     });
     dialog.componentInstance.updated.subscribe(station => {
       if (input && input.searchinput.selection) {
@@ -927,7 +957,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       } else {
         this.resolveInputfield(station).setSelection(station);
       }
-      this.refresh({zoom: false})
+      this.refresh({ zoom: false })
     });
   }
 
@@ -946,7 +976,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
                 'wurde'} aktualisiert.`
           ).subscribe({
             next: () => {
-              GC.router.navigate([GC.routes.tourplan, {date: j.date.yyyymmdd()}]);
+              GC.router.navigate([GC.routes.tourplan, { date: j.date.yyyymmdd() }]);
             }, error: (e) => {
               GC.openSnackBarLong(`fehler beim speichern des auftrags`);
               console.log(e)
@@ -955,8 +985,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         }
         if (this.changedLocations.length) {
           zip(this.changedLocations.map(l => GC.http.updateLocation(l))).subscribe(() => {
-              updateFn();
-            }
+            updateFn();
+          }
           )
         } else {
           updateFn();
@@ -970,7 +1000,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         const createFn = () => {
           j.save('neuer auftrag wurde gespeichert.').subscribe({
             next: job => {
-              GC.router.navigate([GC.routes.tourplan, {date: job.date.yyyymmdd()}]);
+              GC.router.navigate([GC.routes.tourplan, { date: job.date.yyyymmdd() }]);
             }, error: (error) => {
               console.log(error);
             }
@@ -978,8 +1008,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         };
         if (this.changedLocations.length) {
           zip(this.changedLocations.map(l => GC.http.updateLocation(l))).subscribe(() => {
-              createFn();
-            }
+            createFn();
+          }
           )
         } else {
           createFn();
@@ -1023,15 +1053,15 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     rj = new RegularJob(rj);
     if (update) {
       GC.http.updateRegularJob(rj).subscribe(() => {
-          GC.openSnackBarLong(`festtour wurde aktualisiert.`);
-          this.location.back();
-        }
+        GC.openSnackBarLong(`festtour wurde aktualisiert.`);
+        this.location.back();
+      }
       );
     } else {
       GC.http.createRegularJob(rj).subscribe(() => {
-          GC.openSnackBarLong(`neue festtour wurde gespeichert.`);
-          this.location.back();
-        }
+        GC.openSnackBarLong(`neue festtour wurde gespeichert.`);
+        this.location.back();
+      }
       );
     }
   }
@@ -1045,14 +1075,14 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         this.job.billingTour = client.c.billClient;
       }
     }
-    this.refresh({zoom: true})
+    this.refresh({ zoom: true })
   }
 
   clientResetted(): void {
     this.touched = true;
     this.job.client = null;
     this.resetMap();
-    this.refresh({zoom: true});
+    this.refresh({ zoom: true });
   }
 
   register(input: SearchinputComponent): void {
@@ -1065,7 +1095,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     this.touched = true;
     this.job.clientInvolved = !this.job.clientInvolved;
     this.job.center = null;
-    this.refresh({zoom: true})
+    this.refresh({ zoom: true })
   }
 
   switchBillingMode(): void {
@@ -1094,5 +1124,10 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     setTimeout(() => {
       this.notes.nativeElement.focus();
     }, 0);
+  }
+
+  toggleRouting(): void {
+    GC.streetRouting = this.routingActivated;
+    setItem<string>('streetRouting', this.routingActivated ? 'true' : 'false');
   }
 }

@@ -1,33 +1,35 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable, of, switchMap, take, tap, zip} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { EventEmitter, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of, switchMap, take, tap, zip } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
-  BingMapsResponse,
-  BingResource,
   DayStatistic,
   GeoCodingMode,
   Invoice,
-  IOSMFeature,
-  IOSMResponse,
   IPoint, LexProfile,
   LocType,
   PriceZone,
-  RawConfig, TimeframeStatistic, WeekStatistic,
+  RawConfig, Section, TimeframeStatistic, WeekStatistic,
 } from './common/interfaces';
-import {Contact} from "./classes/Contact";
-import {Zone} from "./classes/Zone";
-import {Job, RegularJob} from "./classes/Job";
-import {DateAdapter} from '@angular/material/core';
-import {GC} from "./common/GC";
-import {Price} from "./classes/Price";
-import {Geolocation} from "./classes/Geolocation";
-import {Shift} from "./classes/Shift";
-import {Note} from './classes/Note';
-import {Messenger} from "./classes/Messenger";
-import {Expense} from "./classes/Expense";
-import {Client} from "./classes/Client";
-import {Routing} from "./common/Routing";
+import {
+  BingMapsResponse,
+  BingResource, IOSMFeature,
+  IOSMResponse,
+  IOSMRouteFeatureCollection
+} from "./common/DataContracts";
+import { Contact } from "./classes/Contact";
+import { Zone } from "./classes/Zone";
+import { Job, RegularJob } from "./classes/Job";
+import { DateAdapter } from '@angular/material/core';
+import { GC } from "./common/GC";
+import { Price } from "./classes/Price";
+import { Geolocation } from "./classes/Geolocation";
+import { Shift } from "./classes/Shift";
+import { Note } from './classes/Note';
+import { Messenger } from "./classes/Messenger";
+import { Expense } from "./classes/Expense";
+import { Client } from "./classes/Client";
+import { Routing } from "./common/Routing";
 import {
   LexContact,
   LexContactsListPage,
@@ -35,9 +37,11 @@ import {
   LexInvoiceListPage,
   LexCreateResponse
 } from "./classes/LexInvoice";
-import {SpecialPrice} from "./classes/SpecialPrice";
-import {TourplanItem} from "./classes/TourplanItem";
-import {Position} from "@turf/turf";
+import { SpecialPrice } from "./classes/SpecialPrice";
+import { TourplanItem } from "./classes/TourplanItem";
+import { Position } from "@turf/turf";
+import { log } from 'console';
+import { Branch } from './classes/Branch';
 
 // CONNECTION CONFIG
 const BACKEND_IP = GC.backendIP;
@@ -49,7 +53,7 @@ const RANGE = 20000;
 const CIRCLE_LAT = 8.753171;
 const CIRCLE_LON = 53.10876;
 const PLZ_EXTRA = [28865, 28816]; // lilienthal, stuhr
-const CENTER: IPoint = {latitude: 53.077135, longitude: 8.821483};
+const CENTER: IPoint = { latitude: 53.077135, longitude: 8.821483 };
 
 
 @Injectable({
@@ -247,6 +251,65 @@ export class HttpService {
       );
   }
 
+  routeSection(section: Section): Observable<{ route: IPoint[], sectionDist: number }> {
+    const coordinates = section.points.map(p => `${p.latitude},${p.longitude}`).join('|');
+    return this.http.get<IOSMRouteFeatureCollection>(`https://api.geoapify.com/v1/routing?waypoints=${coordinates}&mode=bicycle&apiKey=${this.GEOAPIFY_API_KEY}`)
+      .pipe(
+        take(1),
+        map(response => {
+          const sectionRoute: { route: IPoint[], sectionDist: number } = {route: [], sectionDist: 0};
+          response.features[0].geometry.coordinates.forEach((coordArray: number[][], i: number) => {
+            sectionRoute.route = sectionRoute.route.concat(coordArray.map(coord => {
+              return { latitude: coord[1], longitude: coord[0] };
+            }));
+            sectionRoute.sectionDist += response.features[0].properties.legs[i].distance / 1000 // from m to km
+          });
+          section.traveldist = sectionRoute.sectionDist; // save the distance in the section
+          return sectionRoute;
+        })
+      );
+  }
+
+  /**
+ * takes a Branch and finds a bikeable route for it
+ * @param branch the branch to find a route for
+ * @return an array of objects that contain the route and the corresponding distance
+ */
+  routeBranch(branch: Branch): Observable<{ route: IPoint[], sectionDist: number }[]> {
+    const coordinates = branch.routeWithoutBridges.map(p => `${p.latitude},${p.longitude}`).join('|');
+    return this.http.get<any>(`https://api.geoapify.com/v1/routing?waypoints=${coordinates}&mode=bicycle&apiKey=${this.GEOAPIFY_API_KEY}`)
+      .pipe(
+        take(1),
+        map(response => {
+          const sectionRoutes: { route: IPoint[], sectionDist: number }[] = [];
+          response.features[0].geometry.coordinates.forEach((coordArray: number[][], i: number) => {
+
+            const sectionRoute = {
+              route: coordArray.map(coord => {
+                return { latitude: coord[1], longitude: coord[0] };
+              }
+              ),
+              sectionDist: response.features[0].properties.legs[i].distance / 1000 // from m to km
+            }
+            branch.sections[i].traveldist = sectionRoute.sectionDist; // save the distance in the section
+            branch.distance = response.features[0].properties.distance.round(0)/1000;
+            sectionRoutes.push(sectionRoute);
+          });
+          return sectionRoutes;
+        })
+      );
+  }
+
+    /**
+ * make several route calls for an array of branches representing a job
+ * @param branches an array of branches from a job
+ * @return a two dimensional array of objects containing routes for each individual section in every
+ */
+  routeJob(branches: Branch[]): Observable<{ route: IPoint[], sectionDist: number }[][]> {
+    return zip(branches.map(b => this.routeBranch(b)));
+  }
+
+
   static mapOSMFeature(f: IOSMFeature, type: LocType): Geolocation {
     const feature = f.properties;
     feature.housenumber = feature.housenumber ? feature.housenumber.replace('; ', '-') : '';
@@ -296,7 +359,7 @@ export class HttpService {
   }
 
   createClient(client: Client): Observable<Client> {
-    return this.http.post<Client>(`${BACKEND_IP}/clients/create`, client, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Client>(`${BACKEND_IP}/clients/create`, client, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(c => {
         GC.clients.push(c);
@@ -308,7 +371,7 @@ export class HttpService {
     );
   }
   updateClient(client: Client): Observable<Client> {
-    return this.http.post<Client>(`${BACKEND_IP}/clients/update`, client, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Client>(`${BACKEND_IP}/clients/update`, client, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
@@ -317,7 +380,7 @@ export class HttpService {
     // return this.http.post<Client>(`${BACKEND_IP}/clients/find/`, {id});
   }
   getClientList(): Observable<Client[]> {
-    return this.http.get<Client[]>(`${BACKEND_IP}/clients/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Client[]>(`${BACKEND_IP}/clients/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         list = list.filter(c => c.clientId);
@@ -337,7 +400,7 @@ export class HttpService {
   }
   deleteClient(client: Client): Observable<any> {
     GC.clients.splice(GC.clients.indexOf(client), 1);
-    return this.http.post<any>(`${BACKEND_IP}/clients/delete`, {id: client.id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<any>(`${BACKEND_IP}/clients/delete`, { id: client.id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
@@ -346,7 +409,7 @@ export class HttpService {
     location.id = null;
     const _job = location._job
     location._job = null;
-    return this.http.post<Geolocation>(`${BACKEND_IP}/locations/create`, location, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Geolocation>(`${BACKEND_IP}/locations/create`, location, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(loc => {
         loc = HttpService._prepareGeolocation(loc);
@@ -366,7 +429,7 @@ export class HttpService {
         GC.clientLocations.indexOf(
           GC.clientLocations.filter(loc => loc.id === location.id)[0])] = location;
     }
-    return this.http.post<Geolocation>(`${BACKEND_IP}/locations/update`, location, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Geolocation>(`${BACKEND_IP}/locations/update`, location, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(loc => {
         GC.locationChanged.emit(true);
@@ -375,7 +438,7 @@ export class HttpService {
     );
   }
   getLocation(id: string): Observable<Geolocation> {
-    return this.http.post<Geolocation>(`${BACKEND_IP}/locations/find`, {id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Geolocation>(`${BACKEND_IP}/locations/find`, { id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(loc => {
         return HttpService._prepareGeolocation(loc);
@@ -383,7 +446,7 @@ export class HttpService {
     );
   }
   getLocationList(): Observable<Geolocation[]> {
-    return this.http.get<Geolocation[]>(`${BACKEND_IP}/locations/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Geolocation[]>(`${BACKEND_IP}/locations/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareGeolocations(list)
@@ -391,7 +454,7 @@ export class HttpService {
     );
   }
   getLocationsByClientId(id: string): Observable<Geolocation[]> {
-    return this.http.post<Geolocation[]>(`${BACKEND_IP}/locations/find/by/clientId`, {id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Geolocation[]>(`${BACKEND_IP}/locations/find/by/clientId`, { id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareGeolocations(list)
@@ -407,42 +470,42 @@ export class HttpService {
   }
   mergeLocations(locs: Geolocation[]): Observable<any> {
     return this.http.post<any>(`${BACKEND_IP}/locations/merge`, locs.map(l => {
-      return {id: l.id}
-    }), {headers: this.backendAuthHeader}).pipe(
+      return { id: l.id }
+    }), { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
   deleteLocation(loc: Geolocation): Observable<any> {
     GC.locations.findAndRemove(loc);
-    return this.http.post<any>(`${BACKEND_IP}/locations/delete`, {id: loc.id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<any>(`${BACKEND_IP}/locations/delete`, { id: loc.id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
 
   createContact(contact: Contact): Observable<Contact> {
     contact.id = null;
-    return this.http.post<Contact>(`${BACKEND_IP}/contacts/create`, contact, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Contact>(`${BACKEND_IP}/contacts/create`, contact, { headers: this.backendAuthHeader }).pipe(
       take(1)
     );
   }
   updateContact(contact: Contact): Observable<Contact> {
-    return this.http.post<Contact>(`${BACKEND_IP}/contacts/update`, contact, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Contact>(`${BACKEND_IP}/contacts/update`, contact, { headers: this.backendAuthHeader }).pipe(
       take(1)
     );
   }
   getContactsForLocation(location: Geolocation): Observable<Contact[]> {
-    return this.http.post<Contact[]>(`${BACKEND_IP}/contacts/all/location`, location.id, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Contact[]>(`${BACKEND_IP}/contacts/all/location`, location.id, { headers: this.backendAuthHeader }).pipe(
       take(1)
     );
   }
   getContactsForClient(client: Client): Observable<Contact[]> {
-    return this.http.post<Contact[]>(`${BACKEND_IP}/contacts/all/client`, client.id, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Contact[]>(`${BACKEND_IP}/contacts/all/client`, client.id, { headers: this.backendAuthHeader }).pipe(
       take(1)
     );
   }
   deleteContact(contact: Contact): Observable<any> {
     contact.id = null;
-    return this.http.post<Contact>(`${BACKEND_IP}/contacts/delete`, contact, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Contact>(`${BACKEND_IP}/contacts/delete`, contact, { headers: this.backendAuthHeader }).pipe(
       take(1)
     );
   }
@@ -455,7 +518,7 @@ export class HttpService {
       job.creator = job.creator.copy();
     }
     job.routeStrategyObj = null;
-    return this.http.post<Job>(`${BACKEND_IP}/jobs/create`, job, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Job>(`${BACKEND_IP}/jobs/create`, job, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(j => {
         j = HttpService._prepareJob(j);
@@ -472,7 +535,7 @@ export class HttpService {
     job.creator = job.creator ? job.creator.copy() : null;
     job.dispatcher = job.dispatcher ? job.dispatcher.copy() : null;
     job.messenger = job.messenger ? job.messenger.copy() : null;
-    return this.http.post<Job>(`${BACKEND_IP}/jobs/update`, job, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Job>(`${BACKEND_IP}/jobs/update`, job, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(updatedJob => {
         return HttpService._prepareJob(updatedJob);
@@ -480,7 +543,7 @@ export class HttpService {
     );
   }
   getJob(id: string): Observable<Job> {
-    return this.http.post<Job>(`${BACKEND_IP}/jobs/find`, {id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Job>(`${BACKEND_IP}/jobs/find`, { id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(job => {
         return HttpService._prepareJob(job);
@@ -488,7 +551,7 @@ export class HttpService {
     );
   }
   getJobList(): Observable<Job[]> {
-    return this.http.get<Job[]>(`${BACKEND_IP}/jobs/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Job[]>(`${BACKEND_IP}/jobs/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         HttpService._prepareJobs(list);
@@ -497,7 +560,7 @@ export class HttpService {
     );
   }
   distinctsJobs(): Observable<Job[]> {
-    return this.http.get<Job[]>(`${BACKEND_IP}/jobs/all/distinct`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Job[]>(`${BACKEND_IP}/jobs/all/distinct`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareJobs(list);
@@ -505,7 +568,7 @@ export class HttpService {
     );
   }
   distinctsJobsForClient(id: string): Observable<Job[]> {
-    return this.http.post<Job[]>(`${BACKEND_IP}/jobs/client/distinct`, {id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Job[]>(`${BACKEND_IP}/jobs/client/distinct`, { id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         list = list.filter(j => j.deliveries?.length + j.pickups?.length > 0);
@@ -513,7 +576,7 @@ export class HttpService {
       })
     );
   }
-  tourplanItemsForDay(date: Date, options?: {onlyPlanned?: boolean, excludeNotes?: boolean}): Observable<{items: TourplanItem[], jobs: Job[], notes?: Note[]}> {
+  tourplanItemsForDay(date: Date, options?: { onlyPlanned?: boolean, excludeNotes?: boolean }): Observable<{ items: TourplanItem[], jobs: Job[], notes?: Note[] }> {
     // all regularJob templates for this day
     let rjs = GC.regularJobs.filter(rj => {
       return rj.dates.filter(d => !!d).map(d => {
@@ -536,7 +599,7 @@ export class HttpService {
 
     return this.getNotes(date).pipe(
       switchMap(notes => {
-        return this.http.post<Job[]>(`${BACKEND_IP}/jobs/all/date`, {date: date}, {headers: this.backendAuthHeader}).pipe(
+        return this.http.post<Job[]>(`${BACKEND_IP}/jobs/all/date`, { date: date }, { headers: this.backendAuthHeader }).pipe(
           take(1),
           map(jobsForDay => {
             jobsForDay = HttpService._prepareJobs(jobsForDay);
@@ -561,7 +624,7 @@ export class HttpService {
             // now bundle all TPIs for the day
             const TPIsForDay =
               // jobs that are not included in a morning tour
-              jobsForDay.filter(j => !(j.morningTour > 0) && (!options?.onlyPlanned || j.isPlanned || j.regularJobId)).map(j => new TourplanItem({job: j}))
+              jobsForDay.filter(j => !(j.morningTour > 0) && (!options?.onlyPlanned || j.isPlanned || j.regularJobId)).map(j => new TourplanItem({ job: j }))
                 // regularJobs that are not included in a morning tour
                 .concat(rjs.filter(rj => !(rj.morningTour > 0) || options?.onlyPlanned).map(rj => {
                   return new TourplanItem({
@@ -570,7 +633,7 @@ export class HttpService {
                   })
                 }))
                 // all notes
-                .concat(options?.excludeNotes ? [] : notes.map(n => new TourplanItem({note: n})))
+                .concat(options?.excludeNotes ? [] : notes.map(n => new TourplanItem({ note: n })))
                 // the morning tours that include at least one job for the day
                 .concat(posttourTPIs.filter(p => (p.regularJobs?.length) + (p.convertedJobs?.length) > 0));
 
@@ -585,7 +648,7 @@ export class HttpService {
               j.index = array.length - i;
             });
 
-            return {items: TPIsForDay, jobs: jobsForDay, notes: notes};
+            return { items: TPIsForDay, jobs: jobsForDay, notes: notes };
           })
         );
       })
@@ -594,7 +657,7 @@ export class HttpService {
   jobsForClientInMonth(id: string, date: Date): Observable<Job[]> {
     const start = new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0);
     const end = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59);
-    return this.http.post<Job[]>(`${BACKEND_IP}/jobs/find/by/clientanddates`, {id: id, start: start, end: end}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Job[]>(`${BACKEND_IP}/jobs/find/by/clientanddates`, { id: id, start: start, end: end }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         if (!list) {
@@ -615,7 +678,7 @@ export class HttpService {
     }))
   }
   jobsInMonth(date: Date): Observable<Job[]> {
-    return this.http.post<Job[]>(`${BACKEND_IP}/jobs/all/month`, {date}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Job[]>(`${BACKEND_IP}/jobs/all/month`, { date }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareJobs(list);
@@ -631,7 +694,7 @@ export class HttpService {
     return of(GC.jobsThisMonth.filter(j => j.messenger?.nickname === messenger.nickname));
   }
   jobsRecentDays(days: number, id?: string): Observable<Job[]> {
-    return this.http.post<Job[]>(`${BACKEND_IP}/jobs/all/recent`, {amount: days}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Job[]>(`${BACKEND_IP}/jobs/all/recent`, { amount: days }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         if (id) {
@@ -656,11 +719,11 @@ export class HttpService {
     if (job.client?.id.length > 0 && GC.clientInvoiceAmounts.get(job.client.id)) {
       GC.clientInvoiceAmounts.get(job.client.id).sub(job.price);
     }
-    return this.http.post<boolean>(`${BACKEND_IP}/jobs/delete`, {id: job.id});
+    return this.http.post<boolean>(`${BACKEND_IP}/jobs/delete`, { id: job.id });
   }
 
   createRegularJob(job: RegularJob): Observable<RegularJob> {
-    return this.http.post<RegularJob>(`${BACKEND_IP}/regularjobs/create`, job, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<RegularJob>(`${BACKEND_IP}/regularjobs/create`, job, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(rj => {
         rj.dates = rj.dates.map(d => new Date(d));
@@ -674,12 +737,12 @@ export class HttpService {
     GC.regularJobs[
       GC.regularJobs.indexOf(
         GC.regularJobs.filter(j => j.id === job.id)[0])] = job;
-    return this.http.post<RegularJob>(`${BACKEND_IP}/regularjobs/update`, job, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<RegularJob>(`${BACKEND_IP}/regularjobs/update`, job, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
   getRegularJob(id: string): Observable<RegularJob> {
-    return this.http.post<RegularJob>(`${BACKEND_IP}/regularjobs/find`, {id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<RegularJob>(`${BACKEND_IP}/regularjobs/find`, { id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(rj => {
         return HttpService._prepareRegularJob(rj)
@@ -687,7 +750,7 @@ export class HttpService {
     );
   }
   convertRegularJob(rj: RegularJob, date: Date): Observable<Job> {
-    return this.http.post<Job>(`${BACKEND_IP}/regularjobs/convert`, {id: rj.id, date: date}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Job>(`${BACKEND_IP}/regularjobs/convert`, { id: rj.id, date: date }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(j => {
         j.creator = GC.dispatcher().messenger;
@@ -701,7 +764,7 @@ export class HttpService {
     );
   }
   convertRegularJobs(date: Date): Observable<RegularJob[]> {
-    return this.http.post<RegularJob[]>(`${BACKEND_IP}/regularjobs/all/date`, {date}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<RegularJob[]>(`${BACKEND_IP}/regularjobs/all/date`, { date }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareRegularJobs(list);
@@ -712,7 +775,7 @@ export class HttpService {
     if (GC.regularJobs.length > 0 && !forceLoad) {
       return of(GC.regularJobs);
     }
-    return this.http.get<RegularJob[]>(`${BACKEND_IP}/regularjobs/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<RegularJob[]>(`${BACKEND_IP}/regularjobs/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareRegularJobs(list);
@@ -729,13 +792,13 @@ export class HttpService {
   deleteRegularJob(job: RegularJob): Observable<boolean> {
     GC.regularJobs.splice(
       GC.regularJobs.indexOf(GC.regularJobs.filter(j => j.id === job.id)[0]), 1);
-    return this.http.post<boolean>(`${BACKEND_IP}/regularjobs/delete`, {id: job.id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<boolean>(`${BACKEND_IP}/regularjobs/delete`, { id: job.id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
 
   createMessenger(messenger: Messenger): Observable<Messenger> {
-    return this.http.post<Messenger>(`${BACKEND_IP}/messengers/create`, messenger, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Messenger>(`${BACKEND_IP}/messengers/create`, messenger, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(m => {
         m = new Messenger(m);
@@ -747,7 +810,7 @@ export class HttpService {
   }
   updateMessenger(messenger: Messenger): Observable<Messenger> {
     GC.messengers.findAndReplace(messenger)
-    return this.http.post<Messenger>(`${BACKEND_IP}/messengers/update`, messenger, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Messenger>(`${BACKEND_IP}/messengers/update`, messenger, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(m => {
         m = new Messenger(m);
@@ -757,13 +820,13 @@ export class HttpService {
     );
   }
   getMessenger(id: string): Observable<Messenger> {
-    return this.http.post<Messenger>(`${BACKEND_IP}/messengers/find`, {id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Messenger>(`${BACKEND_IP}/messengers/find`, { id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(m => new Messenger(m))
     );
   }
   getMessengerList(): Observable<Messenger[]> {
-    return this.http.get<Messenger[]>(`${BACKEND_IP}/messengers/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Messenger[]>(`${BACKEND_IP}/messengers/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         list = list.map(m => new Messenger(m));
@@ -794,7 +857,7 @@ export class HttpService {
         return list
           .filter(m =>
             ((searchStr.length > 3 && m.nickname?.replace('î', 'i').editDistance(searchStr) < 4) ||
-            m.nickname?.replace('î', 'i').includes(searchStr))
+              m.nickname?.replace('î', 'i').includes(searchStr))
             && m.active
             && (!dispatcher || m.dispatcher)
           );
@@ -807,13 +870,13 @@ export class HttpService {
     if (messenger.dispatcher) {
       GC.loadDispatchers(this);
     }
-    return this.http.post<boolean>(`${BACKEND_IP}/messengers/delete`, {id: messenger.id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<boolean>(`${BACKEND_IP}/messengers/delete`, { id: messenger.id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
 
   createShift(shift: Shift): Observable<Shift> {
-    return this.http.post<Shift>(`${BACKEND_IP}/shifts/create`, shift, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Shift>(`${BACKEND_IP}/shifts/create`, shift, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(s => {
         s.messenger.shift = s;
@@ -824,7 +887,7 @@ export class HttpService {
   updateShift(shift: Shift): Observable<Shift> {
     let m = shift.messenger;
     shift.messenger = new Messenger(shift.messenger).copy();
-    return this.http.post<Shift>(`${BACKEND_IP}/shifts/update`, shift, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Shift>(`${BACKEND_IP}/shifts/update`, shift, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(s => {
         s.messenger = m;
@@ -833,7 +896,7 @@ export class HttpService {
     );
   }
   getShift(id: string): Observable<Shift> {
-    return this.http.post<Shift>(`${BACKEND_IP}/shifts/find`, id, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Shift>(`${BACKEND_IP}/shifts/find`, id, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(s => {
         return HttpService._prepareShift(s);
@@ -841,7 +904,7 @@ export class HttpService {
     );
   }
   getShiftsForDay(date: Date): Observable<Shift[]> {
-    return this.http.post<Shift[]>(`${BACKEND_IP}/shifts/all/date`, {date: date}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Shift[]>(`${BACKEND_IP}/shifts/all/date`, { date: date }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareShifts(list);
@@ -849,7 +912,7 @@ export class HttpService {
     );
   }
   getShiftsForToday(): Observable<Shift[]> {
-    return this.http.get<Shift[]>(`${BACKEND_IP}/shifts/all/today`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Shift[]>(`${BACKEND_IP}/shifts/all/today`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareShifts(list);
@@ -857,7 +920,7 @@ export class HttpService {
     );
   }
   getOpenShiftsForToday(): Observable<Shift[]> {
-    return this.http.get<Shift[]>(`${BACKEND_IP}/shifts/all/today`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Shift[]>(`${BACKEND_IP}/shifts/all/today`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareShifts(list.filter(s => !s.end));
@@ -868,7 +931,7 @@ export class HttpService {
     return this.http.post<Shift[]>(`${BACKEND_IP}/shifts/all/month/messenger`, {
       id: messenger.id,
       date: month || new Date(),
-    }, {headers: this.backendAuthHeader}).pipe(
+    }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareShifts(list);
@@ -876,7 +939,7 @@ export class HttpService {
     );
   }
   exportShfitsForMessengerAndMonth(messenger: Messenger, month: Date): Observable<any> {
-    let headers = new HttpHeaders({Accept: 'application/xml'});
+    let headers = new HttpHeaders({ Accept: 'application/xml' });
     headers = headers.set('Accept', 'application/xml');
     return this.http.post<Shift[]>(`${BACKEND_IP}/shifts/export/month/messenger`, {
       id: messenger.id,
@@ -889,7 +952,7 @@ export class HttpService {
     );
   }
   getShiftList(): Observable<Shift[]> {
-    return this.http.get<Shift[]>(`${BACKEND_IP}/shifts/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Shift[]>(`${BACKEND_IP}/shifts/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return list;
@@ -898,13 +961,13 @@ export class HttpService {
   }
   deleteShift(shift: Shift): Observable<boolean> {
     // GC.shifts.splice(GC.shifts.indexOf(shift), 1);
-    return this.http.post<boolean>(`${BACKEND_IP}/shifts/delete`, {id: shift.id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<boolean>(`${BACKEND_IP}/shifts/delete`, { id: shift.id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
 
   getExpenseList(): Observable<Expense[]> {
-    return this.http.get<Expense[]>(`${BACKEND_IP}/expenses/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Expense[]>(`${BACKEND_IP}/expenses/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareExpenses(list);
@@ -912,7 +975,7 @@ export class HttpService {
     );
   }
   createExpense(expense: Expense): Observable<Expense> {
-    return this.http.post<Expense>(`${BACKEND_IP}/expenses/create`, expense, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Expense>(`${BACKEND_IP}/expenses/create`, expense, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(ex => {
         ex = HttpService._prepareExpense(ex);
@@ -922,7 +985,7 @@ export class HttpService {
     );
   }
   updateExpense(expense: Expense): Observable<Expense> {
-    return this.http.post<Expense>(`${BACKEND_IP}/expenses/update`, expense, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Expense>(`${BACKEND_IP}/expenses/update`, expense, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(s => {
         return HttpService._prepareExpense(s);
@@ -930,7 +993,7 @@ export class HttpService {
     );
   }
   getExpense(id: string): Observable<Expense> {
-    return this.http.post<Expense>(`${BACKEND_IP}/expenses/find`, id, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Expense>(`${BACKEND_IP}/expenses/find`, id, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(s => {
         return HttpService._prepareExpense(s);
@@ -941,7 +1004,7 @@ export class HttpService {
     return this.http.post<Expense[]>(`${BACKEND_IP}/expenses/client/month`, {
       id: client.id,
       date: month || new Date(),
-    }, {headers: this.backendAuthHeader}).pipe(
+    }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareExpenses(list);
@@ -949,13 +1012,13 @@ export class HttpService {
     );
   }
   deleteExpense(expense: Expense): Observable<boolean> {
-    return this.http.post<boolean>(`${BACKEND_IP}/expenses/delete`, {id: expense.id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<boolean>(`${BACKEND_IP}/expenses/delete`, { id: expense.id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
 
   getSpecialPriceList(): Observable<SpecialPrice[]> {
-    return this.http.get<SpecialPrice[]>(`${BACKEND_IP}/prices/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<SpecialPrice[]>(`${BACKEND_IP}/prices/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return HttpService._prepareSpecialPrices(list);
@@ -963,7 +1026,7 @@ export class HttpService {
     );
   }
   createSpecialPrice(price: SpecialPrice): Observable<SpecialPrice> {
-    return this.http.post<SpecialPrice>(`${BACKEND_IP}/prices/create`, price, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<SpecialPrice>(`${BACKEND_IP}/prices/create`, price, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(price => {
         price = HttpService._prepareSpecialPrice(price);
@@ -973,7 +1036,7 @@ export class HttpService {
     );
   }
   updateSpecialPrice(price: SpecialPrice): Observable<SpecialPrice> {
-    return this.http.post<SpecialPrice>(`${BACKEND_IP}/prices/update`, price, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<SpecialPrice>(`${BACKEND_IP}/prices/update`, price, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(price => {
         price = HttpService._prepareSpecialPrice(price);
@@ -983,7 +1046,7 @@ export class HttpService {
     );
   }
   getSpecialPrice(id: string): Observable<SpecialPrice> {
-    return this.http.post<SpecialPrice>(`${BACKEND_IP}/prices/find`, id, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<SpecialPrice>(`${BACKEND_IP}/prices/find`, id, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(price => {
         return HttpService._prepareSpecialPrice(price);
@@ -991,7 +1054,7 @@ export class HttpService {
     );
   }
   deleteSpecialPrice(price: SpecialPrice): Observable<boolean> {
-    return this.http.post<boolean>(`${BACKEND_IP}/prices/delete`, {id: price.id}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<boolean>(`${BACKEND_IP}/prices/delete`, { id: price.id }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       tap(() => {
         GC.specialPrices.findAndRemove(price);
@@ -1003,17 +1066,17 @@ export class HttpService {
     note.creator = note.creator.copy();
     note.text = note.text.trim();
     if (note.id) {
-      return this.http.post<Note>(`${BACKEND_IP}/notes/update`, note, {headers: this.backendAuthHeader}).pipe(
+      return this.http.post<Note>(`${BACKEND_IP}/notes/update`, note, { headers: this.backendAuthHeader }).pipe(
         take(1)
       );
     } else {
-      return this.http.post<Note>(`${BACKEND_IP}/notes/create`, note, {headers: this.backendAuthHeader}).pipe(
+      return this.http.post<Note>(`${BACKEND_IP}/notes/create`, note, { headers: this.backendAuthHeader }).pipe(
         take(1)
       );
     }
   }
   getNotes(date: Date): Observable<Note[]> {
-    return this.http.post<Note[]>(`${BACKEND_IP}/notes/find/date`, {date}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Note[]>(`${BACKEND_IP}/notes/find/date`, { date }, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(notes => {
         return notes.map(n => new Note(n));
@@ -1021,7 +1084,7 @@ export class HttpService {
     );
   }
   deleteNote(note: Note): Observable<boolean> {
-    return this.http.post<Note>(`${BACKEND_IP}/notes/delete`, note, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Note>(`${BACKEND_IP}/notes/delete`, note, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(() => {
         return true;
@@ -1030,7 +1093,7 @@ export class HttpService {
   }
 
   getWeekStatistic(): Observable<DayStatistic[]> {
-    return this.http.get<WeekStatistic>(`${BACKEND_IP}/statistics/week`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<WeekStatistic>(`${BACKEND_IP}/statistics/week`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(stat => {
         let res: DayStatistic[] = [];
@@ -1043,29 +1106,29 @@ export class HttpService {
     );
   }
   getDetailedWeekStatistic(): Observable<DayStatistic> {
-    return this.http.get<DayStatistic>(`${BACKEND_IP}/statistics/week/detailed`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<DayStatistic>(`${BACKEND_IP}/statistics/week/detailed`, { headers: this.backendAuthHeader }).pipe(
       take(1)
     );
   }
   getDayStatistic(): Observable<TimeframeStatistic[]> {
-    return this.http.get<TimeframeStatistic[]>(`${BACKEND_IP}/statistics/day`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<TimeframeStatistic[]>(`${BACKEND_IP}/statistics/day`, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
 
   getRawConfigItems(): Observable<RawConfig[]> {
-    return this.http.get<RawConfig[]>(`${BACKEND_IP}/configs/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<RawConfig[]>(`${BACKEND_IP}/configs/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
   saveConfigItem(key: string, value: string): Observable<RawConfig> {
-    return this.http.post<RawConfig>(`${BACKEND_IP}/configs/save`, {name: key, value: value}, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<RawConfig>(`${BACKEND_IP}/configs/save`, { name: key, value: value }, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
 
   createZone(zone: Zone): Observable<Zone> {
-    return this.http.post<Zone>(`${BACKEND_IP}/zones/create`, zone, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Zone>(`${BACKEND_IP}/zones/create`, zone, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(zone => {
         zone = HttpService._prepareZone(zone);
@@ -1076,18 +1139,18 @@ export class HttpService {
   }
   updateZone(zone: Zone): Observable<Zone> {
     GC.zones.findAndReplace(zone);
-    return this.http.post<Zone>(`${BACKEND_IP}/zones/update`, zone, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Zone>(`${BACKEND_IP}/zones/update`, zone, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
   deleteZone(zone: Zone): Observable<Zone> {
     GC.zones.findAndRemove(zone);
-    return this.http.post<Zone>(`${BACKEND_IP}/zones/delete`, zone, {headers: this.backendAuthHeader}).pipe(
+    return this.http.post<Zone>(`${BACKEND_IP}/zones/delete`, zone, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
   getZones(): Observable<Zone[]> {
-    return this.http.get<Zone[]>(`${BACKEND_IP}/zones/all`, {headers: this.backendAuthHeader}).pipe(
+    return this.http.get<Zone[]>(`${BACKEND_IP}/zones/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
         return list.map(z => {
@@ -1124,13 +1187,13 @@ export class HttpService {
       clientId: clientId,
       accountingPeriodStart: startDate,
       accountingPeriodEnd: endDate
-    }, {headers: this.backendAuthHeader}).pipe(
+    }, { headers: this.backendAuthHeader }).pipe(
       take(1),
     );
   }
   getInvoicePDF(id: string): Observable<any> {
-    let headers = new HttpHeaders({Accept: 'application/pdf'});
-    return this.http.post<any>(`${BACKEND_IP}/invoices/get/pdf`, {id}, {
+    let headers = new HttpHeaders({ Accept: 'application/pdf' });
+    return this.http.post<any>(`${BACKEND_IP}/invoices/get/pdf`, { id }, {
       headers: this.backendAuthHeader,
       responseType: 'blob' as 'json'
     }).pipe(
@@ -1139,8 +1202,8 @@ export class HttpService {
   }
 
   exportClients(): Observable<any> {
-    let headers = new HttpHeaders({Accept: 'application/xlsx'});
-    return this.http.post<any>(`${BACKEND_IP}/clients/all/xlsx`, {columns: ['clientId', 'name', 'street', 'zipCode', 'city', 'info']}, {
+    let headers = new HttpHeaders({ Accept: 'application/xlsx' });
+    return this.http.post<any>(`${BACKEND_IP}/clients/all/xlsx`, { columns: ['clientId', 'name', 'street', 'zipCode', 'city', 'info'] }, {
       headers: this.backendAuthHeader,
       responseType: 'blob' as 'json'
     }).pipe(
@@ -1155,18 +1218,18 @@ export class HttpService {
   }
 
   lex_getProfileInfo(): Observable<LexProfile> {
-    return this.http.get<LexProfile>(`${this.LEX_API_PROXY}/profile`, {headers: this.lexAuthHeader}).pipe(
+    return this.http.get<LexProfile>(`${this.LEX_API_PROXY}/profile`, { headers: this.lexAuthHeader }).pipe(
       take(1),
     );
   }
   lex_createInvoice(invoice: LexInvoice): Observable<LexCreateResponse> {
     console.log(invoice)
-    return this.http.post<LexCreateResponse>(`${this.LEX_API_PROXY}/invoices`, invoice, {headers: this.lexAuthHeader}).pipe(
+    return this.http.post<LexCreateResponse>(`${this.LEX_API_PROXY}/invoices`, invoice, { headers: this.lexAuthHeader }).pipe(
       take(1),
     );
   }
   lex_getContacts(page: number): Observable<LexContact[]> {
-    return this.http.get<LexContactsListPage>(`${this.LEX_API_PROXY}/contacts/?page=${page || 0}&size=100`, {headers: this.lexAuthHeader}).pipe(
+    return this.http.get<LexContactsListPage>(`${this.LEX_API_PROXY}/contacts/?page=${page || 0}&size=100`, { headers: this.lexAuthHeader }).pipe(
       take(1),
       map(response => {
         return response.content;
@@ -1174,26 +1237,26 @@ export class HttpService {
     );
   }
   lex_getInvoices(client: LexContact, page?: number): Observable<LexInvoiceListPage> {
-    return this.http.post<LexInvoiceListPage>(`${this.LEX_API_PROXY}/voucherlist?voucherType=invoice&voucherStatus=open,draft,paid,paidoff,voided&contactId=${client.id}&page=${page || 0}`, {headers: this.lexAuthHeader}).pipe(
+    return this.http.post<LexInvoiceListPage>(`${this.LEX_API_PROXY}/voucherlist?voucherType=invoice&voucherStatus=open,draft,paid,paidoff,voided&contactId=${client.id}&page=${page || 0}`, { headers: this.lexAuthHeader }).pipe(
       take(1),
     );
   }
   lex_findClient(client: Client): Observable<LexContact> {
-    return this.http.get<LexContactsListPage>(`${this.LEX_API_PROXY}/contacts/?customer=true&name=${client.name}`, {headers: this.lexAuthHeader}).pipe(
+    return this.http.get<LexContactsListPage>(`${this.LEX_API_PROXY}/contacts/?customer=true&name=${client.name}`, { headers: this.lexAuthHeader }).pipe(
       take(1),
       map(response => response.content?.length > 0 ? new LexContact(response.content[0]) : null)
     );
   }
   lex_createContact(client: Client): Observable<string> {
     let c = new LexContact({}, client);
-    return this.http.post<LexCreateResponse>(`${this.LEX_API_PROXY}/contacts`, c, {headers: this.lexAuthHeader}).pipe(
+    return this.http.post<LexCreateResponse>(`${this.LEX_API_PROXY}/contacts`, c, { headers: this.lexAuthHeader }).pipe(
       take(1),
       map(response => response.id)
     );
   }
 
   lex_updateContact(contact: LexContact): Observable<boolean> {
-    return this.http.put<LexCreateResponse>(`${this.LEX_API_PROXY}/contacts/${contact.id}`, contact, {headers: this.lexAuthHeader}).pipe(
+    return this.http.put<LexCreateResponse>(`${this.LEX_API_PROXY}/contacts/${contact.id}`, contact, { headers: this.lexAuthHeader }).pipe(
       take(1),
       map(() => true)
     );

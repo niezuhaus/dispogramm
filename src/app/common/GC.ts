@@ -57,6 +57,7 @@ export class GC {
   public static backendIP = getItem<string>('backendIP') || GC.fallBackend;
   public static authName: string = getItem<string>('apiAuthName') || config.apiAuthName;
   public static authPwd: string = getItem<string>('apiAuthPwd') || config.apiAuthPwd;
+  public static streetRouting: boolean = getItem<boolean>('streetRouting') || true;
   public static recentBackendIPs: string[] = [];
   public static cantConnect = false;
   public static apiKeyMissing = false;

@@ -30,10 +30,11 @@ export class WeekplanComponent extends TitleComponent implements OnInit, AfterVi
   today = new Date().set(0);
   now = new Date();
   get todayTimeIndex() {
-    return (new Date().set(8)
-      .hoursDifference(this.now) * 60 / 15)
+    return (this.now.getHours().isBetween(8, 18) ? 
+    new Date().set(8)
+      .hoursDifference(this.now) * 60 / 15
       .abs()
-      .floor();
+      .floor() : -1);
   }
   week = this.today.nextWorkingDay().workingWeek();
   get weekNumber() {return this.week[0].workingWeekNumber()};
@@ -152,3 +153,7 @@ export class WeekplanComponent extends TitleComponent implements OnInit, AfterVi
     });
   }
 }
+function abs() {
+  throw new Error('Function not implemented.');
+}
+

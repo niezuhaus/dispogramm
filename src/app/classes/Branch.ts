@@ -1,22 +1,31 @@
-import {IPoint, LocType, PassType, Section} from "../common/interfaces";
-import {Station} from "./Geolocation";
-import {Price} from "./Price";
-import {FexRules, PriceStrategy} from "./PriceStrategies";
-import {GC} from "../common/GC";
+import { IPoint, LocType, PassType, Section } from "../common/interfaces";
+import { Station } from "./Geolocation";
+import { Price } from "./Price";
+import { FexRules, PriceStrategy } from "./PriceStrategies";
+import { GC } from "../common/GC";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
-import {Job} from "./Job";
-import {Routing} from "../common/Routing";
-import {Zone} from "./Zone";
+import { Job } from "./Job";
+import { Routing } from "../common/Routing";
+import { Zone } from "./Zone";
 
 export class Branch {
   get routeWithBridges(): IPoint[] {
     if (!this._routeWithBridges) {
-      this._routeWithBridges = Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
+      this._routeWithBridges = 
+      Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
     }
     return this._routeWithBridges;
   }
 
+  get routeWithoutBridges(): IPoint[] {
+    if (!this._routeWithoutBridges) {
+      this._routeWithoutBridges = this.route.filter(station => station.passType !== PassType.nearby).concat(this.center);
+    }
+    return this._routeWithoutBridges;
+  }
+
   private _routeWithBridges: IPoint[];
+  private _routeWithoutBridges: IPoint[];
   sections: Section[];
   closed = false;
   center: Station;
@@ -41,6 +50,11 @@ export class Branch {
    */
   get zones(): Zone[] {
     return [...this.route.map(s => s.zone).filter(z => !!(z))]
+  }
+
+  set distance(d: number) {
+    this._distance = d;
+    this.price
   }
 
   /**
@@ -81,8 +95,13 @@ export class Branch {
   get price(): Price {
     if (!this.sections) {
       this.findSections();
-      this._price = this.priceStrategy.calcBranchPrice(this);
+      this.calcPrice();
     }
+    return this._price;
+  }
+
+  private calcPrice(): Price {
+    this._price = this.priceStrategy.calcBranchPrice(this);
     return this._price;
   }
 
@@ -131,7 +150,11 @@ export class Branch {
     }
 
     if (!this._routeWithBridges) {
-      this._routeWithBridges = Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center))
+
+
+      this._routeWithBridges = GC.streetRouting ? 
+      this.route.filter(station => station.passType !== PassType.nearby).concat(this.center) : 
+      Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
     }
     this.sections = recursive(this._routeWithBridges, 0)
     return this;

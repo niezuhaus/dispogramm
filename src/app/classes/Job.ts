@@ -8,21 +8,21 @@ import {
   RoutingMode,
   BranchSet
 } from "../common/interfaces";
-import {Price} from "./Price";
-import {GC} from "../common/GC";
-import {Geolocation, Station} from "./Geolocation";
-import {RegularJobDialogComponent} from "../dialogs/regular-job-dialog.component";
-import {Observable, switchMap, zip} from "rxjs";
-import {FexRules, PriceStrategy} from "./PriceStrategies";
-import {Cheapest, PrimitRound, Round, RouteStrategy, Star} from "./RouteStrategies";
-import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import {Messenger} from "./Messenger";
-import {Client} from "./Client";
-import {Expense} from "./Expense";
-import {map} from "rxjs/operators";
-import {Zone} from "./Zone";
-import {SpecialPrice} from "./SpecialPrice";
-import {CalendarRangeDialogComponent} from "../dialogs/calendar-range-dialog/calendar-range-dialog.component";
+import { Price } from "./Price";
+import { GC } from "../common/GC";
+import { Geolocation, Station } from "./Geolocation";
+import { RegularJobDialogComponent } from "../dialogs/regular-job-dialog.component";
+import { Observable, switchMap, zip } from "rxjs";
+import { FexRules, PriceStrategy } from "./PriceStrategies";
+import { Cheapest, PrimitRound, Round, RouteStrategy, Star } from "./RouteStrategies";
+import { AreYouSureDialogComponent } from "../dialogs/are-you-sure-dialog.component";
+import { Messenger } from "./Messenger";
+import { Client } from "./Client";
+import { Expense } from "./Expense";
+import { map } from "rxjs/operators";
+import { Zone } from "./Zone";
+import { SpecialPrice } from "./SpecialPrice";
+import { CalendarRangeDialogComponent } from "../dialogs/calendar-range-dialog/calendar-range-dialog.component";
 import { log } from "console";
 
 export abstract class AbstractJob {
@@ -34,7 +34,7 @@ export abstract class AbstractJob {
   name: string;
   price: Price = new Price();
 
-  get _showPrice() {return this.price}
+  get _showPrice() { return this.price }
 
   traveldist = 0;
   cargoType: Cargotype = Cargotype.none;
@@ -278,10 +278,10 @@ export class Job extends AbstractJob {
 
   pBacktours: Geolocation[] = [];
   dBacktours: Geolocation[] = [];
-  pBranches: BranchSet = {branches: []};
-  dBranches: BranchSet = {branches: []};
-  pBacktourBranches: BranchSet = {branches: []};
-  dBacktourBranches: BranchSet = {branches: []};
+  pBranches: BranchSet = { branches: [] };
+  dBranches: BranchSet = { branches: [] };
+  pBacktourBranches: BranchSet = { branches: [] };
+  dBacktourBranches: BranchSet = { branches: [] };
 
   get set(): BranchSet {
     return {
@@ -296,7 +296,7 @@ export class Job extends AbstractJob {
     return !!(this.client?.clientId);
   }
 
-  abakus = new Price(5, {brutto: true});
+  abakus = new Price(5, { brutto: true });
 
   constructor(data?: Partial<Job>) {
     super(data)
@@ -363,8 +363,8 @@ export class Job extends AbstractJob {
     this._priceStrategy = this.specialPrice?.id;
     this._routeMode = this.routeMode;
     if (!this.pickups || !this.deliveries || this.pickups.length + this.deliveries.length === 0) {
-      this.pBranches = {branches: []};
-      this.dBranches = {branches: []};
+      this.pBranches = { branches: [] };
+      this.dBranches = { branches: [] };
       return this;
     }
     this._center = this.center;
@@ -386,9 +386,9 @@ export class Job extends AbstractJob {
       this._priceMode = SpecialPriceType.group;
       this._routeMode = RoutingMode.star
     }
-    this.pBranches = pickups.length >= 1 ? this.routeStrategyObj.findBranchSet(this, pickups, this._center, LocType.pickup) : {branches: []};
+    this.pBranches = pickups.length >= 1 ? this.routeStrategyObj.findBranchSet(this, pickups, this._center, LocType.pickup) : { branches: [] };
     deliveries.forEach(loc => loc.locType = LocType.delivery);
-    this.dBranches = deliveries.length >= 1 ? this.routeStrategyObj.findBranchSet(this, deliveries, this._center, LocType.delivery) : {branches: []};
+    this.dBranches = deliveries.length >= 1 ? this.routeStrategyObj.findBranchSet(this, deliveries, this._center, LocType.delivery) : { branches: [] };
 
     // applying connection discount
     const branches = this.set.branches;
@@ -407,6 +407,8 @@ export class Job extends AbstractJob {
       this.customPrice = true;
     }
     this.traveldist = this.calcDist().round(2);
+    console.log(this.traveldist);
+
     this.initiated = true;
     this.getAllStations().filter(station => station.locType !== LocType.client && station.locType < 5).forEach((station) => {
       station.calcPrice().makePriceLevel().makePopUpContent();
@@ -804,7 +806,7 @@ export class RegularJob extends Job {
     this.convert().subscribe(job => {
       job._colour = colour;
       // todo not ideal
-      setTimeout(() => {GC.tourplan.refresh()}, 200)
+      setTimeout(() => { GC.tourplan.refresh() }, 200)
     })
   }
 
