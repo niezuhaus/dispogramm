@@ -58,7 +58,7 @@ export class Branch {
   }
 
   /**
-   * return or calculates the priceable distance of this branch
+   * returns or calculates the priceable distance of this branch
    * @return distance in km
    */
   get distance(): number {

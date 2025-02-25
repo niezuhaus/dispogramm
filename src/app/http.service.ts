@@ -257,7 +257,7 @@ export class HttpService {
       .pipe(
         take(1),
         map(response => {
-          const sectionRoute: { route: IPoint[], sectionDist: number } = {route: [], sectionDist: 0};
+          const sectionRoute: { route: IPoint[], sectionDist: number } = { route: [], sectionDist: 0 };
           response.features[0].geometry.coordinates.forEach((coordArray: number[][], i: number) => {
             sectionRoute.route = sectionRoute.route.concat(coordArray.map(coord => {
               return { latitude: coord[1], longitude: coord[0] };
@@ -265,6 +265,8 @@ export class HttpService {
             sectionRoute.sectionDist += response.features[0].properties.legs[i].distance / 1000 // from m to km
           });
           section.traveldist = sectionRoute.sectionDist; // save the distance in the section
+          section.price = Routing.distPrice(section.traveldist);
+          // todo should not override the previous distances/prices but use other one (-> big refactoring)
           return sectionRoute;
         })
       );
@@ -276,37 +278,27 @@ export class HttpService {
  * @return an array of objects that contain the route and the corresponding distance
  */
   routeBranch(branch: Branch): Observable<{ route: IPoint[], sectionDist: number }[]> {
-    const coordinates = branch.routeWithoutBridges.map(p => `${p.latitude},${p.longitude}`).join('|');
-    return this.http.get<any>(`https://api.geoapify.com/v1/routing?waypoints=${coordinates}&mode=bicycle&apiKey=${this.GEOAPIFY_API_KEY}`)
-      .pipe(
-        take(1),
-        map(response => {
-          const sectionRoutes: { route: IPoint[], sectionDist: number }[] = [];
-          response.features[0].geometry.coordinates.forEach((coordArray: number[][], i: number) => {
-
-            const sectionRoute = {
-              route: coordArray.map(coord => {
-                return { latitude: coord[1], longitude: coord[0] };
-              }
-              ),
-              sectionDist: response.features[0].properties.legs[i].distance / 1000 // from m to km
-            }
-            branch.sections[i].traveldist = sectionRoute.sectionDist; // save the distance in the section
-            branch.distance = response.features[0].properties.distance.round(0)/1000;
-            sectionRoutes.push(sectionRoute);
-          });
-          return sectionRoutes;
-        })
-      );
+    return zip(branch.sections.map(s => this.routeSection(s))).pipe(
+      map(routes => {
+      branch.distance = routes.reduce((acc, route) => acc + route.sectionDist, 0);
+      return routes;
+      })
+    );
   }
 
-    /**
- * make several route calls for an array of branches representing a job
- * @param branches an array of branches from a job
- * @return a two dimensional array of objects containing routes for each individual section in every
- */
+  /**
+* make several route calls for an array of branches representing a job
+* @param branches an array of branches from a job
+* @return a two dimensional array of objects containing routes for each individual section in every
+*/
   routeJob(branches: Branch[]): Observable<{ route: IPoint[], sectionDist: number }[][]> {
-    return zip(branches.map(b => this.routeBranch(b)));
+    return zip(branches.map(b => this.routeBranch(b))).pipe(
+      map(routes => {
+      const jobDistance = routes.flat().reduce((acc, route) => acc + route.sectionDist, 0);
+      branches.forEach(branch => branch.job.traveldist = jobDistance);
+      return routes;
+      })
+    );
   }
 
 

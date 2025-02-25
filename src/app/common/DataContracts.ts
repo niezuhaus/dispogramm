@@ -1,17 +1,19 @@
-// data contracts
+/**
+ * external api data contracts (osm and bing)
+ */
+
 /**
  * response data format to expect from the openstreetmap api for a geocoding request
  */
-
 export interface IOSMResponse {
   type: string;
   features: IOSMFeature[];
   results: IOSMFeature[];
 }
+
 /**
  * data format of a single openstreetmap feature (e.g. one search result)
  */
-
 export interface IOSMFeature {
   type: string;
   properties: {
@@ -94,8 +96,8 @@ export interface IOSMRouteFeatureCollection {
 export interface BingMapsResponse {
   resourceSets: { resources: BingResource[]; }[];
 }
-/* entspricht dem datenformat eines einzelnen bing-datensatzes in der antwort der bing-api */
 
+/* entspricht dem datenformat eines einzelnen bing-datensatzes in der antwort der bing-api */
 export interface BingResource {
   point: {
     type: string;

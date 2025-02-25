@@ -609,12 +609,13 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   drawRoutes(preparedBranches: { type: string, branch: Branch }[]): void {
     const branches = preparedBranches.map(pB => { return pB.branch });
     GC.http.routeJob(branches).subscribe(branchRoutes => {
-      console.log(branchRoutes);
-      
       branchRoutes.forEach((branchRoute, index) => {
         branchRoute.forEach(sectionRoute => {
           this.changeLayer(preparedBranches[index].type, sectionRoute.route.map(p => [p.longitude, p.latitude]));
         })
+      });
+      this.job.getAllStations().filter(station => station.locType !== LocType.client && station.locType < 5).forEach((station) => {
+        station.calcPrice().makePriceLevel().makePopUpContent();
       });
       console.log(this.job.dBranches);
       
