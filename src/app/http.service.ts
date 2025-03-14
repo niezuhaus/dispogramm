@@ -99,13 +99,6 @@ export class HttpService {
     this.BING_API_KEY = keys.bing;
   }
 
-  // public static _filterLocationsByAny(list: Geolocation[], value: string): Geolocation[] {
-  //   return list.filter(option => {
-  //     return option.name.toLowerCase().includes(value.toLowerCase())
-  //       || option.street.includes(value.toLowerCase());
-  //   });
-  // }
-
   public static _filterLocationsByAny(list: Geolocation[], value: string): Geolocation[] {
     return list.filter(option => {
       option.editDistance = Math.min(option.name.slice(0, value.length).toLowerCase().editDistance(value.toLowerCase()), option.street.toLowerCase().editDistance(value.toLowerCase()));
