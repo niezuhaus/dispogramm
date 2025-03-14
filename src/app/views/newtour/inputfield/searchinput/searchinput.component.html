@@ -3,7 +3,7 @@
   [class.w-100]="!width"
   [style.width]="width || 'unset'">
   <mat-label><i *ngIf="icon" class="mr-1 bi" [class]="icon"></i>{{label}}</mat-label>
-  <input type="text"
+  <textarea type="text"
          autofocus
          matInput
          #input
@@ -15,7 +15,11 @@
          (focus)="registerMe()"
          [disabled]="disabled"
          [formControl]="required ? ctrl : ctrlVoid"
-         [required]="required">
+         [required]="required"
+         rows="1"
+         cdkTextareaAutosize
+         cdkAutosizeMinRows="1"
+         cdkAutosizeMaxRows="4"></textarea>
   <mat-error *ngIf="required && ctrl.invalid">bitte {{label}} eingeben</mat-error>
   <i *ngIf="searchTerm" class="bi bi-x position-absolute" style="right: 0; bottom: 7px"
      (click)="!disabled ? reset(true) : 0" tabindex="-1"></i>
