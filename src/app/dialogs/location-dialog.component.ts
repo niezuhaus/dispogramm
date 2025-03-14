@@ -133,7 +133,7 @@ import {Client} from "../classes/Client";
 
       </mat-tab-group>
 
-      <div #mapcontainer id="mapcontainer" style="max-height: 30vh">
+      <div id="mapcontainer" style="max-height: 30vh">
         <div #map id="mapEdit"></div>
       </div>
 
