@@ -36,6 +36,8 @@ export class Geolocation implements IdObject{
   geocoder: GeoCodingMode;
   priceZone: PriceZone;
 
+  editDistance = 100;
+
   constructor(data?: Partial<Geolocation>) {
     if (data) {
       Object.assign(this, data);
