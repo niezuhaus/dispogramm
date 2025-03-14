@@ -672,10 +672,10 @@ export class GC {
           _zones.forEach(z => {
             GC.zoneByNames.set(z.name, z);
           })
-          GC.postCodeZones = plz.map(plz => new Zone({
-            name: `${plz.properties.postcode} ${plz.properties.name}`,
-            coordinates: plz.geometry.coordinates,
-          }))
+          // GC.postCodeZones = plz.map(plz => new Zone({
+          //   name: `${plz.properties.postcode} ${plz.properties.name}`,
+          //   coordinates: plz.geometry.coordinates[0], // @todo hier wird grad nur eine zone angezeigt 
+          // }))
           GC.zones = _zones.sort((z1, z2) => z1.name.localeCompare(z2.name));
           GC.loadedParts.zones = true;
           if (!GC.fullyLoaded) {
