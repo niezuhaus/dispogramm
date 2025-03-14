@@ -43,6 +43,7 @@ import { Zones } from "../../common/zones";
 import { AreYouSureDialogComponent } from "../../dialogs/are-you-sure-dialog.component";
 import { Branch } from 'src/app/classes/Branch';
 import { log } from 'console';
+import { AppCommonModule } from 'src/app/common/common.module';
 
 @Component({
   selector: 'newtour',
@@ -1128,8 +1129,5 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   toggleRouting(): void {
-    GC.streetRouting = this.routingActivated;
-    setItem<string>('streetRouting', this.routingActivated ? 'true' : 'false');
-    GC.openSnackBarShort('routenmodus aktiviert');
   }
 }

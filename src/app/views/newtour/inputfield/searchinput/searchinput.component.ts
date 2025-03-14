@@ -12,7 +12,6 @@ import {HttpService} from "../../../../http.service";
 import {Geolocation, Station} from "../../../../classes/Geolocation";
 import {FormControl, Validators} from "@angular/forms";
 import {Zone} from "../../../../classes/Zone";
-import { log } from 'console';
 
 @Component({
   selector: 'searchinput',
@@ -87,6 +86,7 @@ export class SearchinputComponent implements OnInit {
   messengerOptions: Messenger[] = [];
   dispatcherOptions: Messenger[] = [];
   zoneOptions: Zone[] = [];
+  mostPromising: Location;
 
   jobOptions: Job[];
   searching = 0;

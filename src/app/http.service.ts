@@ -102,9 +102,7 @@ export class HttpService {
   public static _filterLocationsByAny(list: Geolocation[], value: string): Geolocation[] {
     return list.filter(option => {
       option.editDistance = Math.min(option.name.slice(0, value.length).toLowerCase().editDistance(value.toLowerCase()), option.street.toLowerCase().editDistance(value.toLowerCase()));
-      console.log(option.name  + ': ' + option.editDistance);
-      
-      return option.editDistance < value.length - 1;
+      return option.editDistance < value.length - 1; // everything that's completely different @todo: mix results
     }).sort((a, b) => a.editDistance - b.editDistance);
   }
 

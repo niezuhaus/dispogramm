@@ -24,6 +24,7 @@ import { Zone } from "./Zone";
 import { SpecialPrice } from "./SpecialPrice";
 import { CalendarRangeDialogComponent } from "../dialogs/calendar-range-dialog/calendar-range-dialog.component";
 import { log } from "console";
+import { setItem } from "../UTIL";
 
 export abstract class AbstractJob {
   center: Station; // clients position NOT necessarily the center
@@ -39,7 +40,7 @@ export abstract class AbstractJob {
   traveldist = 0;
   cargoType: Cargotype = Cargotype.none;
   description = '';
-  routeMode: RoutingMode = RoutingMode.normal;
+  routeMode: RoutingMode = GC.streetRouting ? RoutingMode.streetNavigation : RoutingMode.normal;
 
   clientInvolved = true;
   morningTour: MorningTour;
@@ -77,7 +78,7 @@ export class Job extends AbstractJob {
   set _colour(c: string) {
     this.colour = c;
     this.save('farbe geändert', true).subscribe(() => {
-      GC.refreshNeeded.emit(true);
+      // GC.refreshNeeded.emit(true);
     })
   }
 
@@ -110,19 +111,34 @@ export class Job extends AbstractJob {
     switch (mode) {
       case RoutingMode.normal:
         this.routeStrategyObj = new Cheapest();
+        GC.streetRouting = false;
+        setItem<string>('streetRouting', 'false');
         break;
 
       case RoutingMode.star:
         this.routeStrategyObj = new Star();
+        GC.streetRouting = false;
+        setItem<string>('streetRouting', 'false');
         break;
 
       case RoutingMode.shortestRound:
         this.routeStrategyObj = new Round();
+        GC.streetRouting = false;
+        setItem<string>('streetRouting', 'false');
         break;
 
       case RoutingMode.primitiveRound:
         this.routeStrategyObj = new PrimitRound();
+        GC.streetRouting = false;
+        setItem<string>('streetRouting', 'false');
         break;
+
+      case RoutingMode.streetNavigation:
+        // GC.streetRouting = true;
+        // setItem<string>('streetRouting', 'true');
+        // console.log('street');
+        
+        // GC.openSnackBarShort('routenmodus aktiviert');
     }
     this.routeMode = this.routeStrategyObj.mode;
   }

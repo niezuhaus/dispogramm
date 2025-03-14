@@ -76,6 +76,7 @@ import {
 } from './dialogs/calendar-range-dialog/inline-range-calendar/inline-range-calendar.component';
 import {MessengerViewComponent} from './views/tourplan/messenger-view/messenger-view.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
+import { AppCommonModule } from './common/common.module';
 
 @NgModule({
   declarations: [
@@ -156,6 +157,7 @@ import {MatSidenavModule} from "@angular/material/sidenav";
     MatChipsModule,
     MatCardModule,
     MatSidenavModule,
+    AppCommonModule
   ],
   providers: [HttpService,
     {provide: MatPaginatorIntl, useClass: fexPaginator},
