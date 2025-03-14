@@ -33,6 +33,8 @@ import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
         </div>
       </div>
 
+
+
       <div id="mapcontainer">
         <div #map id="map"></div>
       </div>
@@ -62,6 +64,7 @@ import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
     #mapcontainer {
       position: relative;
       width: calc(100% + 48px);
+      max-height: 60vh;
       left: -24px;
     }
 
@@ -116,15 +119,15 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit {
     }
 
     this.mapGL.on('draw.update', (e: {features: Feature<Polygon>[]}) => {
-      this.zone._coordinates = e.features[0].geometry.coordinates;
+      this.zone._coordinates = e.features[0].geometry.coordinates[0];
     });
 
     this.mapGL.on('draw.create', (e: {features: Feature<Polygon>[]}) => {
-      this.zone._coordinates = e.features[0].geometry.coordinates;
+      this.zone._coordinates = e.features[0].geometry.coordinates[0];
     });
 
     this.mapGL.on('draw.delete', (e: Feature<Polygon>[]) => {
-      this.zone._coordinates = (this.mapboxDraw.getAll().features as Feature<Polygon>[]).map(f => f.geometry.coordinates[0])
+      this.zone._coordinates = (this.mapboxDraw.getAll().features as Feature<Polygon>[]).map(f => f.geometry.coordinates[0])[0]
     })
   }
 

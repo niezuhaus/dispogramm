@@ -9,11 +9,11 @@ import {ZoneDialogComponent} from "../dialogs/zone-dialog.component";
 export class Zone implements IdObject {
   id: string;
   name: string;
-  coordinates: Position[][] = [];
+  coordinates: Position[] = [];
 
-  set _coordinates(coos: Position[][]) {
+  set _coordinates(coos: Position[]) {
     this.coordinates = coos;
-    this.polygon = polygon(this.coordinates);
+    this.polygon = polygon([this.coordinates]);
     this._area = this.polygon ? (area(this.polygon) / 1000000).round(2) : 0;
   }
 
@@ -31,9 +31,9 @@ export class Zone implements IdObject {
     }
     this.polygon = polygon;
     if (polygon.geometry.coordinates.length > 1) {
-      this.coordinates = (polygon.geometry.coordinates as unknown as Position[][][]).map(a => a[0]);
+      this.coordinates = (polygon.geometry.coordinates as unknown as Position[][]).map(a => a[0]);
     } else {
-      this.coordinates = polygon.geometry.coordinates as Position[][];
+      this.coordinates = polygon.geometry.coordinates[0] as Position[];
     }
   }
 
@@ -52,7 +52,7 @@ export class Zone implements IdObject {
       Object.assign(this, data);
       this.price = new Price(this.price);
     }
-    this.polygon = polygon(this.coordinates);
+    this.polygon = this.coordinates.length > 0 ? polygon([this.coordinates]) : this.polygon;
     this._area = this.polygon ? (area(this.polygon) / 1000000).round(2) : 0;
   }
 

@@ -1146,7 +1146,7 @@ export class HttpService {
       take(1),
       map(list => {
         return list.map(z => {
-          z.coordinates = [z.coordinates as unknown as Position[]]
+          z.coordinates = z.coordinates as Position[]
           return new Zone(z);
         })
       })
