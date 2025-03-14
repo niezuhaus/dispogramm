@@ -35,13 +35,6 @@
           </mat-form-field>
         </div>
 
-        <!-- checkbox um routing zu aktivieren. setzt routingActivated auf true -->
-        <div class="flex-row justify-content-around align-items-center mb-4">
-          <mat-checkbox [(ngModel)]="this.routingActivated" (change)="toggleRouting(); refresh({zoom: true})">
-            routing auf straßen
-          </mat-checkbox>
-        </div>
-
         <div class="flex flex-row align-items-center" [class.opacity-50]="job.finished">
           <i class="pr-2 bi bi-circle-fill" style="color: #4183C5"></i>
           <searchinput [label]="'auftraggeber:in'" [searchOSM]="true" [searchClientLocations]="true"
@@ -169,6 +162,14 @@
               </div>
               <small>
                 fex messregeln
+              </small>
+            </mat-option>
+            <mat-option [value]="4" class="flex-column info-option">
+                <div (click)="toggleRouting(); refresh({zoom: true})">
+                straßenrouting
+                </div>
+              <small>
+                nach open street maps
               </small>
             </mat-option>
             <mat-option [value]="1" class="flex-column info-option">

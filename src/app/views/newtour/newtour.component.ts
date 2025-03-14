@@ -500,7 +500,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   createPolygons(features: Polygon[]): void {
     const f = features[features.length - 1];
     console.log(this.mapboxDraw.getAll().features)
-    const zone = new Zone({ id: null, name: '', _coordinates: f.coordinates });
+    const zone = new Zone({ id: null, name: '', _coordinates: f.coordinates[0] });
     const dialog = GC.dialog.open(ZoneDialogComponent, {
       data: {
         zone: zone,
@@ -514,7 +514,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   createZone(): void {
-    const zone = new Zone({ id: null, name: '', _coordinates: this.polygon });
+    const zone = new Zone({ id: null, name: '', _coordinates: this.polygon[0] });
     const dialog = GC.dialog.open(ZoneDialogComponent, {
       data: {
         zone: zone,
@@ -528,7 +528,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   updateZone(): void {
-    GC.zones[1]._coordinates = this.polygon;
+    GC.zones[1]._coordinates = this.polygon[0];
     const dialog = GC.dialog.open(ZoneDialogComponent, {
       data: {
         zone: GC.zones[1],
@@ -548,7 +548,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
 
   toggleWeserPart(south: boolean): void {
     const arm = south ? Zones.weserParts.south : Zones.weserParts.east;
-    this.toggleObject(south ? 'werdersee' : 'weser', [arm], true);
+    this.toggleObject(south ? 'werdersee' : 'weser', [arm[0]], true);
   }
 
   toggleZone(name: string) {
@@ -569,13 +569,13 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     this.toggleObject(name, zone._coordinates, false);
   }
 
-  toggleObject(name: string, coordinates: Position[][], line: boolean): void {
+  toggleObject(name: string, coordinates: Position[], line: boolean): void {
     const id = this.polygonIds.get(name);
     if (!id) {
       this.polygonIds.set(name, this.mapboxDraw.add(
         line ?
-          lineString(coordinates[0]) : // todo ? is it right?
-          polygon(coordinates))[0]);
+          lineString(coordinates) : // todo ? is it right?
+          polygon([coordinates]))[0]);
     } else {
       this.mapboxDraw.delete(id);
       this.polygonIds.delete(name);
@@ -1130,5 +1130,6 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   toggleRouting(): void {
     GC.streetRouting = this.routingActivated;
     setItem<string>('streetRouting', this.routingActivated ? 'true' : 'false');
+    GC.openSnackBarShort('routenmodus aktiviert');
   }
 }
