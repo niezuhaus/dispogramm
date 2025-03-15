@@ -22,7 +22,7 @@ import {
   CombinedGeocoder,
   OSMGeocoder
 } from "../views/newtour/inputfield/searchinput/searchinput.component";
-import {getItem, setItem} from "../UTIL";
+import {getBoolean, getItem, setItem} from "../UTIL";
 import {Geolocation} from "../classes/Geolocation";
 import {Shift} from "../classes/Shift";
 import packageJson from "../../../package.json";
@@ -57,7 +57,7 @@ export class GC {
   public static backendIP = getItem<string>('backendIP') || GC.fallBackend;
   public static authName: string = getItem<string>('apiAuthName') || config.apiAuthName;
   public static authPwd: string = getItem<string>('apiAuthPwd') || config.apiAuthPwd;
-  public static streetRouting: boolean = getItem<boolean>('streetRouting') || false;
+  public static streetRouting: boolean = getBoolean('streetRouting');
   public static recentBackendIPs: string[] = [];
   public static cantConnect = false;
   public static apiKeyMissing = false;
