@@ -85,7 +85,7 @@ import {SearchinputComponent} from "../views/newtour/inputfield/searchinput/sear
       <hr>
       <p>zonen</p>
 
-      <mat-chip-list *ngIf="specialPrice.zones.length" selectable multiple class="mb-4">
+      <mat-chip-list *ngIf="specialPrice.zones?.length" selectable multiple class="mb-4">
         <mat-chip
           *ngFor="let zone of specialPrice.zones"
           (removed)="specialPrice.zones.findAndRemove(zone)">
@@ -126,7 +126,6 @@ export class SpecialPriceDialogComponent {
     if (data.specialPrice) {
       this.new = false;
       this.specialPrice = new SpecialPrice(data.specialPrice);
-      console.log(data.specialPrice.id)
     }
   }
 }
