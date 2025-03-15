@@ -117,7 +117,6 @@ export class CheckInDialog {
   }
 
   checkIn(): void {
-    if (this.dispatcherShift)
     GC.setMessengerInShift(this.messengerShifts.concat(this.dispatcherShift ? this.dispatcherShift : [] )).subscribe(() => {
       GC.openSnackBarLong("kurier:innen eingecheckt!");
       setItem<Date>('date', new Date());
