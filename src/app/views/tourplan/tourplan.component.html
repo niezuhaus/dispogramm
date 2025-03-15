@@ -329,21 +329,22 @@
            <a (click)="dispoEarly[0].checkout(date)" *ngIf="dispoEarly[0].shift?.end" matTooltip="schicht anzeigen">
              <i class="bi bi-check-lg"></i>
            </a>
-            <a (click)="openMessengerDialog(dispoEarly[0])" matTooltip="kurier:in anzeigen" class="ml-1">{{dispoEarly[0].nickname}}</a>
+            <a (click)="openMessengerDialog(dispoEarly[0], true)" matTooltip="alle schichten anzeigen" class="ml-1">{{dispoEarly[0].nickname}}</a>
             )
         </span>
         </h5>
         <div *ngFor="let messenger of earlyShift" class="grid-container">
           <div class="mr-2" (contextmenu)="onRightClick($event, messenger.shift)">
             <a *ngIf="!messenger.shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden">
-              <i class="mr-2 bi bi-person-add"></i>{{messenger.nickname}}
+              <i class="mr-2 bi bi-person-add"></i>
             </a>
             <a (click)="messenger.checkout(date)" *ngIf="messenger.shift && !messenger.shift?.end">
-              <i class="mr-2 bi bi-person-dash"></i>{{messenger.nickname}}
+              <i class="mr-2 bi bi-person-dash"></i>
             </a>
             <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end" matTooltip="schicht anzeigen">
-              <i class="mr-1 bi bi-check-lg"></i>{{messenger.nickname}}
+              <i class="mr-1 bi bi-check-lg"></i>
             </a>
+            <a (click)="openMessengerDialog(messenger, true)" matTooltip="alle schichten anzeigen" class="mr-1">{{messenger.nickname}}</a>
             <span *ngIf="messenger.shift">({{shiftLiterals[messenger.shift.type]}})</span>
           </div>
           <div style="min-width: 50px">
@@ -366,21 +367,24 @@
            <a (click)="dispoLate[0].checkout(date)" *ngIf="dispoLate[0].shift?.end">
              <i class="bi bi-check-lg"></i>
            </a>
-           <a (click)="openMessengerDialog(dispoLate[0])" matTooltip="kurier:in anzeigen" class="ml-1">{{dispoLate[0].nickname}}</a>
+           <a (click)="openMessengerDialog(dispoLate[0], true)" matTooltip="alle schichten anzeigen" class="ml-1">{{dispoLate[0].nickname}}</a>
             )
         </span>
         </h5>
         <div *ngFor="let messenger of lateShift" class="grid-container">
           <div class="mr-2" (contextmenu)="onRightClick($event, messenger.shift)">
             <a *ngIf="!messenger.shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden">
-              <i class="mr-2 bi bi-person-add"></i>{{messenger.nickname}}
+              <i class="mr-2 bi bi-person-add"></i>
             </a>
             <a (click)="messenger.checkout(date)" *ngIf="messenger.shift && !messenger.shift?.end">
-              <i class="mr-2 bi bi-person-dash"></i>{{messenger.nickname}}
+              <i class="mr-2 bi bi-person-dash"></i>
             </a>
             <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end">
-              <i class="mr-1 bi bi-check-lg"></i>{{messenger.nickname}}
+              <i class="mr-1 bi bi-check-lg"></i>
             </a>
+
+           <a (click)="openMessengerDialog(messenger, true)" matTooltip="alle schichten anzeigen" class="mr-1">{{messenger.nickname}}</a>
+
             <span *ngIf="messenger.shift">({{shiftLiterals[messenger.shift.type]}})</span>
           </div>
           <div style="min-width: 50px">

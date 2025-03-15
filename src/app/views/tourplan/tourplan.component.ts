@@ -1,20 +1,20 @@
-import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Job} from "../../classes/Job";
-import {MatTable, MatTableDataSource} from '@angular/material/table';
-import {MatSort} from '@angular/material/sort';
-import {Location} from '@angular/common';
-import {DatepickerComponent} from '../datepicker.component';
-import {ActivatedRoute} from '@angular/router';
-import {GC, ShiftType} from "../../common/GC";
-import {MatPaginator} from "@angular/material/paginator";
-import {SearchinputComponent} from "../newtour/inputfield/searchinput/searchinput.component";
-import {Price} from "../../classes/Price";
-import {MatMenuTrigger} from "@angular/material/menu";
-import {Shift} from "../../classes/Shift";
-import {TitleComponent} from "../app.component";
-import {Note} from "../../classes/Note";
-import {Messenger} from "../../classes/Messenger";
-import {TourplanItem} from "../../classes/TourplanItem";
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Job } from "../../classes/Job";
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { Location } from '@angular/common';
+import { DatepickerComponent } from '../datepicker.component';
+import { ActivatedRoute } from '@angular/router';
+import { GC, ShiftType } from "../../common/GC";
+import { MatPaginator } from "@angular/material/paginator";
+import { SearchinputComponent } from "../newtour/inputfield/searchinput/searchinput.component";
+import { Price } from "../../classes/Price";
+import { MatMenuTrigger } from "@angular/material/menu";
+import { Shift } from "../../classes/Shift";
+import { TitleComponent } from "../app.component";
+import { Note } from "../../classes/Note";
+import { Messenger } from "../../classes/Messenger";
+import { TourplanItem } from "../../classes/TourplanItem";
 import {
   FilterAdhocJobs,
   FilterCargoBikeJobs,
@@ -55,7 +55,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   clicked = false;
   loaded = false;
   hoursInAdvance = 0;
-  menuTopLeftPosition = {x: 0, y: 0};
+  menuTopLeftPosition = { x: 0, y: 0 };
   noteVisible = false;
   editJob: Job;
 
@@ -75,41 +75,41 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     new FilterNotes(),
   ];
 
-  get jobs() {return this.isToday ? GC.jobsToday : GC.jobsAnyDay;};
+  get jobs() { return this.isToday ? GC.jobsToday : GC.jobsAnyDay; };
 
-  set jobs(jobs: Job[]) {this.isToday ? GC.jobsToday = jobs : GC.jobsAnyDay = jobs;};
+  set jobs(jobs: Job[]) { this.isToday ? GC.jobsToday = jobs : GC.jobsAnyDay = jobs; };
 
-  get shifts() {return this.isToday ? GC.shiftsToday : GC.shiftsAnyDay;}
+  get shifts() { return this.isToday ? GC.shiftsToday : GC.shiftsAnyDay; }
 
-  set shifts(shifts: Shift[]) {this.isToday ? GC.shiftsToday = shifts : GC.shiftsAnyDay = shifts;}
+  set shifts(shifts: Shift[]) { this.isToday ? GC.shiftsToday = shifts : GC.shiftsAnyDay = shifts; }
 
-  get shiftsWithoutEnd(): Shift[] {return this.shifts.filter(s => !s.end);}
+  get shiftsWithoutEnd(): Shift[] { return this.shifts.filter(s => !s.end); }
 
-  get checkedIn(): Messenger[] {return this.shiftsWithoutEnd.filter(s => GC.tourplanShiftTypes.includes(s.type)).map(s => s.messenger);}
+  get checkedIn(): Messenger[] { return this.shiftsWithoutEnd.filter(s => GC.tourplanShiftTypes.includes(s.type)).map(s => s.messenger); }
 
-  get messenger(): Messenger[] {return this.shifts.map(s => s.messenger)};
+  get messenger(): Messenger[] { return this.shifts.map(s => s.messenger) };
 
-  get dispoEarly(): Messenger[] {return this.shifts.filter(s => {return s.type === ShiftType.dispoEarly}).map(s => s.messenger)}
+  get dispoEarly(): Messenger[] { return this.shifts.filter(s => { return s.type === ShiftType.dispoEarly }).map(s => s.messenger) }
 
-  get dispoLate(): Messenger[] {return this.shifts.filter(s => {return s.type === ShiftType.dispoLate}).map(s => s.messenger)}
+  get dispoLate(): Messenger[] { return this.shifts.filter(s => { return s.type === ShiftType.dispoLate }).map(s => s.messenger) }
 
-  get earlyShift(): Messenger[] {return this.shifts.filter(s => ([ShiftType.early, ShiftType.zwischi, ShiftType.double, ShiftType.kitaH].includes(s.type))).map(s => s.messenger);}
+  get earlyShift(): Messenger[] { return this.shifts.filter(s => ([ShiftType.early, ShiftType.zwischi, ShiftType.double, ShiftType.kitaH].includes(s.type))).map(s => s.messenger); }
 
-  get lateShift(): Messenger[] {return this.shifts.filter(s => ([ShiftType.late].includes(s.type))).map(s => s.messenger);}
+  get lateShift(): Messenger[] { return this.shifts.filter(s => ([ShiftType.late].includes(s.type))).map(s => s.messenger); }
 
-  get messengerData() {return GC.messengerData(this.date);}
+  get messengerData() { return GC.messengerData(this.date); }
 
-  get isToday() {return this.date.isToday()};
+  get isToday() { return this.date.isToday() };
 
-  get config() {return GC.config};
+  get config() { return GC.config };
 
-  get globallyLoaded() {return GC.fullyLoaded};
+  get globallyLoaded() { return GC.fullyLoaded };
 
-  get dispatcherCheckedIn() {return GC.dispatcherCheckedIn()};
+  get dispatcherCheckedIn() { return GC.dispatcherCheckedIn() };
 
-  get shiftLiterals() {return GC.dispatcherShiftLiterals.concat(GC.messengerShiftLiterals)};
+  get shiftLiterals() { return GC.dispatcherShiftLiterals.concat(GC.messengerShiftLiterals) };
 
-  get filterStatus() {return GC.config.tourplan.filterStatus};
+  get filterStatus() { return GC.config.tourplan.filterStatus };
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('datepicker') datepicker: DatepickerComponent;
@@ -271,7 +271,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
       if (this.messengerData.has(job.messenger.id)) {
         this.messengerData.get(job.messenger.id).jobs.push(job)
       } else {
-        this.messengerData.set(job.messenger.id, {jobs: [job], sales: null, dates: null})
+        this.messengerData.set(job.messenger.id, { jobs: [job], sales: null, dates: null })
       }
     });
     this.messengerData.forEach(entry => {
@@ -335,15 +335,13 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     event.preventDefault();
     this.menuTopLeftPosition.x = event.clientX;
     this.menuTopLeftPosition.y = event.clientY;
-    this.matMenuTrigger.menuData = item instanceof TourplanItem ? {item: item} : {shift: item};
+    this.matMenuTrigger.menuData = item instanceof TourplanItem ? { item: item } : { shift: item };
     this.matMenuTrigger.openMenu();
   }
 
-  openMessengerDialog(messenger: Messenger): void {
+  openMessengerDialog(messenger: Messenger, openShifts: boolean): void {
     if (messenger) {
-      messenger.openDialog();
-    } else {
-      GC.dialog.open(MessengerDialogComponent);
+      messenger.openDialog(openShifts);
     }
   }
 }
