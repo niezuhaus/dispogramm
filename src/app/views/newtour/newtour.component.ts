@@ -87,8 +87,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   nameFieldVisible = false;
   noteVisible = false;
   dezwoOptions = false;
-  get routingActivated() {return GC.streetRouting};
-  set routingActivated(value: boolean){
+  get routingActivated() { return GC.streetRouting };
+  set routingActivated(value: boolean) {
     setItem('streetRouting', value ? 'true' : 'false');
     const differs = GC.streetRouting != value;
     GC.streetRouting = value;
@@ -624,8 +624,6 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       this.job.getAllStations().filter(station => station.locType !== LocType.client && station.locType < 5).forEach((station) => {
         station.calcPrice().makePriceLevel().makePopUpContent();
       });
-      console.log(this.job.dBranches);
-
       this.job.calcPrice();
     });
 
@@ -705,7 +703,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     job.dBacktourBranches?.branches.forEach((branch, i) => {
       list.push({ type: `db${i}`, branch: branch });
     });
-    if (this.routingActivated) {
+    
+    if (GC.streetRouting) {
       this.drawRoutes(list);
     } else {
       list.forEach(l => {
