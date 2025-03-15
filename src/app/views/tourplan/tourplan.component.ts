@@ -26,6 +26,7 @@ import {
   FilterPrePlannedJobs,
   FilterRegularJobs
 } from "./FilterStrategies";
+import { MessengerDialogComponent } from 'src/app/dialogs/messenger-dialog.component';
 
 
 @Component({
@@ -336,5 +337,13 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     this.menuTopLeftPosition.y = event.clientY;
     this.matMenuTrigger.menuData = item instanceof TourplanItem ? {item: item} : {shift: item};
     this.matMenuTrigger.openMenu();
+  }
+
+  openMessengerDialog(messenger: Messenger): void {
+    if (messenger) {
+      messenger.openDialog();
+    } else {
+      GC.dialog.open(MessengerDialogComponent);
+    }
   }
 }

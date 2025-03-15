@@ -326,10 +326,10 @@
             <a (click)="dispoEarly[0].checkout(date)" *ngIf="dispoEarly[0].shift && !dispoEarly[0].shift?.end">
              <i class="bi bi-person-dash"></i>
            </a>
-           <a (click)="dispoEarly[0].checkout(date)" *ngIf="dispoEarly[0].shift?.end">
+           <a (click)="dispoEarly[0].checkout(date)" *ngIf="dispoEarly[0].shift?.end" matTooltip="schicht anzeigen">
              <i class="bi bi-check-lg"></i>
            </a>
-            {{dispoEarly[0].nickname}}
+            <a (click)="openMessengerDialog(dispoEarly[0])" matTooltip="kurier:in anzeigen">{{dispoEarly[0].nickname}}</a>
             )
         </span>
         </h5>
@@ -341,7 +341,7 @@
             <a (click)="messenger.checkout(date)" *ngIf="messenger.shift && !messenger.shift?.end">
               <i class="mr-2 bi bi-person-dash"></i>{{messenger.nickname}}
             </a>
-            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end">
+            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end" matTooltip="schicht anzeigen">
               <i class="mr-1 bi bi-check-lg"></i>{{messenger.nickname}}
             </a>
             <span *ngIf="messenger.shift">({{shiftLiterals[messenger.shift.type]}})</span>
@@ -366,7 +366,7 @@
            <a (click)="dispoLate[0].checkout(date)" *ngIf="dispoLate[0].shift?.end">
              <i class="bi bi-check-lg"></i>
            </a>
-            {{dispoLate[0].nickname}}
+           <a (click)="openMessengerDialog(dispoLate[0])" matTooltip="kurier:in anzeigen">{{dispoLate[0].nickname}}</a>
             )
         </span>
         </h5>
