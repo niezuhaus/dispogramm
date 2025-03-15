@@ -329,7 +329,7 @@
            <a (click)="dispoEarly[0].checkout(date)" *ngIf="dispoEarly[0].shift?.end" matTooltip="schicht anzeigen">
              <i class="bi bi-check-lg"></i>
            </a>
-            <a (click)="openMessengerDialog(dispoEarly[0])" matTooltip="kurier:in anzeigen">{{dispoEarly[0].nickname}}</a>
+            <a (click)="openMessengerDialog(dispoEarly[0])" matTooltip="kurier:in anzeigen" class="ml-1">{{dispoEarly[0].nickname}}</a>
             )
         </span>
         </h5>
@@ -366,7 +366,7 @@
            <a (click)="dispoLate[0].checkout(date)" *ngIf="dispoLate[0].shift?.end">
              <i class="bi bi-check-lg"></i>
            </a>
-           <a (click)="openMessengerDialog(dispoLate[0])" matTooltip="kurier:in anzeigen">{{dispoLate[0].nickname}}</a>
+           <a (click)="openMessengerDialog(dispoLate[0])" matTooltip="kurier:in anzeigen" class="ml-1">{{dispoLate[0].nickname}}</a>
             )
         </span>
         </h5>
