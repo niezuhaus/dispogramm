@@ -40,7 +40,7 @@ export abstract class AbstractJob {
   traveldist = 0;
   cargoType: Cargotype = Cargotype.none;
   description = '';
-  routeMode: RoutingMode = GC.streetRouting ? RoutingMode.streetNavigation : RoutingMode.normal;
+  routeMode: RoutingMode = RoutingMode.normal;
 
   clientInvolved = true;
   morningTour: MorningTour;
@@ -111,34 +111,19 @@ export class Job extends AbstractJob {
     switch (mode) {
       case RoutingMode.normal:
         this.routeStrategyObj = new Cheapest();
-        GC.streetRouting = false;
-        setItem<string>('streetRouting', 'false');
         break;
 
       case RoutingMode.star:
         this.routeStrategyObj = new Star();
-        GC.streetRouting = false;
-        setItem<string>('streetRouting', 'false');
         break;
 
       case RoutingMode.shortestRound:
         this.routeStrategyObj = new Round();
-        GC.streetRouting = false;
-        setItem<string>('streetRouting', 'false');
         break;
 
       case RoutingMode.primitiveRound:
         this.routeStrategyObj = new PrimitRound();
-        GC.streetRouting = false;
-        setItem<string>('streetRouting', 'false');
         break;
-
-      case RoutingMode.streetNavigation:
-        // GC.streetRouting = true;
-        // setItem<string>('streetRouting', 'true');
-        // console.log('street');
-        
-        // GC.openSnackBarShort('routenmodus aktiviert');
     }
     this.routeMode = this.routeStrategyObj.mode;
   }

@@ -258,8 +258,7 @@ export enum RoutingMode {
   normal,
   star,
   shortestRound,
-  primitiveRound,
-  streetNavigation
+  primitiveRound
 }
 
 export enum SpecialPriceType {
