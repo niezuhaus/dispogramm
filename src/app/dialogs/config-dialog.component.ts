@@ -440,7 +440,7 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
                 <span style="color: gray; font-family: monospace"><i>v{{version}}</i></span>
               </div>
               <p>entwickelt 2020 - {{year}} <br>vom fahrrad express kurier:innenkollektiv</p>
-              <p>frontend: daniel</p>
+              <p>frontend: dezwo</p>
               <p>backend: jan</p>
             </div>
             <img src="../../assets/logo/fex-logo.png" style="width: 200px" alt="fex logo">
