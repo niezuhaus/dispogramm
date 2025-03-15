@@ -61,7 +61,7 @@ import {SearchinputComponent} from "../views/newtour/inputfield/searchinput/sear
       <hr>
       <p>kund:innen</p>
 
-      <mat-chip-list *ngIf="specialPrice.clients.length" selectable multiple class="mb-4">
+      <mat-chip-list *ngIf="specialPrice.clients.length" selectable multiple class="mb-3">
         <mat-chip
           *ngFor="let client of specialPrice.clients"
           (removed)="specialPrice.clients.findAndRemove(client)">
@@ -81,8 +81,6 @@ import {SearchinputComponent} from "../views/newtour/inputfield/searchinput/sear
         (clientClientSelected)="specialPrice.clients.push($event); searchbar.reset()">
       </searchinput>
 
-
-      <hr>
       <p>zonen</p>
 
       <mat-chip-list *ngIf="specialPrice.zones?.length" selectable multiple class="mb-4">
