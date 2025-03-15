@@ -150,11 +150,9 @@ export class Branch {
     }
 
     if (!this._routeWithBridges) {
-
-
       this._routeWithBridges = GC.streetRouting ? 
-      this.route.filter(station => station.passType !== PassType.nearby).concat(this.center) : 
-      Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
+      Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center)) :
+      this.route.filter(station => station.passType !== PassType.nearby).concat(this.center);
     }
     this.sections = recursive(this._routeWithBridges, 0)
     return this;
