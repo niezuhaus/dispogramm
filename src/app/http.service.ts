@@ -280,8 +280,8 @@ export class HttpService {
   routeBranch(branch: Branch): Observable<{ route: IPoint[], sectionDist: number }[]> {
     return zip(branch.sections.map(s => this.routeSection(s))).pipe(
       map(routes => {
-      branch.distance = routes.reduce((acc, route) => acc + route.sectionDist, 0);
-      return routes;
+        branch.distance = routes.reduce((acc, route) => acc + route.sectionDist, 0);
+        return routes;
       })
     );
   }
@@ -294,9 +294,9 @@ export class HttpService {
   routeJob(branches: Branch[]): Observable<{ route: IPoint[], sectionDist: number }[][]> {
     return zip(branches.map(b => this.routeBranch(b))).pipe(
       map(routes => {
-      const jobDistance = routes.flat().reduce((acc, route) => acc + route.sectionDist, 0);
-      branches.forEach(branch => branch.job.traveldist = jobDistance);
-      return routes;
+        const jobDistance = routes.flat().reduce((acc, route) => acc + route.sectionDist, 0);
+        branches.forEach(branch => branch.job.traveldist = jobDistance.round(2));
+        return routes;
       })
     );
   }
@@ -355,9 +355,18 @@ export class HttpService {
       take(1),
       map(c => {
         GC.clients.push(c);
+        console.log(c);
         if (!client.billClient) {
           GC.cashClientIds.push(client.id)
         }
+        this.getLocationsByClientId(c.id).pipe(
+          map(locations => {
+            locations.forEach(l => {
+              GC.locations.push(l);
+              GC.clientLocations.push(l);
+            });
+          })
+        );
         return c;
       })
     );
