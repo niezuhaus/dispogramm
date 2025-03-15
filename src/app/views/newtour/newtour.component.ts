@@ -688,7 +688,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     if (!job.pickups.concat(job.deliveries).length) {
       return;
     }
-    job.getAllStations(true).slice(1).forEach(station => this.setMarker(station));
+    let stationList = job.getAllStations(true);
+    job.getAllStations(true).slice(job.clientInvolved ? 1 : 0).forEach(station => this.setMarker(station));
 
     let list: { type: string, branch: Branch }[] = [];
     job.pBranches?.branches.forEach((branch, i) => {
@@ -703,7 +704,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     job.dBacktourBranches?.branches.forEach((branch, i) => {
       list.push({ type: `db${i}`, branch: branch });
     });
-    
+
     if (GC.streetRouting) {
       this.drawRoutes(list);
     } else {
