@@ -164,14 +164,6 @@
                 fex messregeln
               </small>
             </mat-option>
-            <mat-option [value]="4" class="flex-column info-option">
-                <div (click)="toggleRouting(); refresh({zoom: true})">
-                straßenrouting
-                </div>
-              <small>
-                nach open street maps
-              </small>
-            </mat-option>
             <mat-option [value]="1" class="flex-column info-option">
               <div>
                 stern
@@ -208,6 +200,7 @@
       <div #map id='map' class="w-100"></div>
     </div>
 
+    <!-- trash and resize buttons -->
     <div class="m-3 flex-column justify-content-between">
       <div class="flex-row">
         <button mat-mini-fab color="primary" class="flashButton" [disabled]="!(touched || job.hasData)"
@@ -221,7 +214,19 @@
       </div>
     </div>
 
+    <div id="streetNavigation" class="m-3 shadow drag" style="max-height: 10%; overflow-y: scroll">
+      <mat-button-toggle-group [value]="routingActivated" (change)="routingActivated = $event.value">
+        <mat-button-toggle [value]="false" (click)="this.refresh({zoom: true})">
+          luftlinie
+        </mat-button-toggle>
+        <mat-button-toggle [value]="true" (click)="this.refresh({zoom: true})">
+          straße (osm)
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
     <div id="summary" class="m-3 shadow drag" style="max-height: 90%; overflow-y: scroll" *ngIf="job._center">
+      <!-- content of the tour -->
       <div class="p-2 flex-column">
         <div id="description" *ngIf="job._center" class="text-monospace" style="padding-top: 5px">
           <div class="ml-2 flex-column w-100">

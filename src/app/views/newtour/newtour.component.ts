@@ -14,7 +14,7 @@ import { Client } from "../../classes/Client";
 import { Extra, IPoint, LocType } from '../../common/interfaces';
 import { Zone } from "../../classes/Zone";
 import { zip } from 'rxjs';
-import { corners, drawText, feature, initMap, setItem } from '../../UTIL';
+import { corners, drawText, feature, getItem, initMap, setItem } from '../../UTIL';
 import { SearchinputComponent } from './inputfield/searchinput/searchinput.component';
 import { ActivatedRoute } from '@angular/router';
 import { LocationDialogComponent } from '../../dialogs/location-dialog.component';
@@ -42,8 +42,6 @@ import { TitleComponent } from "../app.component";
 import { Zones } from "../../common/zones";
 import { AreYouSureDialogComponent } from "../../dialogs/are-you-sure-dialog.component";
 import { Branch } from 'src/app/classes/Branch';
-import { log } from 'console';
-import { AppCommonModule } from 'src/app/common/common.module';
 
 @Component({
   selector: 'newtour',
@@ -89,7 +87,15 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   nameFieldVisible = false;
   noteVisible = false;
   dezwoOptions = false;
-  routingActivated = GC.streetRouting;
+  get routingActivated() {return GC.streetRouting};
+  set routingActivated(value: boolean){
+    setItem('streetRouting', value ? 'true' : 'false');
+    const differs = GC.streetRouting != value;
+    GC.streetRouting = value;
+    if (differs) {
+      GC.openSnackBarShort('straßennavigation ' + (value ? 'aktiviert' : 'deaktiviert'))
+    }
+  };
 
   get _noteVisible() { return this.job?.description || this.noteVisible };
 
@@ -619,7 +625,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         station.calcPrice().makePriceLevel().makePopUpContent();
       });
       console.log(this.job.dBranches);
-      
+
       this.job.calcPrice();
     });
 
@@ -1126,8 +1132,5 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     setTimeout(() => {
       this.notes.nativeElement.focus();
     }, 0);
-  }
-
-  toggleRouting(): void {
   }
 }
