@@ -5,6 +5,7 @@ import { ElementRef } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 
 // ----------------------------------------------------------------------------------- //
+// this directive was found at https://gist.github.com/bennadel/165bbabeb58d9f13b65af31c84706c62
 // ----------------------------------------------------------------------------------- //
 
 var noop = () => {
