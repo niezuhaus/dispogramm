@@ -90,6 +90,11 @@ export function setItem<E>(key: string, item: E): E {
   return item;
 }
 
+export function getBoolean(key: string): boolean {
+  const json = localStorage.getItem(key);
+  return json == 'true';
+}
+
 export function getItem<E>(key: string): E {
   const json = localStorage.getItem(key);
   try {
