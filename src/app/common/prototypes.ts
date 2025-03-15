@@ -1,9 +1,9 @@
-import {NativeDateAdapter} from "@angular/material/core";
-import {GC} from "./GC";
-import {RegularJobDialogComponent} from "../dialogs/regular-job-dialog.component";
-import {Day, IdObject} from "./interfaces";
-import {Injectable} from "@angular/core";
-import {Price} from "../classes/Price";
+import { NativeDateAdapter } from "@angular/material/core";
+import { GC } from "./GC";
+import { RegularJobDialogComponent } from "../dialogs/regular-job-dialog.component";
+import { Day, IdObject } from "./interfaces";
+import { Injectable } from "@angular/core";
+import { Price } from "../classes/Price";
 import { log } from "console";
 
 declare global {
@@ -613,7 +613,7 @@ String.prototype.toHTML = function (): string {
   return this ? this.replace(/\n\r?/g, '<br />') : '';
 }
 
-String.prototype.editDistance = function(other: string): number {
+String.prototype.editDistance = function (other: string): number {
   const s1 = this.toLowerCase();
   const s2 = other.toLowerCase();
 
