@@ -408,8 +408,6 @@ export class Job extends AbstractJob {
       this.customPrice = true;
     }
     this.traveldist = this.calcDist().round(2);
-    console.log(this.traveldist);
-
     this.initiated = true;
     this.getAllStations().filter(station => station.locType !== LocType.client && station.locType < 5).forEach((station) => {
       station.calcPrice().makePriceLevel().makePopUpContent();
