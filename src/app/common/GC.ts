@@ -219,6 +219,7 @@ export class GC {
     locations: '/locations',
     messengers: '/messengers',
     statistics: '/statistics',
+    shifts: '/shifts',
   }
 
   // instances
@@ -742,7 +743,7 @@ export class GC {
   }
   public static loadShiftsToday = (http: HttpService) => {
     http.getShiftsForToday().subscribe(list => {
-      list.sort((a, b) => a.start.getTime() - b.start.getTime());
+      list = list.sort((a, b) => a.start.getTime() - b.start.getTime());
       GC.shiftsToday = list;
 
       // retrieve the set phone numbers from local storage
