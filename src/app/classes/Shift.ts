@@ -25,7 +25,7 @@ export class Shift implements IdObject {
       this.start = new Date(this.start);
       this.end = this.end ? new Date(this.end) : null;
       this.messenger = new Messenger(this.messenger);
-      this.jobs = this.jobs.map(j => new Job(j));
+      this.jobs = this.jobs?.map(j => new Job(j));
     } else if (dispatcher !== undefined) {
       this.type = this.shiftTypeGuess(dispatcher);
       this.start = this.startTimeGuess();
