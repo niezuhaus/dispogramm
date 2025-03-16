@@ -75,6 +75,7 @@ import {MessengerViewComponent} from './views/tourplan/messenger-view/messenger-
 import {MatSidenavModule} from "@angular/material/sidenav";
 import { AppCommonModule } from './common/common.module';
 import { ShiftsOverwiewComponent } from './views/shifts-overview/shifts-overwiew.component';
+import { ShiftTableComponent } from './views/shift-table.component';
 
 @NgModule({
   declarations: [
@@ -115,6 +116,7 @@ import { ShiftsOverwiewComponent } from './views/shifts-overview/shifts-overwiew
     InlineRangeCalendarComponent,
     MessengerViewComponent,
     ShiftsOverwiewComponent,
+    ShiftTableComponent,
   ],
   imports: [
     BrowserModule,

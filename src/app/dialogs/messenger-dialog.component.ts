@@ -11,6 +11,7 @@ import { Messenger } from "../classes/Messenger";
 import { MatTabGroup } from "@angular/material/tabs";
 import { MatInput } from "@angular/material/input";
 import { MatSort, Sort } from '@angular/material/sort';
+import { ShiftTableComponent } from '../views/shift-table.component';
 
 @Component({
   selector: 'app-edit-messenger-dialog',
@@ -83,118 +84,24 @@ import { MatSort, Sort } from '@angular/material/sort';
                     (click)="exportShifts(messenger, date)">
               lohndatei <i class="ml-3 bi bi-download"></i>
             </button>
-            <button mat-raised-button class="fex-button" (click)="newShift()" matTooltip="neue schicht hinzufügen">
+            <button mat-raised-button class="fex-button" (click)="shiftTable.newShift()" matTooltip="neue schicht hinzufügen">
               schicht hinzufügen <i class="ml-3 bi bi-plus-circle"></i>
             </button>
           </div>
 
           <div *ngIf="shifts.length > 0" class="mb-4" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden">
-            <table
-              #table
-              mat-table
-              [dataSource]="dataSource"
-              style="min-width: 100%;">
-              <ng-container matColumnDef="number">
-                <th mat-header-cell *matHeaderCellDef class="text-center" style="padding: unset; min-width: 50px">#</th>
-                <td mat-cell *matCellDef="let element; let i = index" class="text-center">
-                  {{i}}
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef class="text-center">datum</th>
-                <td mat-cell *matCellDef="let element" style="width: 240px">
-                  <div class="flex flex-row justify-content-evenly align-items-end w-100" style="width: fit-content">
-                    <a *ngIf="!element.edit" (click)="openShiftDialog(element)" 
-                       >
-                      <p class="text-center noMargin">
-                        {{element.start.dateStampShort()}}, {{shiftLiterals(element.type)}}
-                      </p>
-                    </a>
-
-
-                    <mat-form-field *ngIf="element.edit" style="width: 100px" class="relative-top8px">
-                      <mat-label>datum</mat-label>
-                      <div class="flex flex-row">
-                        <input matInput [matDatepicker]="picker" [(ngModel)]="element.start"
-                               (keydown)="$event.key === 'Enter' ? updateShift(element) : ''">
-                        <i class="bi bi-calendar3" (click)="picker.open()"></i>
-                      </div>
-                      <mat-datepicker #picker></mat-datepicker>
-                    </mat-form-field>
-
-                    <mat-form-field class="ml-3 relative-top8px" *ngIf="element.edit"
-                                    style="width: 100px">
-                      <mat-label>schichttyp</mat-label>
-                      <mat-select
-                        tabindex="-1"
-                        #type
-                        [(ngModel)]="element.type"
-                        (selectionChange)="element.startTimeGuess(); element.endTimeGuess()"
-                        (keydown)="$event.key === 'Enter' ? updateShift(element) : ''">
-                        <mat-option
-                          *ngFor="let shiftType of messengerShiftTypes; let i = index"
-                          [value]="i">
-                          {{shiftType}}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-
-                  </div>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="startend">
-                <th mat-header-cell *matHeaderCellDef class="text-center" style="min-width: 80px">arbeitszeit</th>
-                <td mat-cell *matCellDef="let element" style="width: 260px; padding: 0 20px !important;">
-                  <div *ngIf="element.edit" class="flex flex-row align-items-center justify-content-between">
-                    <timepicker
-                      [label]="'start'"
-                      [(time)]="element.start"
-                      (keydown)="$event.key === 'Enter' ? updateShift(element) : ''"
-                      class="relative-top8px"></timepicker>
-                    <span class="mx-2">-</span>
-                    <timepicker
-                      [label]="'ende'"
-                      [(time)]="element.end" [compareDate]="element.start"
-                      (keydown)="$event.key === 'Enter' ? updateShift(element) : ''"
-                      class="relative-top8px"></timepicker>
-                  </div>
-                  <div *ngIf="!element.edit" class="flex flex-row align-items-center justify-content-between">
-                    <span>{{element.start.timestamp()}}</span>
-                    <span class="mx-2">-</span>
-                    <span *ngIf="element.end">{{element.end?.timestamp()}}</span>
-                    <a *ngIf="!element.end" class="fex-warn" (click)="element.edit = true">endzeit eintragen</a>
-                  </div>
-
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="money">
-                <th mat-header-cell *matHeaderCellDef class="text-center"></th>
-                <td mat-cell *matCellDef="let element">
-                  <p class="text-center noMargin" *ngIf="element.shiftType <= 4 && !element.edit">
-                    {{element.money.netto}}
-                  </p>
-                  <div *ngIf="element.edit" class="flex justify-content-around">
-                    <button mat-button class="align-items-center"
-                            (click)="updateShift(element)">
-                      <i class="bi bi-check"></i>
-                    </button>
-                  </div>
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                  (contextmenu)="onRightClick($event, row)"></tr>
-            </table>
+            <shift-table *ngif="shifts.length" [shifts]="shifts" [messenger]="messenger" #table>
+            </shift-table>  
           </div>
 
           <div *ngIf="shifts.length === 0" class="flex justify-content-center align-items-center" style="height: 20vh">
             <h3>- keine schichten im {{datepicker.months[date.getMonth()]}}   -</h3>
           </div>
 
-          <p *ngIf="messenger.active && shifts.length > 0">umsatz diesen monat: {{salesNettoThisMonth._netto}}
+          <p *ngIf="messenger.active && shifts.length">umsatz diesen monat: {{salesNettoThisMonth._netto}}
             netto
             / {{salesBruttoThisMonth._brutto}} brutto<br>
-            insgesamt {{hours}} stunden
+            insgesamt {{messenger.hours}} stunden
           </p>
         </div>
       </mat-tab>
@@ -218,52 +125,30 @@ import { MatSort, Sort } from '@angular/material/sort';
         löschen
       </button>
     </div>
-
-    <div class="container">
-      <div style="visibility: hidden; position: fixed"
-           [style.left.px]="menuTopLeftPosition.x"
-           [style.top.px]="menuTopLeftPosition.y"
-           [matMenuTriggerFor]="rightMenu"></div>
-
-      <mat-menu #rightMenu="matMenu">
-        <ng-template matMenuContent let-item="item">
-          <right-click-menu
-            [shift]="item">
-          </right-click-menu>
-        </ng-template>
-      </mat-menu>
-    </div>
   `,
   styles: []
 })
 export class MessengerDialogComponent implements OnInit {
 
   messenger: Messenger = new Messenger();
+  
+  shifts: Shift[];
   jobsThisMonth: Job[] = [];
-  hours = 0;
+  shiftsWithoutEnd = 0;
   salesNettoThisMonth = new Price();
   salesBruttoThisMonth = new Price();
-  shifts: Shift[];
-  shiftsWithoutEnd = 0;
-
   new = true;
   saved = new EventEmitter<boolean>();
   date = new Date();
-  dataSource: MatTableDataSource<Shift>;
-  displayedColumns: string[] = ['number', 'date', 'startend', 'money'];
   loaded = 0;
-  menuTopLeftPosition = { x: 0, y: 0 };
 
   get isDezwo() { return GC._isDezwo }
-  get messengerShiftTypes() { return GC.dispatcherShiftLiterals.concat(GC.messengerShiftLiterals) };
   get routes() { return GC.routes };
-  shiftLiterals = (index: number) => { return this.messengerShiftTypes[index]; }
 
-  @ViewChild('table') table: MatTable<Job>;
+  
   @ViewChild('tabgroup') tabgroup: MatTabGroup;
-  @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   @ViewChild('name') nameInput: MatInput;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('table') shiftTable: ShiftTableComponent;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {
@@ -289,7 +174,7 @@ export class MessengerDialogComponent implements OnInit {
         this.loaded++;
         this.init();
         if (this.data.createShiftFor) {
-          setTimeout(() => { this.newShift(this.data.createShiftFor) }, 100)
+          setTimeout(() => { this.shiftTable.newShift(this.data.createShiftFor) }, 100)
         }
       });
     }
@@ -299,29 +184,15 @@ export class MessengerDialogComponent implements OnInit {
     if (!this.shifts) {
       this.shifts = this.data.shifts;
     }
-    let hours = MessengerDialogComponent.calcHoursAndMoney(this.shifts);
-    this.hours = hours.hours;
-    this.shiftsWithoutEnd = hours.shiftsWithoutEnd;
     this.shifts.forEach(shift => {
       shift.money = this.jobsThisMonth.filter(j => j.date.daysDifference(shift.start) === 0).reduce((p, a) => p._add(a.price), new Price())
     })
     this.shifts.sort((a, b) => {return a.start.getTime() - b.start.getTime()});
-    this.dataSource = new MatTableDataSource<Shift>(this.shifts);
+    
     this.loaded++;
   }
 
-  static calcHoursAndMoney(shifts: Shift[]): {hours: number, shiftsWithoutEnd: number} {
-    let hours = 0;
-    let shiftsWithoutEnd = 0;
-    shifts.forEach(shift => {
-      if (shift.end) {
-        hours += shift.start.hoursDifference(shift.end)
-      } else {
-        shiftsWithoutEnd++;
-      }
-    })
-    return {hours: hours, shiftsWithoutEnd: shiftsWithoutEnd};
-  }
+
 
   load(): void {
     GC.http.getShiftsForMessengerAndMonth(this.messenger, this.date).subscribe(shifts => {
@@ -333,7 +204,7 @@ export class MessengerDialogComponent implements OnInit {
   updateMessenger(): void {
     if (!this.new) {
       this.shifts.filter(s => s.edit === true).forEach(s => {
-        this.updateShift(s);
+        this.shiftTable.updateShift(s);
       });
       GC.http.updateMessenger(this.messenger).subscribe(m => {
         GC.openSnackBarLong(`${m.nickname} wurde aktualisiert.`);
@@ -353,57 +224,6 @@ export class MessengerDialogComponent implements OnInit {
     })
   }
 
-  updateShift(shift: Shift): void {
-    if (shift.start.hoursDifference(shift.end) < 0) {
-      GC.openSnackBarLong('die endzeit der schicht muss vor der startzeit liegen!');
-      return;
-    }
-    shift.edit = false;
-
-    let routine = () => {
-      GC.loadShiftsToday(GC.http);
-      this.shifts.sort((a, b) => {return a.start.getTime() - b.start.getTime()});
-      this.hours = 0;
-      this.shiftsWithoutEnd = 0;
-      this.shifts.forEach(shift => {
-        if (shift.end) {
-          this.hours += shift.start.hoursDifference(shift.end)
-        } else {
-          this.shiftsWithoutEnd++;
-        }
-        shift.money = this.jobsThisMonth.filter(j => j.date.daysDifference(shift.start) === 0).reduce((p, a) => p._add(a.price), new Price())
-      })
-    }
-
-    if (!shift.id) {
-      shift.messenger.shift = null;
-      GC.http.createShift(shift).subscribe((s) => {
-        routine();
-      })
-    } else {
-      shift.update('schicht wurde aktualisiert.', true).subscribe(() => {
-        routine();
-      });
-    }
-  }
-
-  newShift(date?: Date): void {
-    const s = new Shift({ messenger: this.messenger, start: date });
-    s.startTimeGuess(true);
-    s.end = s.endTimeGuess();
-    s.edit = true;
-    this.dataSource.data.push(s);
-    this.table.renderRows();
-  }
-
-  onRightClick(event: MouseEvent, item: any) {
-    event.preventDefault();
-    this.menuTopLeftPosition.x = event.clientX;
-    this.menuTopLeftPosition.y = event.clientY;
-    this.matMenuTrigger.menuData = { item: item }
-    this.matMenuTrigger.openMenu();
-  }
-
   exportShifts(messenger: Messenger, date: Date): void {
     if (this.shiftsWithoutEnd > 0) {
       GC.dialog.open(AreYouSureDialogComponent, {
@@ -421,10 +241,5 @@ export class MessengerDialogComponent implements OnInit {
         link.click();
       });
     }
-  }
-
-  openShiftDialog(shift: Shift): void {
-    shift = new Shift(shift);
-    shift.openDialog();
   }
 }
