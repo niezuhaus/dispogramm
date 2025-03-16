@@ -255,7 +255,8 @@ import {Zone} from "../classes/Zone";
 
     <!-- messenger -->
     <div *ngIf="messenger">
-      <button mat-menu-item (click)="messenger.delete()"><i class="p-1 bi bi-trash bi-context"></i>löschen</button>
+      <!-- <button mat-menu-item (click)="messenger.delete()"><i class="p-1 bi bi-trash bi-context"></i>löschen</button> -->
+      <button mat-menu-item (click)="messenger.toggleActivate()"><i class="p-1 bi bi-archive bi-context"></i>{{(messenger.active ? 'deaktivieren' : 'aktivieren')}}</button>
     </div>
 
     <button mat-menu-item *ngIf="item && isDezwo" (click)="print()">
