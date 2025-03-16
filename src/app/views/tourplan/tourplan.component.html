@@ -338,7 +338,7 @@
             <a *ngIf="!messenger.shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden">
               <i class="mr-2 bi bi-person-add"></i>
             </a>
-            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift && !messenger.shift?.end">
+            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift && !messenger.shift?.end" matTooltip="kurier:in auschecken">
               <i class="mr-2 bi bi-person-dash"></i>
             </a>
             <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end" matTooltip="schicht anzeigen">
@@ -361,11 +361,11 @@
           <a *ngIf="!dispoLate[0].shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden">
             <i class="bi bi-person-add"></i>
           </a>
-            <a (click)="dispoLate[0].checkout(date)" *ngIf="dispoLate[0].shift && !dispoLate[0].shift?.end">
+            <a (click)="dispoLate[0].checkout(date)" *ngIf="dispoLate[0].shift && !dispoLate[0].shift?.end" matTooltip="kurier:in auschecken">
              <i class="bi bi-person-dash"></i>
            </a>
            <a (click)="dispoLate[0].checkout(date)" *ngIf="dispoLate[0].shift?.end">
-             <i class="bi bi-check-lg"></i>
+             <i class="bi bi-check-lg" matTooltip="schicht anzeigen"></i>
            </a>
            <a (click)="openMessengerDialog(dispoLate[0], true)" matTooltip="alle schichten anzeigen" class="ml-1">{{dispoLate[0].nickname}}</a>
             )
@@ -376,10 +376,10 @@
             <a *ngIf="!messenger.shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden">
               <i class="mr-2 bi bi-person-add"></i>
             </a>
-            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift && !messenger.shift?.end">
+            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift && !messenger.shift?.end"  matTooltip="kurier:in auschecken">
               <i class="mr-2 bi bi-person-dash"></i>
             </a>
-            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end">
+            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end"  matTooltip="schicht anzeigen">
               <i class="mr-1 bi bi-check-lg"></i>
             </a>
 
