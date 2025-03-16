@@ -74,6 +74,7 @@ import {
 import {MessengerViewComponent} from './views/tourplan/messenger-view/messenger-view.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
 import { AppCommonModule } from './common/common.module';
+import { ShiftsOverwiewComponent } from './views/shifts-overview/shifts-overwiew.component';
 
 @NgModule({
   declarations: [
@@ -113,6 +114,7 @@ import { AppCommonModule } from './common/common.module';
     CalendarRangeDialogComponent,
     InlineRangeCalendarComponent,
     MessengerViewComponent,
+    ShiftsOverwiewComponent,
   ],
   imports: [
     BrowserModule,

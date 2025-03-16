@@ -9,6 +9,7 @@ import {GC} from "./common/GC";
 import {MessengerListComponent} from "./views/messenger-list.component";
 import {WeekplanComponent} from "./views/weekplan/weekplan.component";
 import {StatisticsComponent} from "./views/statistics.component";
+import { ShiftsOverwiewComponent } from './views/shifts-overview/shifts-overwiew.component';
 
 const routes: Routes = [
   {path: GC.routes.tourplan.slice(1), component: TourplanComponent},
@@ -20,6 +21,7 @@ const routes: Routes = [
   {path: GC.routes.locations.slice(1), component: LocationListComponent},
   {path: GC.routes.messengers.slice(1), component: MessengerListComponent},
   {path: GC.routes.statistics.slice(1), component: StatisticsComponent},
+  {path: GC.routes.shifts.slice(1), component: ShiftsOverwiewComponent},
 ];
 
 @NgModule({
