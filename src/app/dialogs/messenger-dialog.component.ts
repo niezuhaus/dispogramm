@@ -24,7 +24,7 @@ import { MatSort, Sort } from '@angular/material/sort';
               type="text"
               #name
               matInput
-              (keyup)="nick.value = messenger.nickname = name.value.toLowerCase()"
+              (keyup)="messenger.nickname = messenger.id ? messenger.nickname : name.value.toLowerCase()"
               [(ngModel)]="messenger.firstName">
           </mat-form-field>
           <mat-form-field class="mr-4 w-25" style="min-width: 200px">
@@ -93,19 +93,15 @@ import { MatSort, Sort } from '@angular/material/sort';
               #table
               mat-table
               [dataSource]="dataSource"
-              style="min-width: 100%;"
-              matSort
-              matSortActive="date"
-              matSortDirection="asc"
-              (matSortChange)="sortData($event)">
+              style="min-width: 100%;">
               <ng-container matColumnDef="number">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center" style="padding: unset; min-width: 50px" mat-sort-header>#</th>
+                <th mat-header-cell *matHeaderCellDef class="text-center" style="padding: unset; min-width: 50px">#</th>
                 <td mat-cell *matCellDef="let element; let i = index" class="text-center">
                   {{i}}
                 </td>
               </ng-container>
               <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center" mat-sort-header>datum</th>
+                <th mat-header-cell *matHeaderCellDef class="text-center">datum</th>
                 <td mat-cell *matCellDef="let element" style="width: 240px">
                   <div class="flex flex-row justify-content-evenly align-items-end w-100" style="width: fit-content">
                     <a *ngIf="!element.edit" (click)="openShiftDialog(element)" 
@@ -147,7 +143,7 @@ import { MatSort, Sort } from '@angular/material/sort';
                 </td>
               </ng-container>
               <ng-container matColumnDef="startend">
-                <th mat-header-cell *matHeaderCellDef class="text-center" style="min-width: 80px" mat-sort-header>arbeitszeit</th>
+                <th mat-header-cell *matHeaderCellDef class="text-center" style="min-width: 80px">arbeitszeit</th>
                 <td mat-cell *matCellDef="let element" style="width: 260px; padding: 0 20px !important;">
                   <div *ngIf="element.edit" class="flex flex-row align-items-center justify-content-between">
                     <timepicker
@@ -172,7 +168,7 @@ import { MatSort, Sort } from '@angular/material/sort';
                 </td>
               </ng-container>
               <ng-container matColumnDef="money">
-                <th mat-header-cell *matHeaderCellDef class="text-center" mat-sort-header></th>
+                <th mat-header-cell *matHeaderCellDef class="text-center"></th>
                 <td mat-cell *matCellDef="let element">
                   <p class="text-center noMargin" *ngIf="element.shiftType <= 4 && !element.edit">
                     {{element.money.netto}}
@@ -303,14 +299,10 @@ export class MessengerDialogComponent implements OnInit {
     if (!this.shifts) {
       this.shifts = this.data.shifts;
     }
-    this.hours = 0;
-    this.shiftsWithoutEnd = 0;
+    let hours = MessengerDialogComponent.calcHoursAndMoney(this.shifts);
+    this.hours = hours.hours;
+    this.shiftsWithoutEnd = hours.shiftsWithoutEnd;
     this.shifts.forEach(shift => {
-      if (shift.end) {
-        this.hours += shift.start.hoursDifference(shift.end)
-      } else {
-        this.shiftsWithoutEnd++;
-      }
       shift.money = this.jobsThisMonth.filter(j => j.date.daysDifference(shift.start) === 0).reduce((p, a) => p._add(a.price), new Price())
     })
     this.shifts.sort((a, b) => {return a.start.getTime() - b.start.getTime()});
@@ -318,9 +310,21 @@ export class MessengerDialogComponent implements OnInit {
     this.loaded++;
   }
 
+  static calcHoursAndMoney(shifts: Shift[]): {hours: number, shiftsWithoutEnd: number} {
+    let hours = 0;
+    let shiftsWithoutEnd = 0;
+    shifts.forEach(shift => {
+      if (shift.end) {
+        hours += shift.start.hoursDifference(shift.end)
+      } else {
+        shiftsWithoutEnd++;
+      }
+    })
+    return {hours: hours, shiftsWithoutEnd: shiftsWithoutEnd};
+  }
+
   load(): void {
     GC.http.getShiftsForMessengerAndMonth(this.messenger, this.date).subscribe(shifts => {
-      console.log(shifts)
       this.shifts = shifts;
       this.init()
     })
@@ -422,9 +426,5 @@ export class MessengerDialogComponent implements OnInit {
   openShiftDialog(shift: Shift): void {
     shift = new Shift(shift);
     shift.openDialog();
-  }
-
-  sortData(sort: Sort) {
-
   }
 }
