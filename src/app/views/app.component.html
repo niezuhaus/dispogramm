@@ -68,6 +68,9 @@
         <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().messengers">
           <i class="bi bi-bicycle mr-2"></i> kurier:innen
         </button>
+        <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().shifts">
+          <i class="bi bi-stopwatch mr-2"></i> schichten
+        </button>
         <button mat-raised-button class="fex-button align-items-center" style="display: flex" (click)="openConfigDialog(); drawer.close()">
           <i class="bi bi-gear-wide-connected mr-2"></i> einstellungen
         </button>
