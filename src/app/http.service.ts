@@ -830,16 +830,7 @@ export class HttpService {
     return this.http.get<Messenger[]>(`${BACKEND_IP}/messengers/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
-        list = list.map(m => new Messenger(m));
-        list.sort((a, b) => {
-          if (!a.nickname) {
-            console.log('messenger without nickname found!')
-            console.log(a)
-            return 0;
-          }
-          return a.nickname.localeCompare(b.nickname);
-        });
-        return list;
+        return list.map(m => new Messenger(m));
       })
     );
   }
