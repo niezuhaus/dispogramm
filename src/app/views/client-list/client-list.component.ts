@@ -32,7 +32,7 @@ import {MatMenuTrigger} from "@angular/material/menu";
             [(ngModel)]="searchterm">
         </mat-form-field>
       </div>
-      <div class="flex p-4 w-100 justify-content-end">
+      <div class="flex w-100 justify-content-end">
         <button (click)="openDialog()" mat-raised-button class="fex-button">
           <i class="pr-2 bi bi-plus-circle-fill"></i>
           neue kund:in
