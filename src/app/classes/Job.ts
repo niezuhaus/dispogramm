@@ -138,6 +138,7 @@ export class Job extends AbstractJob {
   }
 
   get expenseSum(): number {
+    this.expenses = this.expenses ? this.expenses : [];
     return this.expenses.map(ex => ex.price._brutto).reduce((a, b) => a + b, 0);
   }
 
