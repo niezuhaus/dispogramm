@@ -1,15 +1,15 @@
-import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {MatTable, MatTableDataSource} from '@angular/material/table';
-import {MatSort} from '@angular/material/sort';
-import {LocationDialogComponent} from "../dialogs/location-dialog.component";
-import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import {MatPaginator} from "@angular/material/paginator";
-import {Location} from "@angular/common";
-import {ActivatedRoute} from "@angular/router";
-import {GC} from "../common/GC";
-import {MatMenuTrigger} from "@angular/material/menu";
-import {Geolocation} from "../classes/Geolocation";
-import {TitleComponent} from "./app.component";
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { LocationDialogComponent } from "../dialogs/location-dialog.component";
+import { AreYouSureDialogComponent } from "../dialogs/are-you-sure-dialog.component";
+import { MatPaginator } from "@angular/material/paginator";
+import { Location } from "@angular/common";
+import { ActivatedRoute } from "@angular/router";
+import { GC } from "../common/GC";
+import { MatMenuTrigger } from "@angular/material/menu";
+import { Geolocation } from "../classes/Geolocation";
+import { TitleComponent } from "./app.component";
 
 export interface LocationFilterStrategy {
   filter(locs: Geolocation[]): Geolocation[];
@@ -31,8 +31,8 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
 @Component({
   selector: 'app-location-list',
   template: `
-    <div class="flex flex-row justify-content-between">
-      <div class="flex flex-row p-3 w-100">
+    <div class="flex flex-row justify-content-between p-5">
+      <div class="flex flex-roww-100">
         <mat-form-field class="w-50" style="max-width: 200px">
           <mat-label>ort suchen</mat-label>
           <input
@@ -56,7 +56,7 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
           ausgewählte standorte zusammenführen
         </button>
       </div>
-      <div class="flex p-4 w-100 justify-content-end">
+      <div class="flex w-100 justify-content-end">
         <button (click)="openDialog()" mat-raised-button class="fex-button">
           <i class="pr-2 bi bi-plus-circle-fill"></i>
           neuer standort
@@ -154,11 +154,11 @@ export class LocationListComponent extends TitleComponent implements OnInit {
 
   displayedColumns: string[] = ['checked', 'clientId', 'name', 'address'];
   dataSource: MatTableDataSource<Geolocation>;
-  jobsWithLocation = (loc: Geolocation) => {return GC.http.jobsWithLocation(loc)}
+  jobsWithLocation = (loc: Geolocation) => { return GC.http.jobsWithLocation(loc) }
 
   filterStrategies = [new FilterLocationsWithClient(), new FilterLocationsWithoutClient()];
   checkedLocations: Geolocation[] = [];
-  menuTopLeftPosition = {x: 0, y: 0}
+  menuTopLeftPosition = { x: 0, y: 0 }
 
   @ViewChild('search') search: ElementRef;
   @ViewChild('table') table: MatTable<Geolocation>;
@@ -295,7 +295,7 @@ export class LocationListComponent extends TitleComponent implements OnInit {
     event.preventDefault();
     this.menuTopLeftPosition.x = event.clientX;
     this.menuTopLeftPosition.y = event.clientY;
-    this.matMenuTrigger.menuData = {item: item}
+    this.matMenuTrigger.menuData = { item: item }
     this.matMenuTrigger.openMenu();
   }
 }

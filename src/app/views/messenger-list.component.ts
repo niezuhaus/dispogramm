@@ -82,9 +82,13 @@ export class MessengerListComponent extends TitleComponent implements OnInit {
 
   messenger = () => {
     if (GC.config?.messenger.hideInactive) {
-      return GC.messengers.filter(m => m.active || m.dispatcher);
+      return GC.messengers.filter(m => m.active || m.dispatcher).sort((a, b) => {
+        return a.nickname.localeCompare(b.nickname);
+      });
     } else {
-      return GC.messengers
+      return GC.messengers.sort((a, b) => {
+        return a.nickname.localeCompare(b.nickname);
+      });
     }
   };
 
