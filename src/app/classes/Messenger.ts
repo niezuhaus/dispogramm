@@ -1,10 +1,11 @@
-import {removeItem, setItem} from "../UTIL";
-import {GC, ShiftType} from "../common/GC";
-import {Shift} from "./Shift";
-import {CheckoutDialogComponent} from "../dialogs/checkout-dialog.component";
-import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import {IdObject} from "../common/interfaces";
-import {MessengerDialogComponent} from "../dialogs/messenger-dialog.component";
+import { removeItem, setItem } from "../UTIL";
+import { GC, ShiftType } from "../common/GC";
+import { Shift } from "./Shift";
+import { CheckoutDialogComponent } from "../dialogs/checkout-dialog.component";
+import { AreYouSureDialogComponent } from "../dialogs/are-you-sure-dialog.component";
+import { IdObject } from "../common/interfaces";
+import { MessengerDialogComponent } from "../dialogs/messenger-dialog.component";
+import { map, Observable } from "rxjs";
 
 export class Messenger implements IdObject {
 
@@ -16,9 +17,10 @@ export class Messenger implements IdObject {
   dispatcher = false;
   active = true;
   telNumber: string;
-  sales = (date: Date) => {return GC.messengerData(date).get(this.id)?.sales};
+  sales = (date: Date) => { return GC.messengerData(date).get(this.id)?.sales };
   shift: Shift;
-  jobs = (date: Date) => {return GC.messengerData(date).get(this.id)?.jobs};
+  shifts: Shift[] = [];
+  jobs = (date: Date) => { return GC.messengerData(date).get(this.id)?.jobs };
 
   fexNumber: number;
 
@@ -39,7 +41,7 @@ export class Messenger implements IdObject {
       return;
     }
     this.fexNumber = number;
-    setItem<{number: number, date: Date}>(this.id, {number: number, date: new Date()})
+    setItem<{ number: number, date: Date }>(this.id, { number: number, date: new Date() })
     GC.openSnackBarShort(`${this.nickname} hat die ${number}`);
   }
 
@@ -103,5 +105,14 @@ export class Messenger implements IdObject {
         }
       });
     })
+  }
+
+  loadShifts(month: Date): void {
+    GC.http.getShiftsForMessengerAndMonth(this, month).subscribe(
+      list => {
+        this.shifts = list;
+        return list;
+      }
+    )
   }
 }

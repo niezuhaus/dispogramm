@@ -197,7 +197,7 @@ export class GC {
   };
   public static fullyLoaded = false;
   public static partLoaded = new EventEmitter<boolean>();
-  private static loadedCompletely = new EventEmitter<boolean>();
+  public static loadedCompletely = new EventEmitter<boolean>();
   public static refreshNeeded = new EventEmitter<boolean>();
   public static loaded = () => {
     if (GC.fullyLoaded) {
