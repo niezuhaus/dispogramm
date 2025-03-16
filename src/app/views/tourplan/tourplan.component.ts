@@ -339,9 +339,9 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     this.matMenuTrigger.openMenu();
   }
 
-  openMessengerDialog(messenger: Messenger, openShifts: boolean): void {
+  openMessengerDialog(messenger: Messenger, openShiftsTab: boolean): void {
     if (messenger) {
-      messenger.openDialog(openShifts);
+      messenger.openDialog(openShiftsTab);
     }
   }
 }
