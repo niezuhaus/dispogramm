@@ -462,6 +462,7 @@ export class GC {
           quantityIncl: 1,
         }
       },
+      minimumWage: GC.readNumber('minimumWage') || 12.82,
       vat: GC.readNumber('MWST') || 19,
       tourplan: {
         PRE_ORDER_ALARM: GC.readNumber('PRE_ORDER_ALARM') || 20, // 20 minutes before a planned tour will start

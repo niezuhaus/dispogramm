@@ -236,6 +236,26 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
             </div>
             <hr>
             <div class="option w4060">
+              <label>
+                mindestlohn
+              </label>
+              <div>
+                <mat-form-field class="mx-2 price" style="width: 70px">
+                  <input
+                    #minimumWage
+                    matInput
+                    type="number"
+                    class="pr-2"
+                    [(ngModel)]="config.minimumWage"
+                    (focus)="minimumWage.select()"
+                    (change)="changedNumbers.set('minimumWage', minimumWage.valueAsNumber)"
+                    (keyup)="changedNumbers.set('minimumWage', minimumWage.valueAsNumber)">
+                </mat-form-field>
+                €
+              </div>
+            </div>
+            <hr>
+            <div class="option w4060">
               <label>festtouren</label>
               <div>
                 <mat-form-field style="width: 40px">

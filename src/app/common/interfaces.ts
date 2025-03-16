@@ -169,6 +169,7 @@ export interface ConfigDataContract {
     }
   }
   vat: number,
+  minimumWage: number,
   tourplan: {
     PRE_ORDER_ALARM: number,
     NORMAL_ALARM: number,
