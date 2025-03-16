@@ -48,7 +48,8 @@ export class Messenger implements IdObject {
       return;
     }
     if ([ShiftType.dispoEarly, ShiftType.dispoLate].includes(15)) {
-      this.shift.update(`${this.shift.messenger.nickname} wurde ausgecheckt`, true).subscribe(() => {
+      this.shift.update(`${this.shift.messenger.nickname} wurde ausgecheckt`, true).subscribe((s) => {
+        this.shift = s;
         GC.loadShiftsToday(GC.http);
       })
     } else {
@@ -85,12 +86,20 @@ export class Messenger implements IdObject {
     })
   }
 
-  openDialog(): void {
+  toggleActivate(): void {
+    this.active = !this.active;
+    GC.http.updateMessenger(this).subscribe(() => {
+      GC.openSnackBarLong('kurier:in ' + (this.active ? 'aktiviert' : 'deaktiviert'));
+    })
+  }
+
+  openDialog(openShifts?: boolean): void {
     GC.http.getShiftsForMessengerAndMonth(this, new Date()).subscribe(shifts => {
       GC.dialog.open(MessengerDialogComponent, {
         data: {
           messenger: this,
-          shifts: shifts
+          shifts: shifts,
+          selectedIndex: openShifts ? 1 : 0
         }
       });
     })
