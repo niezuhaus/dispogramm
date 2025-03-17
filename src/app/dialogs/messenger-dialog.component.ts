@@ -89,13 +89,9 @@ import { ShiftTableComponent } from '../views/shift-table.component';
             </button>
           </div>
 
-          <div *ngIf="shifts.length > 0" class="mb-4" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden">
-            <shift-table *ngif="shifts.length" [shifts]="shifts" [messenger]="messenger" #table>
+          <div *ngIf="loaded && shifts.length" class="mb-4" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden">
+            <shift-table [shifts]="shifts" [messenger]="messenger" #table>
             </shift-table>  
-          </div>
-
-          <div *ngIf="shifts.length === 0" class="flex justify-content-center align-items-center" style="height: 20vh">
-            <h3>- keine schichten im {{datepicker.months[date.getMonth()]}}   -</h3>
           </div>
 
           <p *ngIf="messenger.active && shifts.length">umsatz diesen monat: {{salesNettoThisMonth._netto}}
@@ -118,12 +114,12 @@ import { ShiftTableComponent } from '../views/shift-table.component';
         für {{shiftsWithoutEnd === 1 ? 'eine' : shiftsWithoutEnd}}
         schicht{{shiftsWithoutEnd > 1 ? 'en' : ''}} wurde noch keine endzeit eingetragen
       </span>
-      <button *ngIf="isDezwo" mat-raised-button
+      <!-- <button *ngIf="isDezwo" mat-raised-button
               class="flex fex-button"
               (click)="deleteMessenger()"
               matDialogClose>
         löschen
-      </button>
+      </button> -->
     </div>
   `,
   styles: []
@@ -132,7 +128,7 @@ export class MessengerDialogComponent implements OnInit {
 
   messenger: Messenger = new Messenger();
   
-  shifts: Shift[];
+  shifts: Shift[] = [];
   jobsThisMonth: Job[] = [];
   shiftsWithoutEnd = 0;
   salesNettoThisMonth = new Price();
@@ -140,7 +136,7 @@ export class MessengerDialogComponent implements OnInit {
   new = true;
   saved = new EventEmitter<boolean>();
   date = new Date();
-  loaded = 0;
+  loaded = false;
 
   get isDezwo() { return GC._isDezwo }
   get routes() { return GC.routes };
@@ -171,7 +167,6 @@ export class MessengerDialogComponent implements OnInit {
         list.forEach(j => {
           j.billingTour ? this.salesNettoThisMonth.add(j.price) : this.salesBruttoThisMonth.add(j.price);
         });
-        this.loaded++;
         this.init();
         if (this.data.createShiftFor) {
           setTimeout(() => { this.shiftTable.newShift(this.data.createShiftFor) }, 100)
@@ -189,7 +184,7 @@ export class MessengerDialogComponent implements OnInit {
     })
     this.shifts.sort((a, b) => {return a.start.getTime() - b.start.getTime()});
     
-    this.loaded++;
+    this.loaded = true;
   }
 
 
