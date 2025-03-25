@@ -70,7 +70,6 @@ export class Zone implements IdObject {
     dialog.componentInstance.confirm.subscribe(() => {
       GC.http.deleteZone(this).subscribe(() => {
         GC.openSnackBarLong('zone wurde gelöscht.');
-        GC.dialog.closeAll();
         GC.refreshNeeded.emit(true);
       });
     });
