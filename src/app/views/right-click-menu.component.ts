@@ -75,6 +75,7 @@ import {Zone} from "../classes/Zone";
         <i class="p-1 bi bi-bicycle bi-context"></i>kurier:in zuweisen
       </button>
       <mat-menu #messengerMenu="matMenu">
+        <button *ngIf="!messengerToday.length" mat-menu-item><span class style="font-style: italic">- keine kurier:innen eingecheckt -</span></button>
         <button *ngFor="let messenger of messengerToday; let i = index"
                 mat-menu-item
                 (click)="''">
