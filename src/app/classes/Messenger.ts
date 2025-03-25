@@ -50,7 +50,7 @@ export class Messenger implements IdObject {
     if (!this.shift || !end) {
       return;
     }
-    if ([ShiftType.dispoEarly, ShiftType.dispoLate].includes(15)) {
+    if ([ShiftType.dispoEarly, ShiftType.dispoLate].includes(this.shift.type)) {
       this.shift.update(`${this.shift.messenger.nickname} wurde ausgecheckt`, true).subscribe((s) => {
         this.shift = s;
         GC.loadShiftsToday(GC.http);
@@ -108,12 +108,16 @@ export class Messenger implements IdObject {
     })
   }
 
-  loadShifts(month: Date): void {
-    GC.http.getShiftsForMessengerAndMonth(this, month).subscribe(
+  loadShifts(month: Date): Observable<Shift[]> {
+    let os = GC.http.getShiftsForMessengerAndMonth(this, month);
+
+    os.subscribe(
       list => {
         this.shifts = list;
         return list;
       }
     )
+
+    return os;
   }
 }
