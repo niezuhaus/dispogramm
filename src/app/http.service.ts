@@ -830,7 +830,11 @@ export class HttpService {
     return this.http.get<Messenger[]>(`${BACKEND_IP}/messengers/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
-        return list.map(m => new Messenger(m));
+        list = list.map(m => new Messenger(m));
+        list.sort((a, b) => {
+          return a.nickname.localeCompare(b.nickname);
+        });
+        return list;
       })
     );
   }
@@ -1120,19 +1124,24 @@ export class HttpService {
   }
 
   createZone(zone: Zone): Observable<Zone> {
-    return this.http.post<Zone>(`${BACKEND_IP}/zones/create`, zone, { headers: this.backendAuthHeader }).pipe(
+    return zip([this.http.post<Zone>(`${BACKEND_IP}/zones/create`, zone, { headers: this.backendAuthHeader }), this.saveConfigItem("price_zone_" + zone.name, zone.price.toString())]).pipe(
       take(1),
-      map(zone => {
-        zone = HttpService._prepareZone(zone);
-        GC.zones.push(zone);
-        return zone;
+      map(result => {
+        let z = result[0];
+        let rc = result[1];
+        z = HttpService._prepareZone(z);
+        GC.zones.push(z);
+        return z;
       })
     );
   }
   updateZone(zone: Zone): Observable<Zone> {
     GC.zones.findAndReplace(zone);
-    return this.http.post<Zone>(`${BACKEND_IP}/zones/update`, zone, { headers: this.backendAuthHeader }).pipe(
+    return zip([this.http.post<Zone>(`${BACKEND_IP}/zones/update`, zone, { headers: this.backendAuthHeader }), this.saveConfigItem("price_zone_" + zone.name, zone.price.toString())]).pipe(
       take(1),
+      map(result => {
+        return result[0];
+      })
     );
   }
   deleteZone(zone: Zone): Observable<Zone> {
