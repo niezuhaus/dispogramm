@@ -1030,7 +1030,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         data: {
           headline: 'der berechnete preis unterscheidet sich von einem vorher festgelegten preis.',
           text: 'welcher preis soll verwendet werden?',
-          verbYes: `berechnet preis (${this.job.price.toString(!this.job.billingTour)})`,
+          verbYes: `berechneter preis (${this.job.price.toString(!this.job.billingTour)})`,
           verbNo: `festgelegter preis (${this.job.priceBackup.toString(!this.job.billingTour)})`,
           warning: true,
         }
