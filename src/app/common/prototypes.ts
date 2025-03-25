@@ -125,6 +125,12 @@ declare global {
     yyyymmdd(): string;
 
     /**
+     * @return a string representing the date in the format yyyymmdd
+     * @example 2023-1
+     */
+    yyyymm(): string;
+
+    /**
      * @return a number representing the date in the format yyyymmdd
      * @example 20230131
      */
@@ -391,6 +397,9 @@ Date.prototype.setDateByString = function (str: string) {
 }
 Date.prototype.yyyymmdd = function () {
   return `${this.getFullYear()}-${this.getMonth() + 1}-${this.getDate()}`;
+}
+Date.prototype.yyyymm = function () {
+  return `${this.getFullYear()}-${this.getMonth() + 1}`;
 }
 Date.prototype.yyyymmddInt = function () {
   return parseInt(`${this.getFullYear()}${(this.getMonth() + 1) <= 9 ? '0' + (this.getMonth() + 1) : (this.getMonth() + 1)}${(this.getDate()) <= 9 ? '0' + this.getDate() : this.getDate()}`);
