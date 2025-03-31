@@ -341,6 +341,10 @@
             </div>
 
             <div id="extraBorder"></div>
+            <div *ngIf="job.outerRing" class="flex-row justify-content-between">
+              <span>zuschlag: außenring</span>
+              <span class="optionDetail">+{{job.outerRing.price.toString(!job.billingTour)}}</span>
+            </div>
 
             <div *ngIf="job.cargoType > 0" class="flex-row justify-content-between">
               <span>
