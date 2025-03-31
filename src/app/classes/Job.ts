@@ -395,7 +395,9 @@ export class Job extends AbstractJob {
 
     // applying connection discount
     const branches = this.set.branches;
+    // zones get applied here
     branches.forEach(b => b.finish());
+    
     if (branches.length > 1) {
       branches.slice(1).forEach(b => b.isConnection = true);
     }
@@ -584,6 +586,7 @@ export class Job extends AbstractJob {
     this.pBranches.branches.concat(this.dBranches.branches).forEach(b => {
       res = res.concat(b.zones)
     })
+    res.push(this.center.zone);
     return [...new Set(res)]
   }
 

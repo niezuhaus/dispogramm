@@ -238,6 +238,8 @@ export class GC {
   public static rawConfigsMap: Map<string, string>;
   public static rawConfigs: RawConfig[] = [];
   public static zones: Zone[];
+  public static inclusiveZones: Zone[] = [];
+  public static exclusiveZones: Zone[] = [];
   public static postCodeZones: Zone[];
   public static zoneByNames = new Map<string, Zone>()
 
@@ -672,6 +674,11 @@ export class GC {
       next: zones => {
         zones.forEach(z => {
           GC.zoneByNames.set(z.name, z);
+          if (z.name == "außenring") {
+            GC.exclusiveZones.push(z);
+          } else {
+            GC.inclusiveZones.push(z);
+          }
         })
         // GC.postCodeZones = plz.map(plz => new Zone({
         //   name: `${plz.properties.postcode} ${plz.properties.name}`,

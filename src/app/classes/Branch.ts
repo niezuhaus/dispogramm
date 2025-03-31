@@ -161,17 +161,36 @@ export class Branch {
   /**
    * looks for the smallest and cheapest zone applying for a station
    * @param station the station to search for
+   * @param inclusive wether station should be checked for inclusive, exclusive zones or both
    * @param startIndex put a value > 0 to exclude certain zones on the search
    * @return the cheapest zone, a station is located in
    */
-  private static findZone(station: Station, startIndex?: number): Zone {
+  private static findZone(station: Station, inclusive: "IN" | "OUT" | "BOTH", startIndex?: number): Zone {
     let res: Zone;
-    for (let i = startIndex || 0; i < GC.zones.length; i++) {
-      let zone = GC.zones[i];
-      // either in inclusive zone has the dot in it or an exclusive has it outside of it
-      // XOR can be applied here
-      if (zone.isSubstractive !== booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
-        return zone;
+    let zones: Zone[];
+    switch (inclusive) {
+      case "IN": zones = GC.inclusiveZones; break;
+      case "OUT": zones = GC.exclusiveZones; break;
+      case "BOTH": zones = GC.zones; break;
+    }
+    for (let i = startIndex || 0; i < zones.length; i++) {
+      let zone = zones[i];
+      switch (inclusive) {
+        case "IN":
+          if (booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
+            return zone;
+          }
+          break;
+        case "OUT":
+          if (!booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
+            return zone;
+          }
+          break;
+        case "BOTH":
+          if (zone.isSubstractive !== booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
+            return zone;
+          }
+          break;
       }
     }
     return null;
@@ -185,16 +204,21 @@ export class Branch {
    * @return the calling branch for chain of responsability
    */
   findZones(): Branch {
-    let centerZone = Branch.findZone(this.center);
-    if (!centerZone) {
+    this.job.center.zone = Branch.findZone(this.center, "IN");
+    this.route.last().zone = Branch.findZone(this.route.last(), "OUT")
+    if (!this.job.center.zone || this.route.last().zone) {
+      // if center is in no inclusive zone
+      // or the furthest station is in an exclusive zone
+      // there is no point of looking further 
+      // just check if center might be in an outside zone 
+      this.job.center.zone = Branch.findZone(this.center, "OUT");
       return this;
     }
     for (let i = this.route.length - 1; i >= 0; i--) {
       if (this.route[i].passType === PassType.stop || this.route[i].passType === PassType.nearby) {
         continue;
       }
-      let zone = Branch.findZone(this.route[i], centerZone.index);
-
+      let zone = Branch.findZone(this.route[i], "IN", this.center.zone.index);
       this.route[i].zone = zone;
       if (!zone) {
         break;
