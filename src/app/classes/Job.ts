@@ -586,7 +586,9 @@ export class Job extends AbstractJob {
     this.pBranches.branches.concat(this.dBranches.branches).forEach(b => {
       res = res.concat(b.zones)
     })
-    res.push(this.center.zone);
+    if (this.center.zone) {
+      res.push(this.center.zone);
+    }
     return [...new Set(res)]
   }
 
