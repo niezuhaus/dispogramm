@@ -72,6 +72,7 @@ export class Job extends AbstractJob {
   messenger: Messenger;
   billingTour: boolean;
   connection = false;
+  outerRing: Zone = null;
   distributeNumber = 0;
   colour: string = '#0000';
 
@@ -666,6 +667,7 @@ export class Job extends AbstractJob {
     this.traveldist = 0;
     this.clientInvolved = true;
     this.connection = false;
+    this.outerRing = null;
     this._priceStrategy = null;
     this._routeMode = RoutingMode.normal;
     this.hasData = false;

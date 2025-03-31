@@ -1,9 +1,7 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Zone} from "../classes/Zone";
-import {Job} from "../classes/Job";
 import {GC} from "../common/GC";
-import {MatTable} from "@angular/material/table";
 import {LngLatBoundsLike, Map} from "mapbox-gl";
 import {initMap} from "../UTIL";
 import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
@@ -15,7 +13,7 @@ import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
     <div style="width: 70vw">
       <h1 mat-dialog-title>zone speichern</h1>
       <div class="flex flex-row justify-content-between align-items-baseline">
-        <div class="flex flex-row">
+        <div class="flex flex-row align-items-center">
           <mat-form-field>
             <mat-label>name</mat-label>
             <input [(ngModel)]="zone.name" matInput type="text">
@@ -26,6 +24,7 @@ import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
             [label]="'preis pro stop'"
             [width]="80"
             [type]="0"></app-price-input>
+            <mat-checkbox class="ml-3" disabled [checked]="zone.isSubstractive">substraktive zone</mat-checkbox>
         </div>
 
         <div>
@@ -33,21 +32,19 @@ import {bbox, Feature, MultiPolygon, polygon, Polygon, union} from "@turf/turf";
         </div>
       </div>
 
-
-
       <div id="mapcontainer">
         <div #map id="map"></div>
       </div>
 
       <div class="flex flex-column">
-        <searchinput
+        <!-- <searchinput
           #zoneSearchbar
           [width]="'250px'"
           [label]="'zone hinzufügen'"
           [searchZones]="true"
           [searchPostCodeZones]="true"
           (zoneSelected)="addToMap($event.polygon)">
-        </searchinput>
+        </searchinput> -->
 
         <button
           #yes
@@ -132,7 +129,7 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit {
   }
 
   addToMap(polygon: Feature<Polygon | MultiPolygon>) {
-    this.zone._polygon = union(this.zone.polygon, polygon)
+    this.zone.polygon = union(this.zone.polygon, polygon)
     this.mapboxDraw.deleteAll();
     this.mapboxDraw.add(this.zone.polygon)
   }

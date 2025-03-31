@@ -11,8 +11,8 @@ import { Zone } from "./Zone";
 export class Branch {
   get routeWithBridges(): IPoint[] {
     if (!this._routeWithBridges) {
-      this._routeWithBridges = 
-      Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
+      this._routeWithBridges =
+        Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
     }
     return this._routeWithBridges;
   }
@@ -150,9 +150,9 @@ export class Branch {
     }
 
     if (!this._routeWithBridges) {
-      this._routeWithBridges = GC.streetRouting ? 
-      this.route.filter(station => station.passType !== PassType.nearby).concat(this.center) :
-      Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
+      this._routeWithBridges = GC.streetRouting ?
+        this.route.filter(station => station.passType !== PassType.nearby).concat(this.center) :
+        Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
     }
     this.sections = recursive(this._routeWithBridges, 0)
     return this;
@@ -165,30 +165,36 @@ export class Branch {
    * @return the cheapest zone, a station is located in
    */
   private static findZone(station: Station, startIndex?: number): Zone {
-    let i = startIndex || 0;
-    while (i < GC.zones.length && !booleanPointInPolygon([station.longitude, station.latitude], GC.zones[i].polygon)) {
-      i++;
+    let res: Zone;
+    for (let i = startIndex || 0; i < GC.zones.length; i++) {
+      let zone = GC.zones[i];
+      // either in inclusive zone has the dot in it or an exclusive has it outside of it
+      // XOR can be applied here
+      if (zone.isSubstractive !== booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
+        return zone;
+      }
     }
-    return i === GC.zones.length ? null : GC.zones[i];
+    return null;
   }
 
   /**
    * looks for applying zones for all stations on the route
-   * leaves untouched all zones with passtype STOP or NEARBY
+   * leaves untouched all stops with passtype STOP or NEARBY
    * if no zone is found for a station, search will be interrupted
-   * (branch left the zone and cannot enter again)
+   * (branch left the zone and cannot enter again, supposing the route is only going further out)
    * @return the calling branch for chain of responsability
    */
   findZones(): Branch {
-    let center = Branch.findZone(this.center);
-    if (!center) {
+    let centerZone = Branch.findZone(this.center);
+    if (!centerZone) {
       return this;
     }
     for (let i = this.route.length - 1; i >= 0; i--) {
       if (this.route[i].passType === PassType.stop || this.route[i].passType === PassType.nearby) {
         continue;
       }
-      let zone = Branch.findZone(this.route[i], center.index);
+      let zone = Branch.findZone(this.route[i], centerZone.index);
+
       this.route[i].zone = zone;
       if (!zone) {
         break;
