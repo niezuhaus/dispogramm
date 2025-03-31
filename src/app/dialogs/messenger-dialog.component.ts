@@ -167,7 +167,7 @@ export class MessengerDialogComponent implements OnInit {
         list.forEach(j => {
           j.billingTour ? this.salesNettoThisMonth.add(j.price) : this.salesBruttoThisMonth.add(j.price);
         });
-        this.init();
+        this.load();
         if (this.data.createShiftFor) {
           setTimeout(() => { this.shiftTable.newShift(this.data.createShiftFor) }, 100)
         }
@@ -197,11 +197,16 @@ export class MessengerDialogComponent implements OnInit {
   }
 
   updateMessenger(): void {
+    let m = new Messenger(this.messenger);
+    m.shifts = null;
+    m.shift = null;
+    m.jobs = null;
+    
     if (!this.new) {
       this.shifts.filter(s => s.edit === true).forEach(s => {
         this.shiftTable.updateShift(s);
       });
-      GC.http.updateMessenger(this.messenger).subscribe(m => {
+      GC.http.updateMessenger(m).subscribe(m => {
         GC.openSnackBarLong(`${m.nickname} wurde aktualisiert.`);
         this.saved.emit(true);
       });
