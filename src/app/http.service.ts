@@ -42,6 +42,7 @@ import { TourplanItem } from "./classes/TourplanItem";
 import { Position } from "@turf/turf";
 import { log } from 'console';
 import { Branch } from './classes/Branch';
+import { filter } from 'd3';
 
 // CONNECTION CONFIG
 const BACKEND_IP = GC.backendIP;
@@ -830,6 +831,7 @@ export class HttpService {
     return this.http.get<Messenger[]>(`${BACKEND_IP}/messengers/all`, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(list => {
+        list = list.filter(m => m.nickname);
         list = list.map(m => new Messenger(m));
         list.sort((a, b) => {
           return a.nickname.localeCompare(b.nickname);
