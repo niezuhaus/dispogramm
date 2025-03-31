@@ -564,9 +564,9 @@ export class GC {
     GC.zones.forEach(zone => {
       zone.price = GC.readPrice('price_zone_' + zone.name) || new Price();
     })
-    GC.zones.sort((a, b) => {
-      return a.price._netto - b.price._netto
-    });
+    // GC.zones.sort((a, b) => {
+    //   return a.price._netto - b.price._netto
+    // });
     GC.zones.forEach((z, i) => {
       z.index = i;
     })
@@ -670,30 +670,20 @@ export class GC {
   private static loadZones(http: HttpService): void {
     http.getZones().subscribe({
       next: zones => {
-        let func = (_zones: Zone[]) => {
-          _zones.forEach(z => {
-            GC.zoneByNames.set(z.name, z);
-          })
-          // GC.postCodeZones = plz.map(plz => new Zone({
-          //   name: `${plz.properties.postcode} ${plz.properties.name}`,
-          //   coordinates: plz.geometry.coordinates[0], // @todo hier wird grad nur eine zone angezeigt 
-          // }))
-          GC.zones = _zones.sort((z1, z2) => z1.name.localeCompare(z2.name));
-          GC.loadedParts.zones = true;
-          if (!GC.fullyLoaded) {
-            GC.fullyLoaded = GC.checkLoaded(true); // zones
-          }
-          this.zonesLoaded.emit(true);
+        zones.forEach(z => {
+          GC.zoneByNames.set(z.name, z);
+        })
+        // GC.postCodeZones = plz.map(plz => new Zone({
+        //   name: `${plz.properties.postcode} ${plz.properties.name}`,
+        //   coordinates: plz.geometry.coordinates[0], // @todo hier wird grad nur eine zone angezeigt 
+        // }))
+        GC.zones = zones.sort((z1, z2) => z1.area - z2.area); // kleinste Zone zuerst
+        
+        GC.loadedParts.zones = true;
+        if (!GC.fullyLoaded) {
+          GC.fullyLoaded = GC.checkLoaded(true); // zones
         }
-
-        if (zones.length === 0) {
-          // zip(Zones.standartZonesHB.map(z => GC.http.createZone(new Zone(z)))).subscribe(newZones => {
-          //   func(newZones)
-          // })
-          func(zones);
-        } else {
-          func(zones);
-        }
+        this.zonesLoaded.emit(true);
       },
       error: (e) => {
         GC.cantConnect = true;
