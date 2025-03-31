@@ -597,7 +597,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     this.polygonIds.forEach((id, name) => {
       this.mapboxDraw.delete(id);
       this.polygonIds.delete(name);
-      // this.mapGL.removeLayer(name);
+      this.mapGL.removeLayer(name);
       if (this.mapGL.getSource(name)) {
         this.mapGL.removeSource(name);
       }
@@ -610,7 +610,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     branch.routeWithBridges.forEach(p => {
       array.push([p.longitude, p.latitude]);
     });
-    this.changeLayer(type, array);
+    this.drawLine(type, array);
   }
 
   drawRoutes(preparedBranches: { type: string, branch: Branch }[]): void {
@@ -618,7 +618,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     GC.http.routeJob(branches).subscribe(branchRoutes => {
       branchRoutes.forEach((branchRoute, index) => {
         branchRoute.forEach(sectionRoute => {
-          this.changeLayer(preparedBranches[index].type, sectionRoute.route.map(p => [p.longitude, p.latitude]));
+          this.drawLine(preparedBranches[index].type, sectionRoute.route.map(p => [p.longitude, p.latitude]));
         })
       });
       this.job.getAllStations().filter(station => station.locType !== LocType.client && station.locType < 5).forEach((station) => {
@@ -629,8 +629,12 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
 
   }
 
-  changeLayer(id: string, coos: Position[]): void {
-    // console.log(coos)
+  /**
+   * 
+   * @param id 
+   * @param coos 
+   */
+  drawLine(id: string, coos: Position[]): void {
     const source: GeoJSONSource = this.mapGL.getSource(id) as GeoJSONSource;
     if (source) {
       source.setData({
