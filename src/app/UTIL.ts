@@ -4,6 +4,7 @@ import mapboxgl, {
   LngLat,
   LngLatBounds,
   NavigationControl, Marker,
+  GeoJSONSource,
 } from "mapbox-gl";
 import {GC} from "./common/GC";
 import {degrees2radians, Position, radians2degrees} from "@turf/turf";
