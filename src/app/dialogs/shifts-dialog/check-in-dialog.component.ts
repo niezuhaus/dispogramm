@@ -110,6 +110,7 @@ export class CheckInDialog {
     },
   ) {
     this.nextCheckout = new Date().nextQuarter();
+  
   }
 
   ngOnInit(): void {

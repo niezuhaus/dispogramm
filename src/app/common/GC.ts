@@ -748,7 +748,7 @@ export class GC {
         }
       })
 
-      GC._dispatcher = list.filter(s => [ShiftType.dispoEarly, ShiftType.dispoLate].includes(s.type)).last();
+      GC._dispatcher = list.filter(s => !s.end && [ShiftType.dispoEarly, ShiftType.dispoLate].includes(s.type)).last();
       GC.dispatcherChanged.emit(!!(GC._dispatcher))
       GC.loadedParts.shifts = true;
       if (!GC.fullyLoaded) {
