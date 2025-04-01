@@ -218,7 +218,7 @@ export class Branch {
       if (this.route[i].passType === PassType.stop || this.route[i].passType === PassType.nearby) {
         continue;
       }
-      let zone = Branch.findZone(this.route[i], "IN", this.center.zone.index);
+      let zone = Branch.findZone(this.route[i], "IN", this.center.zone?.index);
       this.route[i].zone = zone;
       if (!zone) {
         break;

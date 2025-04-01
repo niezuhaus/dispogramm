@@ -93,7 +93,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
 
   get dispoLate(): Messenger[] { return this.shifts.filter(s => { return s.type === ShiftType.dispoLate }).map(s => s.messenger) }
 
-  get earlyShift(): Messenger[] { return this.shifts.filter(s => ([ShiftType.early, ShiftType.zwischi, ShiftType.double, ShiftType.kitaH].includes(s.type))).map(s => s.messenger); }
+  get earlyShift(): Messenger[] { return this.shifts.filter(s => ([ShiftType.early, ShiftType.zwischi, ShiftType.double].includes(s.type))).map(s => s.messenger); }
 
   get lateShift(): Messenger[] { return this.shifts.filter(s => ([ShiftType.late].includes(s.type))).map(s => s.messenger); }
 

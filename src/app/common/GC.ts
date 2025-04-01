@@ -45,7 +45,6 @@ export enum ShiftType {
   zwischi,
   late,
   double,
-  kitaH,
   friki
 }
 
@@ -160,7 +159,7 @@ export class GC {
   ];
   public static posttours = ['käferrunde', 'unirunde', 'große runde', 'kleine runde'];
   public static dispatcherShiftLiterals = ['dispo früh', 'dispo spät'];
-  public static messengerShiftLiterals = ['früh', 'zwischi', 'spät', 'doppel', 'kita h', 'friki'];
+  public static messengerShiftLiterals = ['früh', 'zwischi', 'spät', 'doppel', 'friki'];
   /**
    * all shift types that are relevant for showing on the messenger selector
    */
@@ -169,7 +168,6 @@ export class GC {
     ShiftType.zwischi,
     ShiftType.late,
     ShiftType.double,
-    ShiftType.kitaH,
   ]
   /**
    *
@@ -349,7 +347,6 @@ export class GC {
       [ShiftType.zwischi, new Date().set(10, 30)],
       [ShiftType.late, new Date().set(13)],
       [ShiftType.double, new Date().set(8)],
-      [ShiftType.kitaH, new Date().set(9)],
     ])
 
     GC.endTimes = new Map<ShiftType, Date>([
@@ -359,7 +356,6 @@ export class GC {
       [ShiftType.zwischi, new Date().set(15)],
       [ShiftType.late, new Date().set(18)],
       [ShiftType.double, new Date().set(18)],
-      [ShiftType.kitaH, new Date().set(12)],
     ]);
 
     // async caching

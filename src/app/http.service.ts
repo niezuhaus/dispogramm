@@ -101,10 +101,17 @@ export class HttpService {
   }
 
   public static _filterLocationsByAny(list: Geolocation[], value: string): Geolocation[] {
-    return list.filter(option => {
-      option.editDistance = Math.min(option.name.slice(0, value.length).toLowerCase().editDistance(value.toLowerCase()), option.street.toLowerCase().editDistance(value.toLowerCase()));
-      return option.editDistance < value.length - 1; // everything that's completely different @todo: mix results
+    value = value.toLowerCase();
+    let res = list.filter(option => {
+      if (option.name.toLowerCase().includes(value) || option.street.toLowerCase().includes(value)) {
+        option.editDistance = 0;
+      } else {
+        option.editDistance = Math.min(option.name.slice(0, value.length).toLowerCase().editDistance(value), option.street.slice(0, value.length).toLowerCase().editDistance(value))
+      }
+      
+      return option.editDistance < value.length - 2 && option.editDistance < 5; // everything that's completely different @todo: mix results
     }).sort((a, b) => a.editDistance - b.editDistance);
+    return res;
   }
 
   static _prepareClients(clients: Client[]): Client[] {
