@@ -22,6 +22,7 @@ export class Messenger implements IdObject {
   shifts: Shift[] = [];
   jobs = (date: Date) => { return GC.messengerData(date).get(this.id)?.jobs };
   hours = 0;
+  editDist: number = null;
 
   fexNumber: number;
 
