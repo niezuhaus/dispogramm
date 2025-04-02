@@ -855,15 +855,24 @@ export class HttpService {
       })
     );
   }
-  searchMessenger(searchStr: string, dispatcher?: boolean): Observable<Messenger[]> {
+  searchMessenger(searchStr: string, scope: "RIDING" | "DISPATCHER" | "BOTH"): Observable<Messenger[]> {
     if (searchStr.length < 2) {
       return of([]);
     }
+    let res: Messenger[] = []
 
-    let res = GC.messengers.filter(m =>
-      m.active || m.dispatcher
-      && (!dispatcher || m.dispatcher) // if dispatcher flag dispatcher flag is set, non-dispatcher get filtered out here
-    )
+    switch (scope) {
+      case 'RIDING':
+        res = GC.messengers.filter(m => m.active)
+        break;
+      case 'DISPATCHER':
+        res = GC.dispatchers.copy();
+        break;
+      case 'BOTH':
+        res = GC.messengers.filter(m => m.active || m.dispatcher);
+        break;
+    }
+
     res.forEach(m => m.editDist = m.nickname?.editDistance(searchStr));
     res = res.filter (m => m.editDist < Math.min(searchStr.length, 3));
     res.sort((m1, m2) => m1.editDist - m2.editDist);
