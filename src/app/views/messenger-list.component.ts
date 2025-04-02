@@ -9,7 +9,7 @@ import {MatMenuTrigger} from "@angular/material/menu";
 @Component({
   selector: 'app-messenger-list',
   template: `
-    <div class="flex p-4 w-100 justify-content-between align-items-center">
+    <div class="flex flex-row justify-content-between p-5">
       <a (click)="saveConfig()">{{'inaktive kurier:innen ' + (hideInactive ? 'einblenden' : 'ausblenden')}}</a>
       <!--      <mat-checkbox [checked]="hideInactive()" (click)="saveConfig()">inaktive kurier:innen ausblenden</mat-checkbox>-->
       <button mat-raised-button class="fex-button" (click)="openDialog(null)">

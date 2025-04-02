@@ -32,7 +32,7 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
   selector: 'app-location-list',
   template: `
     <div class="flex flex-row justify-content-between p-5">
-      <div class="flex flex-roww-100">
+      <div class="flex flex-row-100">
         <mat-form-field class="w-50" style="max-width: 200px">
           <mat-label>ort suchen</mat-label>
           <input

@@ -1,24 +1,23 @@
-import {Injectable, Component, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
-import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {Client} from "../../classes/Client";
-import {DateAdapter} from '@angular/material/core';
-import {NewClientDialogComponent} from '../../dialogs/new-client-dialog.component';
-import {Subject} from "rxjs";
-import {GC} from "../../common/GC";
-import {ActivatedRoute} from "@angular/router";
-import {Location} from "@angular/common";
-import {ClientComponent} from "./client/client.component";
-import {Price} from "../../classes/Price";
-import {TitleComponent} from "../app.component";
-import {MatMenuTrigger} from "@angular/material/menu";
+import { Injectable, Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { Client } from "../../classes/Client";
+import { DateAdapter } from '@angular/material/core';
+import { NewClientDialogComponent } from '../../dialogs/new-client-dialog.component';
+import { Subject } from "rxjs";
+import { GC } from "../../common/GC";
+import { ActivatedRoute } from "@angular/router";
+import { Location } from "@angular/common";
+import { ClientComponent } from "./client/client.component";
+import { Price } from "../../classes/Price";
+import { TitleComponent } from "../app.component";
+import { MatMenuTrigger } from "@angular/material/menu";
 
 @Component({
   selector: 'app-overview',
   template: `
-    <div class="flex flex-row">
-      <div class="flex p-3 w-100 justify-content-between align-items-center">
+    <div class="flex flex-row justify-content-between p-5">
 <!--        <button (click)="exportClients()" mat-raised-button class="fex-button">-->
 <!--          <i class="pr-2 bi bi-plus-circle-fill"></i>-->
 <!--          export-->
@@ -31,12 +30,11 @@ import {MatMenuTrigger} from "@angular/material/menu";
             #input
             [(ngModel)]="searchterm">
         </mat-form-field>
-      </div>
-      <div class="flex w-100 justify-content-end">
-        <button (click)="openDialog()" mat-raised-button class="fex-button">
-          <i class="pr-2 bi bi-plus-circle-fill"></i>
-          neue kund:in
-        </button>
+        <div class="flex w-100 justify-content-end">
+          <button (click)="openDialog()" mat-raised-button class="fex-button">
+            <i class="pr-2 bi bi-plus-circle-fill"></i>
+            neue kund:in
+          </button>
       </div>
     </div>
     <div id="tableholder">
@@ -140,9 +138,9 @@ export class ClientListComponent extends TitleComponent implements OnInit {
 
   displayedColumns: string[] = ['clientId', 'name', 'street', 'invoiceAmount'];
   dataSource: MatTableDataSource<Client>;
-  menuTopLeftPosition = {x: 0, y: 0}
+  menuTopLeftPosition = { x: 0, y: 0 }
 
-  get salesThisMonth() {return GC.salesThisMonth};
+  get salesThisMonth() { return GC.salesThisMonth };
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -203,7 +201,7 @@ export class ClientListComponent extends TitleComponent implements OnInit {
 
   exportClients(): void {
     GC.http.exportClients().subscribe(xlsx => {
-      const blob = new Blob([xlsx], {type: 'application/xlsx'});
+      const blob = new Blob([xlsx], { type: 'application/xlsx' });
       const link = document.createElement('a');
       link.download = `clients.xlsx`;
       link.href = window.URL.createObjectURL(blob);
@@ -234,7 +232,7 @@ export class ClientListComponent extends TitleComponent implements OnInit {
     event.preventDefault();
     this.menuTopLeftPosition.x = event.clientX;
     this.menuTopLeftPosition.y = event.clientY;
-    this.matMenuTrigger.menuData = {item: item}
+    this.matMenuTrigger.menuData = { item: item }
     this.matMenuTrigger.openMenu();
   }
 }
