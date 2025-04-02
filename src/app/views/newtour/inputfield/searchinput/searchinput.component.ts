@@ -276,7 +276,7 @@ export class SearchinputComponent implements OnInit {
         filter(term => !!(term)),
         filter(term => term.length >= 1),
         switchMap(term => {
-          return GC.http.searchMessenger(term);
+          return GC.http.searchMessenger(term, "RIDING");
         })
       ).subscribe(messenger => {
         this.messengerOptions = messenger.filter(mess => !this.ignoredMessenger?.map(m => m.id).includes(mess.id));
@@ -289,7 +289,7 @@ export class SearchinputComponent implements OnInit {
         filter(term => !!(term)),
         filter(term => term.length >= 1),
         switchMap(term => {
-          return GC.http.searchMessenger(term, true);
+          return GC.http.searchMessenger(term, "DISPATCHER");
         })
       ).subscribe(dispatcher => {
         this.dispatcherOptions = dispatcher;
