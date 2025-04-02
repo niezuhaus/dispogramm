@@ -106,9 +106,9 @@ export class HttpService {
       if (option.name.toLowerCase().includes(value) || option.street.toLowerCase().includes(value)) {
         option.editDistance = 0;
       } else {
-        option.editDistance = Math.min(option.name.slice(0, value.length).toLowerCase().editDistance(value), option.street.slice(0, value.length).toLowerCase().editDistance(value))
+        option.editDistance = Math.min(option.name.slice(0, value.length).editDistance(value), option.street.slice(0, value.length).editDistance(value))
       }
-      
+
       return option.editDistance < value.length - 2 && option.editDistance < 5; // everything that's completely different @todo: mix results
     }).sort((a, b) => a.editDistance - b.editDistance);
     return res;
@@ -856,18 +856,13 @@ export class HttpService {
     );
   }
   searchMessenger(searchStr: string, dispatcher?: boolean): Observable<Messenger[]> {
-    return this.getMessengerList().pipe(
-      take(1),
-      map(list => {
-        return list
-          .filter(m =>
-            ((searchStr.length > 3 && m.nickname?.replace('î', 'i').editDistance(searchStr) < 4) ||
-              m.nickname?.replace('î', 'i').includes(searchStr))
-            && m.active
-            && (!dispatcher || m.dispatcher)
-          );
-      })
-    );
+    return of(GC.messengers.filter(m =>
+      ((searchStr.length > 3 && m.nickname?.replace('î', 'i').editDistance(searchStr) < 4) ||
+        m.nickname?.replace('î', 'i').includes(searchStr))
+      && m.active
+      && (!dispatcher || m.dispatcher)
+    ));
+
   }
   deleteMessenger(messenger: Messenger): Observable<boolean> {
     GC.messengers.splice(
