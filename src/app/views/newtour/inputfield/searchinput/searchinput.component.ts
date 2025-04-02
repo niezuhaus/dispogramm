@@ -296,6 +296,7 @@ export class SearchinputComponent implements OnInit {
       });
     }
 
+    // zones
     if (this.searchZones) {
       this.change.pipe(
         distinctUntilChanged(),
