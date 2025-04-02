@@ -623,8 +623,16 @@ String.prototype.toHTML = function (): string {
 }
 
 String.prototype.editDistance = function (other: string): number {
-  const s1 = this.toLowerCase();
-  const s2 = other.toLowerCase();
+  const s2 = other.trim().toLowerCase();
+  const s1 = this.trim().toLowerCase().substring(0, other.length);
+
+  if (s2.length > 2 && s1.startsWith(s2)) {
+    return -1;
+  }
+
+  if (s2.length > 4 && s1.includes(s2)) {
+    return 0;
+  }
 
   var costs = [];
   for (var i = 0; i <= s1.length; i++) {
