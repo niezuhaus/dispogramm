@@ -58,22 +58,27 @@
 
   <mat-drawer-container id="content" class="example-container" autosize>
     <mat-drawer id="drawer" #drawer class="example-sidenav p-4" mode="side">
-      <div class="flex align-items-center flex-col">
-        <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().clientlist">
-          <i class="bi bi-person-lines-fill mr-2"></i> kund:innen
-        </button>
-        <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().locations">
-          <i class="bi bi-geo mr-2"></i> standorte
-        </button>
-        <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().messengers">
-          <i class="bi bi-bicycle mr-2"></i> kurier:innen
-        </button>
-        <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().shifts">
-          <i class="bi bi-stopwatch mr-2"></i> schichten
-        </button>
-        <button mat-raised-button class="fex-button align-items-center" style="display: flex" (click)="openConfigDialog(); drawer.close()">
-          <i class="bi bi-gear-wide-connected mr-2"></i> einstellungen
-        </button>
+      <div class="flex flex-col h-100 justify-between">
+        <div class="flex align-items-center flex-col">
+          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().clientlist">
+            <i class="bi bi-person-lines-fill mr-2"></i> kund:innen
+          </button>
+          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().locations">
+            <i class="bi bi-geo mr-2"></i> standorte
+          </button>
+          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().messengers">
+            <i class="bi bi-bicycle mr-2"></i> kurier:innen
+          </button>
+          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().shifts">
+            <i class="bi bi-stopwatch mr-2"></i> schichten
+          </button>
+          <button mat-raised-button class="fex-button align-items-center" style="display: flex" (click)="openConfigDialog(); drawer.close()">
+            <i class="bi bi-gear-wide-connected mr-2"></i> einstellungen
+          </button>
+        </div>
+        <div>
+          <span style="color: gray; font-family: monospace"><i>v{{version}}</i></span>
+        </div>
       </div>
     </mat-drawer>
     <app-loading *ngIf="!loaded"></app-loading>

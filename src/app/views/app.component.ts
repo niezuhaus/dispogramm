@@ -59,6 +59,9 @@ export class AppComponent implements AfterViewInit {
   backendIP = () => {
     return GC.backendIP;
   }
+  get version() {
+    return GC.version
+  };
 
   constructor(
     private http: HttpService,
