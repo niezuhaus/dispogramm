@@ -483,6 +483,9 @@ export class GC {
       workingDays: GC.readNumber('workingDays') || 21.3,
       nearbyDist: GC.readNumber('nearbyDist') || 150,
       showZonesPermanently: GC.readBoolean(('showZonesPermanently')) || false,
+      shifts: {
+        hideShiftless: GC.readBoolean('showOnlyMessWithShift') || true,
+      }
     }
   }
 
