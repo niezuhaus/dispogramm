@@ -200,9 +200,12 @@ export interface ConfigDataContract {
      */
     bing: string,
   }
-  workingDays: number;
-  nearbyDist: number;
-  showZonesPermanently: boolean;
+  workingDays: number,
+  nearbyDist: number,
+  showZonesPermanently: boolean,
+  shifts: {
+    hideShiftless: boolean,
+  }
 }
 
 export interface Extraprice {
