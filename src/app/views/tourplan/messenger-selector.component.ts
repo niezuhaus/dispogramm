@@ -233,7 +233,7 @@ export class MessengerSelectorComponent implements OnInit {
       this.updateMorningTour(null);
     }
     if (this.item.isMorningTour) {
-      this.item.convertedJobs.map(j => j.messenger = null)
+      this.item.convertedJobs.forEach(j => j.messenger = null)
       zip(this.item.convertedJobs.map(j => j.save())).subscribe(() => {
         GC.tourplan.calcSales();
       })
