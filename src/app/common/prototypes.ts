@@ -378,6 +378,9 @@ Date.prototype.set = function (h: number, m?: number, s?: number, ms?: number) {
   return this;
 }
 Date.prototype.setDateByString = function (str: string) {
+  if (!str) {
+    return this;
+  }
   let i = Math.max(0, str.search('-'));
   const res = [0, 0, 0];
   let counter = 0;
