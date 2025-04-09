@@ -71,7 +71,7 @@ import { ShiftTableComponent } from '../views/shift-table.component';
         </div>
       </mat-tab>
 
-      <mat-tab *ngIf="messenger.id" [label]="'schichten (' + shifts.length + ')'">
+      <mat-tab *ngIf="messenger.id" [label]="'schichten (' + messenger.shifts.length + ')'">
         <div *ngIf="!new">
           <div class="mb-3 flex flex-row align-items-center justify-content-between">
             <datepicker
@@ -80,7 +80,7 @@ import { ShiftTableComponent } from '../views/shift-table.component';
               [monthly]="true"
               (dateChange)="load()">
             </datepicker>
-            <button *ngIf="shifts.length > 0" mat-raised-button class="fex-button"
+            <button *ngIf="messenger.shifts.length > 0" mat-raised-button class="fex-button"
                     (click)="exportShifts(messenger, date)">
               lohndatei <i class="ml-3 bi bi-download"></i>
             </button>
@@ -89,12 +89,12 @@ import { ShiftTableComponent } from '../views/shift-table.component';
             </button>
           </div>
 
-          <div *ngIf="loaded && shifts.length" class="mb-4" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden">
-            <shift-table [shifts]="shifts" [messenger]="messenger" #table>
+          <div *ngIf="loaded && messenger.shifts.length" class="mb-4" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden">
+            <shift-table [messenger]="messenger" #table>
             </shift-table>  
           </div>
 
-          <p *ngIf="messenger.active && shifts.length">umsatz diesen monat: {{salesNettoThisMonth._netto}}
+          <p *ngIf="messenger.active && messenger.shifts.length">umsatz diesen monat: {{salesNettoThisMonth._netto}}
             netto
             / {{salesBruttoThisMonth._brutto}} brutto<br>
             insgesamt {{messenger.hours}} stunden
@@ -110,9 +110,9 @@ import { ShiftTableComponent } from '../views/shift-table.component';
               matDialogClose>
         {{messenger.id ? 'speichern' : 'hinzufügen'}}
       </button>
-      <span class="fex-warn" *ngIf="shiftsWithoutEnd > 0">
-        für {{shiftsWithoutEnd === 1 ? 'eine' : shiftsWithoutEnd}}
-        schicht{{shiftsWithoutEnd > 1 ? 'en' : ''}} wurde noch keine endzeit eingetragen
+      <span class="fex-warn" *ngIf="messenger.shiftsWithoutEnd > 0">
+        für {{messenger.shiftsWithoutEnd === 1 ? 'eine' : messenger.shiftsWithoutEnd}}
+        schicht{{messenger.shiftsWithoutEnd > 1 ? 'en' : ''}} wurde noch keine endzeit eingetragen
       </span>
       <!-- <button *ngIf="isDezwo" mat-raised-button
               class="flex fex-button"
@@ -130,7 +130,6 @@ export class MessengerDialogComponent implements OnInit {
   
   shifts: Shift[] = [];
   jobsThisMonth: Job[] = [];
-  shiftsWithoutEnd = 0;
   salesNettoThisMonth = new Price();
   salesBruttoThisMonth = new Price();
   new = true;
@@ -175,25 +174,24 @@ export class MessengerDialogComponent implements OnInit {
     }
   }
 
-  init(): void {
-    if (!this.shifts) {
-      this.shifts = this.data.shifts;
-    }
-    this.shifts.forEach(shift => {
-      shift.money = this.jobsThisMonth.filter(j => j.date.daysDifference(shift.start) === 0).reduce((p, a) => p._add(a.price), new Price())
-    })
-    this.shifts.sort((a, b) => {return a.start.getTime() - b.start.getTime()});
-    
-    this.loaded = true;
-  }
-
-
-
   load(): void {
-    GC.http.getShiftsForMessengerAndMonth(this.messenger, this.date).subscribe(shifts => {
+    this.messenger.loadShifts(this.date).subscribe(shifts => {
       this.shifts = shifts;
       this.init()
+      console.log(this.messenger.shiftsWithoutEnd);
+      
+    });
+  }
+
+  init(): void {
+    if (!this.shifts) {
+      this.shifts = this.messenger.shifts;
+    }
+    this.messenger.shifts.forEach(shift => {
+      shift.money = this.jobsThisMonth.filter(j => j.date.daysDifference(shift.start) === 0).reduce((p, a) => p._add(a.price), new Price())
     })
+    
+    this.loaded = true;
   }
 
   updateMessenger(): void {
@@ -225,10 +223,10 @@ export class MessengerDialogComponent implements OnInit {
   }
 
   exportShifts(messenger: Messenger, date: Date): void {
-    if (this.shiftsWithoutEnd > 0) {
+    if (this.messenger.shiftsWithoutEnd > 0) {
       GC.dialog.open(AreYouSureDialogComponent, {
         data: {
-          headline: `bitte erst für ${this.shiftsWithoutEnd} schichten die endzeiten eintragen`,
+          headline: `bitte erst für ${this.messenger.shiftsWithoutEnd} schichten die endzeiten eintragen`,
           verbNo: 'schließen'
         }
       })

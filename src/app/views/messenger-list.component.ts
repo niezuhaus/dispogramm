@@ -27,6 +27,10 @@ import {MatMenuTrigger} from "@angular/material/menu";
         </span>
         <span *ngIf="messenger.dispatcher">
         <i class="ml-2 bi bi-telephone" style="font-size: 15px"></i> disponent:in
+        <br>
+        </span>
+        <span *ngIf="messenger.hours">
+        <i class="ml-2 bi bi-stopwatch" style="font-size: 15px"></i> {{messenger.hours}}h im {{month}}
         </span>
       </div>
     </div>
@@ -77,7 +81,7 @@ import {MatMenuTrigger} from "@angular/material/menu";
 export class MessengerListComponent extends TitleComponent implements OnInit {
 
   override title = 'kurier:innen';
-
+  month: string = new Date().monthLiteral();
   get hideInactive() {return GC.config?.messenger.hideInactive};
 
   messenger = () => {
