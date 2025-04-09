@@ -812,6 +812,9 @@ export class HttpService {
       map(m => {
         m = new Messenger(m);
         GC.messengers.push(m);
+        if (m.dispatcher) {
+          GC.dispatchers.push(m);
+        }
         GC.messengers.sort((a, b) => a.nickname.localeCompare(b.nickname))
         return m;
       })
@@ -819,6 +822,9 @@ export class HttpService {
   }
   updateMessenger(messenger: Messenger): Observable<Messenger> {
     GC.messengers.findAndReplace(messenger)
+    if (!messenger.dispatcher) {
+      GC.dispatchers.findAndRemove(messenger);
+    }
     return this.http.post<Messenger>(`${BACKEND_IP}/messengers/update`, messenger, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(m => {
@@ -867,6 +873,8 @@ export class HttpService {
         break;
       case 'DISPATCHER':
         res = GC.dispatchers.copy();
+        console.log(res.map(m => m.nickname));
+        
         break;
       case 'BOTH':
         res = GC.messengers.filter(m => m.active || m.dispatcher);
