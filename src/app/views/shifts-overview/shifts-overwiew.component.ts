@@ -11,10 +11,10 @@ import { ActivatedRoute } from '@angular/router';
   template: `
   <div class="h-100">
     <div class="flex w-100 pt-3 p-4 flex-column justify-content-between" style="background-color: white; z-index: 1;">
-      <div class="flex flex-row w-100 align-items-center">
+      <div class="flex flex-row w-100 align-items-center mb-3">
         <datepicker [(date)]="date" [monthly]="true" (dateChange)="monthChanged($event)" #datepicker>
         </datepicker>
-        <mat-checkbox [checked]="filtered" (change)="toggleFilter()">nur kurier:innen mit schicht</mat-checkbox>
+        <mat-checkbox [checked]="filtered" [checked]="hideShiftless" (change)="toggleFilter()">nur kurier:innen mit schicht</mat-checkbox>
       </div>
 
           <div *ngFor="let m of hideShiftless ? filteredMessenger : messengers">
@@ -57,7 +57,7 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
   minimumWage = () => {
     return GC.config.minimumWage;
   }
-  get hideShiftless() {return GC.config.shifts.hideShiftless};
+  get hideShiftless() {return GC.config?.shifts.hideShiftless};
 
   @ViewChild('table') table: ShiftTableComponent;
 
@@ -116,7 +116,7 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
 
   toggleFilter(): void {
     GC.config.shifts.hideShiftless = !GC.config.shifts.hideShiftless;
-    GC.http.saveConfigItem('hideInactive', GC.config.shifts.hideShiftless.toString()).subscribe(() => {
+    GC.http.saveConfigItem('hideShiftless', GC.config.shifts.hideShiftless.toString()).subscribe(() => {
       GC.openSnackBarShort(`kurier:innen ohne schicht ${GC.config.shifts.hideShiftless ? 'ausgeblendet' : 'eingeblendet'}`);
     });
   }
