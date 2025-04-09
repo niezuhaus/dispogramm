@@ -232,7 +232,7 @@ import {Zone} from "../classes/Zone";
       <button *ngIf="shift.edit" mat-menu-item (click)="shift.edit = false">
         <i class="p-1 bi bi-x-circle bi-context"></i>bearbeitung abbrechen
       </button>
-      <button mat-menu-item (click)="shift.delete()">
+      <button mat-menu-item (click)="shift.delete(onShiftDelete)">
         <i class="p-1 bi bi-trash bi-context"></i>schicht löschen
       </button>
     </div>
@@ -298,6 +298,7 @@ export class RightClickMenuComponent implements OnInit {
   @Input() zone: Zone;
   @Input() weekplan: Boolean;
   @Input() date: Date;
+  @Input() onShiftDelete: (shift: Shift) => void;
 
   @Output() itemDeleted = new EventEmitter<boolean>()
   @Output() editJob = new EventEmitter<Job>();

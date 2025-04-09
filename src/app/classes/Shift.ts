@@ -72,7 +72,7 @@ export class Shift implements IdObject {
     return this.start.copy().copyTime(GC.endTimes.get(this.type));
   }
 
-  delete(): void {
+  delete(callback?: (shift: Shift) => void): void {
     const dialog = GC.dialog.open(AreYouSureDialogComponent, {
       data: {
         headline: 'möchtest du diese schicht löschen?',
@@ -86,6 +86,10 @@ export class Shift implements IdObject {
       GC.http.deleteShift(this).subscribe(() => {
         GC.openSnackBarLong('schicht wurde gelöscht.');
         GC.loadShiftsToday(GC.http);
+        GC.messengers.fastfind(this.messenger.id).shifts.findAndRemove(this);
+        if (callback) {
+          callback(this);
+        }
       });
     })
   }

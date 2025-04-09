@@ -119,9 +119,10 @@ import { Messenger } from '../classes/Messenger';
                        [matMenuTriggerFor]="rightMenu">
                       </div>
                   <mat-menu #rightMenu="matMenu">
-                    <ng-template matMenuContent let-item="item">
+                    <ng-template matMenuContent let-item="item" let-onShiftDelete="onShiftDelete">
                       <right-click-menu
-                        [shift]="item">
+                        [shift]="item"
+                        [onShiftDelete]="shiftDeleted.bind(this)">
                       </right-click-menu>
                     </ng-template>
                   </mat-menu>
@@ -137,6 +138,7 @@ export class ShiftTableComponent implements OnInit {
   displayedColumns: string[] = ['number', 'date', 'startend', 'money'];
   menuTopLeftPosition = { x: 0, y: 0 };
 
+  shifts: Shift[] = [];
   hours = 0;
   shiftsWithoutEnd = 0;
   jobsThisMonth: Job[] = [];
@@ -144,8 +146,8 @@ export class ShiftTableComponent implements OnInit {
   get messengerShiftTypes() { return GC.dispatcherShiftLiterals.concat(GC.messengerShiftLiterals) };
   shiftLiterals = (index: number) => { return this.messengerShiftTypes[index]; }
 
-  @Input() shifts: Shift[];
   @Input() messenger: Messenger;
+  @Input() onShiftDelete: (shifts: Shift[]) => void;
 
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
 
@@ -153,28 +155,13 @@ export class ShiftTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataSource = new MatTableDataSource<Shift>(this.shifts);
-    this._calcHours();
+    this.dataSource = new MatTableDataSource<Shift>(this.messenger.shifts);
   }
 
-  _calcHours(): void {  
-    let result = ShiftTableComponent.calcHours(this.shifts);
-    this.hours = result.hours;
-    this.messenger.hours = result.hours;
-    this.shiftsWithoutEnd = result.shiftsWithoutEnd;
-  }
-
-  static calcHours(shifts: Shift[]): {hours: number, shiftsWithoutEnd: number} {
-    let hours = 0;
-    let shiftsWithoutEnd = 0;
-    shifts.forEach(shift => {
-      if (shift.end) {
-        hours += shift.start.hoursDifference(shift.end)
-      } else {
-        shiftsWithoutEnd++;
-      }
-    })
-    return {hours: hours, shiftsWithoutEnd: shiftsWithoutEnd};
+  shiftDeleted(shift: Shift): void {
+    this.shifts = this.messenger.shifts
+    this.dataSource.data = [...this.shifts];
+    this.onShiftDelete(this.shifts)
   }
 
   updateShift(shift: Shift): void {
@@ -187,14 +174,15 @@ export class ShiftTableComponent implements OnInit {
     let routine = () => {
       GC.loadShiftsToday(GC.http);
       this.shifts.sort((a, b) => { return a.start.getTime() - b.start.getTime() });
-      this._calcHours();
       this.shifts.forEach(shift => {
         shift.money = this.jobsThisMonth.filter(j => j.date.daysDifference(shift.start) === 0).reduce((p, a) => p._add(a.price), new Price())
       })
     }
 
     if (!shift.id) {
+      shift = new Shift(shift);
       shift.messenger.shift = null;
+      shift.messenger.shifts = null;
       GC.http.createShift(shift).subscribe((s) => {
         routine();
       })
@@ -205,20 +193,20 @@ export class ShiftTableComponent implements OnInit {
     }
   }
 
-    newShift(date?: Date): void {
-      const s = new Shift({ messenger: this.messenger, start: date });
-      s.startTimeGuess(true);
-      s.end = s.endTimeGuess();
-      s.edit = true;
-      this.dataSource.data.push(s);
-      this.table.renderRows();
-    }
+  newShift(date?: Date): void {
+    const s = new Shift({ messenger: this.messenger, start: date });
+    s.startTimeGuess(true);
+    s.end = s.endTimeGuess();
+    s.edit = true;
+    this.dataSource.data.push(s);
+    this.table.renderRows();
+  }
 
   onRightClick(event: MouseEvent, item: any) {
     event.preventDefault();
     this.menuTopLeftPosition.x = event.clientX;
     this.menuTopLeftPosition.y = event.clientY;
-    this.matMenuTrigger.menuData = { item: item }
+    this.matMenuTrigger.menuData = { item: item, onShiftDelete: this.shiftDeleted.bind(this) }
     this.matMenuTrigger.openMenu();
   }
 

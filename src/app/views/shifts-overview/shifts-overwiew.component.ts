@@ -10,14 +10,19 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'app-shifts-overwiew',
   template: `
   <div class="h-100">
-    <div class="flex w-100 pt-3 p-4 flex-column justify-content-between" style="background-color: white; z-index: 1;">
+  <div *ngIf="!shiftsLoaded" style="height: 90vh !important;"
+       class="flex w-100 h-100 align-items-center justify-content-center">
+    <bike style="margin: auto"></bike>
+  </div>
+
+    <div *ngIf="shiftsLoaded" class="flex w-100 pt-3 p-4 flex-column justify-content-between" style="background-color: white; z-index: 1;">
       <div class="flex flex-row w-100 align-items-center mb-3">
         <datepicker [(date)]="date" [monthly]="true" (dateChange)="monthChanged($event)" #datepicker>
         </datepicker>
-        <mat-checkbox [checked]="filtered" [checked]="hideShiftless" (change)="toggleFilter()">nur kurier:innen mit schicht</mat-checkbox>
+        <mat-checkbox [checked]="hideShiftless()" (change)="toggleFilter()">nur kurier:innen mit schicht</mat-checkbox>
       </div>
 
-          <div *ngFor="let m of hideShiftless ? filteredMessenger : messengers">
+          <div *ngFor="let m of hideShiftless() ? filteredMessenger : messengers">
               <div [style.opacity]="m.shifts.length ? 1 : .25">
                   <h3 style="cursor: pointer; white-space: nowrap; margin: 0">
                       <a (click)="m.openDialog(true)">{{!m.lastName ? '(kein nachname)' : m.lastName}}, {{!m.firstName ?
@@ -28,9 +33,11 @@ import { ActivatedRoute } from '@angular/router';
                   </h5>
                   <h6>{{m.shifts?.length}} schicht(en) im {{months()[date.getMonth()]}} {{date.getFullYear()}}</h6>
                   <h6 *ngIf="m.shifts?.length">insgesamt {{m.hours}} stunden ({{(m.hours * minimumWage()).round(2)}}€)</h6>
-                  <shift-table *ngIf="m.shifts?.length" [shifts]="m.shifts" [messenger]="m">
-  
+                  <shift-table #table *ngIf="m.shifts?.length" [messenger]="m" [onShiftDelete]="load.bind(this)">
                   </shift-table>
+                  <button mat-raised-button class="fex-button mt-4" (click)="table.newShift()" matTooltip="neue schicht hinzufügen">
+              schicht hinzufügen <i class="ml-3 bi bi-plus-circle"></i>
+            </button>
               </div>
               <hr>
           </div>
@@ -43,21 +50,20 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
 
   override title = 'schichten';
   shiftsLoaded = false;
-
   date = new Date;
-  filtered = true;
-
+  hideShiftless = () => {
+    return GC.config?.shifts.hideShiftless
+  }
   messengers: Messenger[] = [];
   filteredMessenger: Messenger[] = [];
 
   months = () => {
-    return GC.months;
+    return GC.monthLiterals;
   }
 
   minimumWage = () => {
     return GC.config.minimumWage;
   }
-  get hideShiftless() {return GC.config?.shifts.hideShiftless};
 
   @ViewChild('table') table: ShiftTableComponent;
 
@@ -85,14 +91,14 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
         switch (true) {
           case !a.lastName && !b.lastName:
             return 0;
-  
+
           case !a.lastName:
             return 1;
-  
+
           case !b.lastName:
             return -1;
         }
-  
+
         return (a.lastName).localeCompare(b.lastName);
       });
 
@@ -101,6 +107,9 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
   }
 
   load(): void {
+    console.log('now');
+
+    this.shiftsLoaded = false;
     zip(this.messengers.map(m => m.loadShifts(this.date))).subscribe(res => {
       this.filteredMessenger = this.messengers.filter((m, i) => res[i].length);
       this.shiftsLoaded = true;
@@ -115,7 +124,7 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
   }
 
   toggleFilter(): void {
-    GC.config.shifts.hideShiftless = !GC.config.shifts.hideShiftless;
+    GC.config.shifts.hideShiftless = !this.hideShiftless();
     GC.http.saveConfigItem('hideShiftless', GC.config.shifts.hideShiftless.toString()).subscribe(() => {
       GC.openSnackBarShort(`kurier:innen ohne schicht ${GC.config.shifts.hideShiftless ? 'ausgeblendet' : 'eingeblendet'}`);
     });
