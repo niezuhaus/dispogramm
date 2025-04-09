@@ -115,7 +115,9 @@ export class MessengerListComponent extends TitleComponent implements OnInit {
 
   saveConfig(): void {
     GC.config.messenger.hideInactive = !GC.config.messenger.hideInactive;
-    GC.http.saveConfigItem('hideInactive', GC.config.messenger.hideInactive.toString()).subscribe(() => {});
+    GC.http.saveConfigItem('hideInactive', GC.config.messenger.hideInactive.toString()).subscribe(() => {
+      GC.openSnackBarShort(`inaktive kurier:innen ${GC.config.messenger.hideInactive ? 'ausgeblendet' : 'eingeblendet'}`);
+    });
   }
 
   onRightClick(event: MouseEvent, messenger: Messenger) {
