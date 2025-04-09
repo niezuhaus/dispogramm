@@ -9,6 +9,7 @@ import { map, Observable } from "rxjs";
 
 export class Messenger implements IdObject {
 
+  // db fields
   id: string; // dbid
   messengerId: string; // fexid
   nickname: string;
@@ -17,14 +18,17 @@ export class Messenger implements IdObject {
   dispatcher = false;
   active = true;
   telNumber: string;
+
+  // runtime variables
+  fexNumber: number; // to show on tourplan
   sales = (date: Date) => { return GC.messengerData(date).get(this.id)?.sales };
+  jobs = (date: Date) => { return GC.messengerData(date).get(this.id)?.jobs };
   shift: Shift;
   shifts: Shift[] = [];
-  jobs = (date: Date) => { return GC.messengerData(date).get(this.id)?.jobs };
+  shiftsWithoutEnd = 0;
   hours = 0;
   editDist: number = null;
 
-  fexNumber: number;
 
   constructor(data?: Partial<Messenger>) {
     if (data) {
@@ -109,16 +113,35 @@ export class Messenger implements IdObject {
     })
   }
 
-  loadShifts(month: Date): Observable<Shift[]> {
-    let os = GC.http.getShiftsForMessengerAndMonth(this, month);
-
-    os.subscribe(
-      list => {
+  loadShifts(month?: Date): Observable<Shift[]> {
+    month = month ? month : new Date();
+    let os = GC.http.getShiftsForMessengerAndMonth(this, month).pipe(
+      map(list => {
+        list.sort((a, b) => {return a.start.getTime() - b.start.getTime()});
         this.shifts = list;
+        this._calcHours();
         return list;
-      }
-    )
-
+      })
+    );
     return os;
+  }
+
+  _calcHours(): void {  
+    let result = Messenger.calcHours(this.shifts);
+    this.hours = result.hours;
+    this.shiftsWithoutEnd = result.shiftsWithoutEnd;
+  }
+
+  static calcHours(shifts: Shift[]): {hours: number, shiftsWithoutEnd: number} {
+    let hours = 0;
+    let shiftsWithoutEnd = 0;
+    shifts.forEach(shift => {
+      if (shift.end) {
+        hours += shift.start.hoursDifference(shift.end)
+      } else {
+        shiftsWithoutEnd++;
+      }
+    })
+    return {hours: hours, shiftsWithoutEnd: shiftsWithoutEnd};
   }
 }
