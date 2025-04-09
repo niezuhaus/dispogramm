@@ -135,6 +135,18 @@ export class SearchinputComponent implements OnInit {
     this.ctrlVoid = new FormControl({value: '', disabled: this.disabled}, [])
   }
 
+  ngOnChanges(): void {
+    if (this.ctrl) {
+      if (this.disabled) {
+        this.ctrl.disable({ emitEvent: false });
+        this.ctrlVoid.disable({ emitEvent: false });
+      } else {
+        this.ctrl.enable({ emitEvent: false });
+        this.ctrlVoid.enable({ emitEvent: false });
+      }
+    }
+  }
+
   // Events
 
   setListeners(): void {
