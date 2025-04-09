@@ -59,6 +59,10 @@ declare global {
 
     dateStampShort(): string;
 
+    getDayLiteral(): string;
+
+    monthLiteral(): string;
+
     /**
      * calculates the full 24h cycles between the two dates
      * @param compareWith
@@ -306,6 +310,12 @@ Date.prototype.dateStampLong = function () {
 }
 Date.prototype.dateStampShort = function () {
   return `${GC.dayLiterals[this.getDay()]}, ${this.getDate()}.${this.getMonth() + 1}.`
+}
+Date.prototype.getDayLiteral = function () {
+  return GC.dayLiterals[this.getDay()];
+}
+Date.prototype.monthLiteral = function () {
+  return GC.monthLiterals[this.getMonth()];
 }
 Date.prototype.daysDifference = function (compareWith: Date) {
   if (!compareWith) {
