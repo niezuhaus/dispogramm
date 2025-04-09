@@ -145,7 +145,7 @@ export class GC {
   public static dayLiterals = ['so', 'mo', 'di', 'mi', 'do', 'fr', 'sa'];
   public static numberLiteralsAkkusativ = ['', '', 'beiden', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht', 'neun', 'zehn', 'elf', 'zwölf']
   public static days = ['sonntag', 'montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag'];
-  public static months = [
+  public static monthLiterals = [
     'januar', 'februar', 'märz',
     'april', 'mai', 'juni',
     'juli', 'august', 'september',
@@ -775,10 +775,12 @@ export class GC {
   private static loadMessengers = (http: HttpService) => {
     http.getMessengerList().subscribe(list => {
       GC.messengers = list;
-      GC.loadedParts.messenger = true;
-      if (!GC.fullyLoaded) {
-        GC.fullyLoaded = GC.checkLoaded(true); // messenger
-      }
+      zip(list.map(m => m.loadShifts())).subscribe(shifts => {
+        GC.loadedParts.messenger = true;
+        if (!GC.fullyLoaded) {
+          GC.fullyLoaded = GC.checkLoaded(true); // messenger
+        }
+      })
     })
   }
 

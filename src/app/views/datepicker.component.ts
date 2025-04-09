@@ -70,7 +70,7 @@ export class DatepickerComponent implements OnInit {
   @ViewChild('picker') picker: MatDatepicker<Date>;
 
   get dayLiterals() {return GC.dayLiterals};
-  get months() {return GC.months};
+  get months() {return GC.monthLiterals};
   get days() {return GC.days};
   get daysDifference() {return this.date.daysDifference(this.today)};
 
