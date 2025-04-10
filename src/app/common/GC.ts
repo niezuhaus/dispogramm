@@ -157,7 +157,8 @@ export class GC {
     'Jul', 'Aug', 'Sep',
     'Okt', 'Nov', 'Dez'
   ];
-  public static posttours = ['käferrunde', 'unirunde', 'große runde', 'kleine runde'];
+  public static posttours = ['käfer 1', 'ohb + dhpg', 'große runde', 'kleine runde + emde', 'käfer 2'];
+  public static posttoursStartTimes = [8, 9, 10, 10, 10];
   public static dispatcherShiftLiterals = ['dispo früh', 'dispo spät'];
   public static messengerShiftLiterals = ['früh', 'zwischi', 'spät', 'doppel', 'friki'];
   /**
@@ -825,6 +826,7 @@ export class GC {
   public static setMessengerInShift = (shifts: Shift[]) => {
     return zip(shifts.map(s => GC.http.createShift(s)))
   }
+
   public static deleteOpenShift = (shift: Shift) => {
     GC.http.deleteShift(shift).subscribe(() => {
       GC.loadShiftsToday(GC.http);

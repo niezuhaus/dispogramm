@@ -598,7 +598,7 @@ export class HttpService {
     const posttourTPIs = GC.posttours.map((str, i) => {
       const rjsInTour = rjs.filter(rj => rj.morningTour === i + 1);
       return new TourplanItem({
-        _date: date.copy().set(8),
+        _date: date.copy().set(GC.posttoursStartTimes[i]),
         _price: rjsInTour.map(rj => rj.price).reduce((a, b) => a.add(b), new Price()),
         morningTour: i + 1,
         _name: str,
@@ -874,7 +874,7 @@ export class HttpService {
       case 'DISPATCHER':
         res = GC.dispatchers.copy();
         console.log(res.map(m => m.nickname));
-        
+
         break;
       case 'BOTH':
         res = GC.messengers.filter(m => m.active || m.dispatcher);
@@ -882,7 +882,7 @@ export class HttpService {
     }
 
     res.forEach(m => m.editDist = m.nickname?.editDistance(searchStr));
-    res = res.filter (m => m.editDist < Math.min(searchStr.length, 3));
+    res = res.filter(m => m.editDist < Math.min(searchStr.length, 3));
     res.sort((m1, m2) => m1.editDist - m2.editDist);
 
     return of(res);
@@ -900,6 +900,8 @@ export class HttpService {
   }
 
   createShift(shift: Shift): Observable<Shift> {
+    shift.messenger.shift = null;
+    shift.messenger.shifts = null
     return this.http.post<Shift>(`${BACKEND_IP}/shifts/create`, shift, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map(s => {
