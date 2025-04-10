@@ -118,7 +118,8 @@ export class CheckInDialog {
   }
 
   checkIn(): void {
-    GC.setMessengerInShift(this.messengerShifts.concat(this.dispatcherShift ? this.dispatcherShift : [] )).subscribe(() => {
+    let checkinShifts = this.messengerShifts.concat(this.dispatcherShift ? this.dispatcherShift : [] )
+    GC.setMessengerInShift(checkinShifts).subscribe(() => {
       GC.openSnackBarLong("kurier:innen eingecheckt!");
       setItem<Date>('date', new Date());
       GC.loadShiftsToday(GC.http);
