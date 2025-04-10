@@ -20,6 +20,7 @@ import {DatepickerComponent} from "./datepicker.component";
 import {CalendarRangeDialogComponent} from "../dialogs/calendar-range-dialog/calendar-range-dialog.component";
 import {SearchinputComponent} from "./newtour/inputfield/searchinput/searchinput.component";
 import {Zone} from "../classes/Zone";
+import { Title } from '@angular/platform-browser';
 
 export abstract class TitleComponent {
   title: string;
@@ -71,6 +72,7 @@ export class AppComponent implements AfterViewInit {
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
     private location: Location,
+    private titleService: Title,
   ) {
     this.gc = new GC(http, router, snackbar, dialog, cd, location, route);
   }
@@ -79,6 +81,7 @@ export class AppComponent implements AfterViewInit {
     GC.loaded().subscribe(() => {
       this.loaded = true;
     })
+    this.titleService.setTitle('dispogramm - v' + GC.version);
   }
 
   ngAfterViewInit(): void {
