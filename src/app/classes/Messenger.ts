@@ -20,10 +20,28 @@ export class Messenger implements IdObject {
   telNumber: string;
 
   // runtime variables
-  fexNumber: number; // to show on tourplan
+  /**
+   * telephone number to show on tourplan
+   * (supposed to be between 1-9)
+   */
+  fexNumber: number;
+  /**
+   * @param date the date to get the sales for
+   * @returns a quadruple of prices representing the sum value of all jobs done in this shift by this messenger
+   */
   sales = (date: Date) => { return GC.messengerData(date).get(this.id)?.sales };
+  /**
+   * @param date the date to get the jobs for
+   * @returns a list of all jobs done by this messenger at the given date
+   */
   jobs = (date: Date) => { return GC.messengerData(date).get(this.id)?.jobs };
+  /**
+   * reference to a shift, the messenger is in right now
+   */
   shift: Shift;
+  /**
+   * reference to a list of shifts for a month
+   */
   shifts: Shift[] = [];
   shiftsWithoutEnd = 0;
   hours = 0;
