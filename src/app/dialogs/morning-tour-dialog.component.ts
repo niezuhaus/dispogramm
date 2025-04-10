@@ -108,6 +108,7 @@ export class MorningTourDialogComponent implements OnInit {
       items: TourplanItem[]
     }
   ) {
+    data.items.sort ((a, b) => b._date.getTime() - a._date.getTime()) // desc
     this.dataSource = new MatTableDataSource<TourplanItem>(data.items);
   }
 
