@@ -1,4 +1,5 @@
 <div class="h-100">
+
   <!--header-->
   <div class="flex w-100 flex-column justify-content-between" style="background-color: white; z-index: 1;">
     <div class="flex justify-content-between align-items-center">
@@ -57,12 +58,14 @@
   <!--  </p>-->
   <!--</div>-->
 
+  <!-- loading screen -->
   <div *ngIf="!loaded" style="height: 90vh !important;"
        class="flex w-100 h-100 align-items-center justify-content-center">
     <bike style="margin: auto"></bike>
   </div>
 
-  <div *ngIf="loaded" [style.visibility]="(loaded) ? 'unset' : 'hidden'" class="h-100">
+  <div *ngIf="loaded" [style.visibility]="(loaded) ? 'unset' : 'hidden'">
+    <!-- no tours screen -->
     <div *ngIf="loaded && (!items || !(items.length > 0))"
          class="flex w-100 h-50 justify-content-around position-relative"
          style="top: 60px">
@@ -74,7 +77,6 @@
           </i>
         </h2>
       </div>
-      <!--    <div *ngIf=""></div>-->
     </div>
 
     <section id="tourplan" class="flex flex-column justify-content-between" *ngIf="items.length > 0">

@@ -17,7 +17,8 @@ td {
 }
 
 #tourplan {
-  height: calc(100% - 100px)
+	height: calc(100vh - 160px);
+	overflow: scroll;
 }
 
 #footer {
