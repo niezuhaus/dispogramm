@@ -31,18 +31,24 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
-  globalSetup: require.resolve('./e2e/global-setup'),
+  // globalSetup: require.resolve('./e2e/global-setup'),
   /* Configure projects for major browsers */
   projects: [
+    {
+      name: 'backend setup',
+      use: {...devices['Desktop Firefox'] },
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
+      name: 'after setup',
+      use: { ...devices['Desktop Firefox'] },
+      dependencies: ['backend setup']
+    },
+
     // {
     //   name: 'chromium',
     //   use: { ...devices['Desktop Chrome'] },
     // },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
 
     // {
     //   name: 'webkit',
