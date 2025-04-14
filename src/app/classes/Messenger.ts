@@ -92,6 +92,7 @@ export class Messenger implements IdObject {
   copy(): Messenger {
     const m = new Messenger(this);
     m.shift = null;
+    m.shifts = null;
     return m;
   }
 
