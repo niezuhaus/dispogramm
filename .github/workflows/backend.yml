@@ -15,34 +15,33 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
-    # steps:
-    #   - name: Checkout Repository
-    #     uses: actions/checkout@v3
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    #   - name: Setup Java
-    #     uses: actions/setup-java@v3
-    #     with:
-    #       distribution: temurin
-    #       java-version: '11'
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '11'
 
-    #   - name: Start Java Backend
-    #     run: |
-    #       nohup java -jar backend-latest.jar &
-    #       # Kurze Pause, damit sich das Backend initialisieren kann.
-    #       sleep 15
+      - name: Start Java Backend
+        run: |
+          nohup java -jar backend-latest.jar &
+          # Kurze Pause, damit sich das Backend initialisieren kann.
+          sleep 15
 
-    #   - name: Install Node Abhängigkeiten
-    #     run: npm install
+      - name: Install Node Abhängigkeiten
+        run: npm install
 
-    #   - name: Starte Frontend
-    #     run: |
-    #       nohup npm run start &
-    #       sleep 10
+      - name: Starte Frontend
+        run: |
+          nohup npm run start &
+          sleep 10
 
-    #   - name: Run Playwright Tests
-    #     run: npx playwright test
+      - name: Run Playwright Tests
+        run: npx playwright test
