@@ -195,14 +195,27 @@ export class Job extends AbstractJob {
   }
 
   priceBackup: Price = new Price();
-  customPrice = false;
-  extraPrice = false;
+  /**
+   * a price that's been loaded but differs from the calculated price
+   */
+  customPrice: Price = null;
+  /**
+   * a price that's been entered by the user and differs from the calculated price
+   * (will become future custromprice if saved)
+   */
+  enteredPrice: Price = null;
+  calcedPrice: Price = null;
   waitingPrice = new Price();
-  priceWithoutWaitingPrice = new Price();
+  priceWithoutWaitingPrice: Price = null;
   groupExtra = new Price();
   searchStr: string;
-
   finished: boolean;
+
+  get totalCost(): Price {
+    let res = this.price._add(this.waitingPrice);
+    res._netto += this.expenseSum
+    return res;
+  }
 
   set _finished(value: boolean) {
     if (this.date.timeUntil() > 0) {
@@ -324,9 +337,7 @@ export class Job extends AbstractJob {
     } else {
       if (this.waitingMinutes > 0) {
         this.waitingPrice = new Price().waitingMinutes(this.waitingMinutes);
-        this.priceWithoutWaitingPrice = this.price._sub(this.waitingPrice);
-      } else {
-        this.priceWithoutWaitingPrice = this.price.copy();
+        this.price.sub(this.waitingPrice);
       }
     }
 
@@ -359,6 +370,12 @@ export class Job extends AbstractJob {
     this.deliveries = filterBacktours(this.deliveries, this.pickups);
   }
 
+  /**
+   * initializes the job setting up all necessary data structures
+   * @param options.pushPrice a differing price that should be shown instead of the calculated price
+   * @param options.pushDate a differing date that should be shown instead of today
+   * @returns the initiated job
+   */
   public init(options?: { pushPrice?: Price, pushDate?: Date }): Job {
     if (options?.pushDate) {
       this.date = options.pushDate;
@@ -403,13 +420,13 @@ export class Job extends AbstractJob {
     }
 
     this.hasData = true;
-    let calcedPrice = this.calcPrice();
+    this.calcedPrice = this.calcPrice();
     if (this.regularJob?.monthlyPrice?._netto > 0) {
       this.regularJob.price = this.regularJob.monthlyPrice.regularJobPrice;
     }
-    this.price.set(calcedPrice);
-    if (options?.pushPrice && calcedPrice._netto !== options?.pushPrice._netto) {
-      this.customPrice = true;
+    this.price.set(this.calcedPrice);
+    if (options?.pushPrice && !this.calcedPrice.isEqual(options?.pushPrice)) {
+      this.customPrice = options.pushPrice;
     }
     this.traveldist = this.calcDist().round(2);
     this.initiated = true;
@@ -492,7 +509,9 @@ export class Job extends AbstractJob {
         }
       }
       // adds a potential extra (e.g. cargo bike etc.)
-      res.add(GC.config.prices.extras[this.cargoType]);
+      if (![SpecialPriceType.group, SpecialPriceType.baseExtra].includes(this.priceStrategyObj.mode)) {
+        res.add(GC.config.prices.extras[this.cargoType]);
+      }
 
       // subtracts a manually added connection discount
       if (this.connection) {
@@ -508,7 +527,8 @@ export class Job extends AbstractJob {
   }
 
   /**
-   * @return the total length of all branches in km
+   * calculates the total length of all branches in km unrounded
+   * @return the total distance in km
    * */
   public calcDist(): number {
     let res = 0;
@@ -528,21 +548,21 @@ export class Job extends AbstractJob {
   }
 
   public changePrice(value: string, isBrutto: boolean): void {
+    let newPrice: Price;
     if (value.trim() === '') {
-      this.extraPrice = false;
+      this.enteredPrice = null;
     } else {
       value = value.replace(',', '.');
-      this.extraPrice = parseFloat(value) !== (isBrutto ? this.priceBackup._brutto : this.priceBackup._netto);
+      newPrice = new Price(parseFloat(value));
+      console.log(this.calcedPrice);
+      
+      this.enteredPrice = newPrice.isEqual(this.calcedPrice) ? null : newPrice;
     }
-    const newPrice = parseFloat(value);
-    if (!(newPrice >= 0)) {
+    if (!(this.enteredPrice)) {
+      this.price.set(this.calcedPrice);
       return;
     }
-    if (isBrutto) {
-      this.price._brutto = newPrice;
-    } else {
-      this.price._netto = newPrice;
-    }
+    this.price.set(this.enteredPrice)
   }
 
   private getPickups(): Geolocation[] {
@@ -659,7 +679,7 @@ export class Job extends AbstractJob {
     this.price = new Price();
     this.cargoType = 0;
     this.date = new Date();
-    this.extraPrice = false;
+    this.enteredPrice = null;
     this.center = null;
     this.pickups = [];
     this.deliveries = [];
