@@ -39,6 +39,9 @@ jobs:
           node-version: lts/*
 
       - name: Install Node Dependencies
+        run: npm install
+
+      - name: Install Node Dependencies
         run: npm ci
 
       - name: Install Playwright Browsers
