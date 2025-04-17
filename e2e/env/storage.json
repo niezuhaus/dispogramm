@@ -6,11 +6,11 @@
       "localStorage": [
         {
           "name": "recentBackendIPs",
-          "value": "{\"IPs\":[\"http://localhost:8081/\"]}"
+          "value": "{\"IPs\":[\"https://cloud.niezuhaus.de/api/\"]}"
         },
         {
           "name": "backendIP",
-          "value": "\"http://localhost:8081/\""
+          "value": "\"https://cloud.niezuhaus.de/api/\""
         }
       ]
     }
