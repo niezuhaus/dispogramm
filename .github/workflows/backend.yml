@@ -34,10 +34,10 @@ jobs:
       - name: Install Node Abhängigkeiten
         run: npm install
 
-      - name: Starte Frontend
-        run: |
-          nohup npm run start &
-          sleep 10
+      # - name: Starte Frontend
+      #   run: |
+      #     nohup npm run start &
+      #     sleep 10
 
       - name: Run Playwright Tests
         run: npx playwright test
