@@ -224,6 +224,8 @@ declare global {
     abs(): number
 
     floor(): number
+
+    toStringFillZero(digits: number): string
   }
 
   interface String {
@@ -629,6 +631,15 @@ Number.prototype.abs = function () {
 }
 Number.prototype.floor = function () {
   return Math.floor(this as number);
+}
+Number.prototype.toStringFillZero = function (digits: number) {
+  let res = this.toString();
+  let aftercomma = res.indexOf('.') ? res.length - res.indexOf('.') : 0
+  res += '.'
+  for (let i = digits - aftercomma; i < digits; i++) {
+    res += '0'
+  }
+  return res;
 }
 
 String.prototype.toHTML = function (): string {
