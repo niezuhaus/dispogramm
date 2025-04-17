@@ -1029,7 +1029,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       }
     }
 
-    if (this.job.customPrice && this.job.price._netto !== this.job.priceBackup._netto) {
+    if (this.job.customPrice && !this.job.price.isEqual(this.job.customPrice)) {
       const dialog = GC.dialog.open(AreYouSureDialogComponent, {
         data: {
           headline: 'der berechnete preis unterscheidet sich von einem vorher festgelegten preis.',
