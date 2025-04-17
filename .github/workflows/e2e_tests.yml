@@ -8,29 +8,29 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: self-hosted
-    services:
-      mongo:
-        image: mongo:latest
-        ports:
-          - 27017:27017
+    runs-on: ubuntu-latest
+    # services:
+    #   mongo:
+    #     image: mongo:latest
+    #     ports:
+    #       - 27017:27017
 
     steps:
-      # Backend Setup
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      # # Backend Setup
+      # - name: Checkout Repository
+      #   uses: actions/checkout@v3
 
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: '11'
+      # - name: Setup Java
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     distribution: temurin
+      #     java-version: '11'
 
-      - name: Start Java Backend
-        run: |
-          nohup java -jar backend-latest.jar &
-          # Kurze Pause, damit sich das Backend initialisieren kann.
-          sleep 15
+      # - name: Start Java Backend
+      #   run: |
+      #     nohup java -jar backend-latest.jar &
+      #     # Kurze Pause, damit sich das Backend initialisieren kann.
+      #     sleep 15
 
       # Frontend Setup
       - name: Setup Node.js
@@ -47,7 +47,12 @@ jobs:
       # Playwright Tests
       - name: Run Playwright Tests
         env:
-          BACKEND_URL: http://localhost:8080 # Beispiel-URL des Backends
+          FALL_BACKEND: ${{ secrets.FALL_BACKEND }}
+          API_AUTH_NAME: ${{ secrets.API_AUTH_NAME }}
+          API_AUTH_PWD: ${{ secrets.API_AUTH_PWD }}
+          GEOAPIFY_API_KEY: ${{ secrets.GEOAPIFY_API_KEY }}
+          MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
+          BING_API_KEY: ${{ secrets.BING_API_KEY }}
         run: npx playwright test
 
       # Upload Playwright Report
@@ -57,4 +62,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-          
