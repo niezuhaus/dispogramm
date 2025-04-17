@@ -776,8 +776,8 @@ export class GC {
   private static loadMessengers = (http: HttpService) => {
     http.getMessengerList().subscribe(list => {
       GC.messengers = list;
+      GC.loadedParts.messenger = true;
       zip(list.map(m => m.loadShifts())).subscribe(shifts => {
-        GC.loadedParts.messenger = true;
         if (!GC.fullyLoaded) {
           GC.fullyLoaded = GC.checkLoaded(true); // messenger
         }
