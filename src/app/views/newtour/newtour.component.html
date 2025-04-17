@@ -347,10 +347,10 @@
             </div>
 
             <div *ngIf="job.cargoType > 0" class="flex-row justify-content-between">
-              <span>
+              <span [class.line-through-2px]="job.regularJob?.monthlyPrice || job.priceStrategyObj.mode > 1">
                 zuschlag: {{extras[job.cargoType].viewValue}}
               </span>
-              <span class="optionDetail" [class.line-through-2px]="job.regularJob?.monthlyPrice">
+              <span class="optionDetail" [class.line-through-2px]="job.regularJob?.monthlyPrice || job.priceStrategyObj.mode > 1">
                 +{{ extras[job.cargoType].price.toString(!job.billingTour)}}
               </span>
             </div>
@@ -358,12 +358,12 @@
               <span>rabatt: anschlusstour</span>
               <span class="optionDetail">-{{configPrices.connectionDiscount.toString(!job.billingTour)}}</span>
             </div>
-            <div *ngIf="job.customPrice" class="justify-content-between">
+            <div *ngIf="job.customPrice && !job.enteredPrice" class="justify-content-between">
               <span class="flex align-items-center"><i class="bi bi-exclamation-triangle fex-warn mr-2"
                   style="font-size: 20px"></i>sonderpreis:</span>
               <span class="pl-3 optionDetail">{{job.priceBackup.toString(!job.billingTour)}}</span>
             </div>
-            <div *ngIf="job.extraPrice" class="flex-column">
+            <div *ngIf="job.enteredPrice" class="flex-column">
               <div class="flex-row justify-content-between">
                 <span>sonderpreis:</span>
                 <span class="optionDetail">{{job.price.print(!job.billingTour)}}
@@ -396,15 +396,15 @@
           <div id="price" class="flex-row align-items-center">
             <mat-form-field class="price" [class.priceActive]="job.center && job.billingTour">
               <mat-label>netto</mat-label>
-              <input matInput #netto type="text" class="pr-2" [placeholder]="job.priceBackup?._netto.toString()"
+              <input matInput #netto type="text" class="pr-2" [placeholder]="job.price?._netto.toString()"
                 (keyup)="touched = true; job.changePrice(netto.value.valueOf(), false)" (click)="netto.select()"
-                [value]="job?.regularJob?.monthlyPrice.regularJobPrice._netto.toString() || job?.regularJob?.price._netto.toString() || (job?.customPrice ? job.priceBackup._netto.toString() : job?.price._netto.toString())"
+                [value]="job?.regularJob?.monthlyPrice.regularJobPrice._netto.toString() || job?.regularJob?.price._netto.toString() || job?.customPrice?._netto.toString() || job?.price._netto.toString()"
                 [disabled]="job.finished || job.regularJob?.monthlyPrice?._netto > 0">
             </mat-form-field>
             /
             <mat-form-field class="price" [class.priceActive]="job.center && !job.billingTour">
               <mat-label>brutto</mat-label>
-              <input matInput #brutto type="text" class="pr-2" [placeholder]="job.priceBackup?._brutto.toString()"
+              <input matInput #brutto type="text" class="pr-2" [placeholder]="job.price?._brutto.toString()"
                 (keyup)="touched = true; job.changePrice(brutto.value.valueOf(), true)" (click)="brutto.select()"
                 [value]="job?.regularJob?.monthlyPrice.regularJobPrice._brutto.toString() || job?.regularJob?.price._brutto.toString() || (job?.customPrice ? job.priceBackup._brutto.toString() : job?.price._brutto.toString())"
                 [disabled]="job.finished || job.regularJob?.monthlyPrice?._netto > 0">

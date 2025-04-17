@@ -173,22 +173,22 @@
             <div class="flex flex-column align-items-end">
               <div *ngIf="!element.edit && element._price" class="price">
             <span
-              [style.color]="element._billingTour ? 'black' : '#BBB'">{{element._job?.priceWithoutWaitingPrice._netto || element._price._netto}}</span>
+              [style.color]="element._billingTour ? 'black' : '#BBB'">{{element._job?.price._netto || element._price._netto}}</span>
                 /
                 <span
-                  [style.color]="!element._billingTour ? 'black' : '#BBB'">{{element._job?.priceWithoutWaitingPrice._brutto || element._price._brutto}}</span>
+                  [style.color]="!element._billingTour ? 'black' : '#BBB'">{{element._job?.price._brutto || element._price._brutto}}</span>
               </div>
               <span class="flex align-items-center" *ngIf="element._job?._waitingMinutes > 0">
               <i
                 class="mr-2 bi bi-clock small"></i>{{element._job._waitingMinutes + 'min: ' + element._job?.waitingPrice?.netto}}
             </span>
               <span *ngIf="!element.edit && element.isJob && element.job?.expenses?.length > 0">
-            {{element.job.expenses.length + ' auslagen: ' + element.job.expenseSum}}
+            {{element.job.expenses.length + ' auslage(n): ' + element.job.expenseSum.toStringFillZero(2)}}
             </span>
               <div style="color: black; border-top: 1px solid gray; min-width: 80px"
                    class="flex flex-column align-items-end"
                    *ngIf="!element.edit && element.isJob && (element.job?._waitingMinutes > 0 || element.job?.expenses?.length > 0)">
-                {{(element._billingTour ? element._price._netto : element._price._brutto) + element.job?.expenseSum}}
+                {{element.job?.totalCost}}
               </div>
               <div *ngIf="element.edit && !element.note" class="flex flex-row align-items-center">
                 <mat-form-field>
