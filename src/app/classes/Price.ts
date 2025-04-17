@@ -163,6 +163,11 @@ export class Price {
     return new Price(this.netto / scalar).round();
   }
 
+  /**
+   * copies over the values from another price
+   * @param price price to copy from
+   * @returns the updated price
+   */
   set(price: Price): Price {
     this._netto = price.netto;
     return this;
@@ -251,5 +256,9 @@ export class Price {
         result._netto += expense.price.brutto;
     })
     return result;
+  }
+
+  isEqual(other: Price): boolean {
+    return other?._netto == this._netto;
   }
 }
