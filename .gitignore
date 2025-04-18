@@ -1,7 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # config
-# src/app/config.ts
+src/app/config.private.ts
 
 #environment
 src/environments/*
