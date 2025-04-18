@@ -3,9 +3,6 @@
 # config
 src/app/config.private.ts
 
-#environment
-src/environments/*
-
 # Compiled output
 /dist
 /tmp
