@@ -34,8 +34,8 @@ import {LexContact} from "../classes/LexInvoice";
 import {SpecialPrice} from "../classes/SpecialPrice";
 import {Zone} from "../classes/Zone";
 import {plz} from "../../data/plz";
-import {Location} from "@angular/common";
-import { config } from '../config';
+import {Location} from "@angular/common";// import { config } from '../config';
+import { config } from '../config.private';
 import { LoadingComponent } from '../views/loading.component';
 
 export enum ShiftType {
@@ -777,9 +777,9 @@ export class GC {
     http.getMessengerList().subscribe(list => {
       GC.messengers = list;
       GC.loadedParts.messenger = true;
+      GC.fullyLoaded = GC.checkLoaded(true); // messenger
       zip(list.map(m => m.loadShifts())).subscribe(shifts => {
         if (!GC.fullyLoaded) {
-          GC.fullyLoaded = GC.checkLoaded(true); // messenger
         }
       })
     })
