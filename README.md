@@ -24,10 +24,13 @@ find demo here:
 - shift table now refreshing when deleting shifts from it
 - version tag now visible in menu bar
 - dispatcher-only people were not to be found
-- fix center of route is outside of inclusive but inside of exclusive zone
 - `Shifttype.kitah` removed
+- `Shifttype.ag` added
 - minor ui changes
 - compiled backend added
+- fixed: center of route is outside of inclusive but inside of exclusive zone
+- fixed: adding shift button in shifts view not working properly
+
 
 ##### `v1.4.1`
 - "exclusive zones" are available (currently hardcoded to work only on the name "außenring")
