@@ -45,7 +45,8 @@ export enum ShiftType {
   zwischi,
   late,
   double,
-  friki
+  friki,
+  ag,
 }
 
 export class GC {
@@ -160,7 +161,7 @@ export class GC {
   public static posttours = ['käfer 1', 'ohb + dhpg', 'große runde', 'kleine runde + emde', 'käfer 2'];
   public static posttoursStartTimes = [8, 9, 10, 10, 10];
   public static dispatcherShiftLiterals = ['dispo früh', 'dispo spät'];
-  public static messengerShiftLiterals = ['früh', 'zwischi', 'spät', 'doppel', 'friki'];
+  public static messengerShiftLiterals = ['früh', 'zwischi', 'spät', 'doppel', 'friki', 'ag zeit'];
   /**
    * all shift types that are relevant for showing on the messenger selector
    */

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { TitleComponent } from '../app.component';
 import { GC } from 'src/app/common/GC';
 import { Messenger } from 'src/app/classes/Messenger';
@@ -21,8 +21,7 @@ import { ActivatedRoute } from '@angular/router';
         </datepicker>
         <mat-checkbox [checked]="hideShiftless()" (change)="toggleFilter()">nur kurier:innen mit schicht</mat-checkbox>
       </div>
-
-          <div *ngFor="let m of hideShiftless() ? filteredMessenger : messengers">
+          <div *ngFor="let m of hideShiftless() ? filteredMessenger : messengers; let i = index">
               <div [style.opacity]="m.shifts.length ? 1 : .25">
                   <h3 style="cursor: pointer; white-space: nowrap; margin: 0">
                       <a (click)="m.openDialog(true)">{{!m.lastName ? '(kein nachname)' : m.lastName}}, {{!m.firstName ?
@@ -33,9 +32,9 @@ import { ActivatedRoute } from '@angular/router';
                   </h5>
                   <h6>{{m.shifts?.length}} schicht(en) im {{months()[date.getMonth()]}} {{date.getFullYear()}}</h6>
                   <h6 *ngIf="m.shifts?.length">insgesamt {{m.hours}} stunden ({{(m.hours * minimumWage()).round(2)}}€)</h6>
-                  <shift-table #table *ngIf="m.shifts?.length" [messenger]="m" [onShiftDelete]="load.bind(this)">
+                  <shift-table #table [messenger]="m" [onShiftDelete]="load.bind(this)">
                   </shift-table>
-                  <button mat-raised-button class="fex-button mt-4" (click)="table.newShift()" matTooltip="neue schicht hinzufügen">
+                  <button mat-raised-button class="fex-button mt-4" (click)="tables.get(i).newShift()" matTooltip="neue schicht hinzufügen">
               schicht hinzufügen <i class="ml-3 bi bi-plus-circle"></i>
             </button>
               </div>
@@ -65,8 +64,9 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
     return GC.config.minimumWage;
   }
 
-  @ViewChild('table') table: ShiftTableComponent;
-
+  // Use ViewChildren to get all ShiftTableComponent instances
+  @ViewChild('datepicker') datepicker: any;
+  @ViewChildren('table') tables: QueryList<ShiftTableComponent>;
 
   constructor(
     private route: ActivatedRoute,

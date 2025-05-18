@@ -69,7 +69,11 @@ export class Shift implements IdObject {
   }
 
   endTimeGuess(): Date {
-    return this.start.copy().copyTime(GC.endTimes.get(this.type));
+    let d = this.start.copy();
+    let endHour = (this.start.getHours() + 5).clamp(8, 18);
+    d.setHours(endHour);
+    return d;
+    // return this.start.copy().copyTime(GC.endTimes.get(this.type));
   }
 
   delete(callback?: (shift: Shift) => void): void {
