@@ -77,7 +77,7 @@
                 [matTooltip]="job.center?.address + (job.center?.description?.length > 0 ? ', ' + job.center?.description : '')"
                 matTooltipShowDelay="200">
             {{item._name + (job?.clientInvolved ? '' : ' (nicht anfahren)') + (job?.specialPrice?.type === 2 ? ' (gruppenabgabe)' : '')}}</span>
-          <i *ngIf="job.client?.info && !moreLocations && !item.isRegularJob && !hideToolTips" class="ml-2 bi bi-info-circle"
+          <i *ngIf="job.client?.info && !moreLocations && !item.isRegularJob && !hideToolTips && !clientView" class="ml-2 bi bi-info-circle"
              style="font-size: small" [matTooltip]="job.client.info"></i>
         </div>
         <div *ngIf="!item.regularJob && !(job.name)">
