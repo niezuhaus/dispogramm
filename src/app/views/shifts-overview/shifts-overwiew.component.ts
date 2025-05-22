@@ -10,17 +10,13 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'app-shifts-overwiew',
   template: `
   <div class="h-100">
-  <div *ngIf="!shiftsLoaded" style="height: 90vh !important;"
-       class="flex w-100 h-100 align-items-center justify-content-center">
-    <bike style="margin: auto"></bike>
-  </div>
-
-    <div *ngIf="shiftsLoaded" class="flex w-100 pt-3 p-4 flex-column justify-content-between" style="background-color: white; z-index: 1;">
+    <div class="flex w-100 pt-3 p-4 flex-column justify-content-between" style="background-color: white; z-index: 1;">
       <div class="flex flex-row w-100 align-items-center mb-3">
         <datepicker [(date)]="date" [monthly]="true" (dateChange)="monthChanged($event)" #datepicker>
         </datepicker>
         <mat-checkbox [checked]="hideShiftless()" (change)="toggleFilter()">nur kurier:innen mit schicht</mat-checkbox>
       </div>
+      <div *ngIf="shiftsLoaded">
           <div *ngFor="let m of hideShiftless() ? filteredMessenger : messengers; let i = index">
               <div [style.opacity]="m.shifts.length ? 1 : .25">
                   <h3 style="cursor: pointer; white-space: nowrap; margin: 0">
@@ -40,6 +36,11 @@ import { ActivatedRoute } from '@angular/router';
               </div>
               <hr>
           </div>
+          </div>
+            <div *ngIf="!shiftsLoaded" style="height: 90vh !important;"
+       class="flex w-100 h-100 align-items-center justify-content-center">
+    <bike style="margin: auto"></bike>
+  </div>
     </div>
 </div>
   `,
