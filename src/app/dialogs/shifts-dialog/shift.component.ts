@@ -71,13 +71,12 @@ import {debounceTime, distinctUntilChanged} from "rxjs/operators";
       (click)="checkout(shift, shift.tmpEnd || checkoutPicker.time)"
       [matTooltip]="shift.messenger.nickname + ' auschecken'"
       [class.invisible]="new"
-      [disabled]="ended"
       tabindex="-1">
       <div *ngIf="!ended" class="flex flex-row align-items-center">
         auschecken <i class="ml-2 bi bi-arrow-right-square"></i>
       </div>
       <div *ngIf="ended">
-        ausgecheckt
+        schicht anzeigen
       </div>
     </button>
   `,
