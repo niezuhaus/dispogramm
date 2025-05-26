@@ -15,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
         <datepicker [(date)]="date" [monthly]="true" (dateChange)="monthChanged($event)" #datepicker>
         </datepicker>
         <mat-checkbox [checked]="hideShiftless()" (change)="toggleFilter()">nur kurier:innen mit schicht</mat-checkbox>
+
       </div>
       <div *ngIf="shiftsLoaded">
           <div *ngFor="let m of hideShiftless() ? filteredMessenger : messengers; let i = index">
@@ -28,7 +29,7 @@ import { ActivatedRoute } from '@angular/router';
                   </h5>
                   <h6>{{m.shifts?.length}} schicht(en) im {{months()[date.getMonth()]}} {{date.getFullYear()}}</h6>
                   <h6 *ngIf="m.shifts?.length">insgesamt {{m.hours}} stunden ({{(m.hours * minimumWage()).round(2)}}€)</h6>
-                  <shift-table #table [messenger]="m" [onShiftDelete]="load.bind(this)">
+                  <shift-table #table [messenger]="m" [onShiftDelete]="load.bind(this)" (shiftUpdated)="m._calcHours()">
                   </shift-table>
                   <button mat-raised-button class="fex-button mt-4" (click)="tables.get(i).newShift()" matTooltip="neue schicht hinzufügen">
               schicht hinzufügen <i class="ml-3 bi bi-plus-circle"></i>

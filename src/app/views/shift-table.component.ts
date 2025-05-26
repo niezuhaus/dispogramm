@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Shift } from '../classes/Shift';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -148,6 +148,7 @@ export class ShiftTableComponent implements OnInit {
 
   @Input() messenger: Messenger;
   @Input() onShiftDelete: (shifts: Shift[]) => void;
+  @Output() shiftUpdated = new EventEmitter<boolean>();
 
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
 
@@ -176,7 +177,8 @@ export class ShiftTableComponent implements OnInit {
       this.shifts.sort((a, b) => { return a.start.getTime() - b.start.getTime() });
       this.shifts.forEach(shift => {
         shift.money = this.jobsThisMonth.filter(j => j.date.daysDifference(shift.start) === 0).reduce((p, a) => p._add(a.price), new Price())
-      })
+      });
+      this.shiftUpdated.emit(true);
     }
 
     if (!shift.id) {
