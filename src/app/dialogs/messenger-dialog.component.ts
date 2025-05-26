@@ -52,11 +52,11 @@ import { ShiftTableComponent } from '../views/shift-table.component';
         </div>
       </mat-tab>
 
-      <mat-tab *ngIf="messenger.id" [label]="'schichten (' + messenger.shifts.length + ')'">
+      <mat-tab *ngIf="messenger.id" [label]="'schichten (' + messenger.shifts?.length + ')'">
         <div *ngIf="!new">
           <div class="mb-3 flex flex-row align-items-center justify-content-between">
             <datepicker #datepicker [(date)]="date" [monthly]="true" (dateChange)="load()"> </datepicker>
-            <button *ngIf="messenger.shifts.length > 0" mat-raised-button class="fex-button" (click)="exportShifts(messenger, date)">lohndatei <i class="ml-3 bi bi-download"></i></button>
+            <button *ngIf="messenger.shifts?.length > 0" mat-raised-button class="fex-button" (click)="exportShifts(messenger, date)">lohndatei <i class="ml-3 bi bi-download"></i></button>
             <button mat-raised-button class="fex-button" (click)="shiftTable.newShift()" matTooltip="neue schicht hinzufügen">schicht hinzufügen <i class="ml-3 bi bi-plus-circle"></i></button>
           </div>
 
@@ -64,7 +64,7 @@ import { ShiftTableComponent } from '../views/shift-table.component';
             <shift-table [messenger]="messenger" #table> </shift-table>
           </div>
 
-          <p *ngIf="messenger.active && messenger.shifts.length">
+          <p *ngIf="messenger.active && messenger.shifts?.length">
             umsatz diesen monat: {{ salesNettoThisMonth._netto }} netto / {{ salesBruttoThisMonth._brutto }} brutto<br />
             insgesamt {{ messenger.hours }} stunden
           </p>
@@ -148,7 +148,6 @@ export class MessengerDialogComponent implements OnInit {
     this.messenger.loadShifts(this.date).subscribe((shifts) => {
       this.shifts = shifts;
       this.init();
-      console.log(this.messenger.shiftsWithoutEnd);
     });
   }
 
