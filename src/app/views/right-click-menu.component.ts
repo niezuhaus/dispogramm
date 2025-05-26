@@ -229,6 +229,9 @@ import {Zone} from "../classes/Zone";
       <button *ngIf="!shift.edit" mat-menu-item (click)="shift.edit = true">
         <i class="p-1 bi bi-pencil bi-context"></i>bearbeiten
       </button>
+      <button *ngIf="!shift.edit" mat-menu-item [routerLink]="[routes.tourplan, {date: shift.start.yyyymmdd()}]" (click)="closeDialogs()">
+        <i class="p-1 bi bi-card-checklist bi-context"></i>tourenzettel öffnen
+      </button>
       <button *ngIf="shift.edit" mat-menu-item (click)="shift.edit = false">
         <i class="p-1 bi bi-x-circle bi-context"></i>bearbeitung abbrechen
       </button>
