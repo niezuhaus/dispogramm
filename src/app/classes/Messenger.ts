@@ -1,14 +1,13 @@
-import { removeItem, setItem } from "../UTIL";
-import { GC, ShiftType } from "../common/GC";
-import { Shift } from "./Shift";
-import { CheckoutDialogComponent } from "../dialogs/checkout-dialog.component";
-import { AreYouSureDialogComponent } from "../dialogs/are-you-sure-dialog.component";
-import { IdObject } from "../common/interfaces";
-import { MessengerDialogComponent } from "../dialogs/messenger-dialog.component";
-import { map, Observable } from "rxjs";
+import { removeItem, setItem } from '../UTIL';
+import { GC, ShiftType } from '../common/GC';
+import { Shift } from './Shift';
+import { CheckoutDialogComponent } from '../dialogs/checkout-dialog.component';
+import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
+import { IdObject } from '../common/interfaces';
+import { MessengerDialogComponent } from '../dialogs/messenger-dialog.component';
+import { map, Observable } from 'rxjs';
 
 export class Messenger implements IdObject {
-
   // db fields
   id: string; // dbid
   messengerId: string; // fexid
@@ -29,12 +28,16 @@ export class Messenger implements IdObject {
    * @param date the date to get the sales for
    * @returns a quadruple of prices representing the sum value of all jobs done in this shift by this messenger
    */
-  sales = (date: Date) => { return GC.messengerData(date).get(this.id)?.sales };
+  sales = (date: Date) => {
+    return GC.messengerData(date).get(this.id)?.sales;
+  };
   /**
    * @param date the date to get the jobs for
    * @returns a list of all jobs done by this messenger at the given date
    */
-  jobs = (date: Date) => { return GC.messengerData(date).get(this.id)?.jobs };
+  jobs = (date: Date) => {
+    return GC.messengerData(date).get(this.id)?.jobs;
+  };
   /**
    * reference to a shift, the messenger is in right now
    */
@@ -47,10 +50,9 @@ export class Messenger implements IdObject {
   hours = 0;
   editDist: number = null;
 
-
   constructor(data?: Partial<Messenger>) {
     if (data) {
-      Object.assign(this, data)
+      Object.assign(this, data);
     }
   }
 
@@ -65,7 +67,7 @@ export class Messenger implements IdObject {
       return;
     }
     this.fexNumber = number;
-    setItem<{ number: number, date: Date }>(this.id, { number: number, date: new Date() })
+    setItem<{ number: number; date: Date }>(this.id, { number: number, date: new Date() });
     GC.openSnackBarShort(`${this.nickname} hat die ${number}`);
   }
 
@@ -77,14 +79,14 @@ export class Messenger implements IdObject {
       this.shift.update(`${this.shift.messenger.nickname} wurde ausgecheckt`, true).subscribe((s) => {
         this.shift = s;
         GC.loadShiftsToday(GC.http);
-      })
+      });
     } else {
       const dialog = GC.dialog.open(CheckoutDialogComponent, {
         data: {
           shift: this.shift,
-          jobs: this.jobs(this.shift.start) || [],
+          jobs: this.jobs(this.shift.start) || []
         }
-      })
+      });
       dialog.componentInstance.dialogRef = dialog;
     }
   }
@@ -109,19 +111,19 @@ export class Messenger implements IdObject {
     dialog.componentInstance.confirm.subscribe(() => {
       GC.http.deleteMessenger(this).subscribe(() => {
         GC.openSnackBarLong('kurier:in gelöscht');
-      })
-    })
+      });
+    });
   }
 
   toggleActivate(): void {
     this.active = !this.active;
     GC.http.updateMessenger(this).subscribe(() => {
       GC.openSnackBarLong('kurier:in ' + (this.active ? 'aktiviert' : 'deaktiviert'));
-    })
+    });
   }
 
   openDialog(openShifts?: boolean): void {
-    GC.http.getShiftsForMessengerAndMonth(this, new Date()).subscribe(shifts => {
+    GC.http.getShiftsForMessengerAndMonth(this, new Date()).subscribe((shifts) => {
       GC.dialog.open(MessengerDialogComponent, {
         data: {
           messenger: this,
@@ -129,14 +131,16 @@ export class Messenger implements IdObject {
           selectedIndex: openShifts ? 1 : 0
         }
       });
-    })
+    });
   }
 
   loadShifts(month?: Date): Observable<Shift[]> {
     month = month ? month : new Date();
     let os = GC.http.getShiftsForMessengerAndMonth(this, month).pipe(
-      map(list => {
-        list.sort((a, b) => {return a.start.getTime() - b.start.getTime()});
+      map((list) => {
+        list.sort((a, b) => {
+          return a.start.getTime() - b.start.getTime();
+        });
         this.shifts = list;
         this._calcHours();
         return list;
@@ -145,22 +149,22 @@ export class Messenger implements IdObject {
     return os;
   }
 
-  _calcHours(): void {  
+  _calcHours(): void {
     let result = Messenger.calcHours(this.shifts);
     this.hours = result.hours;
     this.shiftsWithoutEnd = result.shiftsWithoutEnd;
   }
 
-  static calcHours(shifts: Shift[]): {hours: number, shiftsWithoutEnd: number} {
+  static calcHours(shifts: Shift[]): { hours: number; shiftsWithoutEnd: number } {
     let hours = 0;
     let shiftsWithoutEnd = 0;
-    shifts.forEach(shift => {
+    shifts.forEach((shift) => {
       if (shift.end) {
-        hours += shift.start.hoursDifference(shift.end)
+        hours += shift.start.hoursDifference(shift.end);
       } else {
         shiftsWithoutEnd++;
       }
-    })
-    return {hours: hours, shiftsWithoutEnd: shiftsWithoutEnd};
+    });
+    return { hours: hours, shiftsWithoutEnd: shiftsWithoutEnd };
   }
 }

@@ -1,14 +1,12 @@
-import {Geolocation} from "../classes/Geolocation";
-import {IPoint} from "./interfaces";
-import {GC} from "./GC";
-import {lineString, Position} from "@turf/turf";
-import booleanIntersects from "@turf/boolean-intersects";
-import {Zones} from "./zones";
-import {Price} from "../classes/Price";
-
+import { Geolocation } from '../classes/Geolocation';
+import { IPoint } from './interfaces';
+import { GC } from './GC';
+import { lineString, Position } from '@turf/turf';
+import booleanIntersects from '@turf/boolean-intersects';
+import { Zones } from './zones';
+import { Price } from '../classes/Price';
 
 export class Routing {
-
   static findRoute(points: Geolocation[]): IPoint[] {
     if (points.length === 1) {
       return points;
@@ -17,7 +15,7 @@ export class Routing {
     points.forEach((location, i, array) => {
       result.push(location);
       if (i !== array.length - 1) {
-        result = result.concat(Routing.findBridge(location, array[i + 1]))
+        result = result.concat(Routing.findBridge(location, array[i + 1]));
       }
     });
     result.push(points[points.length - 1]);
@@ -47,15 +45,15 @@ export class Routing {
     let dists = [
       this.dist(first, GC.bridges[0][0]) + this.dist(GC.bridges[0][0], second),
       this.dist(first, GC.bridges[1][0]) + this.dist(GC.bridges[1][0], second),
-      this.dist(first, GC.bridges[2][0]) + this.dist(GC.bridges[2][0], second),
-    ]
+      this.dist(first, GC.bridges[2][0]) + this.dist(GC.bridges[2][0], second)
+    ];
 
     if (!GC.plzLeftOfWeser.includes(first.zipCode)) {
-      dists.push(this.dist(first, GC.bridges[3][0]) + this.dist(GC.bridges[3][0], GC.bridges[3][1]) + this.dist(GC.bridges[3][1], second),)
+      dists.push(this.dist(first, GC.bridges[3][0]) + this.dist(GC.bridges[3][0], GC.bridges[3][1]) + this.dist(GC.bridges[3][1], second));
       dists.push(100);
     } else {
       dists.push(100);
-      dists.push(this.dist(first, GC.bridges[4][0]) + this.dist(GC.bridges[4][0], GC.bridges[4][1]) + this.dist(GC.bridges[4][1], second))
+      dists.push(this.dist(first, GC.bridges[4][0]) + this.dist(GC.bridges[4][0], GC.bridges[4][1]) + this.dist(GC.bridges[4][1], second));
     }
     return GC.bridges[dists.indexOf(Math.min(dists[0], dists[1], dists[2], dists[3], dists[4]))];
   }
@@ -64,12 +62,12 @@ export class Routing {
     for (let i = 0; i < array.length - 1; i++) {
       const first = [array[i + 1].longitude, array[i + 1].latitude];
       const second = [array[i].longitude, array[i].latitude];
-      const line = lineString([first, second])
+      const line = lineString([first, second]);
       let func = (pp: Position) => {
         // this.toggleObject('path', [first, pp, second], true)
-        array.splice(i + 1, 0, {longitude: pp[0], latitude: pp[1]});
+        array.splice(i + 1, 0, { longitude: pp[0], latitude: pp[1] });
         i++;
-      }
+      };
       // wedersee
       if (booleanIntersects(line, lineString(Zones.weserParts.east))) {
         // note: turf.shortestPath really doesn't work so well.
@@ -95,7 +93,7 @@ export class Routing {
     let list = GC.config.prices.list;
     km = Math.ceil(km);
     const result = list.base.copy();
-    result.add(list.extra1._mul((km - list.quantityIncl).clamp(0, list.threshold - list.quantityIncl)))
+    result.add(list.extra1._mul((km - list.quantityIncl).clamp(0, list.threshold - list.quantityIncl)));
     if (km > list.threshold) {
       result.add(list.extra2._mul(km - list.threshold));
     }
@@ -139,10 +137,7 @@ export class Routing {
     const R = 6371;
     const dLat = this.degToRad(second.latitude - first.latitude); // degToRad below
     const dLon = this.degToRad(second.longitude - first.longitude);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.degToRad(first.latitude)) * Math.cos(this.degToRad(second.latitude)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this.degToRad(first.latitude)) * Math.cos(this.degToRad(second.latitude)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }

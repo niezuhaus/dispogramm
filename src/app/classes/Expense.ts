@@ -1,8 +1,8 @@
-import {Price} from "./Price";
-import {GC} from "../common/GC";
-import {NewExpenseDialogComponent} from "../dialogs/new-expense-dialog.component";
-import {Observable, tap} from "rxjs";
-import {Job} from "./Job";
+import { Price } from './Price';
+import { GC } from '../common/GC';
+import { NewExpenseDialogComponent } from '../dialogs/new-expense-dialog.component';
+import { Observable, tap } from 'rxjs';
+import { Job } from './Job';
 
 export class Expense {
   id: string;
@@ -27,23 +27,23 @@ export class Expense {
     GC.dialog.open(NewExpenseDialogComponent, {
       data: {
         job: job,
-        expense: this,
+        expense: this
       }
-    })
+    });
   }
 
   save(msg?: string): Observable<Expense> {
     if (this.id) {
       return GC.http.updateExpense(this).pipe(
         tap(() => {
-          GC.openSnackBarLong(msg || `auslage '${this.description}' wurde aktualisiert`)
-        }),
+          GC.openSnackBarLong(msg || `auslage '${this.description}' wurde aktualisiert`);
+        })
       );
     } else {
       return GC.http.createExpense(this).pipe(
         tap(() => {
-          GC.openSnackBarLong(msg || `auslage '${this.description}' wurde hinzugefügt`)
-        }),
+          GC.openSnackBarLong(msg || `auslage '${this.description}' wurde hinzugefügt`);
+        })
       );
     }
   }

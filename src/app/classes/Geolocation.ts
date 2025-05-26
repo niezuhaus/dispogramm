@@ -1,12 +1,12 @@
-import {GeoCodingMode, LocType, PassType, PriceZone, IdObject} from "../common/interfaces";
-import {Job} from "./Job";
-import {Price} from "./Price";
-import {Branch} from "./Branch";
-import {Zone} from "./Zone";
-import {GC} from "../common/GC";
-import {LocationDialogComponent} from "../dialogs/location-dialog.component";
+import { GeoCodingMode, LocType, PassType, PriceZone, IdObject } from '../common/interfaces';
+import { Job } from './Job';
+import { Price } from './Price';
+import { Branch } from './Branch';
+import { Zone } from './Zone';
+import { GC } from '../common/GC';
+import { LocationDialogComponent } from '../dialogs/location-dialog.component';
 
-export class Geolocation implements IdObject{
+export class Geolocation implements IdObject {
   name: string = '';
   latitude: number;
   longitude: number;
@@ -77,7 +77,7 @@ export class Geolocation implements IdObject{
     const dialog = GC.dialog.open(LocationDialogComponent, {
       data: {
         location: this,
-        newLocation: false,
+        newLocation: false
       }
     });
   }
@@ -93,11 +93,11 @@ export class Station extends Geolocation {
 
   constructor(data: Partial<Geolocation>) {
     super(data);
-    Object.assign(data, this)
+    Object.assign(data, this);
   }
 
   index(): number {
-    return this.branch?.job.getAllStations().findIndex(s => s === this) - 1;
+    return this.branch?.job.getAllStations().findIndex((s) => s === this) - 1;
   }
 
   get price(): Price {
@@ -123,7 +123,6 @@ export class Station extends Geolocation {
     this._priceLevel = this.job.priceStrategyObj.priceString(this, false, this.index());
     return this;
   }
-
 
   get popUpContent(): string {
     if (!this._popUpContent) {

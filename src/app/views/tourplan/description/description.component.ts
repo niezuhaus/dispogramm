@@ -1,20 +1,18 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {LocType} from '../../../common/interfaces';
-import {Note} from "../../../classes/Note";
-import {Job, RegularJob} from "../../../classes/Job";
-import {GC} from "../../../common/GC";
-import {Geolocation} from "../../../classes/Geolocation";
-import {AreYouSureDialogComponent} from "../../../dialogs/are-you-sure-dialog.component";
-import {TourplanItem} from "../../../classes/TourplanItem";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { LocType } from '../../../common/interfaces';
+import { Note } from '../../../classes/Note';
+import { Job, RegularJob } from '../../../classes/Job';
+import { GC } from '../../../common/GC';
+import { Geolocation } from '../../../classes/Geolocation';
+import { AreYouSureDialogComponent } from '../../../dialogs/are-you-sure-dialog.component';
+import { TourplanItem } from '../../../classes/TourplanItem';
 
 @Component({
   selector: 'description',
   templateUrl: './description.component.html',
   styleUrls: ['./description.component.scss']
 })
-
 export class DescriptionComponent implements OnInit {
-
   @Input() item: TourplanItem;
   @Input() job: Job;
   @Input() hideTimeAlarms: boolean;
@@ -23,39 +21,38 @@ export class DescriptionComponent implements OnInit {
   @Input() headline: boolean;
   @Input() hideHighlights: boolean;
   @Input() hideToolTips: boolean;
-  @Input() moreLocations: boolean;  // the client has several locations, so that jobs must be distiguished.
+  @Input() moreLocations: boolean; // the client has several locations, so that jobs must be distiguished.
   @Input() weekplan: boolean;
   @Input() clientView: boolean;
   @Input() purpleRegularJobs: boolean;
   @Input() showPrices: boolean;
-  @Output() showJobsForPosttour = new EventEmitter<number>()
+  @Output() showJobsForPosttour = new EventEmitter<number>();
 
   pre: boolean;
   deliveries: Geolocation[];
   center: Geolocation;
 
   get routes() {
-    return GC.routes
-  };
+    return GC.routes;
+  }
 
   get morningTours() {
-    return GC.posttours
-  };
+    return GC.posttours;
+  }
 
   get gray() {
     return this.item?._messenger || (!this.headline && !this.weekplan) || this.item?.job?._canceled;
   }
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit(): void {
     if (!this.item) {
       this.item = new TourplanItem({
-        job: (this.job instanceof RegularJob) ? null : this.job,
-        regularJob: (this.job instanceof RegularJob) ? this.job as RegularJob : null,
+        job: this.job instanceof RegularJob ? null : this.job,
+        regularJob: this.job instanceof RegularJob ? (this.job as RegularJob) : null,
         note: this.note
-      })
+      });
     } else {
       this.job = this.item._job;
       this.note = this.item.note;
@@ -83,26 +80,26 @@ export class DescriptionComponent implements OnInit {
         verbNo: 'für die zukunft',
         warning: true
       }
-    })
+    });
     dialog.componentInstance.confirm.subscribe(() => {
       if (this.item.isConverted) {
         this.goTo();
       } else {
-        this.item.regularJob.convert().subscribe(job => {
-          GC.router.navigate([GC.routes.newTour, {id: job.id, rj: false}])
-        })
+        this.item.regularJob.convert().subscribe((job) => {
+          GC.router.navigate([GC.routes.newTour, { id: job.id, rj: false }]);
+        });
       }
-    })
+    });
     dialog.componentInstance.cancel.subscribe(() => {
       if (this.item.isConverted) {
-        GC.router.navigate([GC.routes.newTour, {id: this.item.job.regularJobId, rj: true}])
+        GC.router.navigate([GC.routes.newTour, { id: this.item.job.regularJobId, rj: true }]);
       } else {
-        GC.router.navigate([GC.routes.newTour, {id: this.item.regularJob.id, rj: true}])
+        GC.router.navigate([GC.routes.newTour, { id: this.item.regularJob.id, rj: true }]);
       }
-    })
+    });
   }
 
   goTo(): void {
-    GC.router.navigate([GC.routes.newTour, {id: this.job.id, rj: false}])
+    GC.router.navigate([GC.routes.newTour, { id: this.job.id, rj: false }]);
   }
 }

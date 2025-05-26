@@ -1,9 +1,9 @@
-import {BranchSet, LocType, PassType, SpecialPriceType} from "../common/interfaces";
-import {Price} from "./Price";
-import {Station} from "./Geolocation";
-import {GC} from "../common/GC";
-import {Branch} from "./Branch";
-import {Routing} from "../common/Routing";
+import { BranchSet, LocType, PassType, SpecialPriceType } from '../common/interfaces';
+import { Price } from './Price';
+import { Station } from './Geolocation';
+import { GC } from '../common/GC';
+import { Branch } from './Branch';
+import { Routing } from '../common/Routing';
 
 export interface PriceStrategy {
   mode: SpecialPriceType;
@@ -15,11 +15,11 @@ export interface PriceStrategy {
 }
 
 export class FexRules implements PriceStrategy {
-  mode = SpecialPriceType.fexrules
+  mode = SpecialPriceType.fexrules;
 
   calcBranchSetPrice(set: BranchSet, noZones: boolean): Price {
     const res = new Price();
-    set.branches.forEach(b => res.add(this.calcBranchPrice(b, noZones)))
+    set.branches.forEach((b) => res.add(this.calcBranchPrice(b, noZones)));
     set.price = res;
     return res;
   }
@@ -29,9 +29,9 @@ export class FexRules implements PriceStrategy {
     if (!branch.route) {
       return res;
     }
-    branch.route.forEach(station => {
-      res.add(this.calcStationPrice(station, noZones))
-    })
+    branch.route.forEach((station) => {
+      res.add(this.calcStationPrice(station, noZones));
+    });
     if (branch.isConnection) {
       res.sub(GC.config.prices.connectionDiscount);
     }
@@ -49,7 +49,7 @@ export class FexRules implements PriceStrategy {
         res.add(GC.config.prices.nearby);
         break;
 
-      case !noZones && !!(station.zone) && !station.zone.isSubstractive:
+      case !noZones && !!station.zone && !station.zone.isSubstractive:
         res.add(station.zone.price);
         break;
 
@@ -59,7 +59,7 @@ export class FexRules implements PriceStrategy {
 
       case station.passType === PassType.source:
         if (station.branch.sections?.length > 0) {
-          res.add(station.branch.sections[0].price)
+          res.add(station.branch.sections[0].price);
         } else {
           res.add(Routing.distPrice(station.branch.distance));
         }
@@ -86,20 +86,22 @@ export class FexRules implements PriceStrategy {
         res += popUp ? `anschluss ums eck' <b>${GC.config.prices.nearby}</b>` : `+${GC.config.prices.nearby.toStringBoth()}`;
         break;
 
-      case !!(station.zone) && !station.zone.isSubstractive:
+      case !!station.zone && !station.zone.isSubstractive:
         res += popUp ? `${station.zone.name}-tarif <b>+${station.zone.price.toStringBoth()}</b>` : `+${GC.config.prices.city.toStringBoth()}`;
         break;
 
       case station.passType === PassType.source:
         const branchprice = Routing.distPrice(station.branch.distance);
-        if (station.branch.sections) { // if source is not directly connected to center
+        if (station.branch.sections) {
+          // if source is not directly connected to center
           const sourceSection = station.branch.sections[0];
           if (!popUp) {
             return `+${sourceSection.price.toStringBoth()}${station.isConnection ? ' (-' + GC.config.prices.connectionDiscount.toStringBoth() + ')' : ''}`;
           }
           const n1 = station.branch.nextDistPoint(station);
           res += `${sourceSection.traveldist}km bis <b class="${n1.className()}">${n1.name || n1.address}</b> <b>+${sourceSection.price.toStringBoth()}</b> `;
-        } else { // measure to next dist point (aka #route-points)
+        } else {
+          // measure to next dist point (aka #route-points)
           if (!popUp) {
             return `+${branchprice.toStringBoth()}${station.isConnection ? ' (-' + GC.config.prices.connectionDiscount.toStringBoth() + ')' : ''}`;
           }
@@ -117,8 +119,7 @@ export class FexRules implements PriceStrategy {
           return `+${routeSection.price.toStringBoth()}${station.isConnection ? ' (-' + GC.config.prices.connectionDiscount.toStringBoth() + ')' : ''}`;
         }
         const n3 = station.branch.nextDistPoint(station);
-        res +=
-          `${routeSection.traveldist}km bis <b class="${n3.className()}">${n3.name || n3.address}</b> <b>+${routeSection.price.toStringBoth()}</b>`;
+        res += `${routeSection.traveldist}km bis <b class="${n3.className()}">${n3.name || n3.address}</b> <b>+${routeSection.price.toStringBoth()}</b>`;
         break;
 
       case station.locType === LocType.client:
@@ -132,17 +133,19 @@ export class FexRules implements PriceStrategy {
         break;
     }
     if (station.zone?.isSubstractive) {
-      res += `${station.zone.name}-zuschlag <b>+${station.zone.price.toStringBoth()}</b>`
+      res += `${station.zone.name}-zuschlag <b>+${station.zone.price.toStringBoth()}</b>`;
     }
     return res;
   }
 }
 
 export class Group implements PriceStrategy {
-  mode = SpecialPriceType.group
+  mode = SpecialPriceType.group;
 
-  constructor(private altPrice?: Price, public name?: string) {
-  }
+  constructor(
+    private altPrice?: Price,
+    public name?: string
+  ) {}
 
   price(): Price {
     return this.altPrice ? this.altPrice : GC.config.prices.group;
@@ -158,7 +161,7 @@ export class Group implements PriceStrategy {
 
   calcBranchSetPrice(set: BranchSet): Price {
     const res = new Price();
-    set.branches.forEach(b => res.add(this.calcBranchPrice(b)));
+    set.branches.forEach((b) => res.add(this.calcBranchPrice(b)));
     return res;
   }
 
@@ -176,10 +179,9 @@ export class Group implements PriceStrategy {
 export class BaseExtra implements PriceStrategy {
   constructor(
     public mode: SpecialPriceType,
-    public template: {base: Price, extra: Price, quantityIncl: number},
+    public template: { base: Price; extra: Price; quantityIncl: number },
     public name: string
-  ) {
-  }
+  ) {}
 
   calcStationPrice(station: Station): Price {
     let index = station.index();
@@ -197,13 +199,13 @@ export class BaseExtra implements PriceStrategy {
 
   calcBranchPrice(branch: Branch): Price {
     const res = new Price();
-    branch.route.forEach(s => res.add(this.calcStationPrice(s)))
+    branch.route.forEach((s) => res.add(this.calcStationPrice(s)));
     return res;
   }
 
   calcBranchSetPrice(set: BranchSet): Price {
     const res = new Price();
-    set.branches.forEach(b => res.add(this.calcBranchPrice(b)));
+    set.branches.forEach((b) => res.add(this.calcBranchPrice(b)));
     return res;
   }
 
@@ -213,9 +215,9 @@ export class BaseExtra implements PriceStrategy {
     if (popUp) {
       res += `<br> ${this.name} `;
     }
-    res += popUp ?
-      `<b>+${index + 1 <= this.template.quantityIncl ? this.template.base.toStringBoth() : this.template.extra.toStringBoth()}</b>` :
-      `+${index + 1 <= this.template.quantityIncl ? this.template.base.toStringBoth() : this.template.extra.toStringBoth()}`
+    res += popUp
+      ? `<b>+${index + 1 <= this.template.quantityIncl ? this.template.base.toStringBoth() : this.template.extra.toStringBoth()}</b>`
+      : `+${index + 1 <= this.template.quantityIncl ? this.template.base.toStringBoth() : this.template.extra.toStringBoth()}`;
     return res;
   }
 }

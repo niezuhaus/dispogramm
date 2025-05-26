@@ -94,7 +94,7 @@ export interface IOSMRouteFeatureCollection {
 /* entspricht dem datenformat einer antwort der bing-api */
 
 export interface BingMapsResponse {
-  resourceSets: { resources: BingResource[]; }[];
+  resourceSets: { resources: BingResource[] }[];
 }
 
 /* entspricht dem datenformat eines einzelnen bing-datensatzes in der antwort der bing-api */

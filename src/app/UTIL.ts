@@ -1,23 +1,17 @@
-import {IPoint} from './common/interfaces';
-import mapboxgl, {
-  Map,
-  LngLat,
-  LngLatBounds,
-  NavigationControl, Marker,
-  GeoJSONSource,
-} from "mapbox-gl";
-import {GC} from "./common/GC";
-import {degrees2radians, Position, radians2degrees} from "@turf/turf";
-import {Geolocation} from "./classes/Geolocation";
+import { IPoint } from './common/interfaces';
+import mapboxgl, { Map, LngLat, LngLatBounds, NavigationControl, Marker, GeoJSONSource } from 'mapbox-gl';
+import { GC } from './common/GC';
+import { degrees2radians, Position, radians2degrees } from '@turf/turf';
+import { Geolocation } from './classes/Geolocation';
 
 // mapboxgl.map
 
-export function initMap(options?: {lnglat: LngLat, zoom: number, container: string | HTMLElement}): Map {
+export function initMap(options?: { lnglat: LngLat; zoom: number; container: string | HTMLElement }): Map {
   mapboxgl.accessToken = GC.config.api.mapbox;
 
   const style = GC.MAPBOX_STYLE;
 
-  let map: Map
+  let map: Map;
   try {
     map = new Map({
       container: options?.container || 'map',
@@ -26,7 +20,7 @@ export function initMap(options?: {lnglat: LngLat, zoom: number, container: stri
       center: [options?.lnglat?.lng || GC.INIT_MAPCENTER.lng, options?.lnglat?.lat || GC.INIT_MAPCENTER.lat]
     });
   } catch (e) {
-    console.log(e)
+    console.log(e);
     return null;
   }
   map.addControl(new NavigationControl());
@@ -38,8 +32,9 @@ export function setMarker(map: Map, location: Geolocation, draggable?: boolean):
   el.className = 'marker m-blue';
   const marker = new Marker({
     element: el,
-    draggable: true,
-  }).setLngLat({lng: location.longitude, lat: location.latitude})
+    draggable: true
+  })
+    .setLngLat({ lng: location.longitude, lat: location.latitude })
     .addTo(map);
   if (draggable) {
     marker.on('dragend', () => {
@@ -52,13 +47,12 @@ export function setMarker(map: Map, location: Geolocation, draggable?: boolean):
 
 export function drawText(map: Map, text: string, position: Position) {
   map.addSource(text, {
-      type: 'geojson',
-      data: {
-        type: "FeatureCollection",
-        features: [feature({position: position, description: text})]
-      }
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: [feature({ position: position, description: text })]
     }
-  );
+  });
   map.addLayer({
     id: text,
     type: 'symbol',
@@ -66,12 +60,12 @@ export function drawText(map: Map, text: string, position: Position) {
     layout: {
       'text-field': ['get', 'description'],
       'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
-      'text-justify': 'auto',
+      'text-justify': 'auto'
     }
   });
 }
 
-export function feature(feature: {position: Position, description: string}): any {
+export function feature(feature: { position: Position; description: string }): any {
   return {
     type: 'Feature',
     properties: {
@@ -81,7 +75,7 @@ export function feature(feature: {position: Position, description: string}): any
       type: 'Point',
       coordinates: feature.position
     }
-  }
+  };
 }
 
 // local storage
@@ -114,12 +108,24 @@ export function removeItem(key: string): void {
 export function corners(positions: IPoint[]): LngLatBounds {
   return new LngLatBounds([
     [
-      Math.max.apply(Math, positions.map(o => o.longitude)),
-      Math.max.apply(Math, positions.map(o => o.latitude))
+      Math.max.apply(
+        Math,
+        positions.map((o) => o.longitude)
+      ),
+      Math.max.apply(
+        Math,
+        positions.map((o) => o.latitude)
+      )
     ],
     [
-      Math.min.apply(Math, positions.map(o => o.longitude)),
-      Math.min.apply(Math, positions.map(o => o.latitude))
+      Math.min.apply(
+        Math,
+        positions.map((o) => o.longitude)
+      ),
+      Math.min.apply(
+        Math,
+        positions.map((o) => o.latitude)
+      )
     ]
   ]);
 }

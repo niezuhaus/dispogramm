@@ -8,9 +8,8 @@ describe('CalendarRangeDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CalendarRangeDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [CalendarRangeDialogComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CalendarRangeDialogComponent);
     component = fixture.componentInstance;

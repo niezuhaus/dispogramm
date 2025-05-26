@@ -1,25 +1,24 @@
-import { IPoint, LocType, PassType, Section } from "../common/interfaces";
-import { Station } from "./Geolocation";
-import { Price } from "./Price";
-import { FexRules, PriceStrategy } from "./PriceStrategies";
-import { GC } from "../common/GC";
-import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
-import { Job } from "./Job";
-import { Routing } from "../common/Routing";
-import { Zone } from "./Zone";
+import { IPoint, LocType, PassType, Section } from '../common/interfaces';
+import { Station } from './Geolocation';
+import { Price } from './Price';
+import { FexRules, PriceStrategy } from './PriceStrategies';
+import { GC } from '../common/GC';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import { Job } from './Job';
+import { Routing } from '../common/Routing';
+import { Zone } from './Zone';
 
 export class Branch {
   get routeWithBridges(): IPoint[] {
     if (!this._routeWithBridges) {
-      this._routeWithBridges =
-        Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
+      this._routeWithBridges = Routing.findRoute(this.route.filter((station) => station.passType !== PassType.nearby).concat(this.center));
     }
     return this._routeWithBridges;
   }
 
   get routeWithoutBridges(): IPoint[] {
     if (!this._routeWithoutBridges) {
-      this._routeWithoutBridges = this.route.filter(station => station.passType !== PassType.nearby).concat(this.center);
+      this._routeWithoutBridges = this.route.filter((station) => station.passType !== PassType.nearby).concat(this.center);
     }
     return this._routeWithoutBridges;
   }
@@ -49,12 +48,12 @@ export class Branch {
    * @return a set of all the zones (no doublets)
    */
   get zones(): Zone[] {
-    return [...this.route.map(s => s.zone).filter(z => !!(z))]
+    return [...this.route.map((s) => s.zone).filter((z) => !!z)];
   }
 
   set distance(d: number) {
     this._distance = d;
-    this.price
+    this.price;
   }
 
   /**
@@ -122,7 +121,7 @@ export class Branch {
       }
       const res: Section[] = [];
       // find first occasion of a station of type ROUTE or CENTER which will be the end of the actual section
-      const index = route.indexOf(route.slice(1).find(p => p.passType >= 3));
+      const index = route.indexOf(route.slice(1).find((p) => p.passType >= 3));
       if (route[index] === undefined) {
         return [];
       }
@@ -147,14 +146,14 @@ export class Branch {
         });
         return res.concat(recursive(route.slice(index, route.length), counter + 1));
       }
-    }
+    };
 
     if (!this._routeWithBridges) {
-      this._routeWithBridges = GC.streetRouting ?
-        this.route.filter(station => station.passType !== PassType.nearby).concat(this.center) :
-        Routing.findRoute(this.route.filter(station => station.passType !== PassType.nearby).concat(this.center));
+      this._routeWithBridges = GC.streetRouting
+        ? this.route.filter((station) => station.passType !== PassType.nearby).concat(this.center)
+        : Routing.findRoute(this.route.filter((station) => station.passType !== PassType.nearby).concat(this.center));
     }
-    this.sections = recursive(this._routeWithBridges, 0)
+    this.sections = recursive(this._routeWithBridges, 0);
     return this;
   }
 
@@ -165,28 +164,34 @@ export class Branch {
    * @param startIndex put a value > 0 to exclude certain zones on the search
    * @return the cheapest zone, a station is located in
    */
-  private static findZone(station: Station, inclusive: "IN" | "OUT" | "BOTH", startIndex?: number): Zone {
+  private static findZone(station: Station, inclusive: 'IN' | 'OUT' | 'BOTH', startIndex?: number): Zone {
     let res: Zone;
     let zones: Zone[];
     switch (inclusive) {
-      case "IN": zones = GC.inclusiveZones; break;
-      case "OUT": zones = GC.exclusiveZones; break;
-      case "BOTH": zones = GC.zones; break;
+      case 'IN':
+        zones = GC.inclusiveZones;
+        break;
+      case 'OUT':
+        zones = GC.exclusiveZones;
+        break;
+      case 'BOTH':
+        zones = GC.zones;
+        break;
     }
     for (let i = startIndex || 0; i < zones.length; i++) {
       let zone = zones[i];
       switch (inclusive) {
-        case "IN":
+        case 'IN':
           if (booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
             return zone;
           }
           break;
-        case "OUT":
+        case 'OUT':
           if (!booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
             return zone;
           }
           break;
-        case "BOTH":
+        case 'BOTH':
           if (zone.isSubstractive !== booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
             return zone;
           }
@@ -204,21 +209,21 @@ export class Branch {
    * @return the calling branch for chain of responsability
    */
   findZones(): Branch {
-    this.job.center.zone = Branch.findZone(this.center, "IN");
-    this.route.last().zone = Branch.findZone(this.route.last(), "OUT")
+    this.job.center.zone = Branch.findZone(this.center, 'IN');
+    this.route.last().zone = Branch.findZone(this.route.last(), 'OUT');
     if (!this.job.center.zone || this.route.last().zone) {
       // if center is in no inclusive zone
       // or the furthest station is in an exclusive zone
-      // there is no point of looking further 
-      // just check if center might be in an outside zone 
-      this.job.center.zone = Branch.findZone(this.center, "OUT");
+      // there is no point of looking further
+      // just check if center might be in an outside zone
+      this.job.center.zone = Branch.findZone(this.center, 'OUT');
       return this;
     }
     for (let i = this.route.length - 1; i >= 0; i--) {
       if (this.route[i].passType === PassType.stop || this.route[i].passType === PassType.nearby) {
         continue;
       }
-      let zone = Branch.findZone(this.route[i], "IN", this.center.zone?.index);
+      let zone = Branch.findZone(this.route[i], 'IN', this.center.zone?.index);
       this.route[i].zone = zone;
       if (!zone) {
         break;
@@ -228,7 +233,7 @@ export class Branch {
   }
 
   nextDistPoint(s: Station): Station {
-    const list = this.route.filter(st => st.passType === PassType.route);
+    const list = this.route.filter((st) => st.passType === PassType.route);
     return list[list.indexOf(s) + 1] || this.center;
   }
 }

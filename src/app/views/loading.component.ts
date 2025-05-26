@@ -1,18 +1,16 @@
-import {Component, OnInit} from '@angular/core';
-import {GC} from "../common/GC";
-import {Location} from "@angular/common";
-import {ActivatedRoute} from "@angular/router";
-import {ConfigDialogComponent} from "../dialogs/config-dialog.component";
+import { Component, OnInit } from '@angular/core';
+import { GC } from '../common/GC';
+import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { ConfigDialogComponent } from '../dialogs/config-dialog.component';
 
 @Component({
   selector: 'app-loading',
   template: `
-    <div class="flex flex-column align-items-center justify-content-center w-100"
-         style="position: absolute; background: white; z-index: 101; height: 100%">
+    <div class="flex flex-column align-items-center justify-content-center w-100" style="position: absolute; background: white; z-index: 101; height: 100%">
       <div class="loadingScreen" style="position:relative; bottom: 50px" *ngIf="backendIP() && !cantConnect() && !apiKeysMissing">
         <bike [running]="true"></bike>
-        <mat-progress-bar mode="determinate" color="primary" [value]="progess()" class="mt-4 mb-3"
-                          style="width: 500px"></mat-progress-bar>
+        <mat-progress-bar mode="determinate" color="primary" [value]="progess()" class="mt-4 mb-3" style="width: 500px"></mat-progress-bar>
         <div *ngIf="!loadedParts().config" class="flex flex-row">einstellungen laden</div>
         <div *ngIf="loadedParts().config">einstellungen geladen<i class="bi bi-check"></i></div>
         <div *ngIf="!loadedParts().zones" class="flex flex-row">zonen laden</div>
@@ -36,9 +34,7 @@ import {ConfigDialogComponent} from "../dialogs/config-dialog.component";
       <div style="max-width: 80vw" *ngIf="!backendIP()">
         <span><i class="bi bi-exclamation-triangle big fex-accent"></i></span>
         <h2>keine backendadresse festgelegt!</h2>
-        <h2>bitte lege in den <a (click)="openSettings()">einstellungen</a> fest, mit welchem server sich das
-          dispogramm
-          verbinden soll</h2>
+        <h2>bitte lege in den <a (click)="openSettings()">einstellungen</a> fest, mit welchem server sich das dispogramm verbinden soll</h2>
       </div>
 
       <div style="max-width: 80vw" *ngIf="apiKeysMissing">
@@ -53,35 +49,30 @@ import {ConfigDialogComponent} from "../dialogs/config-dialog.component";
         <h2>stelle bitte sicher, dass:</h2>
         <ul style="font-size: 20px">
           <li>der weiße raspberrypi mit internet und strom verbunden ist</li>
-          <li>die richtige backend-adresse in den <a (click)="openSettings(0, true)">einstellungen</a> festgelegt ist
-          </li>
+          <li>die richtige backend-adresse in den <a (click)="openSettings(0, true)">einstellungen</a> festgelegt ist</li>
         </ul>
       </div>
 
       <div class="absolute flex flex-column w-100" style="bottom: 20px; text-align: center">
-          <span *ngIf="startedCounting && !timeout && !apiKeysMissing && !cantConnect()" style="color: gray">etwas scheint
-            nicht in ordnung zu sein...timeout
-            in {{secondCounter}}</span>
+        <span *ngIf="startedCounting && !timeout && !apiKeysMissing && !cantConnect()" style="color: gray">etwas scheint nicht in ordnung zu sein...timeout in {{ secondCounter }}</span>
         <span style="color: gray; text-align: center">
-            <i>v{{version}}</i>
-          </span>
+          <i>v{{ version }}</i>
+        </span>
       </div>
-
     </div>
-
   `,
-  styles: [`
-    .emoji {
-      font-size: 26px;
-    }
+  styles: [
+    `
+      .emoji {
+        font-size: 26px;
+      }
 
-    .features > p {
-      margin: unset;
-    }
-  `
+      .features > p {
+        margin: unset;
+      }
+    `
   ]
 })
-
 export class LoadingComponent implements OnInit {
   firstCounter = 10;
   secondCounter = 10;
@@ -89,20 +80,20 @@ export class LoadingComponent implements OnInit {
   timeout = false;
 
   get version() {
-    return GC.version
-  };
+    return GC.version;
+  }
 
   get apiKeysMissing() {
-    return GC.apiKeyMissing
+    return GC.apiKeyMissing;
   }
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
+    private location: Location
   ) {
     GC.partLoaded.subscribe(() => {
       this.firstCounter = 10;
-    })
+    });
 
     if (!GC.fullyLoaded) {
       let count1 = () => {
@@ -110,23 +101,23 @@ export class LoadingComponent implements OnInit {
           setTimeout(() => {
             this.firstCounter--;
             count1();
-          }, 1000)
+          }, 1000);
         } else {
           this.startedCounting = true;
           count2();
         }
-      }
+      };
 
       let count2 = () => {
         if (this.secondCounter > 0) {
           setTimeout(() => {
             this.secondCounter--;
             count2();
-          }, 1000)
+          }, 1000);
         } else {
           this.timeout = true;
         }
-      }
+      };
 
       count1();
     }
@@ -137,16 +128,16 @@ export class LoadingComponent implements OnInit {
       if (this.location.path() === '') {
         GC.router.navigate([GC.routes.tourplan]);
       }
-    })
+    });
     GC.loadingScreen = this;
   }
 
   progess = () => {
-    return GC.loadingProgress
+    return GC.loadingProgress;
   };
 
   backendIP = () => {
-    return GC.backendIP
+    return GC.backendIP;
   };
 
   cantConnect = () => {
@@ -154,7 +145,7 @@ export class LoadingComponent implements OnInit {
   };
 
   loadedParts = () => {
-    return GC.loadedParts
+    return GC.loadedParts;
   };
 
   openSettings(index?: number, reload?: boolean): void {

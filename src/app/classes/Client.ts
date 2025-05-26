@@ -1,6 +1,6 @@
-import {GC} from "../common/GC";
-import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import {SpecialPrice} from "./SpecialPrice";
+import { GC } from '../common/GC';
+import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
+import { SpecialPrice } from './SpecialPrice';
 
 export class Client {
   id: string = ''; // dbid
@@ -23,7 +23,7 @@ export class Client {
   }
 
   openPage(): void {
-    GC.router.navigate([GC.routes.client, {id: this.id}])
+    GC.router.navigate([GC.routes.client, { id: this.id }]);
   }
 
   delete(): void {
@@ -35,11 +35,11 @@ export class Client {
         highlightNo: true,
         warning: true
       }
-    })
+    });
     dialog.componentInstance.confirm.subscribe(() => {
       GC.http.deleteClient(this).subscribe(() => {
-        GC.openSnackBarLong(`${this.name} wurde gelöscht`)
-      })
-    })
+        GC.openSnackBarLong(`${this.name} wurde gelöscht`);
+      });
+    });
   }
 }

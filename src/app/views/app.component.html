@@ -7,18 +7,20 @@
       <!--      <button *ngIf="backendIP" mat-raised-button class="fex-button" [routerLink]="routes().statistics">-->
       <!--        <i class="bi bi-bar-chart"></i>-->
       <!--      </button>-->
-      <button *ngIf="backendIP()" matTooltip="benutzer:in ändern" mat-raised-button class="fex-button"
-        [class.fex-button-warn]="!dispatcher()" style="min-width: unset" (click)="openChangeUserDialog()">
+      <button
+        *ngIf="backendIP()"
+        matTooltip="benutzer:in ändern"
+        mat-raised-button
+        class="fex-button"
+        [class.fex-button-warn]="!dispatcher()"
+        style="min-width: unset"
+        (click)="openChangeUserDialog()"
+      >
         <i class="bi bi-person"></i>
-        {{dispatcher()?.messenger.nickname || 'einchecken'}}
+        {{ dispatcher()?.messenger.nickname || 'einchecken' }}
       </button>
-      <button *ngIf="backendIP()" mat-raised-button class="fex-button"
-        [routerLink]="[routes().tourplan, {date: dateString()}]">
-        tourenzettel
-      </button>
-      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().weekplan">
-        wochenplan
-      </button>
+      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="[routes().tourplan, { date: dateString() }]">tourenzettel</button>
+      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().weekplan">wochenplan</button>
       <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().newTour">
         <div class="flex flex-row align-items-center">
           <i class="mr-1 bi bi-plus-circle"></i>
@@ -43,44 +45,44 @@
       class="ml-4">
     </searchinput> -->
     </div>
-    <h1 *ngIf="backendIP()" class="mx-4 truncate">{{componentRef?.title}}</h1>
+    <h1 *ngIf="backendIP()" class="mx-4 truncate">{{ componentRef?.title }}</h1>
   </div>
 
   <mat-drawer-container id="content" class="example-container" autosize>
     <mat-drawer id="drawer" #drawer class="example-sidenav p-4" mode="side">
       <div class="flex flex-col h-100 justify-between">
         <div class="flex align-items-center flex-col">
-          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()"
-            [routerLink]="routes().clientlist">
+          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().clientlist">
             <i class="bi bi-person-lines-fill mr-2"></i> kund:innen
           </button>
-          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()"
-            [routerLink]="routes().locations">
-            <i class="bi bi-geo mr-2"></i> standorte
-          </button>
-          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()"
-            [routerLink]="routes().messengers">
+          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().locations"><i class="bi bi-geo mr-2"></i> standorte</button>
+          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().messengers">
             <i class="bi bi-bicycle mr-2"></i> kurier:innen
           </button>
-          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()"
-            [routerLink]="routes().shifts">
+          <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().shifts">
             <i class="bi bi-stopwatch mr-2"></i> schichten
           </button>
-          <button mat-raised-button class="fex-button align-items-center" style="display: flex"
-            (click)="openConfigDialog(); drawer.close()">
+          <button mat-raised-button class="fex-button align-items-center" style="display: flex" (click)="openConfigDialog(); drawer.close()">
             <i class="bi bi-gear-wide-connected mr-2"></i> einstellungen
           </button>
         </div>
         <div class="w-100 justify-end">
-          <span style="color: gray; font-family: monospace"><i>v{{version}}</i></span>
+          <span style="color: gray; font-family: monospace"
+            ><i>v{{ version }}</i></span
+          >
         </div>
       </div>
     </mat-drawer>
     <app-loading *ngIf="!loaded"></app-loading>
     <div [class.hidden]="!loaded">
-      <router-outlet class="pt-lg-2" (activate)="onActivate($event)" (loadstart)="outlet.style.opacity = '0'"
-        (load)="outlet.style.opacity = '100'" style="animation-duration: 0.2s" #outlet></router-outlet>
+      <router-outlet
+        class="pt-lg-2"
+        (activate)="onActivate($event)"
+        (loadstart)="outlet.style.opacity = '0'"
+        (load)="outlet.style.opacity = '100'"
+        style="animation-duration: 0.2s"
+        #outlet
+      ></router-outlet>
     </div>
   </mat-drawer-container>
-
 </div>

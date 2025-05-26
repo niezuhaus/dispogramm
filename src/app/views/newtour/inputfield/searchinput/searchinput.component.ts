@@ -1,28 +1,25 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Observable, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map, switchMap, tap} from 'rxjs/operators';
-import {Client} from "../../../../classes/Client";
-import {GeoCodingStrategy, LocType, SpecialPriceType,} from '../../../../common/interfaces';
-import {Messenger} from "../../../../classes/Messenger";
-import {Job} from "../../../../classes/Job";
-import {MatAutocompleteTrigger} from '@angular/material/autocomplete';
-import {InputFieldComponent} from "../input-field.component";
-import {GC} from "../../../../common/GC";
-import {HttpService} from "../../../../http.service";
-import {Geolocation, Station} from "../../../../classes/Geolocation";
-import {FormControl, Validators} from "@angular/forms";
-import {Zone} from "../../../../classes/Zone";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { Client } from '../../../../classes/Client';
+import { GeoCodingStrategy, LocType, SpecialPriceType } from '../../../../common/interfaces';
+import { Messenger } from '../../../../classes/Messenger';
+import { Job } from '../../../../classes/Job';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { InputFieldComponent } from '../input-field.component';
+import { GC } from '../../../../common/GC';
+import { HttpService } from '../../../../http.service';
+import { Geolocation, Station } from '../../../../classes/Geolocation';
+import { FormControl, Validators } from '@angular/forms';
+import { Zone } from '../../../../classes/Zone';
 
 @Component({
   selector: 'searchinput',
   templateUrl: './searchinput.component.html',
   styleUrls: ['./searchinput.component.scss']
 })
-
 export class SearchinputComponent implements OnInit {
-
-  constructor() {
-  }
+  constructor() {}
 
   // customization
   @Input() label: string;
@@ -56,7 +53,7 @@ export class SearchinputComponent implements OnInit {
   // events
   @Output() locationSelected = new EventEmitter<Geolocation>();
   @Output() OSMselected = new EventEmitter<Geolocation>();
-  @Output() clientSelected = new EventEmitter<{ c: Client, l: Geolocation }>();
+  @Output() clientSelected = new EventEmitter<{ c: Client; l: Geolocation }>();
   @Output() clientClientSelected = new EventEmitter<Client>();
   @Output() jobSelected = new EventEmitter<Job>();
   @Output() messengerSelected = new EventEmitter<Messenger>();
@@ -99,7 +96,7 @@ export class SearchinputComponent implements OnInit {
   ctrlVoid: FormControl;
 
   private static _filterLocationsNoClientId(list: Geolocation[]): Geolocation[] {
-    return list.filter(option => {
+    return list.filter((option) => {
       return !(parseInt(option.clientId, 10) > 0);
     });
   }
@@ -109,7 +106,7 @@ export class SearchinputComponent implements OnInit {
     this.searchTerm = this.content ? this.content : '';
     this.searchTerm = this.str ? this.str : '';
     this.setListeners();
-    this.change.subscribe(str => {
+    this.change.subscribe((str) => {
       if (str) {
         this.strChange.emit(str);
         if (!this.hasStartedTyping) {
@@ -121,9 +118,7 @@ export class SearchinputComponent implements OnInit {
       }
     });
 
-    this.locationSelected.pipe(
-      debounceTime(100)
-    ).subscribe(() => {
+    this.locationSelected.pipe(debounceTime(100)).subscribe(() => {
       if (!this.searchJobs) {
         this.resetOptions();
       }
@@ -131,8 +126,8 @@ export class SearchinputComponent implements OnInit {
   }
 
   setFormControls(): void {
-    this.ctrl = new FormControl({value: '', disabled: this.disabled}, [Validators.required]);
-    this.ctrlVoid = new FormControl({value: '', disabled: this.disabled}, [])
+    this.ctrl = new FormControl({ value: '', disabled: this.disabled }, [Validators.required]);
+    this.ctrlVoid = new FormControl({ value: '', disabled: this.disabled }, []);
   }
 
   ngOnChanges(): void {
@@ -152,179 +147,190 @@ export class SearchinputComponent implements OnInit {
   setListeners(): void {
     // the red ones, locations with clientId
     if (this.searchClientLocations) {
-      this.change.pipe(
-        distinctUntilChanged(),
-        filter(term => term?.length >= 1),
-      ).subscribe(searchStr => {
-        if (this.loadMode || this.jobMode) {
-          this.loadMode = false;
-        }
-        if (!this.jobMode) {
-          this.clientOptions = HttpService._filterLocationsByAny(GC.clientLocations, searchStr)
-        }
-      });
+      this.change
+        .pipe(
+          distinctUntilChanged(),
+          filter((term) => term?.length >= 1)
+        )
+        .subscribe((searchStr) => {
+          if (this.loadMode || this.jobMode) {
+            this.loadMode = false;
+          }
+          if (!this.jobMode) {
+            this.clientOptions = HttpService._filterLocationsByAny(GC.clientLocations, searchStr);
+          }
+        });
     }
 
     // the blue ones, locations without clientId
     if (this.searchLocations) {
-      this.change.pipe(
-        distinctUntilChanged(),
-        filter(term => term?.length >= 1),
-        switchMap(term => {
+      this.change
+        .pipe(
+          distinctUntilChanged(),
+          filter((term) => term?.length >= 1),
+          switchMap((term) => {
             if (this.loadMode || this.jobMode) {
               this.loadMode = false;
               return new Observable<Geolocation[]>();
             } else {
               return GC.http.searchLocationList(term);
             }
+          }),
+          map((list) => {
+            list.forEach((loc) => {
+              loc.inputfield = this.index;
+            });
+            return SearchinputComponent._filterLocationsNoClientId(list);
+          })
+        )
+        .subscribe((locations) => {
+          if (!this.jobMode) {
+            this.locationOptions = locations;
           }
-        ),
-        map(list => {
-          list.forEach(loc => {
-            loc.inputfield = this.index;
-          });
-          return SearchinputComponent._filterLocationsNoClientId(list);
-        })
-      ).subscribe(locations => {
-        if (!this.jobMode) {
-          this.locationOptions = locations;
-        }
-      });
+        });
     }
 
     // the white ones, plain address search-results
     if (this.searchOSM) {
-      this.change.pipe(
-        filter(() => {
-          return !this.jobMode
-        }),
-        tap(term => {
-          if (term.length <= 2) {
-            this.searching = 0;
-          } else {
-            this.searching++;
-          }
-        }),
-        distinctUntilChanged(),
-        debounceTime(GC.DEBOUNCE_TIME),
-        filter(term => term?.length > 1),
-        switchMap(term => {
-          if (this.loadMode || this.jobMode || term.length <= 2) {
-            this.loadMode = false;
-            return of([]);
-          } else {
-            return GC.config.geocoder.geocode(this.searchTerm, this.type);
-          }
-        }),
-        map(list => {
-          list.forEach(loc => {
-            loc.inputfield = this.index;
-          });
-          return list;
-        })
-      ).subscribe(osmOptions => {
-        this.osmOptions = osmOptions;
-        this.searching = 0;
-      });
+      this.change
+        .pipe(
+          filter(() => {
+            return !this.jobMode;
+          }),
+          tap((term) => {
+            if (term.length <= 2) {
+              this.searching = 0;
+            } else {
+              this.searching++;
+            }
+          }),
+          distinctUntilChanged(),
+          debounceTime(GC.DEBOUNCE_TIME),
+          filter((term) => term?.length > 1),
+          switchMap((term) => {
+            if (this.loadMode || this.jobMode || term.length <= 2) {
+              this.loadMode = false;
+              return of([]);
+            } else {
+              return GC.config.geocoder.geocode(this.searchTerm, this.type);
+            }
+          }),
+          map((list) => {
+            list.forEach((loc) => {
+              loc.inputfield = this.index;
+            });
+            return list;
+          })
+        )
+        .subscribe((osmOptions) => {
+          this.osmOptions = osmOptions;
+          this.searching = 0;
+        });
     }
 
     // the green ones, jobs
     if (this.searchJobs) {
-      this.clientSelected.pipe(
-        filter(c => c.c.id !== '0'),
-        tap(() => {
-          this.jobMode = true;
-          this.searching++;
-        })
-      ).subscribe(c => {
-        setTimeout(() => {
-          this.autocomplete.openPanel();
-        }, 0)
-        setTimeout(() => {
-          if (this.loadMode || !this.selection) {
-            this.loadMode = false;
-            this.searching = 0;
-            this.jobOptions = [];
-          } else {
-            GC.http.distinctsJobsForClient(c.c.id)
-              .subscribe(jobOptions => {
-                jobOptions = jobOptions.filter(j => j.center.id === this.selection.id)
+      this.clientSelected
+        .pipe(
+          filter((c) => c.c.id !== '0'),
+          tap(() => {
+            this.jobMode = true;
+            this.searching++;
+          })
+        )
+        .subscribe((c) => {
+          setTimeout(() => {
+            this.autocomplete.openPanel();
+          }, 0);
+          setTimeout(() => {
+            if (this.loadMode || !this.selection) {
+              this.loadMode = false;
+              this.searching = 0;
+              this.jobOptions = [];
+            } else {
+              GC.http.distinctsJobsForClient(c.c.id).subscribe((jobOptions) => {
+                jobOptions = jobOptions.filter((j) => j.center.id === this.selection.id);
                 if (this.hideGroupJobs) {
-                  jobOptions = jobOptions.filter(j => j.specialPrice?.type !== SpecialPriceType.group)
+                  jobOptions = jobOptions.filter((j) => j.specialPrice?.type !== SpecialPriceType.group);
                 }
                 this.searching = 0;
                 this.jobOptions = jobOptions;
-                this.resetOptions(true)
+                this.resetOptions(true);
               });
-          }
-
-        }, 0)
-      })
+            }
+          }, 0);
+        });
     }
 
     // the black ones, clients
     if (this.searchClients) {
-      this.change.pipe(
-        distinctUntilChanged(),
-        filter(term => term.length >= 1),
-        switchMap(term => {
+      this.change
+        .pipe(
+          distinctUntilChanged(),
+          filter((term) => term.length >= 1),
+          switchMap((term) => {
             if (this.loadMode || this.jobMode) {
               this.loadMode = false;
-              return new Observable<Client[]>()
+              return new Observable<Client[]>();
             } else {
               return GC.http.searchClientList(term);
             }
-          }
+          })
         )
-      ).subscribe(clients => {
-        this.clientclientOptions = clients;
-      });
+        .subscribe((clients) => {
+          this.clientclientOptions = clients;
+        });
     }
 
     // the purple ones, messengers
     if (this.searchMessenger) {
-      this.change.pipe(
-        distinctUntilChanged(),
-        filter(term => !!(term)),
-        filter(term => term.length >= 1),
-        switchMap(term => {
-          return GC.http.searchMessenger(term, "RIDING");
-        })
-      ).subscribe(messenger => {
-        this.messengerOptions = messenger.filter(mess => !this.ignoredMessenger?.map(m => m.id).includes(mess.id));
-      });
+      this.change
+        .pipe(
+          distinctUntilChanged(),
+          filter((term) => !!term),
+          filter((term) => term.length >= 1),
+          switchMap((term) => {
+            return GC.http.searchMessenger(term, 'RIDING');
+          })
+        )
+        .subscribe((messenger) => {
+          this.messengerOptions = messenger.filter((mess) => !this.ignoredMessenger?.map((m) => m.id).includes(mess.id));
+        });
     }
 
     if (this.searchDispatcher) {
-      this.change.pipe(
-        distinctUntilChanged(),
-        filter(term => !!(term)),
-        filter(term => term.length >= 1),
-        switchMap(term => {
-          return GC.http.searchMessenger(term, "DISPATCHER");
-        })
-      ).subscribe(dispatcher => {
-        this.dispatcherOptions = dispatcher;
-      });
+      this.change
+        .pipe(
+          distinctUntilChanged(),
+          filter((term) => !!term),
+          filter((term) => term.length >= 1),
+          switchMap((term) => {
+            return GC.http.searchMessenger(term, 'DISPATCHER');
+          })
+        )
+        .subscribe((dispatcher) => {
+          this.dispatcherOptions = dispatcher;
+        });
     }
 
     // zones
     if (this.searchZones) {
-      this.change.pipe(
-        distinctUntilChanged(),
-        filter(term => !!(term)),
-        filter(term => term.length >= 1),
-      ).subscribe(term => {
-        let list: Zone[] = [];
-        if (this.searchZones) {
-          list = GC.zones.copy();
-          if (this.searchPostCodeZones)
-            list.pushArray(GC.postCodeZones);
-        } else if (this.searchPostCodeZones) {
-          list = GC.postCodeZones;
-        }
-        this.zoneOptions = list.filter(zone => zone.name.toLowerCase().includes(term.toLowerCase()));
-      });
+      this.change
+        .pipe(
+          distinctUntilChanged(),
+          filter((term) => !!term),
+          filter((term) => term.length >= 1)
+        )
+        .subscribe((term) => {
+          let list: Zone[] = [];
+          if (this.searchZones) {
+            list = GC.zones.copy();
+            if (this.searchPostCodeZones) list.pushArray(GC.postCodeZones);
+          } else if (this.searchPostCodeZones) {
+            list = GC.postCodeZones;
+          }
+          this.zoneOptions = list.filter((zone) => zone.name.toLowerCase().includes(term.toLowerCase()));
+        });
     }
   }
 
@@ -333,17 +339,17 @@ export class SearchinputComponent implements OnInit {
       this.jobMode = false;
       this.jobOptions = [];
       this.change.emit(this.searchTerm);
-    }
+    };
 
     switch (true) {
       case e.key === 'Backspace':
         if (this.searchTerm === '') {
           this.reset();
-          this.resetted.emit(true)
+          this.resetted.emit(true);
         } else {
           if (this.selection) {
             this.selection = null;
-            this.resetted.emit(true)
+            this.resetted.emit(true);
           }
           search();
         }
@@ -360,7 +366,7 @@ export class SearchinputComponent implements OnInit {
         if (this.selection) {
           this.selection = null;
           this.jobOptions = [];
-          this.resetted.emit(true)
+          this.resetted.emit(true);
         }
         search();
         break;
@@ -385,13 +391,13 @@ export class SearchinputComponent implements OnInit {
 
   // red (location with clientID)
   _clientSelected(loc: Geolocation): void {
-    GC.http.getClient(loc.clientId).subscribe(selectedClient => {
+    GC.http.getClient(loc.clientId).subscribe((selectedClient) => {
       this.client = selectedClient;
       loc.locType = this.type;
       this.selection = new Station(loc);
-      this.clientSelected.emit({c: selectedClient, l: loc});
+      this.clientSelected.emit({ c: selectedClient, l: loc });
       this.clientOptions = [];
-    })
+    });
   }
 
   // blue (location without clientID)
@@ -425,7 +431,7 @@ export class SearchinputComponent implements OnInit {
     this.messengerSelected.emit(messenger);
     this.messengerOptions = [];
     if (this.keepMessName) {
-      this.searchTerm = messenger.nickname
+      this.searchTerm = messenger.nickname;
     }
   }
 
@@ -443,7 +449,7 @@ export class SearchinputComponent implements OnInit {
   }
 
   _zoneSelected(zone: Zone): void {
-    this.reset()
+    this.reset();
     this.zoneSelected.emit(zone);
   }
 
@@ -490,7 +496,7 @@ export class SearchinputComponent implements OnInit {
     loc.inputfield = this.index;
     this.selection = new Station(loc);
     this.searchTerm = loc.name ? loc.name : loc.address;
-    this.type !== LocType.client ? this.inputField.hasBacktour = loc.hasBacktour : '';
+    this.type !== LocType.client ? (this.inputField.hasBacktour = loc.hasBacktour) : '';
   }
 
   isEmpty(): boolean {

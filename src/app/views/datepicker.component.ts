@@ -1,37 +1,26 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {DateAdapter} from '@angular/material/core';
-import {GC} from "../common/GC";
-import {MatDatepicker} from "@angular/material/datepicker";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { DateAdapter } from '@angular/material/core';
+import { GC } from '../common/GC';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 @Component({
   selector: 'datepicker',
   template: `
     <div class="flex py-2 align-items-center">
-      <button mat-button class="flex justify-content-around align-items-center" [class.mr-3]="headline"
-              (click)="monthly ? previousMonth() : previousDay()" [disabled]="disabled">
+      <button mat-button class="flex justify-content-around align-items-center" [class.mr-3]="headline" (click)="monthly ? previousMonth() : previousDay()" [disabled]="disabled">
         <i class="bi bi-chevron-left"></i>
       </button>
       <div [style.width]="headline ? '400px' : 'unset'" class="flex justify-content-center">
-        <h1 *ngIf="headline" (click)="setToNow()" matTooltip="auf heute setzen"
-            style="cursor: pointer; white-space: nowrap; margin: 0">{{days[date.getDay()]}}, {{date.toLocaleDateString()}}</h1>
+        <h1 *ngIf="headline" (click)="setToNow()" matTooltip="auf heute setzen" style="cursor: pointer; white-space: nowrap; margin: 0">{{ days[date.getDay()] }}, {{ date.toLocaleDateString() }}</h1>
       </div>
-      <button
-        [disabled]="disabled"
-        *ngIf="!(headline)"
-        mat-raised-button (click)="setToNow()"
-        class="fex-button justify-content-center"
-        style="min-width: 155px"
-        matTooltip="datum zurücksetzen">
-        <span *ngIf="monthly">{{months[date.getMonth()]}} {{date.getFullYear()}}</span>
+      <button [disabled]="disabled" *ngIf="!headline" mat-raised-button (click)="setToNow()" class="fex-button justify-content-center" style="min-width: 155px" matTooltip="datum zurücksetzen">
+        <span *ngIf="monthly">{{ months[date.getMonth()] }} {{ date.getFullYear() }}</span>
         <span *ngIf="!monthly && date.toDateString() === today.toDateString()">heute</span>
         <span *ngIf="!monthly && date.toDateString() === yesterday.toDateString()">gestern</span>
         <span *ngIf="!monthly && date.toDateString() === tomorrow.toDateString()">morgen</span>
-        <span *ngIf="!monthly && daysDifference > 1">
-          {{dayLiterals[date.getDay()]}}, {{date.toLocaleDateString()}}
-            </span>
+        <span *ngIf="!monthly && daysDifference > 1"> {{ dayLiterals[date.getDay()] }}, {{ date.toLocaleDateString() }} </span>
       </button>
-      <button mat-button class="flex justify-content-around align-items-center" [class.ml-3]="headline"
-              (click)="monthly ? nextMonth() : nextDay()" [disabled]="disabled">
+      <button mat-button class="flex justify-content-around align-items-center" [class.ml-3]="headline" (click)="monthly ? nextMonth() : nextDay()" [disabled]="disabled">
         <i class="bi bi-chevron-right"></i>
       </button>
       <div *ngIf="headline || calendar">
@@ -45,7 +34,8 @@ import {MatDatepicker} from "@angular/material/datepicker";
           (dateChange)="calendarSelect($event.value)"
           style="visibility: hidden; position: fixed;"
           [style.left.px]="datepickerTopLeftPosition.x"
-          [style.top.px]="datepickerTopLeftPosition.y">
+          [style.top.px]="datepickerTopLeftPosition.y"
+        />
         <mat-datepicker #picker></mat-datepicker>
       </div>
     </div>
@@ -53,37 +43,42 @@ import {MatDatepicker} from "@angular/material/datepicker";
   styles: []
 })
 export class DatepickerComponent implements OnInit {
-
   today = this.dateAdapter.today();
   tomorrow = this.dateAdapter.today();
   yesterday = this.dateAdapter.today();
-  datepickerTopLeftPosition = {x: 0, y: 0};
+  datepickerTopLeftPosition = { x: 0, y: 0 };
 
   @Input() headline: boolean;
   @Input() calendar: boolean;
   @Input() date: Date;
   @Input() monthly: boolean;
-  @Input() disabled: boolean
+  @Input() disabled: boolean;
   @Output() dateChange = new EventEmitter<Date>();
   @Output() touched = new EventEmitter<boolean>();
 
   @ViewChild('picker') picker: MatDatepicker<Date>;
 
-  get dayLiterals() {return GC.dayLiterals};
-  get months() {return GC.monthLiterals};
-  get days() {return GC.days};
-  get daysDifference() {return this.date.daysDifference(this.today)};
+  get dayLiterals() {
+    return GC.dayLiterals;
+  }
+  get months() {
+    return GC.monthLiterals;
+  }
+  get days() {
+    return GC.days;
+  }
+  get daysDifference() {
+    return this.date.daysDifference(this.today);
+  }
 
-  constructor(
-    private dateAdapter: DateAdapter<Date>
-  ) {
+  constructor(private dateAdapter: DateAdapter<Date>) {
     this.dateAdapter.setLocale('de');
   }
 
   ngOnInit(): void {
     this.yesterday.setDate(this.yesterday.getDate() - 1);
     this.tomorrow.setDate(this.tomorrow.getDate() + 1);
-    if (!(this.date)) {
+    if (!this.date) {
       this.date = this.dateAdapter.today();
     }
   }
@@ -111,7 +106,7 @@ export class DatepickerComponent implements OnInit {
   openPicker(event: MouseEvent): void {
     this.datepickerTopLeftPosition.x = event.clientX;
     this.datepickerTopLeftPosition.y = event.clientY;
-    this.picker.open()
+    this.picker.open();
   }
 
   calendarSelect(date: Date | any): void {

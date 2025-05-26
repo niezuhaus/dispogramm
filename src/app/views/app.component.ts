@@ -1,25 +1,17 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ComponentRef,
-  EventEmitter,
-  HostListener,
-  ViewChild
-} from '@angular/core';
-import {GC} from '../common/GC';
-import {HttpService} from '../http.service';
-import {MatDialog} from "@angular/material/dialog";
-import {CheckInDialog} from "../dialogs/shifts-dialog/check-in-dialog.component";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {ActivatedRoute, Router} from "@angular/router";
-import {getItem} from "../UTIL";
-import {ConfigDialogComponent} from "../dialogs/config-dialog.component";
-import {Location} from "@angular/common";
-import {DatepickerComponent} from "./datepicker.component";
-import {CalendarRangeDialogComponent} from "../dialogs/calendar-range-dialog/calendar-range-dialog.component";
-import {SearchinputComponent} from "./newtour/inputfield/searchinput/searchinput.component";
-import {Zone} from "../classes/Zone";
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, HostListener, ViewChild } from '@angular/core';
+import { GC } from '../common/GC';
+import { HttpService } from '../http.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CheckInDialog } from '../dialogs/shifts-dialog/check-in-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { getItem } from '../UTIL';
+import { ConfigDialogComponent } from '../dialogs/config-dialog.component';
+import { Location } from '@angular/common';
+import { DatepickerComponent } from './datepicker.component';
+import { CalendarRangeDialogComponent } from '../dialogs/calendar-range-dialog/calendar-range-dialog.component';
+import { SearchinputComponent } from './newtour/inputfield/searchinput/searchinput.component';
+import { Zone } from '../classes/Zone';
 import { Title } from '@angular/platform-browser';
 
 export abstract class TitleComponent {
@@ -36,13 +28,14 @@ export abstract class AsyncTitleComponent extends TitleComponent {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
-
-  get title() {return this.componentRef?.title || ''};
+  get title() {
+    return this.componentRef?.title || '';
+  }
 
   gc: GC;
   componentRef: TitleComponent;
   ref: ComponentRef<any>;
-  date = new Date;
+  date = new Date();
   loaded = false;
   search = false;
   showFiller = false;
@@ -52,17 +45,17 @@ export class AppComponent implements AfterViewInit {
   }
 
   routes = () => {
-    return GC.routes
-  }
+    return GC.routes;
+  };
   dispatcher = () => {
     return GC._dispatcher;
-  }
+  };
   backendIP = () => {
     return GC.backendIP;
-  }
-  get version() {
-    return GC.version
   };
+  get version() {
+    return GC.version;
+  }
 
   constructor(
     private http: HttpService,
@@ -72,7 +65,7 @@ export class AppComponent implements AfterViewInit {
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
     private location: Location,
-    private titleService: Title,
+    private titleService: Title
   ) {
     this.gc = new GC(http, router, snackbar, dialog, cd, location, route);
   }
@@ -80,7 +73,7 @@ export class AppComponent implements AfterViewInit {
   ngOnInit(): void {
     GC.loaded().subscribe(() => {
       this.loaded = true;
-    })
+    });
     this.titleService.setTitle('dispogramm - v' + GC.version);
   }
 
@@ -102,10 +95,10 @@ export class AppComponent implements AfterViewInit {
   onActivate(componentRef: any): void {
     this.ref = componentRef as ComponentRef<any>;
     if (componentRef instanceof TitleComponent) {
-      this.componentRef = componentRef
+      this.componentRef = componentRef;
     }
     if (componentRef instanceof AsyncTitleComponent) {
-      this.componentRef = componentRef
+      this.componentRef = componentRef;
       componentRef.titleEmitter.subscribe((msg: string) => {
         GC.cd.detectChanges();
       });
@@ -129,13 +122,13 @@ export class AppComponent implements AfterViewInit {
       data: {
         headline: 'datum für die voranmeldung auswählen',
         onlyDatePicker: true,
-        regularJob: null,
+        regularJob: null
       }
     });
-    dialog.componentInstance.dateSelected.subscribe(date => {
-      GC.router.navigate([GC.routes.newTour, {time: date.yyyymmdd()}]);
+    dialog.componentInstance.dateSelected.subscribe((date) => {
+      GC.router.navigate([GC.routes.newTour, { time: date.yyyymmdd() }]);
       dialog.close();
-    })
+    });
   }
 
   @ViewChild('input') input: SearchinputComponent;
@@ -147,7 +140,7 @@ export class AppComponent implements AfterViewInit {
           if (this.search) {
             setTimeout(() => {
               this.input.inputRef.nativeElement.select();
-            }, 0)
+            }, 0);
           }
         }
         break;
@@ -158,10 +151,10 @@ export class AppComponent implements AfterViewInit {
   }
 
   print(any: any) {
-    console.log(any)
+    console.log(any);
   }
 
   zoneSelected(zone: Zone): void {
-    new Zone(zone).openDialog()
+    new Zone(zone).openDialog();
   }
 }

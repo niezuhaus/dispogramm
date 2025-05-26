@@ -1,9 +1,9 @@
-import {Price} from "../classes/Price";
-import {Job} from "../classes/Job";
-import {Observable} from "rxjs";
-import {Geolocation} from "../classes/Geolocation";
-import {Client} from "../classes/Client";
-import {Branch} from "../classes/Branch";
+import { Price } from '../classes/Price';
+import { Job } from '../classes/Job';
+import { Observable } from 'rxjs';
+import { Geolocation } from '../classes/Geolocation';
+import { Client } from '../classes/Client';
+import { Branch } from '../classes/Branch';
 
 export interface BranchSet {
   branches: Branch[];
@@ -51,7 +51,7 @@ export enum PassType {
   /** a location to which a distance price will be calculated */
   route,
   /** a location that is the end of all branches */
-  center,
+  center
 }
 
 /**
@@ -106,7 +106,7 @@ export interface IPoint {
 }
 
 /* entspricht der teilmenge eines branches zwischen und inklusive zweier geolocations
-* mit dem passtype SOURCE, ROUTE oder CENTER */
+ * mit dem passtype SOURCE, ROUTE oder CENTER */
 export interface Section {
   points: IPoint[];
   traveldist: number;
@@ -128,121 +128,121 @@ export interface Invoice {
  * well be used by the @readConfig function
  */
 export interface ConfigDataContract {
-  backendIP?: string,
-  geocoder: GeoCodingStrategy,
+  backendIP?: string;
+  geocoder: GeoCodingStrategy;
   prices: {
-    stop: Price,
-    city: Price,
-    city2: Price,
-    extras: Price[],
+    stop: Price;
+    city: Price;
+    city2: Price;
+    extras: Price[];
     list: {
-      base: Price // minimum price by km calculation
-      quantityIncl: number, // km included in base
-      extra1: Price, // price per km until n-th kilometer
-      threshold: number // n
-      extra2: Price, // price per km after the n-th kilometer
-    },
-    nearby: Price,
-    connectionDiscount: Price,
-    fiveMinutes: Price,
-    waitingTimeQuantityIncl: number,
-    group: Price,
-    falseArrival: Price,
+      base: Price; // minimum price by km calculation
+      quantityIncl: number; // km included in base
+      extra1: Price; // price per km until n-th kilometer
+      threshold: number; // n
+      extra2: Price; // price per km after the n-th kilometer
+    };
+    nearby: Price;
+    connectionDiscount: Price;
+    fiveMinutes: Price;
+    waitingTimeQuantityIncl: number;
+    group: Price;
+    falseArrival: Price;
     extraPrices: {
-      baseExtra: BaseExtraExtraPrice[],
-      groupExtra: GroupExtraPrice[],
-    },
+      baseExtra: BaseExtraExtraPrice[];
+      groupExtra: GroupExtraPrice[];
+    };
     dierksenHanker: {
-      base: Price,
-      extra: Price,
-      quantityIncl: 1
-    },
+      base: Price;
+      extra: Price;
+      quantityIncl: 1;
+    };
     niemann: {
-      base: Price,
-      extra: Price,
-      quantityIncl: 2,
-    },
+      base: Price;
+      extra: Price;
+      quantityIncl: 2;
+    };
     hbNord: {
-      base: Price,
-      extra: Price,
-      quantityIncl: 1,
-    }
-  }
-  vat: number,
-  minimumWage: number,
+      base: Price;
+      extra: Price;
+      quantityIncl: 1;
+    };
+  };
+  vat: number;
+  minimumWage: number;
   tourplan: {
-    PRE_ORDER_ALARM: number,
-    NORMAL_ALARM: number,
-    ALARM_STOP: number,
-    HOURS_IN_ADVANCE: number,
-    salesMinimized: boolean,
-    filterStatus: boolean[],
-  },
+    PRE_ORDER_ALARM: number;
+    NORMAL_ALARM: number;
+    ALARM_STOP: number;
+    HOURS_IN_ADVANCE: number;
+    salesMinimized: boolean;
+    filterStatus: boolean[];
+  };
   messenger: {
     hideInactive: boolean;
-  }
+  };
   lexofficeActivated: boolean;
   api: {
-    lex: string,
+    lex: string;
     /**
      * the API key for openstreetmaps.
      * see usage <a href="https://myprojects.geoapify.com/">here</a>
      */
-    geoapify: string,
+    geoapify: string;
     /**
      * token to access mapbox map-data
      * to generate a new token click <a href="https://account.mapbox.com/access-tokens/">here</a>
      */
-    mapbox: string,
+    mapbox: string;
     /**
      * the API key for bing maps.
      * see usage <a href="https://www.bingmapsportal.com/Application">here</a>
      */
-    bing: string,
-  }
-  workingDays: number,
-  nearbyDist: number,
-  showZonesPermanently: boolean,
+    bing: string;
+  };
+  workingDays: number;
+  nearbyDist: number;
+  showZonesPermanently: boolean;
   shifts: {
-    hideShiftless: boolean,
-  }
+    hideShiftless: boolean;
+  };
 }
 
 export interface Extraprice {
-  name: string,
-  clients: Client[],
-  mode: ExtraPriceType,
+  name: string;
+  clients: Client[];
+  mode: ExtraPriceType;
 }
 
-export interface BaseExtraExtraPrice extends Extraprice{
-  base: Price,
-  extra: Price,
-  quantityIncl: number,
+export interface BaseExtraExtraPrice extends Extraprice {
+  base: Price;
+  extra: Price;
+  quantityIncl: number;
 }
 
-export interface GroupExtraPrice extends  Extraprice {
-  price: Price,
+export interface GroupExtraPrice extends Extraprice {
+  price: Price;
 }
 
 export enum ExtraPriceType {
   baseExtra,
-  group,
+  group
 }
 
 export interface TimeframeStatistic {
-  timeframe: string,
-  amount: number,
-  distance: number,
-  turnover: number,
+  timeframe: string;
+  amount: number;
+  distance: number;
+  turnover: number;
 }
 
 export interface DayStatistic {
-  day: string,
-  statistics: TimeframeStatistic[]
+  day: string;
+  statistics: TimeframeStatistic[];
 }
 
 export interface WeekStatistic {
-  statistics: DayStatistic[],
+  statistics: DayStatistic[];
 }
 
 export interface RawConfig {
@@ -290,7 +290,7 @@ export interface GeoCodingStrategy {
 export enum GeoCodingMode {
   osm,
   bing,
-  both,
+  both
 }
 
 /**
@@ -311,20 +311,18 @@ export interface Extra {
 }
 
 export interface LexProfile {
-  organizationId: string // "aa93e8a8-2aa3-470b-b914-caad8a255dd8",
-  companyName: string // "Testfirma GmbH",
+  organizationId: string; // "aa93e8a8-2aa3-470b-b914-caad8a255dd8",
+  companyName: string; // "Testfirma GmbH",
   created: {
-    userId: string // "1aea5501-3f3e-403d-8492-2dad03016289",
-    userName: string // "Frau Erika Musterfrau",
-    userEmail: string // "erika.musterfrau@testfirma.de",
-    date: string // "2017-01-03T13:15:45.000+01:00"
-  },
-  connectionId: string // "3dea098a-fae5-4458-a85c-f97965966c25",
-  features: string[] // ["cashbox"],
-  businessFeatures: string[] // ["INVOICING", "INVOICING_PRO", "BOOKKEEPING"],
-  subscriptionStatus: string // "active",
-  taxType: string // "net",
-  smallBusiness: boolean // false
+    userId: string; // "1aea5501-3f3e-403d-8492-2dad03016289",
+    userName: string; // "Frau Erika Musterfrau",
+    userEmail: string; // "erika.musterfrau@testfirma.de",
+    date: string; // "2017-01-03T13:15:45.000+01:00"
+  };
+  connectionId: string; // "3dea098a-fae5-4458-a85c-f97965966c25",
+  features: string[]; // ["cashbox"],
+  businessFeatures: string[]; // ["INVOICING", "INVOICING_PRO", "BOOKKEEPING"],
+  subscriptionStatus: string; // "active",
+  taxType: string; // "net",
+  smallBusiness: boolean; // false
 }
-
-

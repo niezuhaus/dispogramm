@@ -1,12 +1,12 @@
-import {GC, ShiftType} from "../common/GC";
-import {Price} from "./Price";
-import {Messenger} from "./Messenger";
-import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import {tap} from "rxjs/operators";
-import {Observable} from "rxjs";
-import {Job} from "./Job";
-import {IdObject} from "../common/interfaces";
-import {CheckoutDialogComponent} from "../dialogs/checkout-dialog.component";
+import { GC, ShiftType } from '../common/GC';
+import { Price } from './Price';
+import { Messenger } from './Messenger';
+import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
+import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Job } from './Job';
+import { IdObject } from '../common/interfaces';
+import { CheckoutDialogComponent } from '../dialogs/checkout-dialog.component';
 
 export class Shift implements IdObject {
   id: string;
@@ -25,7 +25,7 @@ export class Shift implements IdObject {
       this.start = new Date(this.start);
       this.end = this.end ? new Date(this.end) : null;
       this.messenger = new Messenger(this.messenger);
-      this.jobs = this.jobs?.map(j => new Job(j));
+      this.jobs = this.jobs?.map((j) => new Job(j));
     } else if (dispatcher !== undefined) {
       this.type = this.shiftTypeGuess(dispatcher);
       this.start = this.startTimeGuess();
@@ -85,7 +85,7 @@ export class Shift implements IdObject {
         highlightNo: true,
         warning: true
       }
-    })
+    });
     dialog.componentInstance.confirm.subscribe(() => {
       GC.http.deleteShift(this).subscribe(() => {
         GC.openSnackBarLong('schicht wurde gelöscht.');
@@ -95,7 +95,7 @@ export class Shift implements IdObject {
           callback(this);
         }
       });
-    })
+    });
   }
 
   openDialog(): void {
@@ -103,9 +103,9 @@ export class Shift implements IdObject {
       data: {
         shift: this,
         end: this.end,
-        jobs: this.jobs,
+        jobs: this.jobs
       }
-    })
+    });
   }
 
   update(msg?: string, subscribe?: boolean): Observable<Shift> {
@@ -115,11 +115,11 @@ export class Shift implements IdObject {
           GC.openSnackBarLong(msg);
         }
       })
-    )
+    );
     if (subscribe) {
       res.subscribe(() => {
-        GC.loadShiftsToday(GC.http)
-      })
+        GC.loadShiftsToday(GC.http);
+      });
     }
     return res;
   }

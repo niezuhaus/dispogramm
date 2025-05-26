@@ -1,5 +1,5 @@
-import {GC} from "../common/GC";
-import {Expense} from "./Expense";
+import { GC } from '../common/GC';
+import { Expense } from './Expense';
 
 /**
  * implements a class to be used wherever prices occur in this software.
@@ -37,15 +37,19 @@ export class Price {
   isBrutto: boolean;
   expenses: Expense[] = [];
 
-  bruttoOnCent = () => {return (this.netto * (this.vat / 100 + 1)).round(2)}
-  mwst = () => {return (this.netto * this.vat / 100).round(2)}
+  bruttoOnCent = () => {
+    return (this.netto * (this.vat / 100 + 1)).round(2);
+  };
+  mwst = () => {
+    return ((this.netto * this.vat) / 100).round(2);
+  };
 
   /**
    *
    * @param price a number or another price to instantiate the new price from
    * @param options optional vat value differing from the global set one
    */
-  constructor(price?: number | Price, options?: {vat?: number,  brutto?: boolean, name?: string}) {
+  constructor(price?: number | Price, options?: { vat?: number; brutto?: boolean; name?: string }) {
     this.vat = options?.vat || GC.config?.vat || GC.VAT;
     this.name = options?.name || this.name;
     if (!price) {
@@ -70,18 +74,18 @@ export class Price {
   }
 
   private calcBrutto = (netto: number) => {
-    return (netto + netto * this.vat / 100).round(1);
-  }
+    return (netto + (netto * this.vat) / 100).round(1);
+  };
   private calcNetto = (brutto: number) => {
-    return (brutto / (100 + this.vat) * 100).round(1);
-  }
+    return ((brutto / (100 + this.vat)) * 100).round(1);
+  };
   /**
    * implemented paypal fee policy, as described <a href="https://www.paypal.com/de/webapps/mpp/merchant-fees">here</a>
    * @param brutto
    */
   private calcPayPal = (brutto: number) => {
     return brutto === 0 ? 0 : (1.0249 * brutto + 0.35).round(2);
-  }
+  };
 
   /**
    * rounds the price to one digit and returns it
@@ -235,7 +239,7 @@ export class Price {
    * @returns the price
    */
   waitingMinutes(minutes: number): Price {
-    this.set(GC.config.prices.fiveMinutes._mul(Math.ceil(Math.max((minutes - GC.config.prices.waitingTimeQuantityIncl), 0) / 5)))
+    this.set(GC.config.prices.fiveMinutes._mul(Math.ceil(Math.max(minutes - GC.config.prices.waitingTimeQuantityIncl, 0) / 5)));
     return this;
   }
 
@@ -250,11 +254,9 @@ export class Price {
 
   withExpenses(expense: Expense): Price {
     let result = this.copy();
-    this.expenses.forEach(e => {
-      result.isBrutto ?
-        result._brutto += expense.price.brutto :
-        result._netto += expense.price.brutto;
-    })
+    this.expenses.forEach((e) => {
+      result.isBrutto ? (result._brutto += expense.price.brutto) : (result._netto += expense.price.brutto);
+    });
     return result;
   }
 

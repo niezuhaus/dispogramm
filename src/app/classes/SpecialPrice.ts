@@ -1,13 +1,12 @@
-import {Client} from "./Client";
-import {Price} from "./Price";
-import {GC} from "../common/GC";
-import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import {IdObject, SpecialPriceType} from "../common/interfaces";
-import {BaseExtra, FexRules, Group, PriceStrategy} from "./PriceStrategies";
-import {Zone} from "./Zone";
+import { Client } from './Client';
+import { Price } from './Price';
+import { GC } from '../common/GC';
+import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
+import { IdObject, SpecialPriceType } from '../common/interfaces';
+import { BaseExtra, FexRules, Group, PriceStrategy } from './PriceStrategies';
+import { Zone } from './Zone';
 
 export class SpecialPrice implements IdObject {
-
   id: string;
   name: string;
   clients: Client[] = [];
@@ -33,24 +32,24 @@ export class SpecialPrice implements IdObject {
         return 'grundpreis + extra';
 
       case SpecialPriceType.fexrules:
-        return 'fex regeln'
+        return 'fex regeln';
     }
   }
 
-   get deletebool() {
-     return this.group._netto === 0 && this.base._netto === 0;
-   }
+  get deletebool() {
+    return this.group._netto === 0 && this.base._netto === 0;
+  }
 
   constructor(data?: Partial<SpecialPrice>) {
     if (data) {
       Object.assign(this, data);
-      this.clients = this.clients ? this.clients.map(c => new Client(c)) : null;
+      this.clients = this.clients ? this.clients.map((c) => new Client(c)) : null;
       this.base = this.base ? new Price(this.base) : null;
       this.extra = this.extra ? new Price(this.extra) : null;
       this.group = this.group ? new Price(this.group) : null;
       this.type = this.base?._netto > 0 ? SpecialPriceType.baseExtra : this.group._netto > 0 ? SpecialPriceType.group : SpecialPriceType.fexrules;
     }
-    this.priceStrategy = this.makePriceStrategy()
+    this.priceStrategy = this.makePriceStrategy();
   }
 
   save(): void {
@@ -66,7 +65,7 @@ export class SpecialPrice implements IdObject {
       this.group._brutto = this.group._netto;
     }
     let ob = this.id ? GC.http.updateSpecialPrice(this) : GC.http.createSpecialPrice(this);
-    ob.subscribe(price => {
+    ob.subscribe((price) => {
       GC.openSnackBarLong('sonderpreis wurde gespeichert');
     });
   }
@@ -74,8 +73,8 @@ export class SpecialPrice implements IdObject {
   delete(force?: boolean): void {
     if (force) {
       GC.http.deleteSpecialPrice(this).subscribe(() => {
-        console.log('gelöscht')
-      })
+        console.log('gelöscht');
+      });
       return;
     }
 
@@ -90,13 +89,13 @@ export class SpecialPrice implements IdObject {
     });
     dialog.componentInstance.confirm.subscribe(() => {
       GC.http.deleteSpecialPrice(this).subscribe(() => {
-        GC.openSnackBarLong('sonderpreis wurde gelöscht.')
-      })
-    })
+        GC.openSnackBarLong('sonderpreis wurde gelöscht.');
+      });
+    });
   }
 
   print(): void {
-    console.log(this)
+    console.log(this);
   }
 
   makePriceStrategy(): PriceStrategy {
@@ -105,10 +104,7 @@ export class SpecialPrice implements IdObject {
         return new Group(this.group, this.name);
 
       case SpecialPriceType.baseExtra:
-        return new BaseExtra(
-          SpecialPriceType.baseExtra,
-          {base: this.base, extra: this.extra, quantityIncl: this.quantityIncluded},
-          this.name);
+        return new BaseExtra(SpecialPriceType.baseExtra, { base: this.base, extra: this.extra, quantityIncl: this.quantityIncluded }, this.name);
 
       case SpecialPriceType.none:
         return null;

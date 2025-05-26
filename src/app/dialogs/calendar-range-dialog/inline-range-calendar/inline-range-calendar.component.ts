@@ -1,16 +1,10 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {DateRange} from "@angular/material/datepicker";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { DateRange } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-inline-range-calendar',
-  template: `
-    <mat-calendar
-      [selected]="range"
-      (selectedChange)="selectedChange($event)">
-    </mat-calendar>
-  `,
-  styles: [
-  ]
+  template: ` <mat-calendar [selected]="range" (selectedChange)="selectedChange($event)"> </mat-calendar> `,
+  styles: []
 })
 export class InlineRangeCalendarComponent {
   @Input() range: DateRange<Date> | undefined;
@@ -32,5 +26,4 @@ export class InlineRangeCalendarComponent {
     }
     this.rangeChange.emit(this.range);
   }
-
 }

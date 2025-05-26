@@ -1,10 +1,10 @@
-import {Feature, MultiPolygon, Polygon, Position} from "@turf/turf";
-import {Price} from "./Price";
-import {area, polygon} from "@turf/turf";
-import {IdObject} from "../common/interfaces";
-import {GC} from "../common/GC";
-import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
-import {ZoneDialogComponent} from "../dialogs/zone-dialog.component";
+import { Feature, MultiPolygon, Polygon, Position } from '@turf/turf';
+import { Price } from './Price';
+import { area, polygon } from '@turf/turf';
+import { IdObject } from '../common/interfaces';
+import { GC } from '../common/GC';
+import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
+import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
 
 export class Zone implements IdObject {
   id: string;
@@ -13,15 +13,21 @@ export class Zone implements IdObject {
   index?: number;
   coordinates: Position[] = [];
   private _isSubstractive: boolean = false;
-  get isSubstractive() {return this._isSubstractive};
-  get _coordinates() {return this.coordinates}
+  get isSubstractive() {
+    return this._isSubstractive;
+  }
+  get _coordinates() {
+    return this.coordinates;
+  }
   set _coordinates(coos: Position[]) {
     this.coordinates = coos;
     this.polygon = polygon([this.coordinates]);
     this._area = this.polygon ? (area(this.polygon) / 1000000).round(2) : 0;
   }
   private _polygon: Feature<Polygon | MultiPolygon>;
-  get polygon(): Feature<Polygon | MultiPolygon> {return this._polygon};
+  get polygon(): Feature<Polygon | MultiPolygon> {
+    return this._polygon;
+  }
   set polygon(polygon: Feature<Polygon | MultiPolygon>) {
     if (!polygon) {
       this._polygon = null;
@@ -30,15 +36,19 @@ export class Zone implements IdObject {
     }
     this._polygon = polygon;
     if (polygon.geometry.coordinates.length > 1) {
-      this.coordinates = (polygon.geometry.coordinates as unknown as Position[][]).map(a => a[0]);
+      this.coordinates = (polygon.geometry.coordinates as unknown as Position[][]).map((a) => a[0]);
     } else {
       this.coordinates = polygon.geometry.coordinates[0] as Position[];
     }
   }
   // area in km2
   private _area: number;
-  get area(): number {return this._area};
-  get nrOfPoints(): number {return this.coordinates?.map(a => a.length).sum() || 0}
+  get area(): number {
+    return this._area;
+  }
+  get nrOfPoints(): number {
+    return this.coordinates?.map((a) => a.length).sum() || 0;
+  }
 
   constructor(data?: Partial<Zone>) {
     if (data) {
@@ -76,6 +86,6 @@ export class Zone implements IdObject {
       data: {
         zone: this
       }
-    })
+    });
   }
 }

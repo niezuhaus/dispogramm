@@ -1,16 +1,16 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {GC} from "../common/GC";
-import {MessengerDialogComponent} from "../dialogs/messenger-dialog.component";
-import {MatSort} from "@angular/material/sort";
-import {TitleComponent} from "./app.component";
-import {Messenger} from "../classes/Messenger";
-import {MatMenuTrigger} from "@angular/material/menu";
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { GC } from '../common/GC';
+import { MessengerDialogComponent } from '../dialogs/messenger-dialog.component';
+import { MatSort } from '@angular/material/sort';
+import { TitleComponent } from './app.component';
+import { Messenger } from '../classes/Messenger';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-messenger-list',
   template: `
     <div class="flex flex-row justify-content-between p-5">
-      <a (click)="saveConfig()">{{'inaktive kurier:innen ' + (hideInactive ? 'einblenden' : 'ausblenden')}}</a>
+      <a (click)="saveConfig()">{{ 'inaktive kurier:innen ' + (hideInactive ? 'einblenden' : 'ausblenden') }}</a>
       <!--      <mat-checkbox [checked]="hideInactive()" (click)="saveConfig()">inaktive kurier:innen ausblenden</mat-checkbox>-->
       <button mat-raised-button class="fex-button" (click)="openDialog(null)">
         <i class="pr-2 bi bi-plus-circle-fill"></i>
@@ -18,77 +18,77 @@ import {MatMenuTrigger} from "@angular/material/menu";
       </button>
     </div>
     <div class="flex flex-row flex-wrap out_container">
-      <div (contextmenu)="onRightClick($event, messenger)" (click)="openDialog(messenger)"
-           *ngFor="let messenger of messenger()" class="messContainer flex-column"
-           [class.half-transparent]="!messenger.active && !messenger.dispatcher">
-        <h3>{{messenger.nickname}}</h3>
-        <span *ngIf="messenger.active">
-        <i class="ml-2 bi bi-bicycle"></i> fahrer:in<br>
-        </span>
+      <div
+        (contextmenu)="onRightClick($event, messenger)"
+        (click)="openDialog(messenger)"
+        *ngFor="let messenger of messenger()"
+        class="messContainer flex-column"
+        [class.half-transparent]="!messenger.active && !messenger.dispatcher"
+      >
+        <h3>{{ messenger.nickname }}</h3>
+        <span *ngIf="messenger.active"> <i class="ml-2 bi bi-bicycle"></i> fahrer:in<br /> </span>
         <span *ngIf="messenger.dispatcher">
-        <i class="ml-2 bi bi-telephone" style="font-size: 15px"></i> disponent:in
-        <br>
+          <i class="ml-2 bi bi-telephone" style="font-size: 15px"></i> disponent:in
+          <br />
         </span>
-        <span *ngIf="messenger.hours">
-        <i class="ml-2 bi bi-stopwatch" style="font-size: 15px"></i> {{messenger.hours}}h im {{month}}
-        </span>
+        <span *ngIf="messenger.hours"> <i class="ml-2 bi bi-stopwatch" style="font-size: 15px"></i> {{ messenger.hours }}h im {{ month }} </span>
       </div>
     </div>
     <!-- right click menu -->
     <div class="container">
-      <div style="visibility: hidden; position: fixed"
-           [style.left.px]="menuTopLeftPosition.x"
-           [style.top.px]="menuTopLeftPosition.y"
-           [matMenuTriggerFor]="contextMenu"></div>
+      <div style="visibility: hidden; position: fixed" [style.left.px]="menuTopLeftPosition.x" [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="contextMenu"></div>
 
       <mat-menu #contextMenu="matMenu">
         <ng-template matMenuContent let-item="item">
-          <right-click-menu
-            [messenger]="item">
-          </right-click-menu>
+          <right-click-menu [messenger]="item"> </right-click-menu>
         </ng-template>
       </mat-menu>
     </div>
   `,
-  styles: [`
-    @import "../../const.scss";
+  styles: [
+    `
+      @import '../../const.scss';
 
-    .out_container {
-      margin: auto;
-      width: 65vw;
-      display: flex;
-      justify-content: center;
-    }
+      .out_container {
+        margin: auto;
+        width: 65vw;
+        display: flex;
+        justify-content: center;
+      }
 
-    .messContainer {
-      border: 2px solid $fex-dark;
-      background: $fex-dark;
-      color: white;
-      border-radius: 10px;
-      padding: 13px 15px;
-      width: fit-content;
-      height: fit-content;
-      position: relative;
-      margin: 10px;
-      cursor: pointer;
-    }
+      .messContainer {
+        border: 2px solid $fex-dark;
+        background: $fex-dark;
+        color: white;
+        border-radius: 10px;
+        padding: 13px 15px;
+        width: fit-content;
+        height: fit-content;
+        position: relative;
+        margin: 10px;
+        cursor: pointer;
+      }
 
-    .half-transparent {
-      opacity: 50%;
-    }
-  `]
+      .half-transparent {
+        opacity: 50%;
+      }
+    `
+  ]
 })
 export class MessengerListComponent extends TitleComponent implements OnInit {
-
   override title = 'kurier:innen';
   month: string = new Date().monthLiteral();
-  get hideInactive() {return GC.config?.messenger.hideInactive};
+  get hideInactive() {
+    return GC.config?.messenger.hideInactive;
+  }
 
   messenger = () => {
     if (GC.config?.messenger.hideInactive) {
-      return GC.messengers.filter(m => m.active || m.dispatcher).sort((a, b) => {
-        return a.nickname.localeCompare(b.nickname);
-      });
+      return GC.messengers
+        .filter((m) => m.active || m.dispatcher)
+        .sort((a, b) => {
+          return a.nickname.localeCompare(b.nickname);
+        });
     } else {
       return GC.messengers.sort((a, b) => {
         return a.nickname.localeCompare(b.nickname);
@@ -96,7 +96,7 @@ export class MessengerListComponent extends TitleComponent implements OnInit {
     }
   };
 
-  menuTopLeftPosition = {x: 0, y: 0}
+  menuTopLeftPosition = { x: 0, y: 0 };
 
   @ViewChild('search') search: ElementRef;
   @ViewChild(MatSort) sort: MatSort;
@@ -106,8 +106,7 @@ export class MessengerListComponent extends TitleComponent implements OnInit {
     super();
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   openDialog(messenger: Messenger): void {
     if (messenger) {
@@ -128,7 +127,7 @@ export class MessengerListComponent extends TitleComponent implements OnInit {
     event.preventDefault();
     this.menuTopLeftPosition.x = event.clientX;
     this.menuTopLeftPosition.y = event.clientY;
-    this.matMenuTrigger.menuData = {item: messenger}
+    this.matMenuTrigger.menuData = { item: messenger };
     this.matMenuTrigger.openMenu();
   }
 }

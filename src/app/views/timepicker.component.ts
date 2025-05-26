@@ -1,14 +1,14 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {DateAdapter} from "@angular/material/core";
-import {MatInput} from "@angular/material/input";
-import {debounceTime} from "rxjs/operators";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { DateAdapter } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'timepicker',
   template: `
     <div class="align-items-center">
       <mat-form-field class="time">
-        <mat-label>{{this.label}}</mat-label>
+        <mat-label>{{ this.label }}</mat-label>
         <input
           type="time"
           matInput
@@ -19,7 +19,8 @@ import {debounceTime} from "rxjs/operators";
           (keyup)="keys = keys + 1"
           [style.width.px]="width"
           tabindex="-1"
-          #input>
+          #input
+        />
       </mat-form-field>
     </div>
   `,
@@ -32,7 +33,6 @@ import {debounceTime} from "rxjs/operators";
   ]
 })
 export class TimepickerComponent implements OnInit {
-
   @ViewChild('time') timePicker: MatInput;
   @Input() time: Date;
   @Input() label: String;
@@ -46,15 +46,10 @@ export class TimepickerComponent implements OnInit {
   today = this.dateAdapter.today();
   keys = 0;
 
-  constructor(
-    private dateAdapter: DateAdapter<Date>,
-  ) {
-  }
+  constructor(private dateAdapter: DateAdapter<Date>) {}
 
   ngOnInit(): void {
-    this.timeChange.pipe(
-      debounceTime(1000)
-    ).subscribe(date => this.timeChangeDebounce.emit(date));
+    this.timeChange.pipe(debounceTime(1000)).subscribe((date) => this.timeChangeDebounce.emit(date));
   }
 
   setTime(s: string, action: string): void {

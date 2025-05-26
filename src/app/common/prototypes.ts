@@ -1,10 +1,10 @@
-import { NativeDateAdapter } from "@angular/material/core";
-import { GC } from "./GC";
-import { RegularJobDialogComponent } from "../dialogs/regular-job-dialog.component";
-import { Day, IdObject } from "./interfaces";
-import { Injectable } from "@angular/core";
-import { Price } from "../classes/Price";
-import { log } from "console";
+import { NativeDateAdapter } from '@angular/material/core';
+import { GC } from './GC';
+import { RegularJobDialogComponent } from '../dialogs/regular-job-dialog.component';
+import { Day, IdObject } from './interfaces';
+import { Injectable } from '@angular/core';
+import { Price } from '../classes/Price';
+import { log } from 'console';
 
 declare global {
   interface Array<T> {
@@ -221,11 +221,11 @@ declare global {
 
     toPrice(): Price;
 
-    abs(): number
+    abs(): number;
 
-    floor(): number
+    floor(): number;
 
-    toStringFillZero(digits: number): string
+    toStringFillZero(digits: number): string;
   }
 
   interface String {
@@ -242,83 +242,85 @@ Array.prototype.copy = function () {
   return JSON.parse(JSON.stringify(this));
 };
 Array.prototype.findAndRemove = function (item) {
-  let index = this.findIndex(i => item.id == i.id) || this.findIndex(i => item == i);
+  let index = this.findIndex((i) => item.id == i.id) || this.findIndex((i) => item == i);
   if (index >= 0) {
     this.splice(index, 1);
     return true;
   }
-  console.log('index == 0')
+  console.log('index == 0');
   return false;
-}
+};
 Array.prototype.fastfind = function (id: string) {
-  return this.find(i => i.id === id);
-}
+  return this.find((i) => i.id === id);
+};
 Array.prototype.findAndReplace = function (this: Array<IdObject>, item: IdObject) {
-  let index = this.findIndex(i => item.id === i.id);
+  let index = this.findIndex((i) => item.id === i.id);
   if (index >= 0) {
     this[index] = item;
     return true;
   }
   return false;
-}
+};
 Array.prototype.last = function () {
   return this[this.length - 1] || null;
-}
+};
 
 Array.prototype.sum = function () {
   return this.reduce((a, b) => a + b, 0).round(2);
-}
+};
 
 Array.prototype.getIndex = function (item: any) {
-  return this.findIndex(i => i === item);
-}
+  return this.findIndex((i) => i === item);
+};
 
 Array.prototype.perm = function () {
   const res: any[] = [];
   for (let i = 0; i < this.length; i = i + 1) {
-    const rest = (this.slice(0, i).concat(this.slice(i + 1))).perm();
+    const rest = this.slice(0, i)
+      .concat(this.slice(i + 1))
+      .perm();
 
     if (!rest.length) {
       res.push([this[i]]);
     } else {
-      rest.forEach(element => {
+      rest.forEach((element) => {
         res.push([this[i]].concat(element));
       });
     }
   }
   return res;
-}
+};
 
 Array.prototype.intersect = function <T extends IdObject>(this: Array<T>, array: T[]) {
-  return this.filter(item => array.map(i => i.id).includes(item.id));
-}
+  return this.filter((item) => array.map((i) => i.id).includes(item.id));
+};
 
 Array.prototype.diff = function <T extends IdObject>(this: Array<T>, array: T[]) {
-  return this.filter(item => !array.map(i => i.id).includes(item.id));
-}
+  return this.filter((item) => !array.map((i) => i.id).includes(item.id));
+};
 
 Array.prototype.pushArray = function <T>(this: Array<T>, array: T[]) {
-  array.forEach(item => {
-    this.push(item)
-  })
+  array.forEach((item) => {
+    this.push(item);
+  });
   return this;
-}
+};
 
 Date.prototype.timestamp = function () {
   return `${this.getHours().toString().padStart(2, '0')}:${this.getMinutes().toString().padStart(2, '0')}`;
-}
+};
 Date.prototype.dateStampLong = function () {
-  return `${GC.days[this.getDay()]}, ${this.getDate()}.${this.getMonth() + 1}.${this.getFullYear().toString().slice(-2)}`
-}
+  return `${GC.days[this.getDay()]}, ${this.getDate()}.${this.getMonth() + 1}.${this.getFullYear().toString().slice(-2)}`;
+};
 Date.prototype.dateStampShort = function () {
-  return `${GC.dayLiterals[this.getDay()]}, ${this.getDate()}.${this.getMonth() + 1}.`
-}
+  return `${GC.dayLiterals[this.getDay()]}, ${this.getDate()}.${this.getMonth() + 1}.`;
+};
 Date.prototype.getDayLiteral = function () {
   return GC.dayLiterals[this.getDay()];
-}
+};
 Date.prototype.monthLiteral = function () {
   return GC.monthLiterals[this.getMonth()];
-}
+};
 Date.prototype.daysDifference = function (compareWith: Date) {
   if (!compareWith) {
     return NaN;
@@ -327,7 +329,7 @@ Date.prototype.daysDifference = function (compareWith: Date) {
   const utc1 = Date.UTC(this.getFullYear(), this.getMonth(), this.getDate());
   const utc2 = Date.UTC(compareWith.getFullYear(), compareWith.getMonth(), compareWith.getDate());
   return Math.abs(Math.floor((utc2 - utc1) / MS_PER_DAY));
-}
+};
 Date.prototype.hoursDifference = function (compareWith: Date) {
   if (!compareWith) {
     return NaN;
@@ -336,31 +338,33 @@ Date.prototype.hoursDifference = function (compareWith: Date) {
   res += (compareWith.getMinutes() - this.getMinutes()) / 60;
   res += (compareWith.getSeconds() - this.getSeconds()) / 3600;
   return res;
-}
+};
 Date.prototype.minutesDifference = function (compareWith: Date) {
-  return (this.getTime() - compareWith.getTime()) / 60000
-}
+  return (this.getTime() - compareWith.getTime()) / 60000;
+};
 Date.prototype.beforeOrSameDay = function (compareWith: Date) {
   if (!compareWith) {
     return true;
   }
   const compareDate = new Date(compareWith);
   // return this.yyyymmddInt() <= new Date(compareDate).yyyymmddInt();
-  return (this.getFullYear() < compareDate.getFullYear() || // my year is before yours
+  return (
+    this.getFullYear() < compareDate.getFullYear() || // my year is before yours
     // our years are equal, but my month is before yours.
     (this.getFullYear() === compareDate.getFullYear() && this.getMonth() < compareDate.getMonth()) ||
     // our years and months are equal, but my day is smaller or the same as yours
-    (this.getFullYear() === compareDate.getFullYear() && this.getMonth() === compareDate.getMonth() && this.getDate() <= compareDate.getDate()));
-}
+    (this.getFullYear() === compareDate.getFullYear() && this.getMonth() === compareDate.getMonth() && this.getDate() <= compareDate.getDate())
+  );
+};
 Date.prototype.isBefore = function (compareDate: Date) {
   return this.getTime() < compareDate.getTime();
-}
+};
 Date.prototype.copyDate = function (from: Date) {
   this.setFullYear(from.getFullYear());
   this.setMonth(from.getMonth());
   this.setDate(from.getDate());
   return this;
-}
+};
 Date.prototype.copyTime = function (from: Date) {
   if (!from) {
     return this;
@@ -368,12 +372,12 @@ Date.prototype.copyTime = function (from: Date) {
   this.setHours(from.getHours());
   this.setMinutes(from.getMinutes());
   this.setSeconds(from.getSeconds());
-  this.setMilliseconds(from.getMilliseconds())
+  this.setMilliseconds(from.getMilliseconds());
   return this;
-}
+};
 Date.prototype.copy = function () {
   return new Date(this);
-}
+};
 Date.prototype.set = function (h: number, m?: number, s?: number, ms?: number) {
   if (!(h < 0)) {
     this.setHours(h);
@@ -388,7 +392,7 @@ Date.prototype.set = function (h: number, m?: number, s?: number, ms?: number) {
     this.setMilliseconds(ms | 0);
   }
   return this;
-}
+};
 Date.prototype.setDateByString = function (str: string) {
   if (!str) {
     return this;
@@ -407,39 +411,39 @@ Date.prototype.setDateByString = function (str: string) {
   }
   this.setDate(res[2]);
   this.setMonth(res[1] - 1);
-  this.setFullYear(res[0])
+  this.setFullYear(res[0]);
   return this;
-}
+};
 Date.prototype.yyyymmdd = function () {
   return `${this.getFullYear()}-${this.getMonth() + 1}-${this.getDate()}`;
-}
+};
 Date.prototype.yyyymm = function () {
   return `${this.getFullYear()}-${this.getMonth() + 1}`;
-}
+};
 Date.prototype.yyyymmddInt = function () {
-  return parseInt(`${this.getFullYear()}${(this.getMonth() + 1) <= 9 ? '0' + (this.getMonth() + 1) : (this.getMonth() + 1)}${(this.getDate()) <= 9 ? '0' + this.getDate() : this.getDate()}`);
-}
+  return parseInt(`${this.getFullYear()}${this.getMonth() + 1 <= 9 ? '0' + (this.getMonth() + 1) : this.getMonth() + 1}${this.getDate() <= 9 ? '0' + this.getDate() : this.getDate()}`);
+};
 Date.prototype.nearestQuarter = function () {
   this.setMinutes((this.getMinutes() / 15).round(0) * 15);
   this.setSeconds(0);
   this.setMilliseconds(0);
   return this;
-}
+};
 Date.prototype.nextQuarter = function () {
-  this.setMinutes(Math.ceil((this.getMinutes() / 15)) * 15);
+  this.setMinutes(Math.ceil(this.getMinutes() / 15) * 15);
   this.setSeconds(0);
   this.setMilliseconds(0);
   return this;
-}
+};
 Date.prototype.lastQuarter = function () {
-  this.setMinutes(Math.floor((this.getMinutes() / 15)) * 15);
+  this.setMinutes(Math.floor(this.getMinutes() / 15) * 15);
   this.setSeconds(0);
   this.setMilliseconds(0);
   return this;
-}
+};
 Date.prototype.isToday = function () {
   return this.toDateString() === new Date().toDateString();
-}
+};
 Date.prototype.nextWorkingDay = function () {
   const res = this.copy();
   res.setDate(res.getDate() + 1);
@@ -447,29 +451,29 @@ Date.prototype.nextWorkingDay = function () {
     res.setDate(res.getDate() + 1);
   }
   return res;
-}
+};
 
 Date.prototype.yesterday = function () {
   const res = new Date(this);
-  res.setDate(res.getDate() - 1)
-  return res
-}
+  res.setDate(res.getDate() - 1);
+  return res;
+};
 
 Date.prototype.tomorrow = function () {
   const res = new Date(this);
-  res.setDate(res.getDate() + 1)
-  return res
-}
+  res.setDate(res.getDate() + 1);
+  return res;
+};
 
 Date.prototype.addOneWeek = function () {
-  this.setTime(this.getTime() + 604800000)
+  this.setTime(this.getTime() + 604800000);
   return this;
-}
+};
 
 Date.prototype.subOneWeek = function () {
-  this.setTime(this.getTime() - 604800000)
+  this.setTime(this.getTime() - 604800000);
   return this;
-}
+};
 
 Date.prototype.timeAgo = function () {
   const timeFormats = [
@@ -517,66 +521,58 @@ Date.prototype.timeAgo = function () {
     }
   }
   return 'nicht vorgesehen';
-}
+};
 
 Date.prototype.datesSet = function () {
   const start = this.copy().set(8);
-  const res: Date[] = [
-    this.copy(),
-    this.copy(),
-    this.copy(),
-    this.copy(),
-    this.copy()
-  ];
+  const res: Date[] = [this.copy(), this.copy(), this.copy(), this.copy(), this.copy()];
   for (let i = 0; i < 5; i++) {
-    RegularJobDialogComponent.findnext(i + 1, start, res[i])
+    RegularJobDialogComponent.findnext(i + 1, start, res[i]);
   }
   return res;
-}
+};
 
 Date.prototype.isInMonth = function (date: Date) {
-  return this.isBefore(date.monthEnd()) && date.monthStart().isBefore(this)
-}
+  return this.isBefore(date.monthEnd()) && date.monthStart().isBefore(this);
+};
 
 Date.prototype.monthStart = function (): Date {
   return new Date(this.copy().set(0).setDate(1));
-}
+};
 
 Date.prototype.monthEnd = function (): Date {
   let end = new Date(this.copy().setMonth(this.getMonth() + 1));
   return end.monthStart();
-}
+};
 
 Date.prototype.firstDayOfWeek = function (): Date {
   return new Date(this.copy().setDate(this.getDate() - (this.getDay() - 1))).set(0);
-}
+};
 
 Date.prototype.workingWeek = function (): Date[] {
   let day = new Date(this.copy().setDate(this.getDate() - (this.getDay() - 1))).set(0);
-  let res = [day]
+  let res = [day];
   for (let i = 1; i < 5; i++) {
     res[i] = res[i - 1].tomorrow();
   }
   return res;
-}
+};
 
 Date.prototype.nextWorkingWeek = function (): Date[] {
   let d = this.copy();
-  d.setDate(d.getDate() + 7)
-  return d.workingWeek()
-}
+  d.setDate(d.getDate() + 7);
+  return d.workingWeek();
+};
 
 Date.prototype.previousWorkingWeek = function (): Date[] {
   let d = this.copy();
-  d.setDate(d.getDate() - 7)
-  return d.workingWeek()
-}
+  d.setDate(d.getDate() - 7);
+  return d.workingWeek();
+};
 
 Date.prototype.workingWeekNumber = function (): number {
-  return Math.ceil(this.tomorrow().daysDifference(
-    new Date(this.getFullYear(), 0, 1).next(Day.do).workingWeek()[0]
-  ) / 7)
-}
+  return Math.ceil(this.tomorrow().daysDifference(new Date(this.getFullYear(), 0, 1).next(Day.do).workingWeek()[0]) / 7);
+};
 
 Date.prototype.getWorkingWeek = function (year, week) {
   let d = new Date(year, 0, 1);
@@ -588,18 +584,18 @@ Date.prototype.getWorkingWeek = function (year, week) {
     d.addOneWeek();
   }
   return d.workingWeek();
-}
+};
 
 Date.prototype.next = function (workingDay): Date {
   while (this.getDay() !== workingDay) {
-    this.setTime(this.tomorrow().getTime())
+    this.setTime(this.tomorrow().getTime());
   }
   return this;
-}
+};
 
 Date.prototype.timeUntil = function (): number {
-  return this.getTime() - new Date().getTime()
-}
+  return this.getTime() - new Date().getTime();
+};
 
 /**
  * rounds the value to a provided number of digits
@@ -608,43 +604,43 @@ Date.prototype.timeUntil = function (): number {
  */
 Number.prototype.round = function (digits: number) {
   return Math.round(this.valueOf() * Math.pow(10, digits)) / Math.pow(10, digits);
-}
+};
 
 Number.prototype.isBetween = function (firstEnd, secondEnd) {
   return (firstEnd < this && this < secondEnd) || (firstEnd > this && this > secondEnd);
-}
+};
 
 Number.prototype.clamp = function (min, max) {
-  return this < min ? min : this > max ? max : this as number;
-}
+  return this < min ? min : this > max ? max : (this as number);
+};
 
 Number.prototype.map = function (fromLow, fromUp, toLow, toUp) {
-  const mapped = ((this as number - fromLow) * (toUp - toLow)) / (fromUp - fromLow) + toLow;
+  const mapped = (((this as number) - fromLow) * (toUp - toLow)) / (fromUp - fromLow) + toLow;
   return mapped.clamp(toLow, toUp);
-}
+};
 
 Number.prototype.toPrice = function () {
   return new Price(this as number);
-}
+};
 Number.prototype.abs = function () {
   return Math.abs(this as number);
-}
+};
 Number.prototype.floor = function () {
   return Math.floor(this as number);
-}
+};
 Number.prototype.toStringFillZero = function (digits: number) {
   let res = this.toString();
-  let aftercomma = res.indexOf('.') ? res.length - res.indexOf('.') : 0
-  res += '.'
+  let aftercomma = res.indexOf('.') ? res.length - res.indexOf('.') : 0;
+  res += '.';
   for (let i = digits - aftercomma; i < digits; i++) {
-    res += '0'
+    res += '0';
   }
   return res;
-}
+};
 
 String.prototype.toHTML = function (): string {
   return this ? this.replace(/\n\r?/g, '<br />') : '';
-}
+};
 
 String.prototype.editDistance = function (other: string): number {
   const s2 = other.trim().toLowerCase();
@@ -662,33 +658,28 @@ String.prototype.editDistance = function (other: string): number {
   for (var i = 0; i <= s1.length; i++) {
     var lastValue = i;
     for (var j = 0; j <= s2.length; j++) {
-      if (i == 0)
-        costs[j] = j;
+      if (i == 0) costs[j] = j;
       else {
         if (j > 0) {
           var newValue = costs[j - 1];
-          if (s1.charAt(i - 1) != s2.charAt(j - 1))
-            newValue = Math.min(Math.min(newValue, lastValue),
-              costs[j]) + 1;
+          if (s1.charAt(i - 1) != s2.charAt(j - 1)) newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
           costs[j - 1] = lastValue;
           lastValue = newValue;
         }
       }
     }
-    if (i > 0)
-      costs[s2.length] = lastValue;
+    if (i > 0) costs[s2.length] = lastValue;
   }
   return costs[s2.length];
-}
+};
 
 /** um den material datepicker auf montag als ersten tag der woche umzustellen */
 @Injectable()
 export class CustomDateAdapter extends NativeDateAdapter {
-
   // parse the date from input component as it only expect dates in
   // mm-dd-yyyy format
   override parse(value: any): Date | null {
-    if ((typeof value === 'string') && (value.indexOf('/') > -1)) {
+    if (typeof value === 'string' && value.indexOf('/') > -1) {
       const str = value.split('/');
 
       const year = Number(str[2]);

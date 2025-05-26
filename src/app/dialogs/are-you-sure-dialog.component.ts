@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Inject, ViewChild} from '@angular/core';
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {MatButton} from "@angular/material/button";
-import {Job} from "../classes/Job";
-import {Messenger} from "../classes/Messenger";
+import { Component, EventEmitter, Inject, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButton } from '@angular/material/button';
+import { Job } from '../classes/Job';
+import { Messenger } from '../classes/Messenger';
 
 @Component({
   selector: 'app-are-you-sure-dialog',
@@ -13,7 +13,7 @@ import {Messenger} from "../classes/Messenger";
       </div>
       <div>
         <h1 mat-dialog-title [innerHTML]="data.headline" style="max-width: 450px"></h1>
-        <h6>{{data.text}}</h6>
+        <h6>{{ data.text }}</h6>
       </div>
     </div>
     <description
@@ -25,7 +25,8 @@ import {Messenger} from "../classes/Messenger";
       [hideToolTips]="true"
       [hideHighlights]="true"
       matDialogClose
-      [hideHints]="true"></description>
+      [hideHints]="true"
+    ></description>
     <searchinput
       *ngIf="data.messSearch"
       (resetted)="messenger = null"
@@ -46,9 +47,10 @@ import {Messenger} from "../classes/Messenger";
             [class.fex-button-warn]="data.warning"
             [class.fex-button-abort]="data.highlightNo && !data.warning"
             [class.transparent]="!data.verbYes"
-            (click)="confirm.emit(messenger || true);"
-            matDialogClose>
-            {{data.verbYes ? messenger ? messenger?.nickname + ' festlegen' : data.verbYes : 'ja'}}
+            (click)="confirm.emit(messenger || true)"
+            matDialogClose
+          >
+            {{ data.verbYes ? (messenger ? messenger?.nickname + ' festlegen' : data.verbYes) : 'ja' }}
           </button>
           <button
             #no
@@ -62,21 +64,22 @@ import {Messenger} from "../classes/Messenger";
             matDialogClose
             [type]="'submit'"
           >
-            {{data.verbNo ? data.verbNo : 'abbrechen'}}
+            {{ data.verbNo ? data.verbNo : 'abbrechen' }}
           </button>
         </div>
       </div>
     </div>
   `,
-  styles: [`
-    * {
-      display: flex;
-      flex-direction: column;
-    }
-  `]
+  styles: [
+    `
+      * {
+        display: flex;
+        flex-direction: column;
+      }
+    `
+  ]
 })
 export class AreYouSureDialogComponent {
-
   confirm = new EventEmitter<boolean | Messenger>();
   cancel = new EventEmitter<boolean>();
   messenger: Messenger;
@@ -85,15 +88,16 @@ export class AreYouSureDialogComponent {
   @ViewChild('no') no: MatButton;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: {
-      headline: string,
-      text: string,
-      verbYes: string,
-      verbNo: string,
-      highlightNo: boolean,
-      job: Job,
-      messSearch: boolean,
-      warning: boolean,
-    }) {
-  }
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      headline: string;
+      text: string;
+      verbYes: string;
+      verbNo: string;
+      highlightNo: boolean;
+      job: Job;
+      messSearch: boolean;
+      warning: boolean;
+    }
+  ) {}
 }

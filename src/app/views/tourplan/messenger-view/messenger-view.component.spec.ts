@@ -8,9 +8,8 @@ describe('MessengerViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MessengerViewComponent ]
-    })
-    .compileComponents();
+      declarations: [MessengerViewComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MessengerViewComponent);
     component = fixture.componentInstance;

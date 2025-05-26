@@ -1,46 +1,31 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { HttpService } from '../../http.service';
 import { InputFieldComponent } from './inputfield/input-field.component';
-import { Client } from "../../classes/Client";
+import { Client } from '../../classes/Client';
 import { Extra, IPoint, LocType } from '../../common/interfaces';
-import { Zone } from "../../classes/Zone";
+import { Zone } from '../../classes/Zone';
 import { zip } from 'rxjs';
 import { corners, drawText, feature, getItem, initMap, setItem } from '../../UTIL';
 import { SearchinputComponent } from './inputfield/searchinput/searchinput.component';
 import { ActivatedRoute } from '@angular/router';
 import { LocationDialogComponent } from '../../dialogs/location-dialog.component';
 import { Location } from '@angular/common';
-import * as mapboxgl from "mapbox-gl";
-import { GeoJSONSource, LngLat, Marker, Popup } from "mapbox-gl";
-import { GC } from "../../common/GC";
-import { Price } from "../../classes/Price";
-import { Job, RegularJob } from "../../classes/Job";
-import { RegularJobDialogComponent } from "../../dialogs/regular-job-dialog.component";
-import { NewClientDialogComponent } from "../../dialogs/new-client-dialog.component";
-import * as MapboxDraw from "@mapbox/mapbox-gl-draw";
-import { ZoneDialogComponent } from "../../dialogs/zone-dialog.component";
-import {
-  Feature,
-  lineString,
-  polygon,
-  Polygon,
-  Position,
-} from "@turf/turf";
-import { Geolocation, Station } from "../../classes/Geolocation";
-import { MatDialogRef } from "@angular/material/dialog";
-import { CheckInDialog } from "../../dialogs/shifts-dialog/check-in-dialog.component";
-import { TitleComponent } from "../app.component";
-import { Zones } from "../../common/zones";
-import { AreYouSureDialogComponent } from "../../dialogs/are-you-sure-dialog.component";
+import * as mapboxgl from 'mapbox-gl';
+import { GeoJSONSource, LngLat, Marker, Popup } from 'mapbox-gl';
+import { GC } from '../../common/GC';
+import { Price } from '../../classes/Price';
+import { Job, RegularJob } from '../../classes/Job';
+import { RegularJobDialogComponent } from '../../dialogs/regular-job-dialog.component';
+import { NewClientDialogComponent } from '../../dialogs/new-client-dialog.component';
+import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
+import { ZoneDialogComponent } from '../../dialogs/zone-dialog.component';
+import { Feature, lineString, polygon, Polygon, Position } from '@turf/turf';
+import { Geolocation, Station } from '../../classes/Geolocation';
+import { MatDialogRef } from '@angular/material/dialog';
+import { CheckInDialog } from '../../dialogs/shifts-dialog/check-in-dialog.component';
+import { TitleComponent } from '../app.component';
+import { Zones } from '../../common/zones';
+import { AreYouSureDialogComponent } from '../../dialogs/are-you-sure-dialog.component';
 import { Branch } from 'src/app/classes/Branch';
 
 @Component({
@@ -48,9 +33,7 @@ import { Branch } from 'src/app/classes/Branch';
   templateUrl: './newtour.component.html',
   styleUrls: ['./newtour.component.scss']
 })
-
 export class NewtourComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
-
   override title = 'neue tour erstellen';
 
   // JOB VARIABLES
@@ -87,29 +70,45 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   nameFieldVisible = false;
   noteVisible = false;
   dezwoOptions = false;
-  get routingActivated() { return GC.streetRouting };
+  get routingActivated() {
+    return GC.streetRouting;
+  }
   set routingActivated(value: boolean) {
     setItem('streetRouting', value ? 'true' : 'false');
     const differs = GC.streetRouting != value;
     GC.streetRouting = value;
     if (differs) {
-      GC.openSnackBarShort('straßennavigation ' + (value ? 'aktiviert' : 'deaktiviert'))
+      GC.openSnackBarShort('straßennavigation ' + (value ? 'aktiviert' : 'deaktiviert'));
     }
-  };
+  }
 
-  get _noteVisible() { return this.job?.description || this.noteVisible };
+  get _noteVisible() {
+    return this.job?.description || this.noteVisible;
+  }
 
-  get _nameFieldVisible() { return this.job?.name || this.nameFieldVisible };
+  get _nameFieldVisible() {
+    return this.job?.name || this.nameFieldVisible;
+  }
 
-  get configPrices() { return GC.config?.prices };
+  get configPrices() {
+    return GC.config?.prices;
+  }
 
-  get dispatcher() { return GC.dispatcherCheckedIn() };
+  get dispatcher() {
+    return GC.dispatcherCheckedIn();
+  }
 
-  get routes() { return GC.routes };
+  get routes() {
+    return GC.routes;
+  }
 
-  get isDezwo() { return GC._isDezwo };
+  get isDezwo() {
+    return GC._isDezwo;
+  }
 
-  get specialPrices() { return GC.specialPrices };
+  get specialPrices() {
+    return GC.specialPrices;
+  }
 
   @ViewChild('map') mapContainer: ElementRef;
   @ViewChild('pickup') pInput: InputFieldComponent;
@@ -123,7 +122,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   constructor(
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
-    private location: Location,
+    private location: Location
   ) {
     super();
   }
@@ -134,8 +133,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         { value: 0, viewValue: 'kein zuschlag', price: GC.config.prices.extras[0] },
         { value: 1, viewValue: 'last', price: GC.config.prices.extras[1] },
         { value: 2, viewValue: 'lastenrad', price: GC.config.prices.extras[2] },
-        { value: 3, viewValue: 'carla', price: GC.config.prices.extras[3] },
-      ]
+        { value: 3, viewValue: 'carla', price: GC.config.prices.extras[3] }
+      ];
     }
   }
 
@@ -146,15 +145,15 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
           { value: 0, viewValue: 'kein zuschlag', price: GC.config.prices.extras[0] },
           { value: 1, viewValue: 'last', price: GC.config.prices.extras[1] },
           { value: 2, viewValue: 'lastenrad', price: GC.config.prices.extras[2] },
-          { value: 3, viewValue: 'carla', price: GC.config.prices.extras[3] },
-        ]
+          { value: 3, viewValue: 'carla', price: GC.config.prices.extras[3] }
+        ];
       }
       this.focussedInput = this.cInput;
       this.pInputs.push(this.pInput);
       this.dInputs.push(this.dInput);
       this.initMap();
       setTimeout(() => {
-        this.route.paramMap.subscribe(params => {
+        this.route.paramMap.subscribe((params) => {
           const id = params.get('id');
           if (id?.length && id !== 'undefined') {
             if (params.get('rj') === 'true') {
@@ -169,9 +168,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
             this.job.date = new Date(params.get('time'));
           }
         });
-      }, 100)
-    }
-    )
+      }, 100);
+    });
   }
 
   ngOnDestroy(): void {
@@ -183,16 +181,16 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
    * @param id the id of the shown to be shown
    */
   loadJobById(id: string): void {
-    GC.http.getJob(id).subscribe(job => {
+    GC.http.getJob(id).subscribe((job) => {
       this.job = new Job(job).init();
       this.mapGL.on('load', () => {
         this.createUI(this.job);
         this.refresh({ zoom: true, pushPrice: job.price });
       });
       if (job.regularJobId) {
-        GC.http.getRegularJob(job.regularJobId).subscribe(rj => {
+        GC.http.getRegularJob(job.regularJobId).subscribe((rj) => {
           this.job.regularJob = rj;
-        })
+        });
       }
     });
   }
@@ -203,7 +201,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
    * @param id the id of the template to be shown
    */
   loadRegularJob(id: string): void {
-    GC.http.getRegularJob(id).subscribe(rj => {
+    GC.http.getRegularJob(id).subscribe((rj) => {
       this.job = HttpService._convertToJobLocally(rj).init();
       this.mapGL.on('load', () => {
         this.createUI(this.job);
@@ -213,7 +211,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   /** runs a complete refreshment cycle */
-  refresh(options: { zoom: boolean, pushPrice?: Price }): void {
+  refresh(options: { zoom: boolean; pushPrice?: Price }): void {
     this.fetchRoute();
     this.resetMap();
     if (this.job._center) {
@@ -229,10 +227,10 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
    * wrapper for the refresh method
    * @param options usual options just as in the original method
    */
-  asyncRefresh(options: { zoom: boolean, pushPrice?: Price }) {
+  asyncRefresh(options: { zoom: boolean; pushPrice?: Price }) {
     setTimeout(() => {
       this.refresh(options);
-    }, 0)
+    }, 0);
   }
 
   /** calculates the necessary map zoom to fit the job bounding box */
@@ -304,11 +302,11 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   /** resets the whole view */
-  resetUI(options?: { leaveUrl?: boolean, leaveDate?: boolean }): void {
+  resetUI(options?: { leaveUrl?: boolean; leaveDate?: boolean }): void {
     if (!this.touched && !this.job.hasData) {
       return;
     }
-    if (!(options?.leaveUrl)) {
+    if (!options?.leaveUrl) {
       this.location.replaceState(GC.routes.newTour);
     }
     this.priceSet = false;
@@ -332,10 +330,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
    * @param type weather it should be an inputfield for a PICKUP or a DELIVERY
    */
   createInputfield(type: LocType): InputFieldComponent {
-    const inputs = type === LocType.delivery ?
-      this.dInputs :
-      this.pInputs;
-    if (inputs.map(i => !i.searchinput.searchTerm).includes(true)) {
+    const inputs = type === LocType.delivery ? this.dInputs : this.pInputs;
+    if (inputs.map((i) => !i.searchinput.searchTerm).includes(true)) {
       return null;
     }
     const container = type === LocType.delivery ? this.dRef : this.pRef;
@@ -355,7 +351,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       this.touched = true;
       this.refresh({ zoom: true });
     });
-    fieldComp.register.subscribe(e => this.register(e));
+    fieldComp.register.subscribe((e) => this.register(e));
     fieldComp.startedTyping.subscribe(() => this.createInputfield(type));
     (type === LocType.pickup ? this.pInputs : this.dInputs).push(fieldComp);
     this.cd.detectChanges();
@@ -379,12 +375,16 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   /** reads the set locations from all searchinput components and builds up the route */
   fetchRoute(): void {
     this.job.center = null;
-    this.job.pickups = this.pInputs.filter(input => input.searchinput.selection).map(input => {
-      return input.searchinput.selection.copy();
-    });
-    this.job.deliveries = this.dInputs.filter(input => input.searchinput.selection).map(input => {
-      return input.searchinput.selection.copy();
-    });
+    this.job.pickups = this.pInputs
+      .filter((input) => input.searchinput.selection)
+      .map((input) => {
+        return input.searchinput.selection.copy();
+      });
+    this.job.deliveries = this.dInputs
+      .filter((input) => input.searchinput.selection)
+      .map((input) => {
+        return input.searchinput.selection.copy();
+      });
     if (this.cInput.selection) {
       this.job.client = this.cInput.client;
       this.cInput.selection.locType = LocType.client;
@@ -432,22 +432,21 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       }
     });
     if (this.staticMode) {
-      this.mapboxDraw.changeMode('static')
+      this.mapboxDraw.changeMode('static');
     }
     this.mapGL.on('draw.create', (event) => this.createPolygons(event));
-    this.mapGL.on('draw.delete', (event) => {
-    });
+    this.mapGL.on('draw.delete', (event) => {});
     this.mapGL.on('draw.update', (event) => this.updatePolygons(event));
 
     // show zones
     this.mapGL.on('load', () => {
       this.loaded = true;
-      this.mapGL.resize()
-      this.setPointWithPopUp([{ position: [8.80472, 53.08906], name: 'FEX' }]) // FEX
+      this.mapGL.resize();
+      this.setPointWithPopUp([{ position: [8.80472, 53.08906], name: 'FEX' }]); // FEX
       if (GC.config.showZonesPermanently) {
-        GC.zones.forEach(z => {
+        GC.zones.forEach((z) => {
           this.toggleZone(z.name);
-        })
+        });
       }
     });
 
@@ -459,38 +458,37 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       this.touched = true;
       e.lngLat.lng = e.lngLat.lng.round(5);
       e.lngLat.lat = e.lngLat.lat.round(5);
-      GC.http.reverseGeocode(e.lngLat.lat, e.lngLat.lng, this.focussedInput.type)
-        .subscribe(response => {
-          if (this.locationPopUpOpen) {
-            this.locationPopUpOpen = false;
-            return;
+      GC.http.reverseGeocode(e.lngLat.lat, e.lngLat.lng, this.focussedInput.type).subscribe((response) => {
+        if (this.locationPopUpOpen) {
+          this.locationPopUpOpen = false;
+          return;
+        }
+        let res: Geolocation;
+        if (response.length) {
+          res = response[0];
+          res.latitude = e.lngLat.lat;
+          res.longitude = e.lngLat.lng;
+          if (this.focussedInput.type !== 0) {
+            res.hasBacktour = this.focussedInput.inputField.hasBacktour;
           }
-          let res: Geolocation;
-          if (response.length) {
-            res = response[0];
-            res.latitude = e.lngLat.lat
-            res.longitude = e.lngLat.lng;
-            if (this.focussedInput.type !== 0) {
-              res.hasBacktour = this.focussedInput.inputField.hasBacktour;
-            }
-            this.focussedInput.setSelection(res);
-          } else {
-            return;
-          }
-          if (this.focussedInput === this.cInput) {
-            this.cInput.setSelection(res);
-            const c = new Client(res);
-            console.log(c)
-            c.billClient = false;
-            this.cInput.client = c;
-          }
-          this.createInputfield(this.focussedInput.type);
-          this.refresh({ zoom: false })
-        });
+          this.focussedInput.setSelection(res);
+        } else {
+          return;
+        }
+        if (this.focussedInput === this.cInput) {
+          this.cInput.setSelection(res);
+          const c = new Client(res);
+          console.log(c);
+          c.billClient = false;
+          this.cInput.client = c;
+        }
+        this.createInputfield(this.focussedInput.type);
+        this.refresh({ zoom: false });
+      });
     });
 
     // visibility of reset-view-button
-    this.mapGL.on('moveend', (() => {
+    this.mapGL.on('moveend', () => {
       if (this.protectZoomed) {
         this.protectZoomed = false;
         this.forceZoomReset = false;
@@ -501,18 +499,18 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       } else {
         this.zoomed = true;
       }
-    }));
+    });
   }
 
   createPolygons(features: Polygon[]): void {
     const f = features[features.length - 1];
-    console.log(this.mapboxDraw.getAll().features)
+    console.log(this.mapboxDraw.getAll().features);
     const zone = new Zone({ id: null, name: '', _coordinates: f.coordinates[0] });
     const dialog = GC.dialog.open(ZoneDialogComponent, {
       data: {
-        zone: zone,
+        zone: zone
       }
-    })
+    });
     dialog.componentInstance.confirm.subscribe(() => {
       GC.http.createZone(zone).subscribe(() => {
         GC.openSnackBarLong(`zone \'${zone.name}\' gespeichert!`);
@@ -524,9 +522,9 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     const zone = new Zone({ id: null, name: '', _coordinates: this.polygon[0] });
     const dialog = GC.dialog.open(ZoneDialogComponent, {
       data: {
-        zone: zone,
+        zone: zone
       }
-    })
+    });
     dialog.componentInstance.confirm.subscribe(() => {
       GC.http.createZone(zone).subscribe(() => {
         GC.openSnackBarLong(`zone \'${zone.name}\' gespeichert!`);
@@ -538,11 +536,11 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     GC.zones[1]._coordinates = this.polygon[0];
     const dialog = GC.dialog.open(ZoneDialogComponent, {
       data: {
-        zone: GC.zones[1],
+        zone: GC.zones[1]
       }
     });
-    dialog.componentInstance.confirm.subscribe(zone => {
-      GC.http.updateZone(zone).subscribe(update => {
+    dialog.componentInstance.confirm.subscribe((zone) => {
+      GC.http.updateZone(zone).subscribe((update) => {
         GC.openSnackBarLong(`zone \'${update.name}\' gespeichert!`);
       });
     });
@@ -550,7 +548,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
 
   updatePolygons(features: { features: Feature<Polygon>[] }): void {
     this.polygon = features.features[0].geometry.coordinates;
-    console.log(this.polygon)
+    console.log(this.polygon);
   }
 
   toggleWeserPart(south: boolean): void {
@@ -559,7 +557,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   toggleZone(name: string) {
-    const zone = GC.zones.find(z => z.name === name);
+    const zone = GC.zones.find((z) => z.name === name);
     if (!zone) {
       return;
     }
@@ -570,7 +568,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         [8.78625, 53.09249]
       ];
       if (coos[zone.index]) {
-        drawText(this.mapGL, name, coos[zone.index])
+        drawText(this.mapGL, name, coos[zone.index]);
       }
     }
     this.toggleObject(name, zone._coordinates, false);
@@ -579,10 +577,14 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   toggleObject(name: string, coordinates: Position[], line: boolean): void {
     const id = this.polygonIds.get(name);
     if (!id) {
-      this.polygonIds.set(name, this.mapboxDraw.add(
-        line ?
-          lineString(coordinates) : // todo ? is it right?
-          polygon([coordinates]))[0]);
+      this.polygonIds.set(
+        name,
+        this.mapboxDraw.add(
+          line
+            ? lineString(coordinates) // todo ? is it right?
+            : polygon([coordinates])
+        )[0]
+      );
     } else {
       this.mapboxDraw.delete(id);
       this.polygonIds.delete(name);
@@ -601,72 +603,79 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       if (this.mapGL.getSource(name)) {
         this.mapGL.removeSource(name);
       }
-    })
+    });
   }
 
   /** draws a continuous line between the points of a given array */
   drawAirLines(type: string, branch: Branch): void {
     const array: Position[] = [];
-    branch.routeWithBridges.forEach(p => {
+    branch.routeWithBridges.forEach((p) => {
       array.push([p.longitude, p.latitude]);
     });
     this.drawLine(type, array);
   }
 
-  drawRoutes(preparedBranches: { type: string, branch: Branch }[]): void {
-    const branches = preparedBranches.map(pB => { return pB.branch });
-    GC.http.routeJob(branches).subscribe(branchRoutes => {
+  drawRoutes(preparedBranches: { type: string; branch: Branch }[]): void {
+    const branches = preparedBranches.map((pB) => {
+      return pB.branch;
+    });
+    GC.http.routeJob(branches).subscribe((branchRoutes) => {
       branchRoutes.forEach((branchRoute, index) => {
-        branchRoute.forEach(sectionRoute => {
-          this.drawLine(preparedBranches[index].type, sectionRoute.route.map(p => [p.longitude, p.latitude]));
-        })
+        branchRoute.forEach((sectionRoute) => {
+          this.drawLine(
+            preparedBranches[index].type,
+            sectionRoute.route.map((p) => [p.longitude, p.latitude])
+          );
+        });
       });
-      this.job.getAllStations().filter(station => station.locType !== LocType.client && station.locType < 5).forEach((station) => {
-        station.calcPrice().makePriceLevel().makePopUpContent();
-      });
+      this.job
+        .getAllStations()
+        .filter((station) => station.locType !== LocType.client && station.locType < 5)
+        .forEach((station) => {
+          station.calcPrice().makePriceLevel().makePopUpContent();
+        });
       this.job.calcPrice();
     });
-
   }
 
   /**
-   * 
-   * @param id 
-   * @param coos 
+   *
+   * @param id
+   * @param coos
    */
   drawLine(id: string, coos: Position[]): void {
     const source: GeoJSONSource = this.mapGL.getSource(id) as GeoJSONSource;
     if (source) {
       source.setData({
-        'type': 'Feature',
-        'properties': {},
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': coos
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: coos
         }
       });
     } else {
       this.layer.push(id);
       this.mapGL.addSource(id, {
-        'type': 'geojson',
-        'data': {
-          'type': 'Feature',
-          'properties': {},
-          'geometry': {
-            'type': 'LineString',
-            'coordinates': coos
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: coos
           }
         }
       });
       this.mapGL.addLayer({
-        'id': id,
-        'type': 'line',
-        'source': id,
-        'layout': {
+        id: id,
+        type: 'line',
+        source: id,
+        layout: {
           'line-join': 'round',
           'line-cap': 'round'
         },
-        'paint': {
+        paint: {
           'line-color': '#000',
           'line-width': 4
         }
@@ -693,9 +702,12 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       return;
     }
     let stationList = job.getAllStations(true);
-    job.getAllStations(true).slice(job.clientInvolved ? 1 : 0).forEach(station => this.setMarker(station));
+    job
+      .getAllStations(true)
+      .slice(job.clientInvolved ? 1 : 0)
+      .forEach((station) => this.setMarker(station));
 
-    let list: { type: string, branch: Branch }[] = [];
+    let list: { type: string; branch: Branch }[] = [];
     job.pBranches?.branches.forEach((branch, i) => {
       list.push({ type: `p${i}`, branch: branch });
     });
@@ -712,15 +724,15 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     if (GC.streetRouting) {
       this.drawRoutes(list);
     } else {
-      list.forEach(l => {
+      list.forEach((l) => {
         this.drawAirLines(l.type, l.branch);
       });
     }
 
     if (!GC.config.showZonesPermanently) {
-      job.getZones().forEach(z => {
+      job.getZones().forEach((z) => {
         this.toggleZone(z.name);
-      })
+      });
     }
     return;
   }
@@ -728,7 +740,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   /** sets a marker on the map */
   setMarker(station: Station, clientType?: LocType): void {
     if (!(station instanceof Station)) {
-      station = new Station(station)
+      station = new Station(station);
     }
     let i: string;
     const newLocation = !station.id?.length;
@@ -751,9 +763,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
           break;
         case LocType.client:
           if (clientType) {
-            i = clientType === LocType.pickup ?
-              i = 'm-blue-up' :
-              i = 'm-blue-down';
+            i = clientType === LocType.pickup ? (i = 'm-blue-up') : (i = 'm-blue-down');
           } else {
             i = 'm-blue';
           }
@@ -784,7 +794,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     const marker = new Marker({
       element: el,
       draggable: true
-    }).setLngLat(lnglat)
+    })
+      .setLngLat(lnglat)
       .addTo(this.mapGL);
     const popup = new Popup({
       closeButton: false,
@@ -792,11 +803,13 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       offset: new mapboxgl.Point(0, -41)
     });
     if (station.street && station.zipCode) {
-      popup.setLngLat(lnglat).setHTML(
-        `<b class="${station.className()}">${station.name ? station.name : station.street}</b><br>${station.name ? station.street + ', ' : ''}${station.zipCode} ${station.city}${station.popUpContent || ''}`);
+      popup
+        .setLngLat(lnglat)
+        .setHTML(
+          `<b class="${station.className()}">${station.name ? station.name : station.street}</b><br>${station.name ? station.street + ', ' : ''}${station.zipCode} ${station.city}${station.popUpContent || ''}`
+        );
     } else {
-      popup.setLngLat(lnglat).setHTML(
-        `<b class="${station.className()}">${station.name}</b>${station.popUpContent || ''}`);
+      popup.setLngLat(lnglat).setHTML(`<b class="${station.className()}">${station.name}</b>${station.popUpContent || ''}`);
     }
     el.addEventListener('mouseenter', () => {
       popup.addTo(this.mapGL);
@@ -810,7 +823,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     });
     marker.on('dragend', () => {
       this.touched = true;
-      const newPos = marker.getLngLat()
+      const newPos = marker.getLngLat();
       popup.setLngLat(newPos);
       station.longitude = newPos.lng;
       station.latitude = newPos.lat;
@@ -819,36 +832,36 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         this.job.center.latitude = newPos.lat.round(5);
         this.job.center.longitude = newPos.lng.round(5);
       } else if (station.inputfield >= 0) {
-        const loc = station.locType === LocType.delivery ?
-          this.dInputs[station.inputfield].searchinput.selection :
-          this.pInputs[station.inputfield].searchinput.selection;
+        const loc = station.locType === LocType.delivery ? this.dInputs[station.inputfield].searchinput.selection : this.pInputs[station.inputfield].searchinput.selection;
         loc.latitude = newPos.lat.round(5);
         loc.longitude = newPos.lng.round(5);
       }
       this.changedLocations.push(station);
-      this.refresh({ zoom: false })
+      this.refresh({ zoom: false });
     });
 
     this.markerGL.push(marker);
     this.popUpGL.push(popup);
   }
 
-  setPointWithPopUp(features: { position: Position, name: string, description?: string }[]): void {
+  setPointWithPopUp(features: { position: Position; name: string; description?: string }[]): void {
     this.mapGL.addSource('points', {
-      'type': 'geojson',
+      type: 'geojson',
       data: {
-        type: "FeatureCollection",
-        features: features.map(f => feature({
-          position: f.position,
-          description: `<strong>${f.name}</strong>${f.description ? '<p>${f.description}</p>' : ''}`
-        }))
+        type: 'FeatureCollection',
+        features: features.map((f) =>
+          feature({
+            position: f.position,
+            description: `<strong>${f.name}</strong>${f.description ? '<p>${f.description}</p>' : ''}`
+          })
+        )
       }
-    })
+    });
     this.mapGL.addLayer({
-      'id': 'points',
-      'type': 'circle',
-      'source': 'points',
-      'paint': {
+      id: 'points',
+      type: 'circle',
+      source: 'points',
+      paint: {
         'circle-color': '#5dc3c1',
         'circle-radius': 6,
         'circle-stroke-width': 2,
@@ -858,7 +871,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
 
     const popup = new Popup({
       closeButton: false,
-      closeOnClick: false,
+      closeOnClick: false
     });
     this.mapGL.on('mouseenter', 'points', (e) => {
       this.mapGL.getCanvas().style.cursor = 'pointer';
@@ -867,7 +880,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       const coordinates = e.features[0].geometry.coordinates.slice();
       // @ts-ignore
       const description = e.features[0].properties.description;
-      popup.setLngLat(coordinates).setHTML(description).addTo(this.mapGL)
+      popup.setLngLat(coordinates).setHTML(description).addTo(this.mapGL);
     });
     this.mapGL.on('mouseleave', 'points', () => {
       this.mapGL.getCanvas().style.cursor = '';
@@ -880,16 +893,16 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
    * removes all objects on the map and clears the location arrays
    */
   resetMap(): void {
-    this.markerGL.forEach(marker => {
+    this.markerGL.forEach((marker) => {
       marker.remove();
     });
     this.markerGL = [];
-    this.popUpGL.forEach(popup => {
+    this.popUpGL.forEach((popup) => {
       popup.remove();
     });
     this.popUpGL = [];
 
-    this.layer.forEach(id => {
+    this.layer.forEach((id) => {
       if (this.mapGL.getLayer(id)) {
         this.mapGL.removeLayer(id);
       }
@@ -912,16 +925,16 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     const dialog = GC.dialog.open(RegularJobDialogComponent, {
       data: {
         rj: this.job.regularJob,
-        locally: true,
+        locally: true
       }
     });
-    dialog.componentInstance.saved.subscribe(msg => {
+    dialog.componentInstance.saved.subscribe((msg) => {
       this.touched = true;
       if (this.job) {
         this.job.regularJob = msg;
         this.refresh({ zoom: false });
       }
-      console.log(this.job.regularJob)
+      console.log(this.job.regularJob);
     });
   }
 
@@ -936,14 +949,14 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   openClientDialog(location: Geolocation): MatDialogRef<NewClientDialogComponent> {
     const dialog = GC.dialog.open(NewClientDialogComponent, {
       data: {
-        location: location,
+        location: location
       }
     });
-    dialog.componentInstance.saved.subscribe(client => {
+    dialog.componentInstance.saved.subscribe((client) => {
       this.cInput.setSelection(client.l);
       this.cInput.client = client.c;
       this.job.billingTour = client.c.billClient;
-      this.refresh({ zoom: false })
+      this.refresh({ zoom: false });
     });
     return dialog;
   }
@@ -952,24 +965,24 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     const dialog = GC.dialog.open(LocationDialogComponent, {
       data: {
         location: loc,
-        newLocation: newlocation,
+        newLocation: newlocation
       }
     });
-    dialog.componentInstance.created.subscribe(station => {
+    dialog.componentInstance.created.subscribe((station) => {
       if (input && input.searchinput.selection) {
         input.searchinput.setSelection(station);
       } else {
         this.resolveInputfield(station).setSelection(station);
       }
-      this.refresh({ zoom: false })
+      this.refresh({ zoom: false });
     });
-    dialog.componentInstance.updated.subscribe(station => {
+    dialog.componentInstance.updated.subscribe((station) => {
       if (input && input.searchinput.selection) {
         input.searchinput.setSelection(station);
       } else {
         this.resolveInputfield(station).setSelection(station);
       }
-      this.refresh({ zoom: false })
+      this.refresh({ zoom: false });
     });
   }
 
@@ -983,23 +996,21 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         const updateFn = () => {
           j.save(
             `auftrag
-            ${this.changedLocations.length === 1 ? 'und standort wurden' :
-              this.changedLocations.length > 1 ? 'und standorte wurden' :
-                'wurde'} aktualisiert.`
+            ${this.changedLocations.length === 1 ? 'und standort wurden' : this.changedLocations.length > 1 ? 'und standorte wurden' : 'wurde'} aktualisiert.`
           ).subscribe({
             next: () => {
               GC.router.navigate([GC.routes.tourplan, { date: j.date.yyyymmdd() }]);
-            }, error: (e) => {
+            },
+            error: (e) => {
               GC.openSnackBarLong(`fehler beim speichern des auftrags`);
-              console.log(e)
+              console.log(e);
             }
           });
-        }
+        };
         if (this.changedLocations.length) {
-          zip(this.changedLocations.map(l => GC.http.updateLocation(l))).subscribe(() => {
+          zip(this.changedLocations.map((l) => GC.http.updateLocation(l))).subscribe(() => {
             updateFn();
-          }
-          )
+          });
         } else {
           updateFn();
         }
@@ -1011,23 +1022,23 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         }
         const createFn = () => {
           j.save('neuer auftrag wurde gespeichert.').subscribe({
-            next: job => {
+            next: (job) => {
               GC.router.navigate([GC.routes.tourplan, { date: job.date.yyyymmdd() }]);
-            }, error: (error) => {
+            },
+            error: (error) => {
               console.log(error);
             }
           });
         };
         if (this.changedLocations.length) {
-          zip(this.changedLocations.map(l => GC.http.updateLocation(l))).subscribe(() => {
+          zip(this.changedLocations.map((l) => GC.http.updateLocation(l))).subscribe(() => {
             createFn();
-          }
-          )
+          });
         } else {
           createFn();
         }
       }
-    }
+    };
 
     if (this.job.customPrice && !this.job.price.isEqual(this.job.customPrice)) {
       const dialog = GC.dialog.open(AreYouSureDialogComponent, {
@@ -1036,15 +1047,15 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
           text: 'welcher preis soll verwendet werden?',
           verbYes: `berechneter preis (${this.job.price.toString(!this.job.billingTour)})`,
           verbNo: `festgelegter preis (${this.job.priceBackup.toString(!this.job.billingTour)})`,
-          warning: true,
+          warning: true
         }
-      })
+      });
       dialog.componentInstance.confirm.subscribe(() => {
         save();
-      })
+      });
       dialog.componentInstance.cancel.subscribe(() => {
         save(this.job.priceBackup);
-      })
+      });
     } else {
       save();
     }
@@ -1067,18 +1078,16 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       GC.http.updateRegularJob(rj).subscribe(() => {
         GC.openSnackBarLong(`festtour wurde aktualisiert.`);
         this.location.back();
-      }
-      );
+      });
     } else {
       GC.http.createRegularJob(rj).subscribe(() => {
         GC.openSnackBarLong(`neue festtour wurde gespeichert.`);
         this.location.back();
-      }
-      );
+      });
     }
   }
 
-  clientSelected(client: { c: Client, l: Geolocation }): void {
+  clientSelected(client: { c: Client; l: Geolocation }): void {
     this.touched = true;
     if (this.focussedInput.type === LocType.client) {
       if (client.c === null) {
@@ -1087,7 +1096,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         this.job.billingTour = client.c.billClient;
       }
     }
-    this.refresh({ zoom: true })
+    this.refresh({ zoom: true });
   }
 
   clientResetted(): void {
@@ -1107,7 +1116,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     this.touched = true;
     this.job.clientInvolved = !this.job.clientInvolved;
     this.job.center = null;
-    this.refresh({ zoom: true })
+    this.refresh({ zoom: true });
   }
 
   switchBillingMode(): void {
@@ -1121,7 +1130,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   clientRequired(): boolean {
-    return this.cInput.ctrl.hasError('required')
+    return this.cInput.ctrl.hasError('required');
   }
 
   activateName(): void {

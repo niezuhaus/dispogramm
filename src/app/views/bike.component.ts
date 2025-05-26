@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'bike',
@@ -27,16 +27,12 @@ import {Component, Input, OnInit} from '@angular/core';
       <div class="handlebars"></div>
     </div>
   `,
-  styles: [
-  ]
+  styles: []
 })
 export class BikeComponent implements OnInit {
+  @Input() running: boolean;
 
-  @Input() running: boolean
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

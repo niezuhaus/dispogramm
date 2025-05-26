@@ -8,9 +8,8 @@ describe('InlineRangeCalendarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InlineRangeCalendarComponent ]
-    })
-    .compileComponents();
+      declarations: [InlineRangeCalendarComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(InlineRangeCalendarComponent);
     component = fixture.componentInstance;

@@ -1,5 +1,5 @@
-import {Client} from "./Client";
-import {Geolocation} from "./Geolocation";
+import { Client } from './Client';
+import { Geolocation } from './Geolocation';
 
 export class Contact {
   location: Geolocation;

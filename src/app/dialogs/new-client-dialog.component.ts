@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Inject} from '@angular/core';
-import {GC} from "../common/GC";
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {Geolocation} from "../classes/Geolocation";
-import {Client} from "../classes/Client";
+import { Component, EventEmitter, Inject } from '@angular/core';
+import { GC } from '../common/GC';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Geolocation } from '../classes/Geolocation';
+import { Client } from '../classes/Client';
 
 @Component({
   selector: 'app-new-client-dialog',
@@ -18,24 +18,11 @@ import {Client} from "../classes/Client";
       <div mat-dialog-content>
         <mat-form-field>
           <mat-label>name</mat-label>
-          <input
-            #name
-            type="text"
-            matInput
-            [(ngModel)]="client.c.name"
-            (keyup)="client.l.name = name.value"
-            autofocus>
+          <input #name type="text" matInput [(ngModel)]="client.c.name" (keyup)="client.l.name = name.value" autofocus />
         </mat-form-field>
         <mat-form-field>
           <mat-label>rufname</mat-label>
-          <input
-            #nick
-            type="text"
-            matInput
-            [value]="client.c.name"
-            [(ngModel)]="client.l.name"
-            (focus)="nick.select()"
-            autofocus>
+          <input #nick type="text" matInput [value]="client.c.name" [(ngModel)]="client.l.name" (focus)="nick.select()" autofocus />
         </mat-form-field>
         <searchinput
           [label]="'straße'"
@@ -45,49 +32,42 @@ import {Client} from "../classes/Client";
           [(str)]="client.c.street"
           class="w-100"
           (resetted)="client.c.zipCode = ''; client.c.city = ''"
-          #search>
+          #search
+        >
         </searchinput>
         <mat-form-field>
           <mat-label>postleitzahl</mat-label>
-          <input
-            type="text"
-            matInput
-            [(ngModel)]="client.c.zipCode">
+          <input type="text" matInput [(ngModel)]="client.c.zipCode" />
         </mat-form-field>
         <mat-form-field>
           <mat-label>stadt</mat-label>
-          <input
-            type="text"
-            matInput
-            [(ngModel)]="client.c.city">
+          <input type="text" matInput [(ngModel)]="client.c.city" />
         </mat-form-field>
         <mat-form-field>
           <mat-label>fred kund:innennummer</mat-label>
-          <input
-            type="text"
-            matInput
-            [(ngModel)]="client.c.clientId">
+          <input type="text" matInput [(ngModel)]="client.c.clientId" />
         </mat-form-field>
-        <button mat-raised-button class="ml-3 fex-button" (click)="this.save()" matDialogClose="true">
-          speichern
-        </button>
+        <button mat-raised-button class="ml-3 fex-button" (click)="this.save()" matDialogClose="true">speichern</button>
       </div>
     </div>
   `,
-  styles: [`
-    * {
-      display: flex;
-      flex-direction: column;
-    }
-  `]
+  styles: [
+    `
+      * {
+        display: flex;
+        flex-direction: column;
+      }
+    `
+  ]
 })
 export class NewClientDialogComponent {
   saved = new EventEmitter<{ c: Client; l: Geolocation }>();
-  client: { c: Client; l: Geolocation } = {c: new Client(), l: new Geolocation()};
-  nextClientIds: { netto: string, brutto: string };
+  client: { c: Client; l: Geolocation } = { c: new Client(), l: new Geolocation() };
+  nextClientIds: { netto: string; brutto: string };
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: {
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
       location: Geolocation;
     }
   ) {
@@ -103,23 +83,23 @@ export class NewClientDialogComponent {
   }
 
   save(): void {
-    GC.http.createClient(this.client.c).subscribe(client => {
+    GC.http.createClient(this.client.c).subscribe((client) => {
       this.client.c = client;
       if (Math.abs(this.client.l.latitude) > 0) {
         this.client.l.clientId = client.id;
         if (!this.client.l.id) {
-          GC.http.createLocation(this.client.l).subscribe(l => {
+          GC.http.createLocation(this.client.l).subscribe((l) => {
             GC.openSnackBarLong(`kund:in und standort ${client.name} wurden gespeichert!`);
             this.client.l = l;
             this.saved.emit(this.client);
           });
         } else {
-          console.log(this.client.l)
-          GC.http.updateLocation(this.client.l).subscribe(l => {
+          console.log(this.client.l);
+          GC.http.updateLocation(this.client.l).subscribe((l) => {
             GC.openSnackBarLong(`kund:in und standort ${client.name} wurden gespeichert!`);
             this.client.l = l;
             this.saved.emit(this.client);
-          })
+          });
         }
       } else {
         GC.openSnackBarLong(`kund:in ${client.name} wurde gespeichert!`);

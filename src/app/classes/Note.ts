@@ -1,6 +1,6 @@
-import {Messenger} from "./Messenger";
-import {GC} from "../common/GC";
-import {AreYouSureDialogComponent} from "../dialogs/are-you-sure-dialog.component";
+import { Messenger } from './Messenger';
+import { GC } from '../common/GC';
+import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
 
 export class Note {
   id: string;
@@ -12,7 +12,7 @@ export class Note {
     if (data) {
       Object.assign(this, data);
     }
-    this.creator = new Messenger(this.creator)
+    this.creator = new Messenger(this.creator);
     this.date = this.date ? new Date(this.date) : this.date;
   }
 

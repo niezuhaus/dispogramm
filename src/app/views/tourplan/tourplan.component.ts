@@ -1,42 +1,29 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Job } from "../../classes/Job";
+import { Job } from '../../classes/Job';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Location } from '@angular/common';
 import { DatepickerComponent } from '../datepicker.component';
 import { ActivatedRoute } from '@angular/router';
-import { GC, ShiftType } from "../../common/GC";
-import { MatPaginator } from "@angular/material/paginator";
-import { SearchinputComponent } from "../newtour/inputfield/searchinput/searchinput.component";
-import { Price } from "../../classes/Price";
-import { MatMenuTrigger } from "@angular/material/menu";
-import { Shift } from "../../classes/Shift";
-import { TitleComponent } from "../app.component";
-import { Note } from "../../classes/Note";
-import { Messenger } from "../../classes/Messenger";
-import { TourplanItem } from "../../classes/TourplanItem";
-import {
-  FilterAdhocJobs,
-  FilterCargoBikeJobs,
-  FilterCargoJobs,
-  FilterCarlaCargoJobs,
-  FilterCashJobs,
-  FilterNotes,
-  FilterOpenJobs,
-  FilterPrePlannedJobs,
-  FilterRegularJobs
-} from "./FilterStrategies";
+import { GC, ShiftType } from '../../common/GC';
+import { MatPaginator } from '@angular/material/paginator';
+import { SearchinputComponent } from '../newtour/inputfield/searchinput/searchinput.component';
+import { Price } from '../../classes/Price';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { Shift } from '../../classes/Shift';
+import { TitleComponent } from '../app.component';
+import { Note } from '../../classes/Note';
+import { Messenger } from '../../classes/Messenger';
+import { TourplanItem } from '../../classes/TourplanItem';
+import { FilterAdhocJobs, FilterCargoBikeJobs, FilterCargoJobs, FilterCarlaCargoJobs, FilterCashJobs, FilterNotes, FilterOpenJobs, FilterPrePlannedJobs, FilterRegularJobs } from './FilterStrategies';
 import { MessengerDialogComponent } from 'src/app/dialogs/messenger-dialog.component';
-
 
 @Component({
   selector: 'tourplan',
   templateUrl: './tourplan.component.html',
   styleUrls: ['./tourplan.component.scss']
 })
-
 export class TourplanComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
-
   override title = 'tourenzettel';
 
   // model data
@@ -72,44 +59,88 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     new FilterCargoBikeJobs(),
     new FilterCarlaCargoJobs(),
     new FilterOpenJobs(),
-    new FilterNotes(),
+    new FilterNotes()
   ];
 
-  get jobs() { return this.isToday ? GC.jobsToday : GC.jobsAnyDay; };
+  get jobs() {
+    return this.isToday ? GC.jobsToday : GC.jobsAnyDay;
+  }
 
-  set jobs(jobs: Job[]) { this.isToday ? GC.jobsToday = jobs : GC.jobsAnyDay = jobs; };
+  set jobs(jobs: Job[]) {
+    this.isToday ? (GC.jobsToday = jobs) : (GC.jobsAnyDay = jobs);
+  }
 
-  get shifts() { return this.isToday ? GC.shiftsToday : GC.shiftsAnyDay; }
+  get shifts() {
+    return this.isToday ? GC.shiftsToday : GC.shiftsAnyDay;
+  }
 
-  set shifts(shifts: Shift[]) { this.isToday ? GC.shiftsToday = shifts : GC.shiftsAnyDay = shifts; }
+  set shifts(shifts: Shift[]) {
+    this.isToday ? (GC.shiftsToday = shifts) : (GC.shiftsAnyDay = shifts);
+  }
 
-  get shiftsWithoutEnd(): Shift[] { return this.shifts.filter(s => !s.end); }
+  get shiftsWithoutEnd(): Shift[] {
+    return this.shifts.filter((s) => !s.end);
+  }
 
-  get checkedIn(): Messenger[] { return this.shiftsWithoutEnd.filter(s => GC.tourplanShiftTypes.includes(s.type)).map(s => s.messenger); }
+  get checkedIn(): Messenger[] {
+    return this.shiftsWithoutEnd.filter((s) => GC.tourplanShiftTypes.includes(s.type)).map((s) => s.messenger);
+  }
 
-  get messenger(): Messenger[] { return this.shifts.map(s => s.messenger) };
+  get messenger(): Messenger[] {
+    return this.shifts.map((s) => s.messenger);
+  }
 
-  get dispoEarly(): Messenger[] { return this.shifts.filter(s => { return s.type === ShiftType.dispoEarly }).map(s => s.messenger) }
+  get dispoEarly(): Messenger[] {
+    return this.shifts
+      .filter((s) => {
+        return s.type === ShiftType.dispoEarly;
+      })
+      .map((s) => s.messenger);
+  }
 
-  get dispoLate(): Messenger[] { return this.shifts.filter(s => { return s.type === ShiftType.dispoLate }).map(s => s.messenger) }
+  get dispoLate(): Messenger[] {
+    return this.shifts
+      .filter((s) => {
+        return s.type === ShiftType.dispoLate;
+      })
+      .map((s) => s.messenger);
+  }
 
-  get earlyShift(): Messenger[] { return this.shifts.filter(s => ([ShiftType.early, ShiftType.zwischi, ShiftType.double].includes(s.type))).map(s => s.messenger); }
+  get earlyShift(): Messenger[] {
+    return this.shifts.filter((s) => [ShiftType.early, ShiftType.zwischi, ShiftType.double].includes(s.type)).map((s) => s.messenger);
+  }
 
-  get lateShift(): Messenger[] { return this.shifts.filter(s => ([ShiftType.late].includes(s.type))).map(s => s.messenger); }
+  get lateShift(): Messenger[] {
+    return this.shifts.filter((s) => [ShiftType.late].includes(s.type)).map((s) => s.messenger);
+  }
 
-  get messengerData() { return GC.messengerData(this.date); }
+  get messengerData() {
+    return GC.messengerData(this.date);
+  }
 
-  get isToday() { return this.date.isToday() };
+  get isToday() {
+    return this.date.isToday();
+  }
 
-  get config() { return GC.config };
+  get config() {
+    return GC.config;
+  }
 
-  get globallyLoaded() { return GC.fullyLoaded };
+  get globallyLoaded() {
+    return GC.fullyLoaded;
+  }
 
-  get dispatcherCheckedIn() { return GC.dispatcherCheckedIn() };
+  get dispatcherCheckedIn() {
+    return GC.dispatcherCheckedIn();
+  }
 
-  get shiftLiterals() { return GC.dispatcherShiftLiterals.concat(GC.messengerShiftLiterals) };
+  get shiftLiterals() {
+    return GC.dispatcherShiftLiterals.concat(GC.messengerShiftLiterals);
+  }
 
-  get filterStatus() { return GC.config.tourplan.filterStatus };
+  get filterStatus() {
+    return GC.config.tourplan.filterStatus;
+  }
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('datepicker') datepicker: DatepickerComponent;
@@ -121,7 +152,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private cd: ChangeDetectorRef,
+    private cd: ChangeDetectorRef
   ) {
     super();
   }
@@ -129,13 +160,13 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   ngOnInit(): void {
     GC.messengersChanged.subscribe(() => {
       this.refresh();
-    })
+    });
   }
 
   ngAfterViewInit(): void {
     GC.loaded().subscribe(() => {
       this.loaded = true;
-      this.route.paramMap.subscribe(params => {
+      this.route.paramMap.subscribe((params) => {
         if (!params.get('date')) {
           this.date = new Date().nextWorkingDay();
           this.location.replaceState(`${GC.routes.tourplan};date=${this.date.yyyymmdd()}`);
@@ -145,16 +176,15 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
         }
         GC.config.tourplan.filterStatus.forEach((bool, i) => {
           this.filterStrategies[i].selected = bool;
-        })
+        });
         this.refresh();
         this.cd.detectChanges();
         GC.refreshNeeded.subscribe(() => {
           this.refresh();
-        })
+        });
       });
       GC.tourplan = this;
     });
-
   }
 
   ngOnDestroy() {
@@ -170,16 +200,22 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     GC.shiftsAnyDay = [];
 
     GC.http.tourplanItemsForDay(this.date).subscribe({
-      next: data => {
+      next: (data) => {
         this.items = data.items;
         this.jobs = data.jobs;
-        this.sumNetto._netto = this.jobs.filter(j => j.messenger && j.billingTour).map(j => j.price._netto).sum();
-        this.sumBrutto._netto = this.jobs.filter(j => j.messenger && !j.billingTour).map(j => j.price._netto).sum();
+        this.sumNetto._netto = this.jobs
+          .filter((j) => j.messenger && j.billingTour)
+          .map((j) => j.price._netto)
+          .sum();
+        this.sumBrutto._netto = this.jobs
+          .filter((j) => j.messenger && !j.billingTour)
+          .map((j) => j.price._netto)
+          .sum();
 
         // filter out all the regularJobs that are too far in the future
         if (this.isToday) {
-          this.items = this.items.filter(i => {
-            return !(i.isRegularJob && i._date.getHours() > this.date.getHours() + GC.config.tourplan.HOURS_IN_ADVANCE)
+          this.items = this.items.filter((i) => {
+            return !(i.isRegularJob && i._date.getHours() > this.date.getHours() + GC.config.tourplan.HOURS_IN_ADVANCE);
           });
         }
         // setting up the table
@@ -207,10 +243,10 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
             default:
               return property;
           }
-        }
+        };
 
         if (!this.date.isToday()) {
-          GC.http.getShiftsForDay(this.date).subscribe(shifts => {
+          GC.http.getShiftsForDay(this.date).subscribe((shifts) => {
             this.shifts = shifts;
             this.calcSales();
             this.loaded = true;
@@ -222,8 +258,8 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
           GC.tourplanActive = true;
         }
       },
-      error: err => {
-        GC.openSnackBarLong('fehler beim laden der aufträge')
+      error: (err) => {
+        GC.openSnackBarLong('fehler beim laden der aufträge');
         console.error(err);
       }
     });
@@ -241,17 +277,17 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     job.creator = GC._dispatcher.messenger;
     job.finished = false;
     job.description = '';
-    job.save('neuer auftrag wurde angelegt!').subscribe(job => {
+    job.save('neuer auftrag wurde angelegt!').subscribe((job) => {
       if (job) {
         this.jobInput.reset();
         this.refresh();
         GC.dispatcherChanged.subscribe(() => {
           setTimeout(() => {
-            this.jobInput.setFormControls()
-          }, 0)
-        })
+            this.jobInput.setFormControls();
+          }, 0);
+        });
       }
-    })
+    });
   }
 
   createNote(): void {
@@ -260,45 +296,64 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
       GC.openSnackBarShort('notiz gespeichert!');
       this.noteVisible = false;
       this.note.text = '';
-      this.refresh()
+      this.refresh();
     });
   }
 
   calcSales(): void {
     this.messengerData.clear();
 
-    this.jobs.filter(i => i.messenger).forEach((job) => {
-      if (this.messengerData.has(job.messenger.id)) {
-        this.messengerData.get(job.messenger.id).jobs.push(job)
-      } else {
-        this.messengerData.set(job.messenger.id, { jobs: [job], sales: null, dates: null })
-      }
-    });
-    this.messengerData.forEach(entry => {
+    this.jobs
+      .filter((i) => i.messenger)
+      .forEach((job) => {
+        if (this.messengerData.has(job.messenger.id)) {
+          this.messengerData.get(job.messenger.id).jobs.push(job);
+        } else {
+          this.messengerData.set(job.messenger.id, { jobs: [job], sales: null, dates: null });
+        }
+      });
+    this.messengerData.forEach((entry) => {
       const jobs = entry.jobs.sort((a, b) => b.date.getTime() - a.date.getTime());
       entry.sales = {
-        nettoEarly: jobs.filter(j => j.billingTour && j.date.getHours() < 13).map(j => j.price._netto).sum().toPrice(),
-        nettoLate: jobs.filter(j => j.billingTour && j.date.getHours() >= 13).map(j => j.price._netto).sum().toPrice(),
-        grossEarly: jobs.filter(j => !j.billingTour && j.date.getHours() < 13).map(j => j.price._netto).sum().toPrice(),
-        grossLate: jobs.filter(j => !j.billingTour && j.date.getHours() >= 13).map(j => j.price._netto).sum().toPrice(),
-      }
+        nettoEarly: jobs
+          .filter((j) => j.billingTour && j.date.getHours() < 13)
+          .map((j) => j.price._netto)
+          .sum()
+          .toPrice(),
+        nettoLate: jobs
+          .filter((j) => j.billingTour && j.date.getHours() >= 13)
+          .map((j) => j.price._netto)
+          .sum()
+          .toPrice(),
+        grossEarly: jobs
+          .filter((j) => !j.billingTour && j.date.getHours() < 13)
+          .map((j) => j.price._netto)
+          .sum()
+          .toPrice(),
+        grossLate: jobs
+          .filter((j) => !j.billingTour && j.date.getHours() >= 13)
+          .map((j) => j.price._netto)
+          .sum()
+          .toPrice()
+      };
       entry.dates = {
         earliestDate: jobs[0].date,
-        latestDate: jobs.last().date,
-      }
+        latestDate: jobs.last().date
+      };
     });
   }
 
   saveConfigValue(key: string, value: string): void {
-    GC.http.saveConfigItem(key, value).subscribe(() => {
-    });
+    GC.http.saveConfigItem(key, value).subscribe(() => {});
   }
 
   filterJobsByKeyword(): TourplanItem[] {
     let items = this.items;
-    this.filterStrategies.filter(s => s.selected).forEach(s => {
-      items = items.filter(i => s.passesFilter(i));
-    })
+    this.filterStrategies
+      .filter((s) => s.selected)
+      .forEach((s) => {
+        items = items.filter((i) => s.passesFilter(i));
+      });
     this.dataSource.data = items;
     this.table?.renderRows();
     this.cd.detectChanges();
@@ -306,19 +361,19 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   }
 
   saveFilterStatus(): void {
-    GC.http.saveConfigItem('filterStatus', JSON.stringify(GC.config.tourplan.filterStatus)).subscribe(rc => {
-    })
+    GC.http.saveConfigItem('filterStatus', JSON.stringify(GC.config.tourplan.filterStatus)).subscribe((rc) => {});
   }
 
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
-    this.dataSource.data = this.filterJobsByKeyword().filter(tpi =>
-      tpi._job?.center?.name.toLowerCase().includes(filterValue) ||
-      tpi._job?.client?.name.toLowerCase().includes(filterValue) ||
-      tpi._name?.toLowerCase().includes(filterValue) ||
-      tpi._job?.deliveries?.map(l => l.name).filter(s => s.toLowerCase().includes(filterValue)).length > 0 ||
-      tpi._job?.pickups?.map(l => l.name).filter(s => s.toLowerCase().includes(filterValue)).length > 0
-    )
+    this.dataSource.data = this.filterJobsByKeyword().filter(
+      (tpi) =>
+        tpi._job?.center?.name.toLowerCase().includes(filterValue) ||
+        tpi._job?.client?.name.toLowerCase().includes(filterValue) ||
+        tpi._name?.toLowerCase().includes(filterValue) ||
+        tpi._job?.deliveries?.map((l) => l.name).filter((s) => s.toLowerCase().includes(filterValue)).length > 0 ||
+        tpi._job?.pickups?.map((l) => l.name).filter((s) => s.toLowerCase().includes(filterValue)).length > 0
+    );
     this.cd.detectChanges();
   }
 

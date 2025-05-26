@@ -2,73 +2,64 @@ import { Injectable, Component, OnInit, ViewChild, ChangeDetectorRef } from '@an
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Client } from "../../classes/Client";
+import { Client } from '../../classes/Client';
 import { DateAdapter } from '@angular/material/core';
 import { NewClientDialogComponent } from '../../dialogs/new-client-dialog.component';
-import { Subject } from "rxjs";
-import { GC } from "../../common/GC";
-import { ActivatedRoute } from "@angular/router";
-import { Location } from "@angular/common";
-import { ClientComponent } from "./client/client.component";
-import { Price } from "../../classes/Price";
-import { TitleComponent } from "../app.component";
-import { MatMenuTrigger } from "@angular/material/menu";
+import { Subject } from 'rxjs';
+import { GC } from '../../common/GC';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+import { ClientComponent } from './client/client.component';
+import { Price } from '../../classes/Price';
+import { TitleComponent } from '../app.component';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-overview',
   template: `
     <div class="flex flex-row justify-content-between p-5">
-<!--        <button (click)="exportClients()" mat-raised-button class="fex-button">-->
-<!--          <i class="pr-2 bi bi-plus-circle-fill"></i>-->
-<!--          export-->
-<!--        </button>-->
-        <mat-form-field class="w-50" style="max-width: 400px">
-          <mat-label>kund:in suchen</mat-label>
-          <input
-            matInput
-            (ngModelChange)="applyFilter($event)"
-            #input
-            [(ngModel)]="searchterm">
-        </mat-form-field>
-        <div class="flex w-100 justify-content-end">
-          <button (click)="openDialog()" mat-raised-button class="fex-button">
-            <i class="pr-2 bi bi-plus-circle-fill"></i>
-            neue kund:in
-          </button>
+      <!--        <button (click)="exportClients()" mat-raised-button class="fex-button">-->
+      <!--          <i class="pr-2 bi bi-plus-circle-fill"></i>-->
+      <!--          export-->
+      <!--        </button>-->
+      <mat-form-field class="w-50" style="max-width: 400px">
+        <mat-label>kund:in suchen</mat-label>
+        <input matInput (ngModelChange)="applyFilter($event)" #input [(ngModel)]="searchterm" />
+      </mat-form-field>
+      <div class="flex w-100 justify-content-end">
+        <button (click)="openDialog()" mat-raised-button class="fex-button">
+          <i class="pr-2 bi bi-plus-circle-fill"></i>
+          neue kund:in
+        </button>
       </div>
     </div>
     <div id="tableholder">
-      <table
-        mat-table
-        [dataSource]="dataSource"
-        matSort
-        matSortActive="invoiceAmount"
-        matSortDirection="desc">
+      <table mat-table [dataSource]="dataSource" matSort matSortActive="invoiceAmount" matSortDirection="desc">
         <ng-container matColumnDef="clientId">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 80px" class="text-center">#kund:in</th>
-          <td mat-cell *matCellDef="let element" class="text-center">{{element.clientId}}</td>
+          <td mat-cell *matCellDef="let element" class="text-center">{{ element.clientId }}</td>
         </ng-container>
 
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 33%">name</th>
-          <td mat-cell *matCellDef="let element" style="padding-right: 20px"><a
-            [routerLink]="['/client/', {id: element.id}]">{{element.name}}</a>
+          <td mat-cell *matCellDef="let element" style="padding-right: 20px">
+            <a [routerLink]="['/client/', { id: element.id }]">{{ element.name }}</a>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="street">
           <th mat-header-cell *matHeaderCellDef class="text-center">adresse</th>
-          <td mat-cell *matCellDef="let element" style="white-space: nowrap">{{element.street}}</td>
+          <td mat-cell *matCellDef="let element" style="white-space: nowrap">{{ element.street }}</td>
         </ng-container>
 
         <ng-container matColumnDef="invoiceAmount">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 100px; text-align: center">umsatz</th>
           <td mat-cell *matCellDef="let element" style="text-align: center">
             <span *ngIf="element.billClient; else brutto">
-              {{getInvoiceAmount(element)._netto}}
+              {{ getInvoiceAmount(element)._netto }}
             </span>
             <ng-template #brutto>
-              {{getInvoiceAmount(element)._brutto}}
+              {{ getInvoiceAmount(element)._brutto }}
               brutto
             </ng-template>
           </td>
@@ -77,8 +68,7 @@ import { MatMenuTrigger } from "@angular/material/menu";
         <ng-container matColumnDef="invoiceThisMonth">
           <th mat-header-cell *matHeaderCellDef class="text-center" style="width: 40px;">aktuelle rechnung</th>
           <td mat-cell *matCellDef="let element">
-            <button mat-button (click)="createInvoice(element, dateAdapter.today())" matTooltip="aktuelle rechnung speichern"
-               style="color: black !important;">
+            <button mat-button (click)="createInvoice(element, dateAdapter.today())" matTooltip="aktuelle rechnung speichern" style="color: black !important;">
               <i class="bi bi-download"></i>
             </button>
           </td>
@@ -87,48 +77,35 @@ import { MatMenuTrigger } from "@angular/material/menu";
         <ng-container matColumnDef="invoiceLastMonth">
           <th mat-header-cell *matHeaderCellDef class="text-center" style="width: 40px;">letzte rechnung</th>
           <td mat-cell *matCellDef="let element">
-            <a mat-button (click)="createInvoice(element, lastMonth)" matTooltip="letzte rechnung speichern"
-               style="color: black !important;">
+            <a mat-button (click)="createInvoice(element, lastMonth)" matTooltip="letzte rechnung speichern" style="color: black !important;">
               <i class="bi bi-download"></i>
             </a>
           </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (contextmenu)="onRightClick($event, row)"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" (contextmenu)="onRightClick($event, row)"></tr>
       </table>
-      <mat-paginator
-        [style.visibility]="loaded ? 'unset' : 'hidden'"
-        [length]="1000"
-        [pageSize]="rows"
-        showFirstLastButtons>
-      </mat-paginator>
+      <mat-paginator [style.visibility]="loaded ? 'unset' : 'hidden'" [length]="1000" [pageSize]="rows" showFirstLastButtons> </mat-paginator>
     </div>
 
     <div class="p-4 position-fixed fex-dark" style="bottom: 0; width: 100vw; color: white">
-      <h5>auftragsvolumen diesen monat: {{salesThisMonth.toString()}}</h5>
+      <h5>auftragsvolumen diesen monat: {{ salesThisMonth.toString() }}</h5>
     </div>
 
     <div class="container">
-      <div style="visibility: hidden; position: fixed"
-           [style.left.px]="menuTopLeftPosition.x"
-           [style.top.px]="menuTopLeftPosition.y"
-           [matMenuTriggerFor]="rightMenu"></div>
+      <div style="visibility: hidden; position: fixed" [style.left.px]="menuTopLeftPosition.x" [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"></div>
 
       <mat-menu #rightMenu="matMenu">
         <ng-template matMenuContent let-item="item">
-          <right-click-menu
-            [client]="item">
-          </right-click-menu>
+          <right-click-menu [client]="item"> </right-click-menu>
         </ng-template>
       </mat-menu>
     </div>
   `,
   styleUrls: ['./client-list.component.scss']
 })
-
 export class ClientListComponent extends TitleComponent implements OnInit {
-
   override title = 'kund:innen';
 
   loaded = false;
@@ -138,9 +115,11 @@ export class ClientListComponent extends TitleComponent implements OnInit {
 
   displayedColumns: string[] = ['clientId', 'name', 'street', 'invoiceAmount'];
   dataSource: MatTableDataSource<Client>;
-  menuTopLeftPosition = { x: 0, y: 0 }
+  menuTopLeftPosition = { x: 0, y: 0 };
 
-  get salesThisMonth() { return GC.salesThisMonth };
+  get salesThisMonth() {
+    return GC.salesThisMonth;
+  }
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -157,14 +136,13 @@ export class ClientListComponent extends TitleComponent implements OnInit {
     this.lastMonth.setMonth(this.lastMonth.getMonth() - 1);
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     GC.loaded().subscribe(() => {
       this.init();
       this.cd.detectChanges();
-    })
+    });
   }
 
   init(): void {
@@ -182,9 +160,9 @@ export class ClientListComponent extends TitleComponent implements OnInit {
         default:
           return property;
       }
-    }
+    };
     this.loaded = true;
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       if (params.get('search')) {
         this.searchterm = params.get('search');
         this.applyFilter(this.searchterm);
@@ -194,13 +172,13 @@ export class ClientListComponent extends TitleComponent implements OnInit {
 
   openDialog(): void {
     const dialog = GC.dialog.open(NewClientDialogComponent);
-    dialog.componentInstance.saved.subscribe(client => {
+    dialog.componentInstance.saved.subscribe((client) => {
       this.init();
-    })
+    });
   }
 
   exportClients(): void {
-    GC.http.exportClients().subscribe(xlsx => {
+    GC.http.exportClients().subscribe((xlsx) => {
       const blob = new Blob([xlsx], { type: 'application/xlsx' });
       const link = document.createElement('a');
       link.download = `clients.xlsx`;
@@ -232,11 +210,10 @@ export class ClientListComponent extends TitleComponent implements OnInit {
     event.preventDefault();
     this.menuTopLeftPosition.x = event.clientX;
     this.menuTopLeftPosition.y = event.clientY;
-    this.matMenuTrigger.menuData = { item: item }
+    this.matMenuTrigger.menuData = { item: item };
     this.matMenuTrigger.openMenu();
   }
 }
-
 
 @Injectable()
 export class fexPaginator implements MatPaginatorIntl {
