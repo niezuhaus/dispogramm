@@ -203,7 +203,6 @@ export class CheckoutDialogComponent implements OnInit {
     }
   ) {
     if (data.shift.end) {
-      console.log(data.shift);
       this.finished = true;
     }
     this.end = data.end ? data.end : data.shift.endTimeGuess();
@@ -211,25 +210,34 @@ export class CheckoutDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataSource = new MatTableDataSource(this.data.jobs);
-    this.dataSource.sort = this.sort;
-    this.dataSource.sortingDataAccessor = (item, property): string | number => {
-      switch (property) {
-        case 'date':
-          return new Date(item.date).getTime();
-        case 'description':
-          return item.center.name;
-        case 'price':
-          return item.price._netto;
-        default:
-          return property;
-      }
-    };
-    this.data.jobs
-      .filter((j) => j.finished)
-      .forEach((j) => {
-        j.billingTour ? this.finishingBillSum.add(j.price) : this.finishingCashSum.add(j.price);
+    // if (!this.data.shift.jobs)
+    setTimeout(() => {
+      this.data.jobs.forEach((job) => {
+        if (job.regularJobId && !job.finished) {
+          job._finished = true;
+        }
       });
+
+      this.dataSource = new MatTableDataSource(this.data.jobs);
+      this.dataSource.sort = this.sort;
+      this.dataSource.sortingDataAccessor = (item, property): string | number => {
+        switch (property) {
+          case 'date':
+            return new Date(item.date).getTime();
+          case 'description':
+            return item.center.name;
+          case 'price':
+            return item.price._netto;
+          default:
+            return property;
+        }
+      };
+      this.data.jobs
+        .filter((j) => j.finished)
+        .forEach((j) => {
+          j.billingTour ? this.finishingBillSum.add(j.price) : this.finishingCashSum.add(j.price);
+        });
+    }, 0);
   }
 
   addToSum(job: Job): void {
