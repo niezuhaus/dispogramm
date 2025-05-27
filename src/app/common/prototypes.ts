@@ -179,6 +179,8 @@ declare global {
      */
     tomorrow(): Date;
 
+    add(d: number, h?: number, m?: number): Date;
+
     addOneWeek(): Date;
 
     subOneWeek(): Date;
@@ -247,7 +249,7 @@ Array.prototype.findAndRemove = function (item) {
     this.splice(index, 1);
     return true;
   }
-  console.log('index == 0');
+  console.warn('Element not found');
   return false;
 };
 Array.prototype.fastfind = function (id: string) {
@@ -463,6 +465,11 @@ Date.prototype.tomorrow = function () {
   const res = new Date(this);
   res.setDate(res.getDate() + 1);
   return res;
+};
+
+Date.prototype.add = function (d: number, h?: number, m?: number) {
+  this.setMinutes(this.getMinutes() + (d || 0) * 24 * 60 + (h || 0) * 60 + (m || 0));
+  return this;
 };
 
 Date.prototype.addOneWeek = function () {
