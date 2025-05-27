@@ -5,6 +5,7 @@ import { Messenger } from 'src/app/classes/Messenger';
 import { zip } from 'rxjs';
 import { ShiftTableComponent } from '../shift-table.component';
 import { ActivatedRoute } from '@angular/router';
+import { Shift } from 'src/app/classes/Shift';
 
 @Component({
   selector: 'app-shifts-overwiew',
@@ -29,7 +30,7 @@ import { ActivatedRoute } from '@angular/router';
               </h5>
               <h6>{{ m.shifts?.length }} schicht(en) im {{ months()[date.getMonth()] }} {{ date.getFullYear() }}</h6>
               <h6 *ngIf="m.shifts?.length">insgesamt {{ m.hours }} stunden ({{ (m.hours * minimumWage()).round(2) }}€)</h6>
-              <shift-table #table [messenger]="m" [onShiftDelete]="load.bind(this)" (shiftUpdated)="m._calcHours()"> </shift-table>
+              <shift-table #table [messenger]="m" (shiftUpdated)="m._calcHours()"> </shift-table>
               <button mat-raised-button class="fex-button mt-4" (click)="tables.get(i).newShift()" matTooltip="neue schicht hinzufügen">
                 schicht hinzufügen
                 <i class="ml-3 bi bi-plus-circle"></i>
@@ -107,8 +108,6 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
   }
 
   load(): void {
-    console.log('now');
-
     this.shiftsLoaded = false;
     zip(this.messengers.map((m) => m.loadShifts(this.date))).subscribe((res) => {
       this.filteredMessenger = this.messengers.filter((m, i) => res[i].length);
