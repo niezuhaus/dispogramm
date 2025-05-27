@@ -6,6 +6,7 @@ import { GC } from '../common/GC';
 import { Job } from '../classes/Job';
 import { Price } from '../classes/Price';
 import { Messenger } from '../classes/Messenger';
+import { TimepickerComponent } from './timepicker.component';
 
 @Component({
   selector: 'shift-table',
@@ -44,7 +45,7 @@ import { Messenger } from '../classes/Messenger';
                   (selectionChange)="element.startTimeGuess(); element.endTimeGuess()"
                   (keydown)="$event.key === 'Enter' ? updateShift(element) : ''"
                 >
-                  <mat-option *ngFor="let shiftType of messengerShiftTypes; let i = index" [value]="i">
+                  <mat-option *ngFor="let shiftType of messengerShiftTypes; let i = index" [value]="i" [disabled]="i <= 1 && !element.messenger.dispatcher">
                     {{ shiftType }}
                   </mat-option>
                 </mat-select>
@@ -56,9 +57,24 @@ import { Messenger } from '../classes/Messenger';
           <th mat-header-cell *matHeaderCellDef class="text-center" style="min-width: 80px">arbeitszeit</th>
           <td mat-cell *matCellDef="let element" style="width: 260px; padding: 0 20px !important;">
             <div *ngIf="element.edit" class="flex flex-row align-items-center justify-content-between">
-              <timepicker [label]="'start'" [(time)]="element.start" (keydown)="$event.key === 'Enter' ? updateShift(element) : ''" class="relative-top8px"></timepicker>
+              <timepicker
+                [label]="'start'"
+                [(time)]="element.start"
+                (keydown)="$event.key === 'Enter' ? updateShift(element) : ''"
+                class="relative-top8px"
+                tabindex="2"
+                #startTimepicker
+                (timeChange)="endTimepicker.makeFiveHoursShift($event)"
+              ></timepicker>
               <span class="mx-2">-</span>
-              <timepicker [label]="'ende'" [(time)]="element.end" [compareDate]="element.start" (keydown)="$event.key === 'Enter' ? updateShift(element) : ''" class="relative-top8px"></timepicker>
+              <timepicker
+                [label]="'ende'"
+                [(time)]="element.end"
+                [compareDate]="element.start"
+                (keydown)="$event.key === 'Enter' ? updateShift(element) : ''"
+                class="relative-top8px"
+                #endTimepicker
+              ></timepicker>
             </div>
             <div *ngIf="!element.edit" class="flex flex-row align-items-center justify-content-between">
               <span>{{ element.start.timestamp() }}</span>
@@ -75,7 +91,7 @@ import { Messenger } from '../classes/Messenger';
               {{ element.money.netto }}
             </p>
             <div *ngIf="element.edit" class="flex justify-content-around">
-              <button mat-button class="align-items-center" (click)="updateShift(element)">
+              <button matTooltip="speichern" mat-button class="align-items-center" (click)="updateShift(element)">
                 <i class="bi bi-check"></i>
               </button>
             </div>
@@ -114,26 +130,33 @@ export class ShiftTableComponent implements OnInit {
   get messengerShiftTypes() {
     return GC.dispatcherShiftLiterals.concat(GC.messengerShiftLiterals);
   }
+  distinctShiftTypes(shift: Shift): string[] {
+    return shift.messenger.dispatcher ? this.messengerShiftTypes : GC.messengerShiftLiterals;
+  }
   shiftLiterals = (index: number) => {
     return this.messengerShiftTypes[index];
   };
 
   @Input() messenger: Messenger;
-  @Input() onShiftDelete: (shifts: Shift[]) => void;
+  @Input() onShiftDelete: (shift: Shift) => void;
   @Output() shiftUpdated = new EventEmitter<boolean>();
+  @Output() shiftCreated = new EventEmitter<Shift>();
 
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
+  // @ViewChild('endTimepicker') endTimepicker: TimepickerComponent;
 
   constructor() {}
 
   ngOnInit(): void {
-    this.dataSource = new MatTableDataSource<Shift>(this.messenger.shifts);
+    this.shifts = this.messenger.shifts;
+    this.dataSource = new MatTableDataSource<Shift>(this.shifts);
   }
 
   shiftDeleted(shift: Shift): void {
-    this.shifts = this.messenger.shifts;
+    this.shifts.findAndRemove(shift);
     this.dataSource.data = [...this.shifts];
-    this.onShiftDelete(this.shifts);
+    this.onShiftDelete(shift);
+    this.table.renderRows();
   }
 
   updateShift(shift: Shift): void {
@@ -158,7 +181,11 @@ export class ShiftTableComponent implements OnInit {
       shift = new Shift(shift);
       shift.messenger.shift = null;
       shift.messenger.shifts = null;
+      console.log('create');
+
       GC.http.createShift(shift).subscribe((s) => {
+        this.shiftCreated.emit(s);
+        GC.openSnackBarLong('neue schicht wurde gespeichert.' + s.id + ' ' + s.start.yyyymmdd());
         routine();
       });
     } else {
@@ -169,7 +196,10 @@ export class ShiftTableComponent implements OnInit {
   }
 
   newShift(date?: Date): void {
-    const s = new Shift({ messenger: this.messenger, start: date });
+    if (!date) {
+      date = new Date();
+    }
+    const s = new Shift({ messenger: this.messenger, start: date }, this.messenger.dispatcher);
     s.startTimeGuess(true);
     s.end = s.endTimeGuess();
     s.edit = true;
