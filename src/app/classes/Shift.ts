@@ -50,7 +50,7 @@ export class Shift implements IdObject {
     }
     if (h < 9) {
       return ShiftType.early;
-    } else if (h < 11) {
+    } else if (h < 12) {
       return ShiftType.zwischi;
     } else {
       return ShiftType.late;
