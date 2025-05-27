@@ -1,6 +1,6 @@
 ![fahrrad expressx](src/assets/logo/fex-logo.png)
 
-### dispogramm v1.4.2
+### dispogramm v1.4.3
 
 #### demo
 find demo here:
@@ -17,6 +17,14 @@ find demo here:
 4.2 start the server via `npm run start` and access on `localhost:4200` or compile a production version via `npm run build` and host content of `/dist`
 
 #### changelog
+
+##### `v1.4.3`
+- finished shift now linked in name of messenger in check-in view > closed shifts
+- more shift right click options
+- fix: when adding new shift, only shifttypes are available, that match `messenger.dispatcher` status
+- fix `shifts-overview`: no page reload when adding/deleting shifts
+- fix `shifts-overview`: hours didn't get reculculated when a shift was edited
+- minor ui fixes
 
 ##### `v1.4.2`
 - messengers in shifts view can be filtered to the ones having shifts
