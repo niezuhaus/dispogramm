@@ -61,6 +61,8 @@ declare global {
 
     getDayLiteral(): string;
 
+    getLongDayLiteral(): string;
+
     monthLiteral(): string;
 
     /**
@@ -340,6 +342,9 @@ Date.prototype.dateStampShort = function () {
 Date.prototype.getDayLiteral = function () {
   return GC.dayLiterals[this.getDay()];
 };
+Date.prototype.getLongDayLiteral = function () {
+  return GC.days[this.getDay()];
+};
 Date.prototype.monthLiteral = function () {
   return GC.monthLiterals[this.getMonth()];
 };
@@ -481,8 +486,6 @@ Date.prototype.previousWorkingDay = function (write?: boolean) {
   if (write) {
     this.copyDate(res);
   }
-  console.log(res.dateStampLong());
-
   return res;
 };
 Date.prototype.nextWorkingDay = function (write?: boolean) {
@@ -501,7 +504,6 @@ Date.prototype.nextWorkingDay = function (write?: boolean) {
   if (write) {
     this.copyDate(res);
   }
-  console.log(res.dateStampLong());
   return res;
 };
 
