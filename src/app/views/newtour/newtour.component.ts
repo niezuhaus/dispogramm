@@ -165,7 +165,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
             }
           } else if (params.get('time')) {
             this.timeEdited = true;
-            this.job.date = new Date(params.get('time'));
+            this.job.date = new Date(params.get('time')).set(8);
           }
         });
       }, 100);
