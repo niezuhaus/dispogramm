@@ -37,7 +37,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
       />
     </mat-form-field>
     <timepicker class="mr-3" [label]="'check-in'" [(time)]="shift.start" (timeChangeDebounce)="!new ? shift.update('startzeit geändert', true) : ''" [disabled]="ended"></timepicker>
-    <timepicker class="mr-4" [class.invisible]="new" #checkoutPicker [label]="'check-out'" [time]="endTime(shift.type)" (timeChange)="shift.tmpEnd = $event" [disabled]="ended"></timepicker>
+    <timepicker class="mr-4" [class.invisible]="new" #checkoutPicker [label]="'check-out'" [time]="endTime()" (timeChange)="shift.tmpEnd = $event" [disabled]="ended"></timepicker>
     <mat-form-field class="mr-3" style="width: 120px">
       <mat-label>schichttyp</mat-label>
       <mat-select tabindex="-1" [(ngModel)]="shift.type" [disabled]="ended" (ngModelChange)="!new ? asyncUpdate('schichttyp geändert') : (shift.start = startTime(shift.type))">
@@ -66,8 +66,8 @@ export class ShiftComponent implements OnInit {
   startTime = (type: ShiftType) => {
     return new Date(GC.startTimes.get(type));
   };
-  endTime = (type: ShiftType) => {
-    return new Date(GC.endTimes.get(type));
+  endTime = (): Date => {
+    return this.shift.endTimeGuess();
   };
   get dispatcherShiftTypes() {
     return GC.dispatcherShiftLiterals;

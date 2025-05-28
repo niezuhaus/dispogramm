@@ -57,23 +57,34 @@ export class Shift implements IdObject {
     }
   }
 
-  startTimeGuess(byDate?: boolean): Date {
+  startTimeGuess(byDate?: boolean, triggerEnd?: boolean): Date {
     if (byDate) {
-      let counter = 0;
-      while (GC.startTimes.get(counter).getHours() < this.start.getHours()) {
+      let counter = -1;
+      while (GC.startTimes.get(counter).getHours() < this.start.getHours() && counter < GC.startTimes.size) {
         counter++;
       }
+      counter = counter.clamp(0);
       return this.start.copyTime(GC.startTimes.get(counter));
     }
-    return this.start.copyTime(GC.startTimes.get(this.type));
+    this.start.copyTime(GC.startTimes.get(this.type));
+    if (triggerEnd) {
+      if (!this.end) {
+        this.end = this.endTimeGuess();
+      } else {
+        this.end.copyTime(this.endTimeGuess());
+      }
+    }
+    return this.start;
   }
 
   endTimeGuess(): Date {
-    let d = this.start.copy();
-    let endHour = (this.start.getHours() + 5).clamp(8, 18);
-    d.setHours(endHour);
+    if (!this.start) {
+      this.startTimeGuess();
+    }
+
+    let d = this.start.copy().add(0, 5);
+    d.setHours(d.getHours().clamp(8, 18));
     return d;
-    // return this.start.copy().copyTime(GC.endTimes.get(this.type));
   }
 
   delete(callback?: (shift: Shift) => void): void {

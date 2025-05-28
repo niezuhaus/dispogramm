@@ -56,7 +56,6 @@ export class TimepickerComponent implements OnInit {
 
   onTimeUpdate(event: Event): void {
     const input = event.target as HTMLInputElement;
-    console.log(input.value);
 
     // this.setTime(input.value, 'timeupdate');
   }
