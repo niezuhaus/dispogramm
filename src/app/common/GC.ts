@@ -27,14 +27,14 @@ import { config } from '../config.private';
 import { LoadingComponent } from '../views/loading.component';
 
 export enum ShiftType {
-  dispoEarly,
-  dispoLate,
-  early,
-  zwischi,
-  late,
-  double,
-  friki,
-  ag
+  dispoEarly, // 0
+  dispoLate, // 1
+  early, // 2
+  zwischi, // 3
+  late, // 4
+  double, // 5
+  friki, // 6
+  ag // 7
 }
 
 export class GC {
@@ -151,6 +151,7 @@ export class GC {
   public static posttoursStartTimes = [8, 9, 10, 10, 10];
   public static dispatcherShiftLiterals = ['dispo früh', 'dispo spät'];
   public static messengerShiftLiterals = ['früh', 'zwischi', 'spät', 'doppel', 'friki', 'ag zeit'];
+  public static shiftLiterals = ['dispo früh', 'dispo spät', 'früh', 'zwischi', 'spät', 'doppel', 'friki', 'ag zeit'];
   /**
    * all shift types that are relevant for showing on the messenger selector
    */
@@ -159,7 +160,6 @@ export class GC {
    *
    */
   public static startTimes: Map<ShiftType, Date>;
-  public static endTimes: Map<ShiftType, Date>;
 
   /**
    * stores a boolean for every data-bank-cached element
@@ -337,16 +337,9 @@ export class GC {
       [ShiftType.early, new Date().set(8)],
       [ShiftType.zwischi, new Date().set(10, 30)],
       [ShiftType.late, new Date().set(13)],
-      [ShiftType.double, new Date().set(8)]
-    ]);
-
-    GC.endTimes = new Map<ShiftType, Date>([
-      [ShiftType.dispoEarly, new Date().set(13)],
-      [ShiftType.dispoLate, new Date().set(18, 30)],
-      [ShiftType.early, new Date().set(13)],
-      [ShiftType.zwischi, new Date().set(15)],
-      [ShiftType.late, new Date().set(18)],
-      [ShiftType.double, new Date().set(18)]
+      [ShiftType.double, new Date().set(8)],
+      [ShiftType.friki, new Date().set(9, 30)],
+      [ShiftType.ag, new Date().set(14)]
     ]);
 
     // async caching
