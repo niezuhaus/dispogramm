@@ -140,7 +140,7 @@ import { FormControl, Validators } from '@angular/forms';
       </button>
       <button *ngIf="finished" mat-raised-button class="fex-button" disabled>{{ data.shift.messenger.nickname }} wurde ausgecheckt</button>
 
-      <button mat-raised-button class="fex-button fex-button-abort" matDialogClose>abbrechen</button>
+      <button mat-raised-button class="fex-button fex-button-abort" matDialogClose>schließen</button>
     </div>
 
     <div class="container">
@@ -167,8 +167,8 @@ import { FormControl, Validators } from '@angular/forms';
       }
 
       #times {
-        border: $fex-dark 4px solid;
-        border-radius: 14px;
+        // border: $fex-dark 4px solid;
+        // border-radius: 14px;
       }
     `
   ]
