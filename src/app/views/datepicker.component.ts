@@ -30,6 +30,7 @@ import { MatDatepicker } from '@angular/material/datepicker';
         <input
           matInput
           [matDatepicker]="picker"
+          [matDatepickerFilter]="weekDayFilter"
           [(ngModel)]="date"
           (dateChange)="calendarSelect($event.value)"
           style="visibility: hidden; position: fixed;"
@@ -47,6 +48,12 @@ export class DatepickerComponent implements OnInit {
   tomorrow = this.dateAdapter.today();
   yesterday = this.dateAdapter.today();
   datepickerTopLeftPosition = { x: 0, y: 0 };
+
+  weekDayFilter = (d: Date): boolean => {
+    const day = d.getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  };
 
   @Input() headline: boolean;
   @Input() calendar: boolean;

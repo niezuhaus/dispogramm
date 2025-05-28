@@ -29,28 +29,38 @@ import { TimepickerComponent } from './timepicker.component';
           </ng-container>
           <ng-container matColumnDef="date">
             <th mat-header-cell *matHeaderCellDef class="text-center">datum</th>
-            <td mat-cell *matCellDef="let element" style="width: 300px">
-              <div class="flex flex-row justify-content-evenly align-items-end w-100" style="width: fit-content">
+            <td mat-cell *matCellDef="let element" [style.width]="element.edit ? 380 : 250 + 'px'">
+              <div class="flex flex-row justify-content-around align-items-center w-100" style="width: fit-content">
                 <a *ngIf="!element.edit" (click)="openShiftDialog(element)">
                   <p class="text-align-left noMargin">{{ element.start.dateStampShort() }}, {{ shiftLiterals(element.type) }}</p>
                 </a>
 
-                <div *ngIf="element.edit" style="width: 200px" class="relative-top8px flex flex-row">
-                  <button mat-icon-button class="m-2" (click)="element.start = element.start.previousWorkingDay()">
-                    <i class="bi bi-dash-square"></i>
-                  </button>
+                <button *ngIf="element.edit" mat-icon-button class="mr-4" (click)="element.start = element.start.previousWorkingDay()">
+                  <i class="bi bi-dash-square"></i>
+                </button>
+                <div *ngIf="element.edit" style="width: 130px" class="relative-top8px flex flex-row justify-between">
                   <mat-form-field>
                     <mat-label>datum</mat-label>
                     <div class="flex flex-row align-items-center">
-                      <input matInput #dateInput [matDatepicker]="picker" [(ngModel)]="element.start" (keydown)="$event.key === 'Enter' ? updateShift(element) : ''" />
+                      <span class="mr-1">
+                        {{ element.start.getDayLiteral() + ',' }}
+                      </span>
+                      <input
+                        matInput
+                        #dateInput
+                        [matDatepickerFilter]="weekDayFilter"
+                        [matDatepicker]="picker"
+                        [(ngModel)]="element.start"
+                        (keydown)="$event.key === 'Enter' ? updateShift(element) : ''"
+                      />
                       <i class="bi bi-calendar3" (click)="picker.open()"></i>
                     </div>
                     <mat-datepicker #picker></mat-datepicker>
                   </mat-form-field>
-                  <button mat-icon-button class="m-2" (click)="element.start = element.start.nextWorkingDay(true)">
-                    <i class="bi bi-plus-square"></i>
-                  </button>
                 </div>
+                <button *ngIf="element.edit" mat-icon-button class="ml-4" (click)="element.start = element.start.nextWorkingDay(true)">
+                  <i class="bi bi-plus-square"></i>
+                </button>
 
                 <mat-form-field class="ml-3 relative-top8px" *ngIf="element.edit" style="width: 100px">
                   <mat-label>schichttyp</mat-label>
@@ -124,7 +134,7 @@ import { TimepickerComponent } from './timepicker.component';
       <div style="visibility: hidden; position: fixed" [style.left.px]="menuTopLeftPosition.x" [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"></div>
       <mat-menu #rightMenu="matMenu">
         <ng-template matMenuContent let-item="item" let-onShiftDelete="onShiftDelete">
-          <right-click-menu [shift]="item" [onShiftDelete]="shiftDeleted.bind(this)"></right-click-menu>
+          <right-click-menu [shift]="item" [onShiftDelete]="removeShift.bind(this)"></right-click-menu>
         </ng-template>
       </mat-menu>
     </div>
@@ -153,6 +163,10 @@ import { TimepickerComponent } from './timepicker.component';
       .expand-button {
         margin-top: 10px;
       }
+      table,
+      table * {
+        transition: width 0.5s ease-in-out;
+      }
     `
   ]
 })
@@ -167,6 +181,12 @@ export class ShiftTableComponent implements OnInit {
   jobsThisMonth: Job[] = [];
 
   expanded: boolean = false;
+
+  weekDayFilter = (d: Date): boolean => {
+    const day = d.getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  };
 
   get editMode(): boolean {
     return this.shifts.map((shift) => shift.edit).includes(true);
@@ -185,7 +205,7 @@ export class ShiftTableComponent implements OnInit {
   };
 
   @Input() messenger: Messenger;
-  @Input() onShiftDelete: (shift: Shift) => void;
+  @Input() shiftDeleted = new EventEmitter<Shift>();
   @Output() shiftUpdated = new EventEmitter<boolean>();
   @Output() shiftCreated = new EventEmitter<Shift>();
 
@@ -200,10 +220,10 @@ export class ShiftTableComponent implements OnInit {
     this.dataSource = new MatTableDataSource<Shift>(this.shifts);
   }
 
-  shiftDeleted(shift: Shift): void {
+  removeShift(shift: Shift): void {
     this.shifts.findAndRemove(shift);
     this.dataSource.data = [...this.shifts];
-    this.onShiftDelete(shift);
+    this.shiftDeleted.emit(shift);
     this.table.renderRows();
   }
 
@@ -274,7 +294,7 @@ export class ShiftTableComponent implements OnInit {
     event.preventDefault();
     this.menuTopLeftPosition.x = event.clientX;
     this.menuTopLeftPosition.y = event.clientY;
-    this.matMenuTrigger.menuData = { item: item, onShiftDelete: this.shiftDeleted.bind(this) };
+    this.matMenuTrigger.menuData = { item: item, onShiftDelete: this.removeShift.bind(this) };
     this.matMenuTrigger.openMenu();
   }
 
