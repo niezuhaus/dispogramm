@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TimepickerComponent } from '../../views/timepicker.component';
 import { MatSelect } from '@angular/material/select';
 import { Shift } from '../../classes/Shift';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'change-user-dialog',
@@ -33,18 +34,38 @@ import { Shift } from '../../classes/Shift';
           <div *ngIf="openShiftsToday.length" class="mb-3 border-top border-bottom shiftBlock">
             <h3 class="my-3">eingecheckte kurier:innen</h3>
             <div style="min-height: 100px">
-              <shift *ngFor="let shift of openShiftsToday" class="flex flex-row pt-3 align-items-center justify-content-between w-100 border-bottom" [shift]="shift"> </shift>
+              <shift
+                *ngFor="let shift of openShiftsToday"
+                class="flex flex-row pt-3 align-items-center justify-content-between w-100 border-bottom"
+                [shift]="shift"
+                (contextmenu)="onRightClick($event, shift)"
+              >
+              </shift>
             </div>
           </div>
 
           <div *ngIf="closedShiftsToday.length" class="border-top border-bottom shiftBlock">
             <h3 class="my-3">beendete schichten</h3>
             <div style="min-height: 100px">
-              <shift *ngFor="let shift of closedShiftsToday" class="flex flex-row pt-3 align-items-center justify-content-between w-100 border-bottom" [shift]="shift"> </shift>
+              <shift
+                *ngFor="let shift of closedShiftsToday"
+                class="flex flex-row pt-3 align-items-center justify-content-between w-100 border-bottom"
+                [shift]="shift"
+                (contextmenu)="onRightClick($event, shift)"
+              >
+              </shift>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="container">
+      <div style="visibility: hidden; position: fixed" [style.left.px]="menuTopLeftPosition.x" [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"></div>
+      <mat-menu #rightMenu="matMenu">
+        <ng-template matMenuContent let-item="item">
+          <right-click-menu [shift]="item"> </right-click-menu>
+        </ng-template>
+      </mat-menu>
     </div>
   `,
   styles: [
@@ -80,6 +101,7 @@ export class CheckInDialog {
   dispatcherShift: Shift = null;
   messengerShifts: Shift[] = [];
   nextCheckout: Date;
+  menuTopLeftPosition = { x: 0, y: 0 };
 
   get messengerToday() {
     return this.openShiftsToday.concat(this.messengerShifts).map((s) => s.messenger);
@@ -96,6 +118,7 @@ export class CheckInDialog {
 
   @ViewChild('type') shiftType: MatSelect;
   @ViewChild('timepicker') timepicker: TimepickerComponent;
+  @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
@@ -127,5 +150,13 @@ export class CheckInDialog {
       this.messengerShifts.splice(this.messengerShifts.indexOf(shift), 1);
       removeItem(shift.messenger.id);
     }
+  }
+
+  onRightClick(event: MouseEvent, item: any) {
+    event.preventDefault();
+    this.menuTopLeftPosition.x = event.clientX;
+    this.menuTopLeftPosition.y = event.clientY;
+    this.matMenuTrigger.menuData = { item: item };
+    this.matMenuTrigger.openMenu();
   }
 }
