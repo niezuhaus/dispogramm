@@ -164,7 +164,17 @@ declare global {
     isToday(): boolean;
 
     /**
-     * @return a new date representing the next working day
+     * returns a new date set to the next previous day
+     * @param {boolean} [write] - if `true`, updates the original date with the new value
+     * @returns {Date}  a new date representing the previous working day
+     * @example fri -> thu -> wed -> tue -> mon -> fri
+     */
+    previousWorkingDay(): Date;
+
+    /**
+     * returns a new date set to the next working day
+     * @param {boolean} [write] - if `true`, updates the original date with the new value
+     * @returns {Date}  a new date representing the next working day
      * @example mon -> tue -> wed -> thu -> fri -> mon
      */
     nextWorkingDay(): Date;
@@ -217,7 +227,17 @@ declare global {
 
     isBetween(firstEnd: number, secondEnd: number): boolean;
 
-    clamp(min: number, max: number): number;
+    /**
+     * cuts off a value at a giving min & max point
+     * `(3).clamp(2, 5) -> 3`
+     * `(7.3).clamp(2, 5) -> 5`
+     * `(1).clamp(2, 5) -> 2`
+     * when min or max are not given, value will not be cut accordingly
+     * does not check if `min < max`
+     * @param min the minimum value to output
+     * @param max the maximum value to output
+     */
+    clamp(min?: number, max?: number): number;
 
     map(fromLow: number, fromUp: number, toLow: number, toUp: number): number;
 
@@ -446,12 +466,42 @@ Date.prototype.lastQuarter = function () {
 Date.prototype.isToday = function () {
   return this.toDateString() === new Date().toDateString();
 };
-Date.prototype.nextWorkingDay = function () {
+Date.prototype.previousWorkingDay = function (write?: boolean) {
   const res = this.copy();
-  res.setDate(res.getDate() + 1);
-  while (res.getDay() % 6 === 0) {
-    res.setDate(res.getDate() + 1);
+  if (res.getDay() === 1) {
+    // monday
+    res.add(-3);
+  } else if (res.getDay() === 0 || res.getDay() === 6) {
+    // saturday or sunday
+    res.add(res.getDay() === 0 ? -2 : -1);
+  } else {
+    // every other day
+    res.add(-1);
   }
+  if (write) {
+    this.copyDate(res);
+  }
+  console.log(res.dateStampLong());
+
+  return res;
+};
+Date.prototype.nextWorkingDay = function (write?: boolean) {
+  const res = this.copy();
+
+  if (res.getDay() === 5) {
+    // friday
+    res.add(3);
+  } else if (res.getDay() === 6 || res.getDay() === 0) {
+    // saturday or sunday
+    res.add(res.getDay() === 6 ? 2 : 1);
+  } else {
+    // every other day
+    res.add(1);
+  }
+  if (write) {
+    this.copyDate(res);
+  }
+  console.log(res.dateStampLong());
   return res;
 };
 
@@ -466,7 +516,10 @@ Date.prototype.tomorrow = function () {
   res.setDate(res.getDate() + 1);
   return res;
 };
-
+/**
+ * adds a specified amount of days/hours/minutes to the date
+ * also works to substract time using negative values
+ */
 Date.prototype.add = function (d: number, h?: number, m?: number) {
   this.setMinutes(this.getMinutes() + (d || 0) * 24 * 60 + (h || 0) * 60 + (m || 0));
   return this;
@@ -614,11 +667,20 @@ Number.prototype.round = function (digits: number) {
 };
 
 Number.prototype.isBetween = function (firstEnd, secondEnd) {
-  return (firstEnd < this && this < secondEnd) || (firstEnd > this && this > secondEnd);
+  return (firstEnd < (this as number) && (this as number) < secondEnd) || (firstEnd > (this as number) && (this as number) > secondEnd);
 };
 
-Number.prototype.clamp = function (min, max) {
-  return this < min ? min : this > max ? max : (this as number);
+Number.prototype.clamp = function (min?, max?) {
+  if ((!min && !max) || (isNaN(min) && isNaN(max))) {
+    return this as number;
+  }
+  if (!min) {
+    return (this as number) > max ? max : (this as number);
+  }
+  if (!max) {
+    return (this as number) < min ? min : (this as number);
+  }
+  return (this as number) < min ? min : (this as number) > max ? max : (this as number);
 };
 
 Number.prototype.map = function (fromLow, fromUp, toLow, toUp) {
