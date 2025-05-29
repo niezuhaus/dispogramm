@@ -19,7 +19,7 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
           <span class="ml-4">mindestlohn: {{ minimumWage() }}€/stunde</span>
           <a class="ml-4" (click)="openConfig()">ändern</a>
         </div>
-        <div *ngIf="shiftsLoaded" id="list">
+        <div *ngIf="shiftsLoaded" id="panelContainer">
           <div *ngFor="let m of hideShiftless() ? filteredMessenger : messengers; let i = index" class="messengerPanel">
             <div [style.opacity]="m.shifts.length ? 1 : 0.25" class="messengerContent">
               <h3 style="cursor: pointer; white-space: nowrap; margin: 0">
@@ -28,10 +28,12 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
                   {{ !m.firstName ? 'vornamen eintragen' : m.firstName }}
                 </a>
               </h3>
-              <h5 style="font-style: italic;">{{ m.nickname }}</h5>
+              <h5 style="font-style: italic;">
+                {{ m.nickname }}
+              </h5>
               <h6>{{ m.shifts?.length }} schicht(en) im {{ months()[date.getMonth()] }} {{ date.getFullYear() }}</h6>
               <h6 *ngIf="m.shifts?.length">insgesamt {{ m.hours }} stunden ({{ (m.hours * minimumWage()).round(2) }}€)</h6>
-              <shift-table #table [messenger]="m" (shiftUpdated)="m._calcHours()"></shift-table>
+              <shift-table #table [messenger]="m" (shiftUpdated)="m._calcHours()" class="w-100"></shift-table>
             </div>
             <div class="buttonContainer">
               <button mat-raised-button class="fex-unimportant-button" (click)="tables.get(i).newShift()" matTooltip="neue schicht hinzufügen">
@@ -57,21 +59,21 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
   `,
   styles: [
     `
-      /* Container spans full width and distributes extra space between items */
-      #list {
-        display: flex;
-        flex-wrap: wrap;
-        // justify-content: space-between;
+      @import 'src/const.scss';
+      #panelContainer {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(750px, 50vh));
+        gap: 20px;
       }
-      /* Messenger panels use only the needed space, fixed to a minimum (and maximum) width */
+
       .messengerPanel {
         position: relative;
-        min-width: 450px;
+        min-width: 750px;
         box-sizing: border-box;
-        flex: 0 1 auto;
-        margin: 20px 20px 0 0;
+        flex: 1 1 auto;
         padding: 10px 20px 60px 10px;
-        border: 1.2pt dashed #c7c7c7;
+        // background-color: $fex-unimportant;
+        border: 1.2pt solid $gray;
       }
       .buttonContainer {
         position: absolute;
