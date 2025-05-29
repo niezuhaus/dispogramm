@@ -7,12 +7,13 @@ import { Job } from '../classes/Job';
 import { Price } from '../classes/Price';
 import { Messenger } from '../classes/Messenger';
 import { TimepickerComponent } from './timepicker.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'shift-table',
   template: `
     <div>
-      <div class="table-container" [class.expanded]="expanded || shifts?.length < 6 || editMode">
+      <div class="table-container w-100" [@tableExpand]="expanded ? 'expanded' : 'collapsed'" [class.expanded]="expanded || shifts?.length < 6 || editMode">
         <table id="table" #table mat-table [dataSource]="dataSource" style="max-width: 100%;">
           <ng-container matColumnDef="number">
             <th mat-header-cell *matHeaderCellDef class="text-center" style="padding: unset; width: 50px">#</th>
@@ -100,13 +101,18 @@ import { TimepickerComponent } from './timepicker.component';
                 <span>{{ element.start.timestamp() }}</span>
                 <span class="mx-2">-</span>
                 <span *ngIf="element.end">{{ element.end?.timestamp() }}</span>
-                <a *ngIf="!element.end" class="fex-warn" (click)="element.edit = true">endzeit eintragen</a>
+                <a *ngIf="!element.end" class="fex-warn" (click)="enableEditMode(element)">endzeit eintragen</a>
               </div>
             </td>
           </ng-container>
           <ng-container matColumnDef="money">
-            <th mat-header-cell *matHeaderCellDef class="text-center"></th>
+            <th mat-header-cell *matHeaderCellDef class="text-center" style="min-width: 50px"></th>
             <td mat-cell *matCellDef="let element">
+              <div *ngIf="!element.edit" class="flex justify-content-around">
+                <button mat-button matTooltip="schicht bearbeiten" (click)="enableEditMode(element)">
+                  <i class="bi bi-pencil small"></i>
+                </button>
+              </div>
               <p class="text-center noMargin" *ngIf="element.shiftType <= 4 && !element.edit">
                 {{ element.money.netto }}
               </p>
@@ -121,10 +127,11 @@ import { TimepickerComponent } from './timepicker.component';
           <tr mat-row *matRowDef="let row; columns: displayedColumns" (contextmenu)="onRightClick($event, row)"></tr>
         </table>
       </div>
-      <div *ngIf="shifts.length >= 6" class="expand-button" style="text-align: center;">
+      <div *ngIf="shifts.length >= 6" class="expand-button flex flex-col align-items-center" style="text-align: center;">
         <button mat-icon-button (click)="expanded = !expanded">
           <i class="bi" style="color: black" [ngClass]="expanded ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
         </button>
+        <span>{{ shifts.length - 5 }} weitere schicht{{ shifts.length == 6 ? '' : 'en' }} {{ expanded ? 'ausblenden' : 'anzeigen' }}</span>
       </div>
     </div>
     <div *ngIf="!shifts" class="flex justify-content-center align-items-center" style="height: 20vh">
@@ -142,32 +149,31 @@ import { TimepickerComponent } from './timepicker.component';
   styles: [
     `
       .table-container {
-        max-height: 200px;
         overflow: hidden;
         position: relative;
-        transition: max-height 0.5s ease-in-out;
-      }
-      .table-container:not(.expanded)::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        width: 40px;
-        background: linear-gradient(to bottom, #fff, rgba(255, 255, 255, 0));
-        pointer-events: none;
-      }
-      .expanded {
-        max-height: 1000px;
       }
       .expand-button {
         margin-top: 10px;
       }
-      table,
-      table * {
-        transition: width 0.5s ease-in-out;
-      }
     `
+  ],
+  animations: [
+    trigger('tableExpand', [
+      state(
+        'collapsed',
+        style({
+          height: '300px',
+          overflow: 'hidden'
+        })
+      ),
+      state(
+        'expanded',
+        style({
+          height: '*'
+        })
+      ),
+      transition('collapsed <=> expanded', animate('200ms ease-in-out'))
+    ])
   ]
 })
 export class ShiftTableComponent implements OnInit {
@@ -218,6 +224,11 @@ export class ShiftTableComponent implements OnInit {
   ngOnInit(): void {
     this.shifts = this.messenger.shifts;
     this.dataSource = new MatTableDataSource<Shift>(this.shifts);
+  }
+
+  enableEditMode(shift: Shift): void {
+    shift.edit = true;
+    GC.cd.detectChanges();
   }
 
   removeShift(shift: Shift): void {
