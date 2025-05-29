@@ -9,6 +9,8 @@ import { SpecialPrice } from '../classes/SpecialPrice';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Zone } from '../classes/Zone';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { marked } from 'marked';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-config-dialog',
@@ -384,8 +386,8 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
           </div>
         </mat-tab>
 
-        <mat-tab [label]="'information'">
-          <div class="flex flex-row justify-content-between align-items-end">
+        <mat-tab [label]="'information'" style="y-overflow: scroll">
+          <!-- <div class="flex flex-row justify-content-between align-items-end">
             <div>
               <div class="flex flex-row align-items-baseline">
                 <h1>dispogramm</h1>
@@ -398,7 +400,8 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
               <p>backend: jan</p>
             </div>
             <img src="../../assets/logo/fex-logo.png" style="width: 200px" alt="fex logo" />
-          </div>
+          </div> -->
+          <div class="markdownBody" [innerHTML]="readmeHtml"></div>
         </mat-tab>
 
         <mat-tab *ngIf="isDezwo" [label]="'extras'">
@@ -538,6 +541,20 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
       .priceDes + td {
         border-left: none !important;
       }
+
+      .markdownBody {
+        max-height: 50vh;
+        overflow-y: auto;
+        margin-top: 2em;
+        max-width: 100%;
+      }
+
+      .markdownBody > p > img {
+        width: 300px;
+        height: auto;
+        display: block;
+        margin: 1em auto;
+      }
     `
   ]
 })
@@ -587,6 +604,8 @@ export class ConfigDialogComponent {
     return GC.specialPrices;
   }
 
+  readmeHtml: SafeHtml = '';
+
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
 
   constructor(
@@ -594,9 +613,18 @@ export class ConfigDialogComponent {
     public data: {
       pageIndex: number;
       reloadPage: boolean;
-    }
+    },
+    private sanitizer: DomSanitizer
   ) {
     this.reloadPage = data?.reloadPage;
+    this.loadReadme();
+  }
+
+  async loadReadme() {
+    const res = await fetch('assets/README.md');
+    const md = await res.text();
+    const html = await marked(md);
+    this.readmeHtml = this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
   getProfile(): void {
