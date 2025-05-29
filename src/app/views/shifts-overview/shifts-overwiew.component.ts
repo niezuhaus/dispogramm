@@ -73,7 +73,7 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
         flex: 1 1 auto;
         padding: 10px 20px 60px 10px;
         // background-color: $fex-unimportant;
-        border: 1.2pt solid $gray;
+        border: 1.2pt solid $light-gray;
       }
       .buttonContainer {
         position: absolute;
