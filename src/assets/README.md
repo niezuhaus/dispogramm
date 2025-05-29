@@ -1,22 +1,8 @@
-![fahrrad express](src/assets/logo/fex-logo.png)
+![fahrrad express](/logo/fex-logo.png)
 
 ### dispogramm `v1.4.4`
 
-#### demo
-find demo here:
-[https://cloud.niezuhaus.de/](https://cloud.niezuhaus.de)
-
-#### how to install
-
-1. set up a mongo db instance with standart port
-1.1 you can use a [docker container](https://hub.docker.com/_/mongo) for that
-2. `git clone git@github.com:niezuhaus/dispogramm.git`
-3. start the backend via `java -jar backend-latest.jar`
-4. run the frontend
-4.1 install the node packeages via `npm install`
-4.2 start the server via `npm run start` and access on `localhost:4200` or compile a production version via `npm run build` and host content of `/dist`
-
-#### changelog
+#### what's new
 
 ##### `v1.4.4`
 - displaying `README.md` in `einstellungen > information`
