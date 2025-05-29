@@ -16,7 +16,7 @@ find demo here:
 4.1 install the node packeages via `npm install`
 4.2 start the server via `npm run start` and access on `localhost:4200` or compile a production version via `npm run build` and host content of `/dist`
 
-#### changelog
+#### what's new
 
 ##### `v1.4.4`
 - displaying `README.md` in `einstellungen > information`
