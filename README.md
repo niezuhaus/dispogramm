@@ -1,6 +1,6 @@
-![fahrrad expressx](src/assets/logo/fex-logo.png)
+![fahrrad express](src/assets/logo/fex-logo.png)
 
-### dispogramm v1.4.3
+### dispogramm `v1.4.4`
 
 #### demo
 find demo here:
@@ -17,6 +17,12 @@ find demo here:
 4.2 start the server via `npm run start` and access on `localhost:4200` or compile a production version via `npm run build` and host content of `/dist`
 
 #### changelog
+
+##### `v1.4.4`
+- displaying `README.md` in `einstellungen > information`
+- more improvements to shift view: layout changes
+- fixed: when opening newtour view via `anmeldung` time was set to `0:00` now `8:00`
+- fixed: shift end times were not saved correctly
 
 ##### `v1.4.3`
 - finished shift now linked in name of messenger in check-in view > closed shifts
