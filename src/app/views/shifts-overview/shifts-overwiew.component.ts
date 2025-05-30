@@ -19,35 +19,44 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
           <span class="ml-4">mindestlohn: {{ minimumWage() }}€/stunde</span>
           <a class="ml-4" (click)="openConfig()">ändern</a>
         </div>
-        <div *ngIf="shiftsLoaded" id="panelContainer">
-          <div *ngFor="let m of hideShiftless() ? filteredMessenger : messengers; let i = index" class="messengerPanel">
-            <div [style.opacity]="m.shifts.length ? 1 : 0.25" class="messengerContent">
-              <h3 style="cursor: pointer; white-space: nowrap; margin: 0">
-                <a (click)="m.openDialog(true)">
-                  {{ !m.lastName ? '(kein nachname)' : m.lastName }},
-                  {{ !m.firstName ? 'vornamen eintragen' : m.firstName }}
-                </a>
-              </h3>
-              <h5 style="font-style: italic;">
-                {{ m.nickname }}
-              </h5>
-              <h6>{{ m.shifts?.length }} schicht(en) im {{ months()[date.getMonth()] }} {{ date.getFullYear() }}</h6>
-              <h6 *ngIf="m.shifts?.length">insgesamt {{ m.hours }} stunden ({{ (m.hours * minimumWage()).round(2) }}€)</h6>
-              <shift-table #table [messenger]="m" (shiftUpdated)="m._calcHours()" class="w-100"></shift-table>
-            </div>
-            <div class="buttonContainer">
-              <button mat-raised-button class="fex-unimportant-button" (click)="tables.get(i).newShift()" matTooltip="neue schicht hinzufügen">
-                schicht hinzufügen
-                <i class="ml-3 bi bi-plus-circle"></i>
-              </button>
-              <button mat-raised-button class="fex-unimportant-button" (click)="tables.get(i).newShift(null, 6)" matTooltip="neue friki-schicht hinzufügen">
-                friki
-                <i class="ml-3 bi bi-plus-circle"></i>
-              </button>
-              <button mat-raised-button class="fex-unimportant-button" (click)="tables.get(i).newShift(null, 7)" matTooltip="neue ag-schicht hinzufügen">
-                ag zeit
-                <i class="ml-3 bi bi-plus-circle"></i>
-              </button>
+        <div *ngIf="shiftsLoaded">
+          <div class="m-3">
+            <h6>{{ allShifts.length }} schicht(en) im {{ months()[date.getMonth()] }} {{ date.getFullYear() }}</h6>
+            <h6>insgesamt {{ allHours }} stunden ({{ (allHours * minimumWage()).round(2) }}€)</h6>
+            <h6 class="fex-warn" *ngIf="shiftsWithoutEnd > 0">bei {{ shiftsWithoutEnd }} schichten fehlt die endzeit</h6>
+          </div>
+          <div id="panelContainer">
+            <div *ngFor="let m of hideShiftless() ? filteredMessenger : messengers; let i = index" class="messengerPanel block">
+              <div [style.opacity]="m.shifts.length ? 1 : 0.25" class="messengerContent">
+                <h3 style="cursor: pointer; white-space: nowrap; margin: 0">
+                  <a (click)="m.openDialog(true)">
+                    {{ !m.lastName ? '(kein nachname)' : m.lastName }},
+                    {{ !m.firstName ? 'vornamen eintragen' : m.firstName }}
+                  </a>
+                </h3>
+                <h5 style="font-style: italic;">
+                  {{ m.nickname }}
+                </h5>
+                <h6>{{ m.shifts?.length }} schicht(en) im {{ months()[date.getMonth()] }} {{ date.getFullYear() }}</h6>
+                <h6 *ngIf="m.shifts?.length">insgesamt {{ m.hours }} stunden ({{ (m.hours * minimumWage()).round(2) }}€)</h6>
+                <h6 class="fex-warn" *ngIf="m.shiftsWithoutEnd > 0">bei {{ m.shiftsWithoutEnd }} schicht(en) fehlt die endzeit</h6>
+
+                <shift-table #table [messenger]="m" (shiftUpdated)="m._calcHours()" class="w-100"></shift-table>
+              </div>
+              <div class="buttonContainer">
+                <button mat-raised-button class="fex-unimportant-button" (click)="tables.get(i).newShift()" matTooltip="neue schicht hinzufügen">
+                  schicht hinzufügen
+                  <i class="ml-3 bi bi-plus-circle"></i>
+                </button>
+                <button mat-raised-button class="fex-unimportant-button" (click)="tables.get(i).newShift(null, 6)" matTooltip="neue friki-schicht hinzufügen">
+                  friki
+                  <i class="ml-3 bi bi-plus-circle"></i>
+                </button>
+                <button mat-raised-button class="fex-unimportant-button" (click)="tables.get(i).newShift(null, 7)" matTooltip="neue ag-schicht hinzufügen">
+                  ag zeit
+                  <i class="ml-3 bi bi-plus-circle"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -91,6 +100,13 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
 export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, AfterViewInit {
   override title = 'schichten';
   shiftsLoaded = false;
+  allShifts: Shift[] = [];
+  get allHours(): number {
+    return this.filteredMessenger.reduce((sum, messenger) => sum + messenger.hours, 0);
+  }
+  get shiftsWithoutEnd(): number {
+    return this.filteredMessenger.reduce((acc, messenger) => acc + messenger.shiftsWithoutEnd, 0);
+  }
   date = new Date();
   hideShiftless = () => {
     return GC.config?.shifts.hideShiftless;
@@ -151,6 +167,13 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
   load(): void {
     this.shiftsLoaded = false;
     zip(this.messengers.map((m) => m.loadShifts(this.date))).subscribe((res) => {
+      this.allShifts = res.reduce((acc, shiftArr) => acc.concat(shiftArr), []);
+      const shiftsByDate: { [key: string]: Shift[] } = {};
+      this.allShifts.forEach((shift) => {
+        const dateKey = shift.start.toISOString().split('T')[0];
+        shiftsByDate[dateKey] = shiftsByDate[dateKey] || [];
+        shiftsByDate[dateKey].push(shift);
+      });
       this.filteredMessenger = this.messengers.filter((m, i) => res[i].length);
       this.shiftsLoaded = true;
       this.cd.detectChanges();
