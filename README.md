@@ -14,7 +14,8 @@ find demo here:
 3. start the backend via `java -jar backend-latest.jar`
 4. run the frontend
 4.1 install the node packeages via `npm install`
-4.2 start the server via `npm run start` and access on `localhost:4200` or compile a production version via `npm run build` and host content of `/dist`
+4.2 start the server via `npm run start` and access on `localhost:4200` or compile a production version via `npm run build` and host content of `/dist/dispogram`
+5. connect to backend running on `localhost:8081` if configured with standart ports
 
 #### what's new
 
