@@ -478,9 +478,9 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         if (this.focussedInput === this.cInput) {
           this.cInput.setSelection(res);
           const c = new Client(res);
-          console.log(c);
           c.billClient = false;
           this.cInput.client = c;
+          this.cd.detectChanges();
         }
         this.createInputfield(this.focussedInput.type);
         this.refresh({ zoom: false });
