@@ -50,7 +50,7 @@ export class DatepickerComponent implements OnInit {
   datepickerTopLeftPosition = { x: 0, y: 0 };
 
   weekDayFilter = (d: Date): boolean => {
-    const day = d.getDay();
+    const day = (d || new Date()).getDay();
     // Prevent Saturday and Sunday from being selected.
     return day !== 0 && day !== 6;
   };
