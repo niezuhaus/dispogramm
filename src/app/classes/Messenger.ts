@@ -46,7 +46,9 @@ export class Messenger implements IdObject {
    * reference to a list of shifts for a month
    */
   shifts: Shift[] = [];
-  shiftsWithoutEnd = 0;
+  get shiftsWithoutEnd(): number {
+    return this.shifts.filter((shift) => !shift.end).length;
+  }
   hours = 0;
   editDist: number = null;
 
@@ -152,19 +154,16 @@ export class Messenger implements IdObject {
   _calcHours(): void {
     let result = Messenger.calcHours(this.shifts);
     this.hours = result.hours;
-    this.shiftsWithoutEnd = result.shiftsWithoutEnd;
   }
 
-  static calcHours(shifts: Shift[]): { hours: number; shiftsWithoutEnd: number } {
+  static calcHours(shifts: Shift[]): { hours: number } {
     let hours = 0;
     let shiftsWithoutEnd = 0;
     shifts.forEach((shift) => {
       if (shift.end) {
         hours += shift.start.hoursDifference(shift.end);
-      } else {
-        shiftsWithoutEnd++;
       }
     });
-    return { hours: hours, shiftsWithoutEnd: shiftsWithoutEnd };
+    return { hours: hours };
   }
 }
