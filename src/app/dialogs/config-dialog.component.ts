@@ -386,7 +386,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
           </div>
         </mat-tab>
 
-        <mat-tab [label]="'information'" style="y-overflow: scroll">
+        <mat-tab [label]="'was ist neu?'" style="y-overflow: scroll">
           <!-- <div class="flex flex-row justify-content-between align-items-end">
             <div>
               <div class="flex flex-row align-items-baseline">
@@ -475,8 +475,9 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
         </div>
       </div>
     </div>
-    <div class="mt-4">
+    <div class="mt-4 w-100 flex justify-between">
       <button mat-raised-button class="fex-button" matDialogClose (click)="save()">speichern</button>
+      <button mat-raised-button class="fex-button" matDialogClose>schließen</button>
     </div>
 
     <div class="container">
