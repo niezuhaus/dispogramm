@@ -32,9 +32,9 @@
         </mat-form-field>
       </div>
     </div>
-    <div class="ml-5" *ngIf="items.length > 0">
-      <mat-chip-list selectable multiple>
-        <mat-chip
+    <!-- <div class="ml-5" *ngIf="items.length > 0">
+      <mat-chip-listbox selectable multiple>
+        <mat-chip-option
           #f="matChip"
           *ngFor="let filter of filterStrategies; let i = index"
           color="primary"
@@ -43,10 +43,10 @@
         >
           <i *ngIf="filter.selected" class="mr-2 bi bi-check"></i>
           <div [innerHTML]="filter.name(filter.selected)"></div>
-        </mat-chip>
-      </mat-chip-list>
+        </mat-chip-option>
+      </mat-chip-listbox>
     </div>
-  </div>
+  </div> -->
 
   <!--<div *ngIf="shiftsWithoutEnd().length > 0" class="px-3" style="width: 100%">-->
   <!--  <p class="flex fex-light">hinweis: für {{shiftsWithoutEnd().length}} schichten fehlen noch die endzeiten.-->
