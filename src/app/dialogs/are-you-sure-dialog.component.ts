@@ -72,11 +72,11 @@ import { Messenger } from '../classes/Messenger';
   `,
   styles: [
     `
-      * {
-        display: flex;
-        flex-direction: column;
-      }
-    `
+          * {
+            display: flex;
+            flex-direction: column;
+          }
+        `
   ]
 })
 export class AreYouSureDialogComponent {

@@ -63,14 +63,14 @@ import { ConfigDialogComponent } from '../dialogs/config-dialog.component';
   `,
   styles: [
     `
-      .emoji {
-        font-size: 26px;
-      }
-
-      .features > p {
-        margin: unset;
-      }
-    `
+          .emoji {
+            font-size: 26px;
+          }
+    
+          .features > p {
+            margin: unset;
+          }
+        `
   ]
 })
 export class LoadingComponent implements OnInit {

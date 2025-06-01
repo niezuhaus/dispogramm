@@ -12,12 +12,12 @@ import { Geolocation } from '../../../classes/Geolocation';
   templateUrl: './input-field.component.html',
   styles: [
     `
-      @import '../../../../const.scss';
-
-      .blue {
-        color: $fex-dark;
-      }
-    `
+          @import '../../../../const.scss';
+    
+          .blue {
+            color: $fex-dark;
+          }
+        `
   ]
 })
 export class InputFieldComponent implements OnInit {

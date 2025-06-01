@@ -82,36 +82,36 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
   `,
   styles: [
     `
-      @import '../../const.scss';
-
-      .container {
-        border-radius: 10px;
-        padding: 3px 5px;
-        cursor: pointer;
-        max-width: 200px;
-      }
-
-      .existing {
-        border: 2px solid $fex-dark;
-      }
-
-      .new {
-        border: 2px dotted $fex-dark;
-        min-width: 120px;
-        min-height: 70px;
-      }
-
-      span {
-        hyphens: auto;
-      }
-
-      .pencil {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        color: $fex-dark;
-      }
-    `
+          @import '../../const.scss';
+    
+          .container {
+            border-radius: 10px;
+            padding: 3px 5px;
+            cursor: pointer;
+            max-width: 200px;
+          }
+    
+          .existing {
+            border: 2px solid $fex-dark;
+          }
+    
+          .new {
+            border: 2px dotted $fex-dark;
+            min-width: 120px;
+            min-height: 70px;
+          }
+    
+          span {
+            hyphens: auto;
+          }
+    
+          .pencil {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            color: $fex-dark;
+          }
+        `
   ]
 })
 export class ContainerComponent implements OnInit {

@@ -65,18 +65,18 @@ import { TourplanItem } from '../../classes/TourplanItem';
   `,
   styles: [
     `
-      @import '../../../const.scss';
-
-      .active {
-        background: #8363b5;
-      }
-
-      .inactive {
-        border: 1px solid $gray;
-        background: white;
-        color: $gray;
-      }
-    `
+          @import '../../../const.scss';
+    
+          .active {
+            background: #8363b5;
+          }
+    
+          .inactive {
+            border: 1px solid $gray;
+            background: white;
+            color: $gray;
+          }
+        `
   ]
 })
 export class MessengerSelectorComponent implements OnInit {

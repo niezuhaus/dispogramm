@@ -112,21 +112,21 @@ import { Client } from '../classes/Client';
   `,
   styles: [
     `
-      * {
-        flex-direction: column;
-      }
-
-      #mapcontainer {
-        position: relative;
-        width: calc(100% + 48px);
-        left: -24px;
-        top: 24px;
-      }
-
-      #mapEdit {
-        height: 25vh;
-      }
-    `
+          * {
+            flex-direction: column;
+          }
+    
+          #mapcontainer {
+            position: relative;
+            width: calc(100% + 48px);
+            left: -24px;
+            top: 24px;
+          }
+    
+          #mapEdit {
+            height: 25vh;
+          }
+        `
   ]
 })
 export class LocationDialogComponent implements OnInit, OnDestroy {

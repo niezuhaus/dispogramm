@@ -148,14 +148,14 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   `,
   styles: [
     `
-      .table-container {
-        overflow: hidden;
-        position: relative;
-      }
-      .expand-button {
-        margin-top: 10px;
-      }
-    `
+          .table-container {
+            overflow: hidden;
+            position: relative;
+          }
+          .expand-button {
+            margin-top: 10px;
+          }
+        `
   ],
   animations: [
     trigger('tableExpand', [

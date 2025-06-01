@@ -45,17 +45,17 @@ import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf
   `,
   styles: [
     `
-      #mapcontainer {
-        position: relative;
-        width: calc(100% + 48px);
-        max-height: 60vh;
-        left: -24px;
-      }
-
-      #map {
-        height: 60vh;
-      }
-    `
+          #mapcontainer {
+            position: relative;
+            width: calc(100% + 48px);
+            max-height: 60vh;
+            left: -24px;
+          }
+    
+          #map {
+            height: 60vh;
+          }
+        `
   ]
 })
 export class ZoneDialogComponent implements OnInit, AfterViewInit {

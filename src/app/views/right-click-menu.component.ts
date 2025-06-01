@@ -188,21 +188,21 @@ import { Zone } from '../classes/Zone';
   `,
   styles: [
     `
-      @import '/src/const.scss';
-
-      .colour {
-        width: 30px;
-        height: 30px;
-        border-radius: 15px;
-        border: 2px solid white;
-        outline: 2px solid $gray;
-      }
-
-      .selected-colour {
-        border: 2px solid white;
-        outline: 3px solid #494949;
-      }
-    `
+          @import '/src/const.scss';
+    
+          .colour {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            border: 2px solid white;
+            outline: 2px solid $gray;
+          }
+    
+          .selected-colour {
+            border: 2px solid white;
+            outline: 3px solid #494949;
+          }
+        `
   ]
 })
 export class RightClickMenuComponent implements OnInit {

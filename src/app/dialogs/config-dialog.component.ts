@@ -492,71 +492,71 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   `,
   styles: [
     `
-      .option {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-
-      .option > label {
-        align-self: baseline;
-        font-weight: bold;
-        min-width: fit-content;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-      }
-
-      .option:not(.small) > label {
-        margin: 17px 10px 17px 0;
-      }
-
-      .option.small > label {
-        margin: 4px 10px 4px 0;
-      }
-
-      .option.w4060 > label {
-        width: 40%;
-      }
-
-      .option.w8020 > label {
-        width: 80%;
-      }
-
-      .option.w4060 > div {
-        width: 60%;
-      }
-
-      .option.w8020 > div {
-        width: 20%;
-      }
-
-      td {
-        text-align: right;
-      }
-
-      .priceDes {
-        border-right: none !important;
-      }
-
-      .priceDes + td {
-        border-left: none !important;
-      }
-
-      .markdownBody {
-        max-height: 50vh;
-        overflow-y: auto;
-        margin-top: 2em;
-        max-width: 100%;
-      }
-
-      .markdownBody > p > img {
-        width: 300px;
-        height: auto;
-        display: block;
-        margin: 1em auto;
-      }
-    `
+          .option {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+          }
+    
+          .option > label {
+            align-self: baseline;
+            font-weight: bold;
+            min-width: fit-content;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+          }
+    
+          .option:not(.small) > label {
+            margin: 17px 10px 17px 0;
+          }
+    
+          .option.small > label {
+            margin: 4px 10px 4px 0;
+          }
+    
+          .option.w4060 > label {
+            width: 40%;
+          }
+    
+          .option.w8020 > label {
+            width: 80%;
+          }
+    
+          .option.w4060 > div {
+            width: 60%;
+          }
+    
+          .option.w8020 > div {
+            width: 20%;
+          }
+    
+          td {
+            text-align: right;
+          }
+    
+          .priceDes {
+            border-right: none !important;
+          }
+    
+          .priceDes + td {
+            border-left: none !important;
+          }
+    
+          .markdownBody {
+            max-height: 50vh;
+            overflow-y: auto;
+            margin-top: 2em;
+            max-width: 100%;
+          }
+    
+          .markdownBody > p > img {
+            width: 300px;
+            height: auto;
+            display: block;
+            margin: 1em auto;
+          }
+        `
   ]
 })
 export class ConfigDialogComponent {

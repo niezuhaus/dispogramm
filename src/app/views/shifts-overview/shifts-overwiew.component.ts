@@ -68,33 +68,33 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
   `,
   styles: [
     `
-      @import 'src/const.scss';
-      #panelContainer {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(750px, 50vh));
-        gap: 20px;
-      }
-
-      .messengerPanel {
-        position: relative;
-        min-width: 750px;
-        box-sizing: border-box;
-        flex: 1 1 auto;
-        padding: 10px 20px 60px 10px;
-        // background-color: $fex-unimportant;
-        border: 1.2pt solid $light-gray;
-      }
-      .buttonContainer {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        display: flex;
-      }
-      .buttonContainer > * {
-        margin-right: 20px;
-      }
-    `
+          @import 'src/const.scss';
+          #panelContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(750px, 50vh));
+            gap: 20px;
+          }
+    
+          .messengerPanel {
+            position: relative;
+            min-width: 750px;
+            box-sizing: border-box;
+            flex: 1 1 auto;
+            padding: 10px 20px 60px 10px;
+            // background-color: $fex-unimportant;
+            border: 1.2pt solid $light-gray;
+          }
+          .buttonContainer {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+          }
+          .buttonContainer > * {
+            margin-right: 20px;
+          }
+        `
   ]
 })
 export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, AfterViewInit {

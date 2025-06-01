@@ -70,31 +70,31 @@ import { MatMenuTrigger } from '@angular/material/menu';
   `,
   styles: [
     `
-      @import '../../../const.scss';
-
-      * {
-        display: flex;
-        flex-direction: column;
-      }
-
-      #change-user-content {
-        min-width: 300px;
-      }
-
-      h3 {
-        color: $fex-dark;
-        font-size: 18px;
-      }
-
-      .shiftBlock {
-        background-color: #efefef;
-        padding: 0 20px;
-      }
-
-      .svg {
-        background-color: $fex-light !important;
-      }
-    `
+          @import '../../../const.scss';
+    
+          * {
+            display: flex;
+            flex-direction: column;
+          }
+    
+          #change-user-content {
+            min-width: 300px;
+          }
+    
+          h3 {
+            color: $fex-dark;
+            font-size: 18px;
+          }
+    
+          .shiftBlock {
+            background-color: #efefef;
+            padding: 0 20px;
+          }
+    
+          .svg {
+            background-color: $fex-light !important;
+          }
+        `
   ]
 })
 export class CheckInDialog {

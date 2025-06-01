@@ -129,22 +129,22 @@ import { RegularJob } from '../classes/Job';
   `,
   styles: [
     `
-      @import '../../const.scss';
-
-      h3 {
-        color: $fex-dark;
-        font-size: 18px;
-      }
-
-      .day:not(#fr) {
-        border-right: 1px solid lightgray;
-      }
-
-      .day {
-        padding: 0 10px;
-        min-width: 90px;
-      }
-    `
+          @import '../../const.scss';
+    
+          h3 {
+            color: $fex-dark;
+            font-size: 18px;
+          }
+    
+          .day:not(#fr) {
+            border-right: 1px solid lightgray;
+          }
+    
+          .day {
+            padding: 0 10px;
+            min-width: 90px;
+          }
+        `
   ]
 })
 export class RegularJobDialogComponent implements OnInit {
