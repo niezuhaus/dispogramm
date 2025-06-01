@@ -11,13 +11,24 @@ import { CheckoutDialogComponent } from '../dialogs/checkout-dialog.component';
 export class Shift implements IdObject {
   id: string;
   messenger: Messenger;
+  dispatcher: Messenger; // not in db model
   start: Date = new Date();
   end: Date;
-  tmpEnd: Date;
+  tmpEnd: Date; // not in db model
   type: ShiftType = 0;
   jobs: Job[]; // only for statistical purposes. jobs appear when shift has an end
-  money: Price;
-  edit: boolean;
+  money: Price; // not in db model
+  private _edit: boolean; // not in db model
+  get edit(): boolean {
+    return this._edit;
+  }
+  set edit(value: boolean) {
+    if (this.id && !this._edit) {
+      this.backup = new Shift(this);
+    }
+    this._edit = value;
+  }
+  backup: Shift;
 
   constructor(data?: Partial<Shift>, dispatcher?: boolean) {
     if (data) {

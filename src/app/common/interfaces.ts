@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Geolocation } from '../classes/Geolocation';
 import { Client } from '../classes/Client';
 import { Branch } from '../classes/Branch';
+import { Component, Type } from '@angular/core';
 
 export interface BranchSet {
   branches: Branch[];
@@ -12,6 +13,13 @@ export interface BranchSet {
 
 export interface IdObject {
   id: string;
+}
+
+export interface Optionable {
+  cssClass: string;
+  get value(): string;
+  component: Type<any>; // Referenz auf die Komponente
+  // selected(): void;
 }
 
 /**

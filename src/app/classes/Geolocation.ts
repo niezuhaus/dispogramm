@@ -1,12 +1,18 @@
-import { GeoCodingMode, LocType, PassType, PriceZone, IdObject } from '../common/interfaces';
+import { GeoCodingMode, LocType, PassType, PriceZone, IdObject, Optionable } from '../common/interfaces';
 import { Job } from './Job';
 import { Price } from './Price';
 import { Branch } from './Branch';
 import { Zone } from './Zone';
 import { GC } from '../common/GC';
 import { LocationDialogComponent } from '../dialogs/location-dialog.component';
+import { ClientOptionComponent } from '../views/newtour/inputfield/searchinput/option-templates';
 
-export class Geolocation implements IdObject {
+export class Geolocation implements IdObject, Optionable {
+  cssClass: string = 'client-option';
+  get value() {
+    return this.name + ', ' + this.clientId;
+  }
+  component = ClientOptionComponent;
   name: string = '';
   latitude: number;
   longitude: number;
