@@ -1,4 +1,4 @@
-![fahrrad express](/logo/fex-logo.png)
+![fahrrad express](/assets/logo/fex-logo.png)
 
 ### dispogramm `v1.4.4`
 
