@@ -22,6 +22,9 @@
   <i *ngIf="searchTerm" class="bi bi-x bi-x-transparent position-absolute" style="right: 0; bottom: 7px" (click)="!disabled ? reset(true) : 0" tabindex="-1"></i>
 
   <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" id="autocomplete" [panelWidth]="'unset'" (contextmenu)="$event.stopPropagation()" (focusout)="autocomplete.closePanel()">
+    <mat-option *ngFor="let option of clientOptions" [value]="option.value" [className]="option.cssClass">
+      <ng-container [ngComponentOutlet]="option.component" ngComponentOutletInp></ng-container>
+    </mat-option>
     <!-- the purple ones -->
     <mat-option
       class="messenger-option"

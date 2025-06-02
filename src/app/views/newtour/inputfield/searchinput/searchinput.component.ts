@@ -1,8 +1,8 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { Client } from '../../../../classes/Client';
-import { GeoCodingStrategy, LocType, SpecialPriceType } from '../../../../common/interfaces';
+import { GeoCodingStrategy, LocType, Optionable, SpecialPriceType } from '../../../../common/interfaces';
 import { Messenger } from '../../../../classes/Messenger';
 import { Job } from '../../../../classes/Job';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
@@ -19,7 +19,7 @@ import { Zone } from '../../../../classes/Zone';
   styleUrls: ['./searchinput.component.scss']
 })
 export class SearchinputComponent implements OnInit {
-  constructor() {}
+  constructor(private injector: Injector) {}
 
   // customization
   @Input() label: string;
@@ -84,6 +84,9 @@ export class SearchinputComponent implements OnInit {
   dispatcherOptions: Messenger[] = [];
   zoneOptions: Zone[] = [];
   mostPromising: Location;
+  get allOptions(): Optionable[] {
+    return this.clientOptions;
+  }
 
   jobOptions: Job[];
   searching = 0;
@@ -122,6 +125,13 @@ export class SearchinputComponent implements OnInit {
       if (!this.searchJobs) {
         this.resetOptions();
       }
+    });
+  }
+
+  createInjector(option: Geolocation) {
+    return Injector.create({
+      providers: [{ provide: option, useValue: option }],
+      parent: this.injector
     });
   }
 
