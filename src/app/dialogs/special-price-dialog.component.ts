@@ -8,7 +8,7 @@ import { SearchinputComponent } from '../views/newtour/inputfield/searchinput/se
   template: `
     <h1 mat-dialog-title>{{ new ? 'neuen sonderpreis erstellen' : 'sonderpreis bearbeiten' }}</h1>
 
-    <div #newExtraPrice class="flex flex-column">
+    <div #newExtraPrice class="px-3 flex flex-column">
       <mat-form-field style="width: 250px">
         <mat-label>name</mat-label>
         <input matInput type="text" [(ngModel)]="specialPrice.name" />
@@ -43,17 +43,17 @@ import { SearchinputComponent } from '../views/newtour/inputfield/searchinput/se
         <mat-checkbox [(ngModel)]="specialPrice.grossPrice" class="mb-4"> preise sind barpreise </mat-checkbox>
       </div>
 
-      <hr />
-      <p>kund:innen</p>
+      <p>verknüpfte kund:innen</p>
+      <small style="max-width: 270px">auf diese kund:innen wird der sonderpreis automatisch angewandt</small>
 
-      <mat-chip-list *ngIf="specialPrice.clients.length" selectable multiple class="mb-3">
-        <mat-chip *ngFor="let client of specialPrice.clients" (removed)="specialPrice.clients.findAndRemove(client)">
+      <mat-chip-listbox *ngIf="specialPrice.clients.length" selectable multiple class="mb-3">
+        <mat-chip-option *ngFor="let client of specialPrice.clients" (removed)="specialPrice.clients.findAndRemove(client)">
           {{ client.name }}
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
           </button>
-        </mat-chip>
-      </mat-chip-list>
+        </mat-chip-option>
+      </mat-chip-listbox>
 
       <searchinput
         #searchbar
@@ -67,14 +67,14 @@ import { SearchinputComponent } from '../views/newtour/inputfield/searchinput/se
 
       <p>zonen</p>
 
-      <mat-chip-list *ngIf="specialPrice.zones?.length" selectable multiple class="mb-4">
-        <mat-chip *ngFor="let zone of specialPrice.zones" (removed)="specialPrice.zones.findAndRemove(zone)">
+      <mat-chip-listbox *ngIf="specialPrice.zones?.length" selectable multiple class="mb-4">
+        <mat-chip-option *ngFor="let zone of specialPrice.zones" (removed)="specialPrice.zones.findAndRemove(zone)">
           {{ zone.name }}
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
           </button>
-        </mat-chip>
-      </mat-chip-list>
+        </mat-chip-option>
+      </mat-chip-listbox>
 
       <searchinput
         #zoneSearchbar
@@ -86,7 +86,9 @@ import { SearchinputComponent } from '../views/newtour/inputfield/searchinput/se
       >
       </searchinput>
     </div>
-    <button mat-raised-button class="fex-button" mat-dialog-close (click)="specialPrice.save()">sonderpreis speichern</button>
+    <div class="w-100 mb-3" style="display: flex; justify-content: center;">
+      <button mat-raised-button class="fex-button" mat-dialog-close (click)="specialPrice.save()">sonderpreis speichern</button>
+    </div>
   `,
   styles: []
 })

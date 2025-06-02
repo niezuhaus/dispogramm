@@ -16,8 +16,10 @@
         style="min-width: unset"
         (click)="openChangeUserDialog()"
       >
-        <i class="bi bi-person"></i>
-        {{ dispatcher()?.messenger.nickname || 'einchecken' }}
+        <span>
+          <i class="bi bi-person mr-2"></i>
+          {{ dispatcher()?.messenger.nickname || 'einchecken' }}
+        </span>
       </button>
       <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="[routes().tourplan, { date: dateString() }]">tourenzettel</button>
       <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().weekplan">wochenplan</button>
@@ -45,7 +47,7 @@
       class="ml-4">
     </searchinput> -->
     </div>
-    <h1 *ngIf="backendIP()" class="mx-4 truncate">{{ componentRef?.title }}</h1>
+    <h1 *ngIf="backendIP()" class="mx-4 truncate" id="title">{{ componentRef?.title }}</h1>
   </div>
 
   <mat-drawer-container id="content" class="example-container" autosize>
@@ -62,7 +64,7 @@
           <button *ngIf="backendIP()" mat-raised-button class="fex-button side-nav-button" (click)="drawer.close()" [routerLink]="routes().shifts">
             <i class="bi bi-stopwatch mr-2"></i> schichten
           </button>
-          <button mat-raised-button class="fex-button align-items-center" style="display: flex" (click)="openConfigDialog(); drawer.close()">
+          <button mat-raised-button class="fex-button" (click)="openConfigDialog(); drawer.close()">
             <i class="bi bi-gear-wide-connected mr-2"></i> einstellungen
           </button>
         </div>

@@ -16,6 +16,10 @@ p {
   color: $delivery-tone;
 }
 
+.delivery, .pickup {
+  padding: 3px 0;
+}
+
 span:not(.hightlight) {
     display: flex;
     align-items: center;

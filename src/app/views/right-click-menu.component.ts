@@ -22,11 +22,11 @@ import { Zone } from '../classes/Zone';
 
     <button mat-menu-item *ngIf="date && dispatcher && weekplan" (click)="newTour(date)">
       <i class="p-1 bi bi-plus-circle bi-context"></i>
-      <span> neue tour </span>
+      neue tour
     </button>
     <button mat-menu-item *ngIf="date && dispatcher && weekplan" (click)="newNote.emit(date)">
       <i class="p-1 bi bi-sticky bi-context"></i>
-      <span> neue notiz </span>
+      neue notiz
     </button>
 
     <!-- job -->
@@ -188,21 +188,21 @@ import { Zone } from '../classes/Zone';
   `,
   styles: [
     `
-          @import '/src/const.scss';
-    
-          .colour {
-            width: 30px;
-            height: 30px;
-            border-radius: 15px;
-            border: 2px solid white;
-            outline: 2px solid $gray;
-          }
-    
-          .selected-colour {
-            border: 2px solid white;
-            outline: 3px solid #494949;
-          }
-        `
+      @import '/src/const.scss';
+
+      .colour {
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        border: 2px solid white;
+        outline: 2px solid $gray;
+      }
+
+      .selected-colour {
+        border: 2px solid white;
+        outline: 3px solid #494949;
+      }
+    `
   ]
 })
 export class RightClickMenuComponent implements OnInit {

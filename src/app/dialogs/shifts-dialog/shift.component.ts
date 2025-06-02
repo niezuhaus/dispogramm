@@ -9,7 +9,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'shift',
   template: `
-    <div class="mr-3 flex-row" style="width: 150px">
+    <div class="flex flex-row pt-3 align-items-center w-100">
       <button
         mat-button
         class="mr-2"
@@ -19,44 +19,70 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
       >
         <i class="bi bi-trash bi-x-transparent"></i>
       </button>
-      <span style="margin: auto">
+      <span class="mr-4">
         {{ shift.messenger.nickname }}
       </span>
+      <mat-form-field [class.none]="shift.type < 2 || ended" style="width: 50px" class="mr-3">
+        <mat-label>#</mat-label>
+        <input
+          matInput
+          type="number"
+          placeholder="1, 2.."
+          #numberBottom
+          [value]="shift.messenger.fexNumber?.toString()"
+          (click)="numberBottom.select()"
+          (keyup)="$event.code !== 'Tab' ? numberChanged.emit({ messenger: shift.messenger, number: numberBottom.valueAsNumber }) : ''"
+          (change)="numberChanged.emit({ messenger: shift.messenger, number: numberBottom.valueAsNumber })"
+        />
+      </mat-form-field>
+      <timepicker
+        class="mr-3"
+        style="position: relative; bottom: -7px;"
+        [label]="'check-in'"
+        [(time)]="shift.start"
+        (timeChangeDebounce)="!new ? shift.update('startzeit geändert', true) : ''"
+        [disabled]="ended"
+      >
+      </timepicker>
+      <timepicker
+        class="mr-4"
+        style="position: relative; bottom: -7px;"
+        [class.none]="new"
+        #checkoutPicker
+        [label]="'check-out'"
+        [time]="endTime()"
+        (timeChange)="shift.tmpEnd = $event"
+        [disabled]="ended"
+      ></timepicker>
+      <mat-form-field class="mr-3" style="width: 120px; position: relative; bottom: -7px;">
+        <mat-label>schichttyp</mat-label>
+        <mat-select
+          tabindex="-1"
+          [(ngModel)]="shift.type"
+          [disabled]="ended"
+          (ngModelChange)="!new ? asyncUpdate('schichttyp geändert') : (shift.start = startTime(shift.type))"
+        >
+          <mat-option
+            style="flex-direction: unset"
+            *ngFor="let shiftType of shift.type <= 1 ? dispatcherShiftTypes : messengerShiftTypes; let i = index"
+            [value]="shift.type <= 1 ? i : i + 2"
+          >
+            {{ shiftType }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button
+        mat-raised-button
+        class="fex-button"
+        (click)="checkout(shift, shift.tmpEnd || checkoutPicker.time)"
+        [matTooltip]="shift.messenger.nickname + ' auschecken'"
+        [class.invisible]="new"
+        tabindex="-1"
+      >
+        <div *ngIf="!ended" class="flex flex-row align-items-center">auschecken <i class="ml-2 bi bi-arrow-right-square"></i></div>
+        <div *ngIf="ended">schicht anzeigen</div>
+      </button>
     </div>
-    <mat-form-field [class.invisible]="shift.type < 2 || ended" style="width: 50px" class="mr-3">
-      <mat-label>#</mat-label>
-      <input
-        matInput
-        type="number"
-        placeholder="1, 2.."
-        #numberBottom
-        [value]="shift.messenger.fexNumber?.toString()"
-        (click)="numberBottom.select()"
-        (keyup)="$event.code !== 'Tab' ? numberChanged.emit({ messenger: shift.messenger, number: numberBottom.valueAsNumber }) : ''"
-        (change)="numberChanged.emit({ messenger: shift.messenger, number: numberBottom.valueAsNumber })"
-      />
-    </mat-form-field>
-    <timepicker class="mr-3" [label]="'check-in'" [(time)]="shift.start" (timeChangeDebounce)="!new ? shift.update('startzeit geändert', true) : ''" [disabled]="ended"></timepicker>
-    <timepicker class="mr-4" [class.invisible]="new" #checkoutPicker [label]="'check-out'" [time]="endTime()" (timeChange)="shift.tmpEnd = $event" [disabled]="ended"></timepicker>
-    <mat-form-field class="mr-3" style="width: 120px">
-      <mat-label>schichttyp</mat-label>
-      <mat-select tabindex="-1" [(ngModel)]="shift.type" [disabled]="ended" (ngModelChange)="!new ? asyncUpdate('schichttyp geändert') : (shift.start = startTime(shift.type))">
-        <mat-option style="flex-direction: unset" *ngFor="let shiftType of shift.type <= 1 ? dispatcherShiftTypes : messengerShiftTypes; let i = index" [value]="shift.type <= 1 ? i : i + 2">
-          {{ shiftType }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <button
-      mat-raised-button
-      class="fex-button"
-      (click)="checkout(shift, shift.tmpEnd || checkoutPicker.time)"
-      [matTooltip]="shift.messenger.nickname + ' auschecken'"
-      [class.invisible]="new"
-      tabindex="-1"
-    >
-      <div *ngIf="!ended" class="flex flex-row align-items-center">auschecken <i class="ml-2 bi bi-arrow-right-square"></i></div>
-      <div *ngIf="ended">schicht anzeigen</div>
-    </button>
   `,
   styles: []
 })

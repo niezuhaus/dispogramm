@@ -5,7 +5,7 @@ import { Price } from '../classes/Price';
 @Component({
   selector: 'app-price-input',
   template: `
-    <mat-form-field class="price" [style.width.px]="width || 30">
+    <mat-form-field class="price" [style.width.px]="width || 50">
       <mat-label>{{ label }}</mat-label>
       <input #input matInput type="text" class="pr-2" [placeholder]="placeholder" [value]="value()" (click)="input.select()" (keyup)="touched.emit(true); price.setByString(input.value, false)" />
     </mat-form-field>

@@ -1,4 +1,4 @@
-@import "src/const.scss";
+@import 'src/const.scss';
 
 td {
   text-align: center;
@@ -17,8 +17,8 @@ td {
 }
 
 #tourplan {
-	height: calc(100vh - 160px);
-	overflow: scroll;
+  height: calc(100vh - 160px);
+  overflow: scroll;
 }
 
 #footer {
@@ -30,24 +30,24 @@ td {
   right: 0;
 }
 
-h5:not(.normal){
+h5:not(.normal) {
   margin-top: 10px;
 }
 
 .row_half-transparent {
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .row_undispatched {
-  background-color: $undispatched;
+  background-color: $undispatched !important;
 }
 
 .row_note {
-  background: #c4c4c4;
+  background-color: #c4c4c4 !important;
 }
 
 .row_partOfMorningTour {
-  background-color: #f2eaff;
+  background-color: #f2eaff !important;
 }
 
 .time-ago {
@@ -79,4 +79,11 @@ h5:not(.normal){
   display: grid;
   grid-template-columns: 1fr auto auto;
   align-items: center;
+}
+
+#notesInput {
+  width: 100%;
+  background-color: #fff0;
+  outline: none;
+  min-height: 130px !important;
 }

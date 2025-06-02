@@ -19,7 +19,7 @@
     cdkAutosizeMaxRows="4"
   ></textarea>
   <mat-error *ngIf="required && ctrl.invalid">bitte {{ label }} eingeben</mat-error>
-  <i *ngIf="searchTerm" class="bi bi-x position-absolute" style="right: 0; bottom: 7px" (click)="!disabled ? reset(true) : 0" tabindex="-1"></i>
+  <i *ngIf="searchTerm" class="bi bi-x bi-x-transparent position-absolute" style="right: 0; bottom: 7px" (click)="!disabled ? reset(true) : 0" tabindex="-1"></i>
 
   <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" id="autocomplete" [panelWidth]="'unset'" (contextmenu)="$event.stopPropagation()" (focusout)="autocomplete.closePanel()">
     <!-- the purple ones -->
@@ -33,15 +33,17 @@
     </mat-option>
     <!-- the black ones -->
     <mat-option class="client-client-option" *ngFor="let client of clientclientOptions" [value]="client.name + ', ' + client.clientId" (onSelectionChange)="_clientClientSelected(client)">
-      <small
-        ><strong>{{ client.name }}</strong></small
-      >
-      <small>{{ client.street + ', ' + client.zipCode + ' ' + client.city }}</small>
-      <small>{{ client.clientId }}</small>
+      <div class="flex flex-col">
+        <small>
+          <strong> {{ client.name }}</strong>
+        </small>
+        <small>{{ client.street + ', ' + client.zipCode + ' ' + client.city }}</small>
+        <small>{{ client.clientId }}</small>
+      </div>
     </mat-option>
     <!-- the green ones -->
     <mat-option class="job-option" style="width: 300px" *ngFor="let job of jobOptions" (onSelectionChange)="_jobSelected(job)" [value]="job.center.name" (contextmenu)="$event.stopPropagation()">
-      <div class="mb-2 ml-4">
+      <div class="mb-2 ml-4 flex flex-col">
         <small
           ><strong>{{ job.name }}</strong></small
         >
@@ -70,28 +72,36 @@
     </mat-option>
     <!-- the red ones -->
     <mat-option class="client-option" *ngFor="let location of clientOptions" (onSelectionChange)="searching = searching + 1; _clientSelected(location)" [value]="location.name">
-      <small
-        ><strong>{{ location.name }}</strong></small
-      >
-      <small>{{ location.street + ', ' + location.zipCode + ' ' + location.city }}</small>
+      <div class="flex flex-col">
+        <small
+          ><strong>{{ location.name }}</strong></small
+        >
+        <small>{{ location.street + ', ' + location.zipCode + ' ' + location.city }}</small>
+      </div>
     </mat-option>
     <!-- the blue ones -->
     <mat-option class="location-option" *ngFor="let location of locationOptions" (onSelectionChange)="_locationSelected(location)" [value]="location.name">
-      <small
-        ><strong>{{ location.name }}</strong></small
-      >
-      <small>{{ location.street + ', ' + location.zipCode + ' ' + location.city }}</small>
+      <div class="flex flex-col">
+        <div class="flex flex-col">
+          <small
+            ><strong>{{ location.name }}</strong></small
+          >
+          <small>{{ location.street + ', ' + location.zipCode + ' ' + location.city }}</small>
+        </div>
+      </div>
     </mat-option>
     <!-- the white ones -->
     <mat-option *ngFor="let option of osmOptions" (onSelectionChange)="_osmSelected(option)" [value]="option.street">
-      <small class="flex flex-row">
-        <img *ngIf="option.geocoder === 0" src="assets/osm.png" alt="osm" class="mr-1" style="height: 14px" />
-        <img *ngIf="option.geocoder === 1" src="assets/bing.png" alt="bing" class="mr-1" style="height: 14px" />
-        <strong>{{ option.street }}</strong></small
-      >
-      <small
-        >{{ option.street + ', ' }} <span [style.font-weight]="option.city === 'Bremen' ? 'normal' : 'bold'">{{ option.zipCode + ' ' + option.city }}</span></small
-      >
+      <div class="flex flex-col">
+        <small class="flex flex-row align-items-center">
+          <img *ngIf="option.geocoder === 0" src="assets/osm.png" alt="osm" class="mr-1" style="height: 14px" />
+          <img *ngIf="option.geocoder === 1" src="assets/bing.png" alt="bing" class="mr-1" style="height: 14px" />
+          <strong>{{ option.street }}</strong></small
+        >
+        <small
+          >{{ option.street + ', ' }} <span [style.font-weight]="option.city === 'Bremen' ? 'normal' : 'bold'">{{ option.zipCode + ' ' + option.city }}</span></small
+        >
+      </div>
     </mat-option>
     <mat-option class="zone-option" *ngFor="let zone of zoneOptions" (onSelectionChange)="_zoneSelected(zone)" [value]="zone.name">
       <div class="flex flex-row justify-content-between align-items-center">
@@ -103,7 +113,7 @@
     </mat-option>
     <!-- ladekreis -->
     <mat-option *ngIf="searching > 0" id="searchInputLoading" class="flex align-items-center justify-content-center">
-      <div class="flex h-100 align-items-center justify-content-center">
+      <div class="flex h-100 pl-4 align-items-center justify-content-center">
         <mat-spinner class="position-absolute" [diameter]="20"></mat-spinner>
       </div>
     </mat-option>

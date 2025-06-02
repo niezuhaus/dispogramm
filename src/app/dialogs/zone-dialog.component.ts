@@ -10,9 +10,9 @@ import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf
 @Component({
   selector: 'app-zone-dialog',
   template: `
-    <div style="width: 70vw">
+    <div style="width: 75vw">
       <h1 mat-dialog-title>zone speichern</h1>
-      <div class="flex flex-row justify-content-between align-items-baseline">
+      <div class="flex flex-row justify-content-between align-items-baseline p-4">
         <div class="flex flex-row align-items-center">
           <mat-form-field>
             <mat-label>name</mat-label>
@@ -39,23 +39,22 @@ import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf
           (zoneSelected)="addToMap($event.polygon)">
         </searchinput> -->
 
-        <button #yes mat-raised-button class="ml-3 mt-4 fex-button" (click)="saveZone()" matDialogClose>speichern</button>
+        <button #yes mat-raised-button class="ml-3 my-4 fex-button" (click)="saveZone()" matDialogClose>speichern</button>
       </div>
     </div>
   `,
   styles: [
     `
-          #mapcontainer {
-            position: relative;
-            width: calc(100% + 48px);
-            max-height: 60vh;
-            left: -24px;
-          }
-    
-          #map {
-            height: 60vh;
-          }
-        `
+      #mapcontainer {
+        position: relative;
+        width: 100%;
+        max-height: 60vh;
+      }
+
+      #map {
+        height: 60vh;
+      }
+    `
   ]
 })
 export class ZoneDialogComponent implements OnInit, AfterViewInit {

@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
-@import "bootstrap-icons/font/bootstrap-icons.css";
-@import "src/const.scss";
-@import "src/lib/core/theming/_palette.scss";
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+@import 'src/const.scss';
+@import 'src/lib/core/theming/_palette.scss';
 @import '@angular/material/theming';
 @import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 @tailwind base;
@@ -12,18 +12,19 @@ $fex-primary: mat.define-palette($fex-primary-palette, 500);
 $fex-accent: mat.define-palette($fex-accent-palette, 500, 700, 900);
 $fex-warn: mat.define-palette($fex-warn-palette, 500);
 
-$my-theme: mat.define-light-theme((
-  color: (
-    primary: $fex-primary,
-    accent: $fex-accent,
-    warn: $fex-warn,
+$my-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $fex-primary,
+      accent: $fex-accent,
+      warn: $fex-warn
+    )
   )
-));
+);
 
 @include mat.core-theme($my-theme);
 
 @include mat.all-component-themes($my-theme);
-
 
 @font-face {
   font-family: 'Material Icons';
@@ -33,7 +34,23 @@ $my-theme: mat.define-light-theme((
 }
 
 img {
-  max-width: unset !important;
+  // max-width: unset !important;
+}
+
+.markdownBody img {
+  max-width: 400px !important;
+  height: auto;
+  display: block;
+  margin: 0 auto 1em auto;
+}
+
+li code {
+  color: $accent !important;
+}
+
+h3 code,
+h5 code {
+  color: $fex-light !important;
 }
 
 .material-icons {
@@ -61,7 +78,12 @@ img {
   font-feature-settings: 'liga';
 }
 
-html, body {
+* {
+  letter-spacing: unset !important;
+}
+
+html,
+body {
   height: 100%;
 }
 
@@ -70,7 +92,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .fex-dark {
@@ -101,9 +123,16 @@ body {
   color: $warn;
 }
 
-h1 {
-  font-size: 2rem;
-  color: $fex-light;
+h1:not(#title) {
+  color: $fex-light !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 500 !important;
 }
 
 h2 {
@@ -130,6 +159,10 @@ a span:hover {
 
 p.noMargin {
   margin: unset;
+}
+
+.none {
+  display: none !important;
 }
 
 .hightlight {
@@ -187,6 +220,10 @@ p.noMargin {
   margin: auto;
 }
 
+.mdc-floating-label {
+  left: 0px !important;
+}
+
 td:not(.mat-calendar-body-cell-container, .mat-calendar-body-label) {
   border: 1.2pt dashed #c7c7c7 !important;
 }
@@ -195,24 +232,36 @@ td:not(.mat-calendar-body-cell-container, .mat-calendar-body-label, .weekplancel
   padding: 3px 10px !important;
 }
 
-th.mat-header-cell:last-of-type {
+th.mat-mdc-header-cell:last-of-type {
   padding: 0 !important;
 }
 
-.mat-dialog-container {
+.mat-mdc-dialog-container {
   overflow-x: clip !important;
+}
+
+.mdc-dialog__title {
+  margin-top: 20px !important
+}
+
+.mdc-dialog__title::before {
+  height: 0px !important;
 }
 
 .firmat-dialog-content {
   margin: 0 !important;
 }
 
+.mdc-tab--active {
+  background-color: $fex-dark-5;
+}
+
 .mat-sort-header-container {
   justify-content: center;
 }
 
-.mat-paginator-icon {
-  color: rgba(0, 0, 0, .54);
+.mat-mdc-paginator-icon {
+  color: rgba(0, 0, 0, 0.54);
 }
 
 .relative-top8px {
@@ -235,46 +284,74 @@ th.mat-header-cell:last-of-type {
   bottom: 8px;
 }
 
-.mat-input-element:disabled {
+.mat-mdc-input-element:disabled {
   color: $gray !important;
 }
 
-.mat-form-field-wrapper {
+.mat-mdc-form-field-wrapper {
   width: 100% !important;
 }
 
-.time .mat-form-field-flex {
+.time .mat-mdc-form-field-flex {
   max-width: 5em;
 }
 
-.mat-input-element {
+.mdc-text-field {
+  background-color: #fff0 !important; // transparent input fields
+  padding: 0 8px !important;
+}
+
+.mat-mdc-input-element {
   color: black !important;
 }
 
-.mat-icon-button {
+.mat-mdc-icon-button {
   justify-content: space-around;
   color: black !important;
+  display: flex;
+  align-items: center;
+  margin: auto;
   // background-color: $light-gray;
 }
 
-.mat-button, .border-solid {
+.mat-mdc-button,
+.border-solid {
   border: 2px solid black;
 }
 
-.mat-button > span > i {
+.mat-mdc-button > span > i {
   margin: 10px 0;
 }
 
-div.mat-form-field-infix {
-  padding-right: 20px;
+// important for restoring pre material@15 look
+.mdc-button {
+  line-height: 36px !important;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mdc-button__label,
+.mdc-button__label span {
+  display: flex;
+  flex-direction: row;
+}
+
+div.mat-mdc-form-field-infix {
+  // padding-right: 20px;
   width: unset;
 }
 
-.mat-tab-body-wrapper {
-    margin-top: 13px;
+.mat-mdc-form-field-infix {
+  padding-bottom: 8px !important;
+  min-height: 48px !important;
 }
 
-.mat-tab-body-content {
+.mat-mdc-tab-body-wrapper {
+  margin-top: 13px;
+}
+
+.mat-mdc-tab-body-content {
   overflow-x: hidden !important;
   display: flex;
   flex-direction: column;
@@ -282,12 +359,14 @@ div.mat-form-field-infix {
   transform: none;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
 .mat-button-toggle-label-content {
   display: flex !important;
   align-items: center !important;
 }
 
-.mat-calendar-previous-button::after, .mat-calendar-next-button::after {
+.mat-calendar-previous-button::after,
+.mat-calendar-next-button::after {
   color: black;
 }
 
@@ -311,7 +390,8 @@ i.bi.small {
   font-size: 14px;
 }
 
-.bi-arrow-right-short, .bi-arrow-left-short {
+.bi-arrow-right-short,
+.bi-arrow-left-short {
   display: flex;
 }
 
@@ -320,7 +400,7 @@ i.bi.small {
 }
 
 .bi-x:not(.bi-x-transparent) {
-  background-color: white;
+  background-color: #fff0; // also transparent
 }
 
 .bi-x:hover {
@@ -341,14 +421,14 @@ i.bi.small {
 
 .bi-context {
   font-size: 13px;
-  margin-right: 5px;
+  margin-right: 15px;
 }
 
-.mat-menu-panel {
+.mat-mdc-menu-panel {
   //max-width: unset !important;
 }
 
-.mat-menu-item {
+.mat-mdc-menu-item {
   display: flex !important;
   align-items: center !important;
 }
@@ -371,7 +451,7 @@ i.bi.small {
 
 .fex-button {
   color: white !important;
-  background-color: $fex-dark;
+  background-color: $fex-dark !important;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -379,20 +459,20 @@ i.bi.small {
 
 .fex-unimportant-button {
   color: #242424 !important;
-  background-color: $fex-unimportant;
+  background-color: $fex-unimportant !important;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .fex-unimportant-button:hover {
-  background-color: $fex-light;
+  background-color: $fex-light !important;
   color: white !important;
 }
 
 .fex-green-button {
   color: white !important;
-  background-color: #1fa000;
+  background-color: #1fa000 !important;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -400,7 +480,7 @@ i.bi.small {
 
 .fex-accent-button {
   color: white !important;
-  background-color: $accent;
+  background-color: $accent !important;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -409,7 +489,7 @@ i.bi.small {
 .lex-button {
   margin-right: 20px !important;
   color: white !important;
-  background-color: $lex;
+  background-color: $lex !important;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -418,7 +498,7 @@ i.bi.small {
 .fex-button-outline {
   color: $fex-dark !important;
   border: 2px solid $fex-dark !important;
-  background-color: white;
+  background-color: white !important;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -426,7 +506,7 @@ i.bi.small {
 
 .fex-button-gray {
   color: white !important;
-  background-color: rgb(69, 69, 69);
+  background-color: rgb(69, 69, 69) !important;
   width: fit-content !important;
   height: fit-content !important;
   transition: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -459,35 +539,37 @@ i.bi.small {
   background-color: rgba(0, 0, 0, 0.12) !important;
 }
 
-.mat-option-text {
+.mdc-list-item__primary-text {
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: row !important;
   line-height: normal;
+  align-items: center;
 }
 
-.detailedOption .mat-option-text {
+.detailedOption .mdc-list-item__primary-text {
   flex-direction: row !important;
   justify-content: space-between;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .date .mat-form-field-flex {
   max-width: 10em;
 }
 
-.mat-select-panel {
+.mat-mdc-select-panel {
   max-width: unset !important;
   max-height: unset !important;
 }
 
-.mat-select-value {
-  width: 100%;
+.cdk-overlay-pane {
+  width: unset !important;
 }
 
-.mat-option.mat-active {
+.mat-mdc-option.mat-active {
   background: $option-active;
 }
 
-.mat-option:hover:not(.mat-option-disabled) {
+.mat-mdc-option:hover:not(.mdc-list-item--disabled) {
   background: $option-hover;
 }
 
@@ -495,13 +577,19 @@ i.bi.small {
   height: fit-content !important;
 }
 
-.info-option > .mat-option-text {
+.info-option > .mdc-list-item__primary-text {
   padding: 10px 0;
   width: 100%;
 }
 
-.mat-form-field-flex, .mat-form-field-appearance-standard {
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+.mat-mdc-form-field-flex,
+.mat-form-field-appearance-standard {
   padding-top: 0 !important;
+}
+
+.mdc-checkbox__checkmark {
+  color: white !important; // white checkmarks
 }
 
 #messenger-panel {
@@ -534,13 +622,14 @@ i.bi.small {
   bottom: 0;
   min-height: 150px;
   animation: ease-in;
-  animation-duration: .2s;
+  animation-duration: 0.2s;
 }
 
 .shadow {
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-  0 2px 2px 0 rgba(0, 0, 0, 0.14),
-  0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .w-20 {
@@ -560,55 +649,55 @@ i.bi.small {
 }
 
 .m-blue {
-  background-image: url("assets/marker/marker-icon-2x-blue.png");
+  background-image: url('assets/marker/marker-icon-2x-blue.png');
 }
 
 .m-blue-up {
-  background-image: url("assets/marker/marker-icon-2x-blue-up.png");
+  background-image: url('assets/marker/marker-icon-2x-blue-up.png');
 }
 
 .m-blue-down {
-  background-image: url("assets/marker/marker-icon-2x-blue-down.png");
+  background-image: url('assets/marker/marker-icon-2x-blue-down.png');
 }
 
 .m-blue-add {
-  background-image: url("assets/marker/marker-icon-2x-blue-add.png");
+  background-image: url('assets/marker/marker-icon-2x-blue-add.png');
 }
 
 .m-red {
-  background-image: url("assets/marker/marker-icon-2x-red.png");
+  background-image: url('assets/marker/marker-icon-2x-red.png');
 }
 
 .m-red-up {
-  background-image: url("assets/marker/marker-icon-2x-red-up.png");
+  background-image: url('assets/marker/marker-icon-2x-red-up.png');
 }
 
 .m-red-add {
-  background-image: url("assets/marker/marker-icon-2x-red-add.png");
+  background-image: url('assets/marker/marker-icon-2x-red-add.png');
 }
 
 .m-green {
-  background-image: url("assets/marker/marker-icon-2x-green.png");
+  background-image: url('assets/marker/marker-icon-2x-green.png');
 }
 
 .m-green-down {
-  background-image: url("assets/marker/marker-icon-2x-green-down.png");
+  background-image: url('assets/marker/marker-icon-2x-green-down.png');
 }
 
 .m-green-add {
-  background-image: url("assets/marker/marker-icon-2x-green-add.png");
+  background-image: url('assets/marker/marker-icon-2x-green-add.png');
 }
 
 .m-backtour {
-  background-image: url("assets/marker/marker-icon-2x-backtour.png");
+  background-image: url('assets/marker/marker-icon-2x-backtour.png');
 }
 
 .m-backtour-add {
-  background-image: url("assets/marker/marker-icon-2x-add-backtour.png");
+  background-image: url('assets/marker/marker-icon-2x-add-backtour.png');
 }
 
 .m-pink {
-  background-image: url("assets/marker/marker-icon-2x-pink.png");
+  background-image: url('assets/marker/marker-icon-2x-pink.png');
 }
 
 .drag {

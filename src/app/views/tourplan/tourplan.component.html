@@ -10,7 +10,7 @@
 
         <datepicker [(date)]="date" (dateChange)="dateChanged($event)" [headline]="true" #datepicker> </datepicker>
       </div>
-      <div class="flex flex-row align-items-baseline">
+      <div class="flex flex-row align-items-baseline m-2">
         <searchinput
           #fastJobInput
           *ngIf="globallyLoaded"
@@ -32,27 +32,20 @@
         </mat-form-field>
       </div>
     </div>
-    <!-- <div class="ml-5" *ngIf="items.length > 0">
+    <div class="ml-5" *ngIf="items.length > 0">
       <mat-chip-listbox selectable multiple>
         <mat-chip-option
-          #f="matChip"
           *ngFor="let filter of filterStrategies; let i = index"
           color="primary"
           [selected]="filter.selected"
           (click)="filter.selected = !filter.selected; filterJobsByKeyword(); filterStatus[i] = filter.selected; saveFilterStatus()"
         >
-          <i *ngIf="filter.selected" class="mr-2 bi bi-check"></i>
+          <!-- <i *ngIf="filter.selected" class="mr-2 bi bi-check"></i> -->
           <div [innerHTML]="filter.name(filter.selected)"></div>
         </mat-chip-option>
       </mat-chip-listbox>
     </div>
-  </div> -->
-
-  <!--<div *ngIf="shiftsWithoutEnd().length > 0" class="px-3" style="width: 100%">-->
-  <!--  <p class="flex fex-light">hinweis: für {{shiftsWithoutEnd().length}} schichten fehlen noch die endzeiten.-->
-  <!--    <a class="flex fex-accent align-items-center"><i class="bi bi-arrow-right-short"></i>jetzt eintragen</a>-->
-  <!--  </p>-->
-  <!--</div>-->
+  </div>
 
   <!-- loading screen -->
   <div *ngIf="!loaded" style="height: 90vh !important" class="flex w-100 h-100 align-items-center justify-content-center">
@@ -252,8 +245,8 @@
       [style.height]="noteVisible ? '150px' : '0'"
       style="width: fit-content; min-width: 300px; transition-duration: 0.25s; transition-timing-function: cubic-bezier(0.77, 0, 0.18, 1); overflow-y: hidden"
     >
-      <div class="shadow notes" style="background: #eee">
-        <textarea class="m-3" #area [(ngModel)]="note.text" matInput cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="10"></textarea>
+      <div class="shadow notes p-3" style="background: #eee">
+        <textarea id="notesInput" #area [(ngModel)]="note.text" matInput cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="10"></textarea>
       </div>
     </div>
   </div>
@@ -280,32 +273,23 @@
           frühschicht
           <span *ngIf="dispoEarly.length">
             (dispo:
-            <a *ngIf="!dispoEarly[0].shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden">
-              <i class="bi bi-person-add"></i>{{dispoEarly[0].nickname}}
-            </a>
-            <a (click)="dispoEarly[0].checkout(date)" *ngIf="dispoEarly[0].shift && !dispoEarly[0].shift?.end">
-              <i class="bi bi-person-dash"></i>{{dispoEarly[0].nickname}}
-            </a>
-            <a (click)="dispoEarly[0].checkout(date)" *ngIf="dispoEarly[0].shift?.end" matTooltip="schicht anzeigen">
-              <i class="bi bi-check-lg"></i>{{dispoEarly[0].nickname}}
-            </a>
+            <a *ngIf="!dispoEarly[0].shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden"> <i class="bi bi-person-add mr-2"></i>{{ dispoEarly[0].nickname }} </a>
+            <a (click)="dispoEarly[0].checkout(date)" *ngIf="dispoEarly[0].shift && !dispoEarly[0].shift?.end"> <i class="bi bi-person-dash mr-2"></i>{{ dispoEarly[0].nickname }} </a>
+            <a (click)="dispoEarly[0].checkout(date)" *ngIf="dispoEarly[0].shift?.end" matTooltip="schicht anzeigen"> <i class="bi bi-check-lg mr-2"></i>{{ dispoEarly[0].nickname }} </a>
             )
-            
           </span>
         </h5>
         <div *ngFor="let messenger of earlyShift" class="grid-container">
           <div class="mr-2" (contextmenu)="onRightClick($event, messenger.shift)">
             <a *ngIf="!messenger.shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden">
-              <i class="mr-2 bi bi-person-add"></i>{{messenger.nickname}}
+              <i class="bi bi-person-add mr-1"></i>
+              {{ messenger.nickname }}
             </a>
             <a (click)="messenger.checkout(date)" *ngIf="messenger.shift && !messenger.shift?.end" matTooltip="kurier:in auschecken">
-              <i class="mr-2 bi bi-person-dash"></i>{{messenger.nickname}}
+              <i class="bi bi-person-dash mr-1"></i>{{ messenger.nickname }}
             </a>
-            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end" matTooltip="schicht anzeigen">
-              <i class="mr-1 bi bi-check-lg"></i>{{messenger.nickname}}
-            </a>
+            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end" matTooltip="schicht anzeigen"> <i class="bi bi-check-lg mr-1"></i>{{ messenger.nickname }} </a>
             <span *ngIf="messenger.shift">({{ shiftLiterals[messenger.shift.type] }})</span>
-            
           </div>
           <div style="min-width: 50px">
             {{ messenger.sales(date)?.nettoEarly || 0 }}
@@ -316,31 +300,22 @@
           spätschicht
           <span *ngIf="dispoLate.length">
             (dispo:
-            <a *ngIf="!dispoLate[0].shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden">
-              <i class="bi bi-person-add"></i>{{dispoLate[0].nickname}}
-            </a>
+            <a *ngIf="!dispoLate[0].shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden"> <i class="bi bi-person-add mr-1"></i>{{ dispoLate[0].nickname }} </a>
             <a (click)="dispoLate[0].checkout(date)" *ngIf="dispoLate[0].shift && !dispoLate[0].shift?.end" matTooltip="kurier:in auschecken">
-              <i class="bi bi-person-dash"></i>{{dispoLate[0].nickname}}
+              <i class="bi bi-person-dash mr-1"></i>{{ dispoLate[0].nickname }}
             </a>
-            <a (click)="dispoLate[0].checkout(date)" *ngIf="dispoLate[0].shift?.end">
-              <i class="bi bi-check-lg" matTooltip="schicht anzeigen"></i>{{dispoLate[0].nickname}}
-            </a>
+            <a (click)="dispoLate[0].checkout(date)" *ngIf="dispoLate[0].shift?.end"> <i class="bi bi-check-lg mr-1" matTooltip="schicht anzeigen"></i>{{ dispoLate[0].nickname }} </a>
             )
-            
           </span>
         </h5>
         <div *ngFor="let messenger of lateShift" class="grid-container">
           <div class="mr-2" (contextmenu)="onRightClick($event, messenger.shift)">
-            <a *ngIf="!messenger.shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden">
-              <i class="mr-2 bi bi-person-add"></i>{{messenger.nickname}}
-            </a>
+            <a *ngIf="!messenger.shift" class="fex-warn" matTooltip="es wurde keine schicht gefunden"> <i class="mr-2 bi bi-person-add"></i>{{ messenger.nickname }} </a>
             <a (click)="messenger.checkout(date)" *ngIf="messenger.shift && !messenger.shift?.end" matTooltip="kurier:in auschecken">
-              <i class="mr-2 bi bi-person-dash"></i>{{messenger.nickname}}
+              <i class="mr-2 bi bi-person-dash"></i>{{ messenger.nickname }}
             </a>
-            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end" matTooltip="schicht anzeigen">
-              <i class="mr-1 bi bi-check-lg"></i>{{messenger.nickname}}
-            </a>
-            
+            <a (click)="messenger.checkout(date)" *ngIf="messenger.shift?.end" matTooltip="schicht anzeigen"> <i class="mr-1 bi bi-check-lg"></i>{{ messenger.nickname }} </a>
+
             <span *ngIf="messenger.shift">({{ shiftLiterals[messenger.shift.type] }})</span>
           </div>
           <div style="min-width: 50px">

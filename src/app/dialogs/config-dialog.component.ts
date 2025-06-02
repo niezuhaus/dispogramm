@@ -20,11 +20,11 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
       <mat-tab-group dynamicHeight selectedIndex="{{ data?.pageIndex || 0 }}">
         <mat-tab [label]="'preise'">
           <div style="max-height:50vh; overflow-y: scroll;" class="flex flex-row">
-            <div style="width: 33%">
+            <div style="width: 33%; min-width: 300px">
               <div class="option w8020 small">
                 <label>
                   grundpreis bis
-                  <mat-form-field style="width: 40px" class="mx-2 relative-top4px">
+                  <mat-form-field style="width: 55px" class="mx-2 relative-top4px">
                     <input
                       matInput
                       type="number"
@@ -37,21 +37,29 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
                   km
                 </label>
                 <div>
-                  <app-price-input [(price)]="config.prices.list.base" (touched)="changedPrices.set(config.prices.list.base.name, config.prices.list.base)" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.list.base"
+                    (touched)="changedPrices.set(config.prices.list.base.name, config.prices.list.base)"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
               <hr />
               <div class="option w8020">
                 <label> preis pro km </label>
                 <div>
-                  <app-price-input [(price)]="config.prices.list.extra1" (touched)="changedPrices.set(config.prices.list.extra1.name, config.prices.list.extra1)" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.list.extra1"
+                    (touched)="changedPrices.set(config.prices.list.extra1.name, config.prices.list.extra1)"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
               <hr />
               <div class="option w8020 small">
                 <label>
                   ab
-                  <mat-form-field style="width: 40px" class="mx-2 relative-top4px">
+                  <mat-form-field style="width: 55px" class="mx-2 relative-top4px">
                     <input
                       matInput
                       type="number"
@@ -64,65 +72,101 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
                   km
                 </label>
                 <div>
-                  <app-price-input [(price)]="config.prices.list.extra2" (touched)="changedPrices.set(config.prices.list.extra2.name, config.prices.list.extra2)" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.list.extra2"
+                    (touched)="changedPrices.set(config.prices.list.extra2.name, config.prices.list.extra2)"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
               <hr />
               <div class="option w8020">
                 <label>zwischenstop</label>
                 <div>
-                  <app-price-input [(price)]="config.prices.stop" (touched)="changedPrices.set(config.prices.stop.name, config.prices.stop)" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.stop"
+                    (touched)="changedPrices.set(config.prices.stop.name, config.prices.stop)"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
             </div>
-            <div style="width: 33%">
+            <div style="width: 33%; min-width: 300px">
               <div class="option w8020">
                 <label>um's eck</label>
                 <div>
-                  <app-price-input [(price)]="config.prices.nearby" (touched)="changedPrices.set(config.prices.nearby.name, config.prices.nearby)" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.nearby"
+                    (touched)="changedPrices.set(config.prices.nearby.name, config.prices.nearby)"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
               <hr />
               <div class="option w8020">
                 <label>innenstadt</label>
                 <div>
-                  <app-price-input [(price)]="config.prices.city" (touched)="changedPrices.set(config.prices.city.name, config.prices.city)" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.city"
+                    (touched)="changedPrices.set(config.prices.city.name, config.prices.city)"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
               <hr />
               <div class="option w8020">
                 <label>fünf minuten wartezeit</label>
                 <div>
-                  <app-price-input [(price)]="config.prices.fiveMinutes" (touched)="changedPrices.set(config.prices.fiveMinutes.name, config.prices.fiveMinutes)" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.fiveMinutes"
+                    (touched)="changedPrices.set(config.prices.fiveMinutes.name, config.prices.fiveMinutes)"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
               <hr />
               <div class="option w8020">
                 <label>fehlanfahrt</label>
                 <div>
-                  <app-price-input [(price)]="config.prices.falseArrival" (touched)="changedPrices.set(config.prices.falseArrival.name, config.prices.falseArrival)" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.falseArrival"
+                    (touched)="changedPrices.set(config.prices.falseArrival.name, config.prices.falseArrival)"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
             </div>
-            <div style="width: 33%">
-              <div class="option w8020">
+            <div style="width: 33%; min-width: 300px">
+              <div class="option w8020 mr-3">
                 <label> lastzuschlag </label>
                 <div>
-                  <app-price-input [(price)]="config.prices.extras[1]" (touched)="changedPrices.set(config.prices.extras[1].name, config.prices.extras[1])" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.extras[1]"
+                    (touched)="changedPrices.set(config.prices.extras[1].name, config.prices.extras[1])"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
               <hr />
-              <div class="option w8020">
+              <div class="option w8020 mr-3">
                 <label> lastenradzuschlag </label>
                 <div>
-                  <app-price-input [(price)]="config.prices.extras[2]" (touched)="changedPrices.set(config.prices.extras[2].name, config.prices.extras[2])" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.extras[2]"
+                    (touched)="changedPrices.set(config.prices.extras[2].name, config.prices.extras[2])"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
               <hr />
-              <div class="option w8020">
+              <div class="option w8020 mr-3">
                 <label> e-lastenrad + gespann </label>
                 <div>
-                  <app-price-input [(price)]="config.prices.extras[3]" (touched)="changedPrices.set(config.prices.extras[3].name, config.prices.extras[3])" [type]="0"></app-price-input>
+                  <app-price-input
+                    [(price)]="config.prices.extras[3]"
+                    (touched)="changedPrices.set(config.prices.extras[3].name, config.prices.extras[3])"
+                    [type]="0"
+                  ></app-price-input>
                 </div>
               </div>
               <hr />
@@ -131,18 +175,26 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
         </mat-tab>
 
         <mat-tab [label]="'sonderpreise & zonen'">
-          <div class="flex flex-row flex-wrap" style="max-width: 800px">
-            <app-container style="overflow: scroll" *ngFor="let price of specialPrices" [price]="price" [type]="'specialPrice'" class="mr-4 mb-4" (contextmenu)="onRightClick($event, price)">
+          <div class="flex flex-row flex-wrap p-4" style="max-width: 800px">
+            <app-container
+              style="overflow: scroll"
+              *ngFor="let price of specialPrices"
+              [price]="price"
+              [type]="'specialPrice'"
+              class="mr-4 mb-4"
+              (contextmenu)="onRightClick($event, price)"
+            >
             </app-container>
             <app-container class="mr-4" [type]="'specialPrice'"> </app-container>
-            <app-container *ngFor="let zone of zones" [zone]="zone" [type]="'zone'" class="mr-4 mb-4" (contextmenu)="onRightClick($event, zone)"> </app-container>
+            <app-container *ngFor="let zone of zones" [zone]="zone" [type]="'zone'" class="mr-4 mb-4" (contextmenu)="onRightClick($event, zone)">
+            </app-container>
             <app-container [type]="'zone'"> </app-container>
           </div>
         </mat-tab>
 
         <mat-tab [label]="'zusätzliche einstellungen'">
           <div style="max-height:50vh; overflow-y: scroll;" class="pt-2">
-            <div class="option w4060">
+            <div class="option w4060" style="min-width: 800px;">
               <label> datenquelle für kartendaten </label>
               <div>
                 <mat-button-toggle-group [value]="config.geocoder.type" (change)="changeGeocoder($event.value)">
@@ -156,7 +208,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
             <div class="option w4060">
               <label> mehrwertsteuersatz </label>
               <div>
-                <mat-form-field class="mx-2 price" style="width: 40px">
+                <mat-form-field class="mx-2 price" style="width: 70px">
                   <input
                     #MWST
                     matInput
@@ -175,7 +227,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
             <div class="option w4060">
               <label> mindestlohn </label>
               <div>
-                <mat-form-field class="mx-2 price" style="width: 70px">
+                <mat-form-field class="mx-2 price" style="width: 100px">
                   <input
                     #minimumWage
                     matInput
@@ -194,7 +246,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
             <div class="option w4060">
               <label>festtouren</label>
               <div>
-                <mat-form-field style="width: 40px">
+                <mat-form-field style="width: 55px">
                   <input
                     matInput
                     type="number"
@@ -211,7 +263,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
             <div class="option w4060">
               <label>werktage pro monat</label>
               <div class="flex flex-column">
-                <mat-form-field style="width: 60px">
+                <mat-form-field style="width: 80px">
                   <input
                     matInput
                     type="number"
@@ -228,7 +280,11 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
             <div class="option w4060">
               <label>zonen</label>
               <div>
-                <mat-slide-toggle [(ngModel)]="config.showZonesPermanently" #showZonesPermanently (change)="changedBooleans.set('showZonesPermanently', $event.checked)">
+                <mat-slide-toggle
+                  [(ngModel)]="config.showZonesPermanently"
+                  #showZonesPermanently
+                  (change)="changedBooleans.set('showZonesPermanently', $event.checked)"
+                >
                   permanent auf der karte anzeigen
                 </mat-slide-toggle>
               </div>
@@ -238,7 +294,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
               <label>"um's eck"-tarif anwenden</label>
               <div>
                 im umkreis von
-                <mat-form-field style="width: 60px">
+                <mat-form-field style="width: 80px">
                   <input
                     matInput
                     type="number"
@@ -313,14 +369,19 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
                 lexoffice unterstützung
               </label>
               <div>
-                <mat-slide-toggle #lexofficeActivated [(ngModel)]="config.lexofficeActivated" (change)="changedBooleans.set('lexofficeActivated', $event.checked)"> </mat-slide-toggle>
+                <mat-slide-toggle
+                  #lexofficeActivated
+                  [(ngModel)]="config.lexofficeActivated"
+                  (change)="changedBooleans.set('lexofficeActivated', $event.checked)"
+                >
+                </mat-slide-toggle>
               </div>
             </div>
           </div>
         </mat-tab>
 
         <mat-tab [label]="'api keys'">
-          <div class="option w4060">
+          <div class="option w2080">
             <label> lexoffice </label>
             <div>
               <mat-form-field style="width: 450px">
@@ -336,7 +397,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
               </mat-form-field>
             </div>
           </div>
-          <div class="option w4060">
+          <div class="option w2080">
             <label> geoapify </label>
             <div>
               <mat-form-field style="width: 450px">
@@ -352,7 +413,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
               </mat-form-field>
             </div>
           </div>
-          <div class="option w4060">
+          <div class="option w2080">
             <label> mapbox </label>
             <div>
               <mat-form-field style="width: 450px">
@@ -368,7 +429,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
               </mat-form-field>
             </div>
           </div>
-          <div class="option w4060">
+          <div class="option w2080">
             <label> bing </label>
             <div>
               <mat-form-field style="width: 450px">
@@ -401,7 +462,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
             </div>
             <img src="../../assets/logo/fex-logo.png" style="width: 200px" alt="fex logo" />
           </div> -->
-          <div class="markdownBody" [innerHTML]="readmeHtml"></div>
+          <div class="markdownBody p-4" [innerHTML]="readmeHtml"></div>
         </mat-tab>
 
         <mat-tab *ngIf="isDezwo" [label]="'extras'">
@@ -475,13 +536,18 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
         </div>
       </div>
     </div>
-    <div class="mt-4 w-100 flex justify-between">
+    <div class="p-4 w-100 flex justify-between">
       <button mat-raised-button class="fex-button" matDialogClose (click)="save()">speichern</button>
       <button mat-raised-button class="fex-button" matDialogClose>schließen</button>
     </div>
 
     <div class="container">
-      <div style="visibility: hidden; position: fixed" [style.left.px]="menuTopLeftPosition.x" [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"></div>
+      <div
+        style="visibility: hidden; position: fixed"
+        [style.left.px]="menuTopLeftPosition.x"
+        [style.top.px]="menuTopLeftPosition.y"
+        [matMenuTriggerFor]="rightMenu"
+      ></div>
 
       <mat-menu #rightMenu="matMenu">
         <ng-template matMenuContent let-price="price" let-zone="zone">
@@ -492,71 +558,73 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   `,
   styles: [
     `
-          .option {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-          }
-    
-          .option > label {
-            align-self: baseline;
-            font-weight: bold;
-            min-width: fit-content;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-          }
-    
-          .option:not(.small) > label {
-            margin: 17px 10px 17px 0;
-          }
-    
-          .option.small > label {
-            margin: 4px 10px 4px 0;
-          }
-    
-          .option.w4060 > label {
-            width: 40%;
-          }
-    
-          .option.w8020 > label {
-            width: 80%;
-          }
-    
-          .option.w4060 > div {
-            width: 60%;
-          }
-    
-          .option.w8020 > div {
-            width: 20%;
-          }
-    
-          td {
-            text-align: right;
-          }
-    
-          .priceDes {
-            border-right: none !important;
-          }
-    
-          .priceDes + td {
-            border-left: none !important;
-          }
-    
-          .markdownBody {
-            max-height: 50vh;
-            overflow-y: auto;
-            margin-top: 2em;
-            max-width: 100%;
-          }
-    
-          .markdownBody > p > img {
-            width: 300px;
-            height: auto;
-            display: block;
-            margin: 1em auto;
-          }
-        `
+      @import '../../const';
+
+      .option {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .option > label {
+        align-self: baseline;
+        font-weight: bold;
+        min-width: fit-content;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+
+      .option:not(.small) > label {
+        margin: 17px 10px 17px 0;
+      }
+
+      .option.small > label {
+        margin: 4px 10px 4px 0;
+      }
+
+      .option.w4060 > label {
+        width: 40%;
+      }
+
+      .option.w8020 > label {
+        width: 80%;
+      }
+
+      .option.w2080 > label {
+        width: 20%;
+      }
+
+      .option.w4060 > div {
+        width: 60%;
+      }
+
+      .option.w8020 > div {
+        width: 20%;
+      }
+
+      .option.w2080 > div {
+        width: 80%;
+      }
+
+      td {
+        text-align: right;
+      }
+
+      .priceDes {
+        border-right: none !important;
+      }
+
+      .priceDes + td {
+        border-left: none !important;
+      }
+
+      .markdownBody {
+        max-height: 50vh;
+        overflow-y: auto;
+        max-width: 100%;
+      }
+    `
   ]
 })
 export class ConfigDialogComponent {
@@ -637,7 +705,9 @@ export class ConfigDialogComponent {
   changeGeocoder(mode: number) {
     GC.config.geocoder = GC.geocoders[mode];
     this.saveConfigValue('geocoder', mode.toString()).subscribe((msg) => {
-      GC.openSnackBarLong(`du suchst adressen jetzt mit ${parseInt(msg.value) === 0 ? 'openstreetmap' : parseInt(msg.value) === 1 ? 'bing maps' : 'beiden geocodern zugleich'}!`);
+      GC.openSnackBarLong(
+        `du suchst adressen jetzt mit ${parseInt(msg.value) === 0 ? 'openstreetmap' : parseInt(msg.value) === 1 ? 'bing maps' : 'beiden geocodern zugleich'}!`
+      );
     });
   }
 

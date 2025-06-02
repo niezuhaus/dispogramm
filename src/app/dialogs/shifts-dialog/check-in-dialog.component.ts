@@ -14,21 +14,25 @@ import { MatMenuTrigger } from '@angular/material/menu';
     <h1 *ngIf="!data?.morning" mat-dialog-title style="max-width: 400px;">wer ist in der schicht?</h1>
     <div id="change-user-content" class="mt-2 justify-content-around" style="min-width: 400px">
       <div class="flex flex-column justify-content-around">
-        <new-shift-input [disabled]="!!dispatcher" [dispatcher]="true" (dispatcherShiftCreated)="dispatcherShift = $event"> </new-shift-input>
+        <div class="p-4">
+          <new-shift-input [disabled]="!!dispatcher" [dispatcher]="true" (dispatcherShiftCreated)="dispatcherShift = $event"> </new-shift-input>
 
-        <new-shift-input (messengerShiftCreated)="messengerShifts.push($event)" #messengerInput [ignoredMessenger]="messengerToday"> </new-shift-input>
+          <new-shift-input (messengerShiftCreated)="messengerShifts.push($event)" #messengerInput [ignoredMessenger]="messengerToday"> </new-shift-input>
+        </div>
         <div class="overflow-y-scroll" style="max-height: 60vh">
-          <div *ngIf="dispatcherShift !== null || messengerShifts.length" class="mb-3 border-top border-bottom shiftBlock">
-            <h3 class="my-3">ausgewählte kurier:innen zum einchecken</h3>
-            <shift
-              *ngFor="let shift of (dispatcherShift ? [dispatcherShift] : []).concat(messengerShifts)"
-              class="flex flex-row pt-3 align-items-center justify-content-between w-100 border-bottom"
-              [shift]="shift"
-              (deleteFromCheckIn)="deleteFromCheckin($event)"
-            >
-            </shift>
+          <div *ngIf="dispatcherShift !== null || messengerShifts.length">
+            <div class="mb-3 border-top border-bottom shiftBlock">
+              <h3 class="my-3">ausgewählte kurier:innen zum einchecken</h3>
+              <shift
+                *ngFor="let shift of (dispatcherShift ? [dispatcherShift] : []).concat(messengerShifts)"
+                class="flex flex-row pt-3 align-items-center w-100 border-bottom"
+                [shift]="shift"
+                (deleteFromCheckIn)="deleteFromCheckin($event)"
+              >
+              </shift>
+            </div>
 
-            <button mat-raised-button class="my-4 fex-button" (click)="checkIn()" matDialogClose>jetzt einchecken</button>
+            <button mat-raised-button class="m-4 fex-button" (click)="checkIn()" matDialogClose>jetzt einchecken</button>
           </div>
 
           <div *ngIf="openShiftsToday.length" class="mb-3 border-top border-bottom shiftBlock">
@@ -70,31 +74,31 @@ import { MatMenuTrigger } from '@angular/material/menu';
   `,
   styles: [
     `
-          @import '../../../const.scss';
-    
-          * {
-            display: flex;
-            flex-direction: column;
-          }
-    
-          #change-user-content {
-            min-width: 300px;
-          }
-    
-          h3 {
-            color: $fex-dark;
-            font-size: 18px;
-          }
-    
-          .shiftBlock {
-            background-color: #efefef;
-            padding: 0 20px;
-          }
-    
-          .svg {
-            background-color: $fex-light !important;
-          }
-        `
+      @import '../../../const.scss';
+
+      * {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #change-user-content {
+        min-width: 300px;
+      }
+
+      h3 {
+        color: $fex-dark;
+        font-size: 18px;
+      }
+
+      .shiftBlock {
+        background-color: #efefef;
+        padding: 0 20px;
+      }
+
+      .svg {
+        background-color: $fex-light !important;
+      }
+    `
   ]
 })
 export class CheckInDialog {

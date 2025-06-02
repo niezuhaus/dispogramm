@@ -38,7 +38,7 @@
             [searchLocations]="true"
             [searchJobs]="true"
             [type]="locType.client"
-            [placeholder]="'kund:innenenname, adresse...'"
+            [placeholder]="'name, adresse...'"
             #clientInput
             (clientSelected)="clientSelected($event)"
             (locationSelected)="clientSelected({ c: null, l: $event })"
@@ -201,10 +201,10 @@
     <!-- trash and resize buttons -->
     <div class="m-3 flex-column justify-content-between">
       <div class="flex-row">
-        <button mat-mini-fab color="primary" class="flashButton" [disabled]="!(touched || job.hasData)" (click)="job.reset(); resetUI(); this.cInput.inputRef.nativeElement.focus()">
+        <button mat-mini-fab class="flashButton" [disabled]="!(touched || job.hasData)" (click)="job.reset(); resetUI(); this.cInput.inputRef.nativeElement.focus()">
           <i class="bi bi-trash-fill"></i>
         </button>
-        <button mat-mini-fab color="primary" class="flashButton" [disabled]="!zoomed" (click)="!zoomed || refreshMapZoom(true)">
+        <button mat-mini-fab class="flashButton" [disabled]="!zoomed" (click)="!zoomed || refreshMapZoom(true)">
           <i class="bi bi-arrows-angle-contract"></i>
         </button>
       </div>

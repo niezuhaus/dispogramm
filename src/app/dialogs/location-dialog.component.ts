@@ -53,7 +53,7 @@ import { Client } from '../classes/Client';
             </mat-form-field>
           </div>
 
-          <div class="mb-1 flex flex-row justify-content-between w-100">
+          <div class="p-4 flex flex-row justify-content-between w-100">
             <button *ngIf="!newLocation" mat-raised-button class="fex-button" (click)="update(data.location)" matDialogClose="true">standort aktualisieren</button>
             <button *ngIf="newLocation" mat-raised-button class="fex-button" (click)="create(data.location)" matDialogClose="true">neuen standort speichern</button>
 
@@ -112,21 +112,21 @@ import { Client } from '../classes/Client';
   `,
   styles: [
     `
-          * {
-            flex-direction: column;
-          }
-    
-          #mapcontainer {
-            position: relative;
-            width: calc(100% + 48px);
-            left: -24px;
-            top: 24px;
-          }
-    
-          #mapEdit {
-            height: 25vh;
-          }
-        `
+      * {
+        flex-direction: column;
+      }
+
+      #mapcontainer {
+        position: relative;
+        width: calc(100%);
+        left: 0px;
+        top: 0px;
+      }
+
+      #mapEdit {
+        height: 25vh;
+      }
+    `
   ]
 })
 export class LocationDialogComponent implements OnInit, OnDestroy {
