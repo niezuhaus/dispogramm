@@ -574,7 +574,7 @@ Date.prototype.timeAgo = function () {
   let format;
   while (i + 1 < timeFormats.length) {
     format = timeFormats[i++];
-    if (seconds < format[0]) {
+    if (seconds < (format[0] as number)) {
       if (typeof format[2] === 'string') {
         return format[listChoice].toString();
       } else {
