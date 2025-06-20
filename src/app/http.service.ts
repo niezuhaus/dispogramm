@@ -2,8 +2,20 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of, switchMap, take, tap, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DayStatistic, GeoCodingMode, Invoice, IPoint, LexProfile, LocType, PriceZone, RawConfig, Section, TimeframeStatistic, WeekStatistic } from './common/interfaces';
-import { BingMapsResponse, BingResource, IOSMFeature, IOSMResponse, IOSMRouteFeatureCollection } from './common/DataContracts';
+import {
+  DayStatistic,
+  GeoCodingMode,
+  Invoice,
+  IPoint,
+  LexProfile,
+  LocType,
+  PriceZone,
+  RawConfig,
+  Section,
+  TimeframeStatistic,
+  WeekStatistic
+} from './common/interfaces';
+import { AzureMapsResponse, BingMapsResponse, BingResource, IOSMFeature, IOSMResponse, IOSMRouteFeatureCollection, Result } from './common/DataContracts';
 import { Contact } from './classes/Contact';
 import { Zone } from './classes/Zone';
 import { Job, RegularJob } from './classes/Job';
@@ -47,6 +59,7 @@ export class HttpService {
   private GEOAPIFY_API_KEY: string;
   private MAPBOX_API_KEY: string;
   private BING_API_KEY: string;
+  private AZURE_API_KEY: string;
 
   constructor(
     private http: HttpClient,
@@ -65,13 +78,14 @@ export class HttpService {
     });
   }
 
-  set keys(keys: { lex: string; geoapify: string; mapbox: string; bing: string }) {
+  set keys(keys: { lex: string; geoapify: string; mapbox: string; bing: string; azure: string }) {
     this.lexAuthHeader = new HttpHeaders({
       Authorization: `Bearer ${keys.lex}`
     });
     this.GEOAPIFY_API_KEY = keys.geoapify;
     this.MAPBOX_API_KEY = keys.mapbox;
     this.BING_API_KEY = keys.bing;
+    this.AZURE_API_KEY = keys.azure;
   }
 
   public static _filterLocationsByAny(list: Geolocation[], value: string): Geolocation[] {
@@ -154,7 +168,7 @@ export class HttpService {
   }
 
   searchBoth(searchStr: string, type: LocType): Observable<Geolocation[]> {
-    return zip(this.searchOSM(searchStr, type), this.searchBing(searchStr, type)).pipe(
+    return zip(this.searchOSM(searchStr, type), this.searchAzure(searchStr, type)).pipe(
       take(1),
       map((data) => {
         return data[0].concat(data[1]);
@@ -162,46 +176,48 @@ export class HttpService {
     );
   }
   searchOSM(searchStr: string, type: LocType): Observable<Geolocation[]> {
-    return this.http.get<IOSMResponse>(`https://api.geoapify.com/v1/geocode/autocomplete?text=${searchStr}&filter=circle:${CIRCLE_LAT},${CIRCLE_LON},${RANGE}&apiKey=${this.GEOAPIFY_API_KEY}`).pipe(
-      take(1),
-      map((response: IOSMResponse) => {
-        let filteredFeatures = response.features.filter((feature) => feature.properties.rank.confidence >= MIN_CONF);
-        filteredFeatures = filteredFeatures.filter((feature) => {
-          const postcode = parseInt(feature.properties.postcode);
-          return (
-            postcode &&
-            feature.properties.housenumber &&
-            ((postcode <= 28779 && postcode >= 28195) || PLZ_EXTRA.includes(postcode))
-            // && feature.properties.name.toLowerCase().includes(feature.properties.street.toLowerCase())
-          );
-        });
-        const locations = filteredFeatures.map((f) => HttpService.mapOSMFeature(f, type));
-        const set = [...new Set(locations.map((f) => f.street))];
-        const res: Geolocation[] = [];
+    return this.http
+      .get<IOSMResponse>(
+        `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchStr}&filter=circle:${CIRCLE_LAT},${CIRCLE_LON},${RANGE}&apiKey=${this.GEOAPIFY_API_KEY}`
+      )
+      .pipe(
+        take(1),
+        map((response: IOSMResponse) => {
+          let filteredFeatures = response.features.filter((feature) => feature.properties.rank.confidence >= MIN_CONF);
+          filteredFeatures = filteredFeatures.filter((feature) => {
+            const postcode = parseInt(feature.properties.postcode);
+            return (
+              postcode && feature.properties.housenumber && ((postcode <= 28779 && postcode >= 28195) || PLZ_EXTRA.includes(postcode))
+              // && feature.properties.name.toLowerCase().includes(feature.properties.street.toLowerCase())
+            );
+          });
+          const locations = filteredFeatures.map((f) => HttpService.mapOSMFeature(f, type));
+          const set = [...new Set(locations.map((f) => f.street))];
+          const res: Geolocation[] = [];
 
-        locations.forEach((l) => {
-          if (set.includes(l.street)) {
-            res.push(l);
-            set.findAndRemove(l.street);
-          }
-        });
+          locations.forEach((l) => {
+            if (set.includes(l.street)) {
+              res.push(l);
+              set.findAndRemove(l.street);
+            }
+          });
 
-        return res.sort((a, b) => {
-          let res = Routing.dist(b, CENTER) - Routing.dist(a, CENTER);
-          if (parseInt(a.zipCode) > 28779 || parseInt(a.zipCode) < 28195) {
-            res += 10;
-          } else {
-            res -= 10;
-          }
-          if (parseInt(b.zipCode) > 28779 || parseInt(b.zipCode) < 28195) {
-            res -= 10;
-          } else {
-            res += 10;
-          }
-          return res;
-        });
-      })
-    );
+          return res.sort((a, b) => {
+            let res = Routing.dist(b, CENTER) - Routing.dist(a, CENTER);
+            if (parseInt(a.zipCode) > 28779 || parseInt(a.zipCode) < 28195) {
+              res += 10;
+            } else {
+              res -= 10;
+            }
+            if (parseInt(b.zipCode) > 28779 || parseInt(b.zipCode) < 28195) {
+              res -= 10;
+            } else {
+              res += 10;
+            }
+            return res;
+          });
+        })
+      );
   }
   searchBing(searchStr: string, type: LocType): Observable<Geolocation[]> {
     return this.http.get<BingMapsResponse>(`https://dev.virtualearth.net/REST/v1/Locations/DE/${searchStr} bremen?maxResults=10&key=${this.BING_API_KEY}`).pipe(
@@ -219,7 +235,35 @@ export class HttpService {
       })
     );
   }
+  searchAzure(searchStr: string, type: LocType): Observable<Geolocation[]> {
+    /**
+     * urlTemplate: https://atlas.microsoft.com/search/address/json?subscription-key=3ulXEksqTaGW0az8aai5LbX7YIFwTTSWUxSBA7WZ3hPDAzQjaoQ1JQQJ99BFACi5YpzcFd4vAAAgAZMP3W5Q&api-version=1.0&query=Thedinghauser+10&language=de-DE&countrySet=DE&view=Auto
+     * uses the azure api key to search for places.
+     */
+    const encodedSearch = encodeURIComponent(searchStr);
+    return this.http
+      .get<AzureMapsResponse>(
+        `https://atlas.microsoft.com/search/address/json?subscription-key=${this.AZURE_API_KEY}&api-version=1.0&query=${encodedSearch}&language=de-DE&countrySet=DE&view=Auto`
+      )
+      .pipe(
+        take(1),
+        map((response) => {
+          // Check if we have results
+          if (!response?.results || response.results.length === 0) {
+            return [];
+          }
 
+          // Filter results based on postcodes like in other search functions
+          const filteredResults = response.results.filter((result) => {
+            const postcode = parseInt(result.address.postalCode);
+            return postcode && ((postcode <= 28779 && postcode >= 28195) || PLZ_EXTRA.includes(postcode));
+          });
+
+          // Map results to Geolocation objects
+          return filteredResults.map((result) => HttpService.mapAzureFeature(result, type));
+        })
+      );
+  }
   reverseGeocode(lat: number, lng: number, type: LocType): Observable<Geolocation[]> {
     return this.http.get<IOSMResponse>(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&limit=1&apiKey=${this.GEOAPIFY_API_KEY}`).pipe(
       take(1),
@@ -231,24 +275,26 @@ export class HttpService {
 
   routeSection(section: Section): Observable<{ route: IPoint[]; sectionDist: number }> {
     const coordinates = section.points.map((p) => `${p.latitude},${p.longitude}`).join('|');
-    return this.http.get<IOSMRouteFeatureCollection>(`https://api.geoapify.com/v1/routing?waypoints=${coordinates}&mode=bicycle&apiKey=${this.GEOAPIFY_API_KEY}`).pipe(
-      take(1),
-      map((response) => {
-        const sectionRoute: { route: IPoint[]; sectionDist: number } = { route: [], sectionDist: 0 };
-        response.features[0].geometry.coordinates.forEach((coordArray: number[][], i: number) => {
-          sectionRoute.route = sectionRoute.route.concat(
-            coordArray.map((coord) => {
-              return { latitude: coord[1], longitude: coord[0] };
-            })
-          );
-          sectionRoute.sectionDist += response.features[0].properties.legs[i].distance / 1000; // from m to km
-        });
-        section.traveldist = sectionRoute.sectionDist; // save the distance in the section
-        section.price = Routing.distPrice(section.traveldist);
-        // todo should not override the previous distances/prices but use other one (-> big refactoring)
-        return sectionRoute;
-      })
-    );
+    return this.http
+      .get<IOSMRouteFeatureCollection>(`https://api.geoapify.com/v1/routing?waypoints=${coordinates}&mode=bicycle&apiKey=${this.GEOAPIFY_API_KEY}`)
+      .pipe(
+        take(1),
+        map((response) => {
+          const sectionRoute: { route: IPoint[]; sectionDist: number } = { route: [], sectionDist: 0 };
+          response.features[0].geometry.coordinates.forEach((coordArray: number[][], i: number) => {
+            sectionRoute.route = sectionRoute.route.concat(
+              coordArray.map((coord) => {
+                return { latitude: coord[1], longitude: coord[0] };
+              })
+            );
+            sectionRoute.sectionDist += response.features[0].properties.legs[i].distance / 1000; // from m to km
+          });
+          section.traveldist = sectionRoute.sectionDist; // save the distance in the section
+          section.price = Routing.distPrice(section.traveldist);
+          // todo should not override the previous distances/prices but use other one (-> big refactoring)
+          return sectionRoute;
+        })
+      );
   }
 
   /**
@@ -300,6 +346,7 @@ export class HttpService {
     res.name = res.street;
     return res;
   }
+
   static mapBingFeature(set: BingResource, type: LocType): Geolocation {
     set.address.addressLine = set.address.addressLine.replace('str ', 'straße ');
     if (set.address.addressLine.slice(-3) === 'str') {
@@ -315,7 +362,24 @@ export class HttpService {
       locType: type,
       priceZone: this.findPriceZone(set.address.postalCode)
     });
-    res.geocoder = GeoCodingMode.bing;
+    res.geocoder = GeoCodingMode.azure;
+    return res;
+  }
+
+  static mapAzureFeature(result: Result, type: LocType): Geolocation {
+    const address = result.address;
+    const position = result.position;
+    const res: Geolocation = new Geolocation({
+      name: address.streetName && address.streetNumber ? `${address.streetName} ${address.streetNumber}` : address.streetName || '',
+      street: address.streetName && address.streetNumber ? `${address.streetName} ${address.streetNumber}` : address.streetName || '',
+      zipCode: address.postalCode || '',
+      city: address.municipality || address.countrySubdivision || '',
+      latitude: position.lat,
+      longitude: position.lon || position.lon,
+      locType: type,
+      priceZone: this.findPriceZone(address.postalCode || '')
+    });
+    res.geocoder = GeoCodingMode.azure;
     return res;
   }
 
@@ -543,7 +607,10 @@ export class HttpService {
       })
     );
   }
-  tourplanItemsForDay(date: Date, options?: { onlyPlanned?: boolean; excludeNotes?: boolean }): Observable<{ items: TourplanItem[]; jobs: Job[]; notes?: Note[] }> {
+  tourplanItemsForDay(
+    date: Date,
+    options?: { onlyPlanned?: boolean; excludeNotes?: boolean }
+  ): Observable<{ items: TourplanItem[]; jobs: Job[]; notes?: Note[] }> {
     // all regularJob templates for this day
     let rjs = GC.regularJobs.filter((rj) => {
       return (
@@ -702,7 +769,9 @@ export class HttpService {
     });
   }
   searchJobs(list: Job[], searchStr: string): Job[] {
-    return list.filter((job) => job.description.toLowerCase().includes(searchStr.toLowerCase()) || job.client.name.toLowerCase().includes(searchStr.toLowerCase()));
+    return list.filter(
+      (job) => job.description.toLowerCase().includes(searchStr.toLowerCase()) || job.client.name.toLowerCase().includes(searchStr.toLowerCase())
+    );
   }
   deleteJob(job: Job): Observable<boolean> {
     if (job.client?.id.length > 0 && GC.clientInvoiceAmounts.get(job.client.id)) {
@@ -1123,7 +1192,10 @@ export class HttpService {
   }
 
   createZone(zone: Zone): Observable<Zone> {
-    return zip([this.http.post<Zone>(`${BACKEND_IP}/zones/create`, zone, { headers: this.backendAuthHeader }), this.saveConfigItem('price_zone_' + zone.name, zone.price.toString())]).pipe(
+    return zip([
+      this.http.post<Zone>(`${BACKEND_IP}/zones/create`, zone, { headers: this.backendAuthHeader }),
+      this.saveConfigItem('price_zone_' + zone.name, zone.price.toString())
+    ]).pipe(
       take(1),
       map((result) => {
         let z = result[0];
@@ -1136,7 +1208,10 @@ export class HttpService {
   }
   updateZone(zone: Zone): Observable<Zone> {
     GC.zones.findAndReplace(zone);
-    return zip([this.http.post<Zone>(`${BACKEND_IP}/zones/update`, zone, { headers: this.backendAuthHeader }), this.saveConfigItem('price_zone_' + zone.name, zone.price.toString())]).pipe(
+    return zip([
+      this.http.post<Zone>(`${BACKEND_IP}/zones/update`, zone, { headers: this.backendAuthHeader }),
+      this.saveConfigItem('price_zone_' + zone.name, zone.price.toString())
+    ]).pipe(
       take(1),
       map((result) => {
         return result[0];
@@ -1244,9 +1319,12 @@ export class HttpService {
   }
   lex_getInvoices(client: LexContact, page?: number): Observable<LexInvoiceListPage> {
     return this.http
-      .post<LexInvoiceListPage>(`${this.LEX_API_PROXY}/voucherlist?voucherType=invoice&voucherStatus=open,draft,paid,paidoff,voided&contactId=${client.id}&page=${page || 0}`, {
-        headers: this.lexAuthHeader
-      })
+      .post<LexInvoiceListPage>(
+        `${this.LEX_API_PROXY}/voucherlist?voucherType=invoice&voucherStatus=open,draft,paid,paidoff,voided&contactId=${client.id}&page=${page || 0}`,
+        {
+          headers: this.lexAuthHeader
+        }
+      )
       .pipe(take(1));
   }
   lex_findClient(client: Client): Observable<LexContact> {

@@ -522,11 +522,11 @@ export class OSMGeocoder implements GeoCodingStrategy {
   }
 }
 
-export class BingGeocoder implements GeoCodingStrategy {
+export class AzureGeocoder implements GeoCodingStrategy {
   type = 1;
 
   geocode(searchStr: string, type: LocType): Observable<Geolocation[]> {
-    return GC.http.searchBing(searchStr, type);
+    return GC.http.searchAzure(searchStr, type);
   }
 }
 

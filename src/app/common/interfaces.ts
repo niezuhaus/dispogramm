@@ -207,6 +207,11 @@ export interface ConfigDataContract {
      * see usage <a href="https://www.bingmapsportal.com/Application">here</a>
      */
     bing: string;
+    /**
+     * the API key for bing maps.
+     * more information <a href="https://portal.azure.com/">here</a>
+     */
+    azure: string;
   };
   workingDays: number;
   nearbyDist: number;
@@ -297,7 +302,7 @@ export interface GeoCodingStrategy {
  */
 export enum GeoCodingMode {
   osm,
-  bing,
+  azure,
   both
 }
 

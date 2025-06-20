@@ -118,3 +118,73 @@ export interface BingResource {
   confidence: string;
   entityType: string;
 }
+
+export interface AzureMapsResponse {
+  summary: Summary;
+  results: Result[];
+}
+
+export interface Summary {
+  query: string;
+  queryType: string;
+  queryTime: number;
+  numResults: number;
+  offset: number;
+  totalResults: number;
+  fuzzyLevel: number;
+}
+
+export interface Result {
+  type: string;
+  id: string;
+  score: number;
+  matchConfidence: MatchConfidence;
+  address: Address;
+  position: LatLon;
+  viewport: Viewport;
+  entryPoints?: EntryPoint[]; // Optional, not present in all entries
+  addressRanges?: AddressRanges; // Optional, only present in last entry
+}
+
+export interface MatchConfidence {
+  score: number;
+}
+
+export interface Address {
+  streetNumber: string;
+  streetName: string;
+  municipality?: string;
+  municipalitySubdivision?: string;
+  neighbourhood?: string;
+  countrySecondarySubdivision: string;
+  countrySubdivision: string;
+  countrySubdivisionName: string;
+  countrySubdivisionCode: string;
+  postalCode: string;
+  countryCode: string;
+  country: string;
+  countryCodeISO3: string;
+  freeformAddress: string;
+  localName: string;
+}
+
+export interface LatLon {
+  lat: number;
+  lon: number;
+}
+
+export interface Viewport {
+  topLeftPoint: LatLon;
+  btmRightPoint: LatLon;
+}
+
+export interface EntryPoint {
+  type: string;
+  position: LatLon;
+}
+
+export interface AddressRanges {
+  rangeRight: string;
+  from: LatLon;
+  to: LatLon;
+}

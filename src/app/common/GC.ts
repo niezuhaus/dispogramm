@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { LngLat } from 'mapbox-gl';
 import { map } from 'rxjs/operators';
-import { BingGeocoder, CombinedGeocoder, OSMGeocoder } from '../views/newtour/inputfield/searchinput/searchinput.component';
+import { AzureGeocoder, CombinedGeocoder, OSMGeocoder } from '../views/newtour/inputfield/searchinput/searchinput.component';
 import { getBoolean, getItem, setItem } from '../UTIL';
 import { Geolocation } from '../classes/Geolocation';
 import { Shift } from '../classes/Shift';
@@ -50,7 +50,7 @@ export class GC {
   public static cantConnect = false;
   public static apiKeyMissing = false;
 
-  public static geocoders: GeoCodingStrategy[] = [new OSMGeocoder(), new BingGeocoder(), new CombinedGeocoder()];
+  public static geocoders: GeoCodingStrategy[] = [new OSMGeocoder(), new AzureGeocoder(), new CombinedGeocoder()];
 
   /**
    * the mapbox map style
@@ -459,7 +459,8 @@ export class GC {
         lex: GC.readString('lexOfficeApiKey') || config.lexOfficeApiKey,
         geoapify: GC.readString('geoapifyApiKey') || config.geoapifyApiKey,
         mapbox: GC.readString('mapboxApiKey') || config.mapboxApiKey,
-        bing: GC.readString('bingApiKey') || config.bingApiKey
+        bing: GC.readString('bingApiKey') || config.bingApiKey,
+        azure: GC.readString('azureApiKey') || config.azureApiKey
       },
       workingDays: GC.readNumber('workingDays') || 21.3,
       nearbyDist: GC.readNumber('nearbyDist') || 150,
