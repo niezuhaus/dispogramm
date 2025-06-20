@@ -6,7 +6,7 @@ import { Optionable } from 'src/app/common/interfaces';
 @Component({
   selector: 'client-option',
   template: `
-  Hello world
+    <!-- Hello world -->
     <!-- <small>
       <strong>
         {{ location.name }}
@@ -20,6 +20,6 @@ import { Optionable } from 'src/app/common/interfaces';
 })
 export class ClientOptionComponent {
   @Input() location: Geolocation;
-  
+
   constructor() {}
 }
