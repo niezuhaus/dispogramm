@@ -15,8 +15,19 @@ import { TitleComponent } from '../app.component';
 import { Note } from '../../classes/Note';
 import { Messenger } from '../../classes/Messenger';
 import { TourplanItem } from '../../classes/TourplanItem';
-import { FilterAdhocJobs, FilterCargoBikeJobs, FilterCargoJobs, FilterCarlaCargoJobs, FilterCashJobs, FilterNotes, FilterOpenJobs, FilterPrePlannedJobs, FilterRegularJobs } from './FilterStrategies';
+import {
+  FilterAdhocJobs,
+  FilterCargoBikeJobs,
+  FilterCargoJobs,
+  FilterCarlaCargoJobs,
+  FilterCashJobs,
+  FilterNotes,
+  FilterOpenJobs,
+  FilterPrePlannedJobs,
+  FilterRegularJobs
+} from './FilterStrategies';
 import { MessengerDialogComponent } from 'src/app/dialogs/messenger-dialog.component';
+import { setItem } from 'src/app/UTIL';
 
 @Component({
   selector: 'tourplan',
@@ -167,9 +178,11 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     GC.loaded().subscribe(() => {
       this.loaded = true;
       this.route.paramMap.subscribe((params) => {
-        if (!params.get('date')) {
+        if (!params.get('date') || GC.openedLast != new Date().yyyymmdd()) {
           this.date = new Date().nextWorkingDay();
           this.location.replaceState(`${GC.routes.tourplan};date=${this.date.yyyymmdd()}`);
+          GC.openedLast = new Date().yyyymmdd();
+          setItem('openedLast', GC.openedLast);
         } else {
           this.date.setDateByString(params.get('date'));
           this.note.date.setDateByString(params.get('date'));

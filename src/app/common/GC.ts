@@ -49,6 +49,7 @@ export class GC {
   public static recentBackendIPs: string[] = [];
   public static cantConnect = false;
   public static apiKeyMissing = false;
+  public static openedLast: string;
 
   public static geocoders: GeoCodingStrategy[] = [new OSMGeocoder(), new AzureGeocoder(), new CombinedGeocoder()];
 
@@ -325,6 +326,7 @@ export class GC {
       GC.backendIP = setItem<string>('backendIP', GC.fallBackend);
     }
     GC.recentBackendIPs = getItem<{ IPs: string[] }>('recentBackendIPs')?.IPs || [];
+    GC.openedLast = getItem<string>('openedLast') || '';
 
     GC.salesThisMonth = new Price();
 
