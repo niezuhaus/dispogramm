@@ -268,7 +268,7 @@ export class RightClickMenuComponent implements OnInit {
   }
 
   newTour(date: Date): void {
-    GC.router.navigate([GC.routes.newTour, { time: date.toISOString() }]);
+    GC.router.navigate([GC.routes.newTour, { time: date.yyyymmdd() }]);
   }
 
   print(): void {
