@@ -17,10 +17,12 @@ import { Shift } from '../../classes/Shift';
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <timepicker [disabled]="disabled" #timepicker [label]="'check-in ab'" [time]="shift.start" (timeChange)="shift.start = $event" [width]="63" class="mr-3"> </timepicker>
+      <timepicker [disabled]="disabled" #timepicker [label]="'check-in ab'" [time]="shift.start" (timeChange)="shift.start = $event" [width]="63" class="mr-3">
+      </timepicker>
       <searchinput
         [disabled]="disabled"
         #search
+        autofocus
         [label]="dispatcher ? 'disponent:in' : 'kurier:in'"
         [searchMessenger]="!dispatcher"
         [searchDispatcher]="dispatcher"
