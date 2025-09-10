@@ -1,20 +1,16 @@
-import { Type } from '@angular/core';
 import { GC } from '../common/GC';
-import { Optionable } from '../common/interfaces';
+import { Optionable, OptionType } from '../common/interfaces';
 import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
 import { SpecialPrice } from './SpecialPrice';
-import { ClientOptionComponent } from '../views/newtour/inputfield/searchinput/option-templates';
+import { Searchable } from '../common/decorators/Searchable';
 
 export class Client implements Optionable {
-  cssClass = 'client-option';
-  get value() {
-    return this.name + ', ' + this.clientId;
-  }
-  component: Type<any> = ClientOptionComponent;
-  // selected(): void {}
+  [key: string]: any;
   id: string = ''; // dbid
   clientId: string = ''; // fex-id
+  @Searchable()
   name: string = '';
+  @Searchable()
   street: string = '';
   zipCode: string = '';
   city: string = '';

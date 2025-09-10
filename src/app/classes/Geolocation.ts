@@ -1,18 +1,15 @@
-import { GeoCodingMode, LocType, PassType, PriceZone, IdObject, Optionable } from '../common/interfaces';
+import { GeoCodingMode, LocType, PassType, PriceZone, IdObject, Optionable, OptionType } from '../common/interfaces';
 import { Job } from './Job';
 import { Price } from './Price';
 import { Branch } from './Branch';
 import { Zone } from './Zone';
 import { GC } from '../common/GC';
 import { LocationDialogComponent } from '../dialogs/location-dialog.component';
-import { ClientOptionComponent } from '../views/newtour/inputfield/searchinput/option-templates';
+import { Searchable } from '../common/decorators/Searchable';
 
 export class Geolocation implements IdObject, Optionable {
-  cssClass: string = 'client-option';
-  get value() {
-    return this.name + ', ' + this.clientId;
-  }
-  component = ClientOptionComponent;
+  [key: string]: any;
+  @Searchable()
   name: string = '';
   latitude: number;
   longitude: number;
@@ -29,6 +26,7 @@ export class Geolocation implements IdObject, Optionable {
   address: string = '';
 
   id: string = '';
+  @Searchable()
   street: string = '';
   zipCode: string = '';
   quarter: string = '';
@@ -147,7 +145,9 @@ export class Station extends Geolocation {
     if (override) {
       decision = override;
     }
-    const a = decision ? '<i class="pr-1 bi bi-arrow-right-short" style="font-size: 28px"></i>' : '<i class="pr-1 bi bi-arrow-left-short" style="font-size: 28px"></i>';
+    const a = decision
+      ? '<i class="pr-1 bi bi-arrow-right-short" style="font-size: 28px"></i>'
+      : '<i class="pr-1 bi bi-arrow-left-short" style="font-size: 28px"></i>';
     return `${a} ${this.name ? this.name : this.street}`;
   }
 

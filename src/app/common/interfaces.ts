@@ -16,10 +16,17 @@ export interface IdObject {
 }
 
 export interface Optionable {
-  cssClass: string;
-  get value(): string;
-  component: Type<any>; // Referenz auf die Komponente
-  // selected(): void;
+  [key: string]: string | undefined;
+}
+
+export enum OptionType {
+  adress, // 0
+  clientLocation, // 1
+  location, // 2
+  client, // 3
+  messenger, // 4
+  job, // 5
+  zone // 6
 }
 
 /**
