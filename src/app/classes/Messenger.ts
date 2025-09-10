@@ -3,15 +3,19 @@ import { GC, ShiftType } from '../common/GC';
 import { Shift } from './Shift';
 import { CheckoutDialogComponent } from '../dialogs/checkout-dialog.component';
 import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
-import { IdObject } from '../common/interfaces';
+import { IdObject, Optionable } from '../common/interfaces';
 import { MessengerDialogComponent } from '../dialogs/messenger-dialog.component';
 import { map, Observable } from 'rxjs';
+import { Searchable } from '../common/decorators/Searchable';
 
-export class Messenger implements IdObject {
+export class Messenger implements IdObject, Optionable {
+  [key: string]: any;
   // db fields
   id: string; // dbid
   messengerId: string; // fexid
+  @Searchable()
   nickname: string;
+  @Searchable()
   firstName: string;
   lastName: string;
   dispatcher = false;
@@ -47,7 +51,7 @@ export class Messenger implements IdObject {
    */
   shifts: Shift[] = [];
   get shiftsWithoutEnd(): number {
-    return this.shifts.filter((shift) => !shift.end).length;
+    return this.shifts?.filter((shift) => !shift.end)?.length || 0;
   }
   hours = 0;
   editDist: number = null;
@@ -153,17 +157,16 @@ export class Messenger implements IdObject {
 
   _calcHours(): void {
     let result = Messenger.calcHours(this.shifts);
-    this.hours = result.hours;
+    this.hours = result;
   }
 
-  static calcHours(shifts: Shift[]): { hours: number } {
+  static calcHours(shifts: Shift[]): number {
     let hours = 0;
-    let shiftsWithoutEnd = 0;
     shifts.forEach((shift) => {
       if (shift.end) {
         hours += shift.start.hoursDifference(shift.end);
       }
     });
-    return { hours: hours };
+    return hours.round(2);
   }
 }

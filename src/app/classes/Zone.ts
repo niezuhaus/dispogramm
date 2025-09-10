@@ -1,13 +1,16 @@
 import { Feature, MultiPolygon, Polygon, Position } from '@turf/turf';
 import { Price } from './Price';
 import { area, polygon } from '@turf/turf';
-import { IdObject } from '../common/interfaces';
+import { IdObject, Optionable } from '../common/interfaces';
 import { GC } from '../common/GC';
 import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
 import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
+import { Searchable } from '../common/decorators/Searchable';
 
-export class Zone implements IdObject {
+export class Zone implements IdObject, Optionable {
+  [key: string]: any;
   id: string;
+  @Searchable()
   name: string;
   price = new Price();
   index?: number;

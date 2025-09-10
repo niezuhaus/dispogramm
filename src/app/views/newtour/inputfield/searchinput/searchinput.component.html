@@ -19,23 +19,116 @@
     cdkAutosizeMaxRows="4"
   ></textarea>
   <mat-error *ngIf="required && ctrl.invalid">bitte {{ label }} eingeben</mat-error>
-  <i *ngIf="searchTerm" class="bi bi-x bi-x-transparent position-absolute" style="right: 0; bottom: 7px" (click)="!disabled ? reset(true) : 0" tabindex="-1"></i>
+  <i *ngIf="searchTerm" class="bi bi-x bi-x-transparent position-absolute" style="right: 0; bottom: 7px" (click)="!disabled ? reset(true) : 0" tabindex="-1">
+  </i>
 
-  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" id="autocomplete" [panelWidth]="'unset'" (contextmenu)="$event.stopPropagation()" (focusout)="autocomplete.closePanel()">
-    <mat-option *ngFor="let option of clientOptions" [value]="option.value" [className]="option.cssClass">
-      <ng-container [ngComponentOutlet]="option.component" ngComponentOutletInp></ng-container>
+  <mat-autocomplete
+    autoActiveFirstOption
+    #auto="matAutocomplete"
+    id="autocomplete"
+    [panelWidth]="'unset'"
+    (contextmenu)="$event.stopPropagation()"
+    (focusout)="autocomplete.closePanel()"
+  >
+    <mat-option *ngFor="let option of allOptions" class="{{ option.cssClass }}" (onSelectionChange)="_handleSelection(option)" [value]="option.value">
+      <!-- the white ones -->
+      <div *ngIf="option.type == 0" class="flex flex-col">
+        <small class="flex flex-row align-items-center pt-1">
+          <img *ngIf="option.loc.geocoder === 0" src="assets/osm.png" alt="osm" class="mr-1" style="height: 14px" />
+          <img *ngIf="option.loc.geocoder === 1" src="assets/azure.png" alt="bing" class="mr-1" style="height: 14px" />
+          <strong>
+            {{ option.loc.street }}
+          </strong>
+        </small>
+        <small>
+          {{ option.loc.street + ', ' }}
+          <span [style.font-weight]="option.loc.city === 'Bremen' ? 'normal' : 'bold'">
+            {{ option.loc.zipCode + ' ' + option.loc.city }}
+          </span>
+        </small>
+      </div>
+
+      <!-- the red ones -->
+      <div *ngIf="option.type == 1" class="flex flex-col">
+        <small>
+          <strong>
+            {{ option.loc.name }}
+          </strong>
+        </small>
+        <small>{{ option.loc.street + ', ' + option.loc.zipCode + ' ' + option.loc.city }}</small>
+      </div>
+
+      <!-- the blue ones -->
+      <div *ngIf="option.type == 2" class="flex flex-col">
+        <small>
+          <strong>
+            {{ option.loc.name }}
+          </strong>
+        </small>
+        <small>{{ option.loc.street + ', ' + option.loc.zipCode + ' ' + option.loc.city }}</small>
+      </div>
+
+      <!-- the black ones -->
+      <div *ngIf="option.type == 3" class="flex flex-col">
+        <small>
+          <strong> {{ option.client.name }}</strong>
+        </small>
+        <small>{{ option.client.street + ', ' + option.client.zipCode + ' ' + option.client.city }}</small>
+        <small>{{ option.client.clientId }}</small>
+      </div>
+
+      <!-- the purple ones -->
+      <div *ngIf="option.type == 4">
+        {{ option.messenger.nickname }}
+      </div>
+
+      <!-- the green ones -->
+      <div *ngIf="option.type == 5" style="width: 300px" (contextmenu)="$event.stopPropagation()">
+        <div class="mb-2 ml-4 flex flex-col">
+          <small
+            ><strong>{{ option.job.name }}</strong></small
+          >
+        </div>
+        <div class="flex flex-row justify-content-between align-items-center">
+          <small class="mr-2 w-80 flex-column text-truncate">
+            <p class="flex flex-row align-items-center" style="margin: unset" *ngFor="let station of option.job.pickups">
+              <i class="bi bi-arrow-left-short toBottom"></i>
+              {{ station.name || station.address }}
+            </p>
+            <p class="flex flex-row align-items-center" style="margin: unset" *ngFor="let station of option.job.deliveries">
+              <i class="bi bi-arrow-right-short toBottom"></i>
+              {{ station.name || station.address }}
+            </p>
+          </small>
+          <div *ngIf="option.job.cargoType > 0" class="mr-2 flex align-items-center">
+            <img *ngIf="option.job.cargoType === 1" src="../../../../../assets/cargo/last.png" alt="lastzuschlag" width="20px" />
+            <img *ngIf="option.job.cargoType === 2" src="../../../../../assets/cargo/lastenrad.png" alt="lastenrad" width="35px" />
+            <img *ngIf="option.job.cargoType === 3" src="../../../../../assets/cargo/carla.png" alt="e-lastenrad + anhänger" width="45px" />
+          </div>
+          <small *ngIf="option.job.distributeNumber > 0" class="mr-2">{{ option.job.distributeNumber }} abgaben</small>
+          <span *ngIf="!option.job.clientInvolved"><i class="mr-2 bi bi-person-x"></i></span>
+          <span style="font-family: monospace" class="mr-2">{{ option.job.price._netto }}</span>
+          <span *ngIf="option.job.connection" style="font-family: monospace" class="mr-2"> (Anschluss)</span>
+        </div>
+      </div>
     </mat-option>
+
     <!-- the purple ones -->
-    <mat-option
+    <!-- <mat-option
       class="messenger-option"
       *ngFor="let messenger of messengerOptions.concat(dispatcherOptions)"
       [value]="keepMessName ? messenger.nickname : ''"
       (onSelectionChange)="_messengerSelected(messenger)"
     >
-      {{ messenger.nickname }}
-    </mat-option>
+    {{ messenger.nickname }}
+    </mat-option> -->
     <!-- the black ones -->
-    <mat-option class="client-client-option" *ngFor="let client of clientclientOptions" [value]="client.name + ', ' + client.clientId" (onSelectionChange)="_clientClientSelected(client)">
+    <!-- <mat-option
+      class="client-client-option"
+      *ngFor="let client of clientclientOptions"
+      [value]="client.name + ', ' + client.clientId"
+      (onSelectionChange)="_clientClientSelected(client)"
+    >
       <div class="flex flex-col">
         <small>
           <strong> {{ client.name }}</strong>
@@ -43,9 +136,16 @@
         <small>{{ client.street + ', ' + client.zipCode + ' ' + client.city }}</small>
         <small>{{ client.clientId }}</small>
       </div>
-    </mat-option>
+    </mat-option> -->
     <!-- the green ones -->
-    <mat-option class="job-option" style="width: 300px" *ngFor="let job of jobOptions" (onSelectionChange)="_jobSelected(job)" [value]="job.center.name" (contextmenu)="$event.stopPropagation()">
+    <!-- <mat-option
+      class="job-option"
+      style="width: 300px"
+      *ngFor="let job of jobOptions"
+      (onSelectionChange)="_jobSelected(job)"
+      [value]="job.center.name"
+      (contextmenu)="$event.stopPropagation()"
+    >
       <div class="mb-2 ml-4 flex flex-col">
         <small
           ><strong>{{ job.name }}</strong></small
@@ -72,18 +172,23 @@
         <span style="font-family: monospace" class="mr-2">{{ job.price._netto }}</span>
         <span *ngIf="job.connection" style="font-family: monospace" class="mr-2"> (Anschluss)</span>
       </div>
-    </mat-option>
+    </mat-option> -->
     <!-- the red ones -->
-    <mat-option class="client-option" *ngFor="let location of clientOptions" (onSelectionChange)="searching = searching + 1; _clientSelected(location)" [value]="location.name">
+    <!-- <mat-option
+      class="client-option"
+      *ngFor="let location of clientOptions"
+      (onSelectionChange)="searching = searching + 1; _clientSelected(location)"
+      [value]="location.name"
+    >
       <div class="flex flex-col">
         <small
           ><strong>{{ location.name }}</strong></small
         >
         <small>{{ location.street + ', ' + location.zipCode + ' ' + location.city }}</small>
       </div>
-    </mat-option>
+    </mat-option> -->
     <!-- the blue ones -->
-    <mat-option class="location-option" *ngFor="let location of locationOptions" (onSelectionChange)="_locationSelected(location)" [value]="location.name">
+    <!-- <mat-option class="location-option" *ngFor="let location of locationOptions" (onSelectionChange)="_locationSelected(location)" [value]="location.name">
       <div class="flex flex-col">
         <div class="flex flex-col">
           <small
@@ -92,17 +197,18 @@
           <small>{{ location.street + ', ' + location.zipCode + ' ' + location.city }}</small>
         </div>
       </div>
-    </mat-option>
+    </mat-option> -->
     <!-- the white ones -->
-    <mat-option *ngFor="let option of osmOptions" (onSelectionChange)="_osmSelected(option)" [value]="option.street">
+    <!-- <mat-option *ngFor="let option of osmOptions" (onSelectionChange)="_osmSelected(option)" [value]="option.street">
       <div class="flex flex-col">
-        <small class="flex flex-row align-items-center">
+        <small class="flex flex-row align-items-center pt-1">
           <img *ngIf="option.geocoder === 0" src="assets/osm.png" alt="osm" class="mr-1" style="height: 14px" />
-          <img *ngIf="option.geocoder === 1" src="assets/bing.png" alt="bing" class="mr-1" style="height: 14px" />
+          <img *ngIf="option.geocoder === 1" src="assets/azure.png" alt="bing" class="mr-1" style="height: 14px" />
           <strong>{{ option.street }}</strong></small
         >
         <small
-          >{{ option.street + ', ' }} <span [style.font-weight]="option.city === 'Bremen' ? 'normal' : 'bold'">{{ option.zipCode + ' ' + option.city }}</span></small
+          >{{ option.street + ', ' }}
+          <span [style.font-weight]="option.city === 'Bremen' ? 'normal' : 'bold'">{{ option.zipCode + ' ' + option.city }}</span></small
         >
       </div>
     </mat-option>
@@ -113,7 +219,7 @@
         >
         <span style="font-family: monospace" class="mx-2">{{ zone.area }}km²</span>
       </div>
-    </mat-option>
+    </mat-option> -->
     <!-- ladekreis -->
     <mat-option *ngIf="searching > 0" id="searchInputLoading" class="flex align-items-center justify-content-center">
       <div class="flex h-100 pl-4 align-items-center justify-content-center">

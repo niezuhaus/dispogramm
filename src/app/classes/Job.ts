@@ -1,4 +1,4 @@
-import { Cargotype, IPoint, LocType, MorningTour, PassType, SpecialPriceType, RoutingMode, BranchSet } from '../common/interfaces';
+import { Cargotype, IPoint, LocType, MorningTour, PassType, SpecialPriceType, RoutingMode, BranchSet, Optionable } from '../common/interfaces';
 import { Price } from './Price';
 import { GC } from '../common/GC';
 import { Geolocation, Station } from './Geolocation';
@@ -14,8 +14,6 @@ import { map } from 'rxjs/operators';
 import { Zone } from './Zone';
 import { SpecialPrice } from './SpecialPrice';
 import { CalendarRangeDialogComponent } from '../dialogs/calendar-range-dialog/calendar-range-dialog.component';
-import { log } from 'console';
-import { setItem } from '../UTIL';
 
 export abstract class AbstractJob {
   center: Station; // clients position NOT necessarily the center
@@ -50,12 +48,17 @@ export abstract class AbstractJob {
     this.pickups = this.pickups?.map((s) => new Station(s));
 
     if (!this.clientInvolved) {
-      this.pickups.length === 1 ? (this.pickups[0].locType = LocType.centerPickup) : this.deliveries.length === 1 ? (this.deliveries[0].locType = LocType.centerDelivery) : '';
+      this.pickups.length === 1
+        ? (this.pickups[0].locType = LocType.centerPickup)
+        : this.deliveries.length === 1
+          ? (this.deliveries[0].locType = LocType.centerDelivery)
+          : '';
     }
   }
 }
 
-export class Job extends AbstractJob {
+export class Job extends AbstractJob implements Optionable {
+  [key: string]: any;
   date: Date;
   creationDate: Date;
   creator: Messenger;
@@ -78,15 +81,15 @@ export class Job extends AbstractJob {
   priceStrategyObj: PriceStrategy = new FexRules();
   specialPrice: SpecialPrice = new SpecialPrice();
 
-  public set _priceMode(mode: SpecialPriceType) {
+  set _priceMode(mode: SpecialPriceType) {
     this._priceStrategy = GC.specialPrices.find((s) => s.type === mode).id;
   }
 
-  public get _priceStrategy(): string {
+  get _priceStrategy(): string {
     return this.specialPrice?.id || '';
   }
 
-  public set _priceStrategy(id: string) {
+  set _priceStrategy(id: string) {
     if (!id?.length) {
       this.specialPrice = new SpecialPrice();
     } else {
@@ -99,7 +102,7 @@ export class Job extends AbstractJob {
     this.priceStrategyObj = this.specialPrice?.priceStrategy;
   }
 
-  public set _routeMode(mode: RoutingMode) {
+  set _routeMode(mode: RoutingMode) {
     switch (mode) {
       case RoutingMode.normal:
         this.routeStrategyObj = new Cheapest();
@@ -358,7 +361,7 @@ export class Job extends AbstractJob {
    * @param options.pushDate a differing date that should be shown instead of today
    * @returns the initiated job
    */
-  public init(options?: { pushPrice?: Price; pushDate?: Date }): Job {
+  init(options?: { pushPrice?: Price; pushDate?: Date }): Job {
     if (options?.pushDate) {
       this.date = options.pushDate;
     }
@@ -435,7 +438,10 @@ export class Job extends AbstractJob {
     let res = '';
     res += this.price?.toString(!this.billingTour) || this.price.toString(!this.billingTour);
     res += this.billingTour ? ' netto' : ' brutto';
-    res += this._waitingMinutes > GC.config.prices.waitingTimeQuantityIncl ? ` (inkl. ${this.waitingPrice.toString(!this.billingTour)} für ${this.waitingMinutes}min)` : '';
+    res +=
+      this._waitingMinutes > GC.config.prices.waitingTimeQuantityIncl
+        ? ` (inkl. ${this.waitingPrice.toString(!this.billingTour)} für ${this.waitingMinutes}min)`
+        : '';
     return res;
   }
 
@@ -866,7 +872,7 @@ export class RegularJob extends Job {
         dates.push(this.getDate(start.nextWorkingDay()));
         start = start.nextWorkingDay();
       }
-      zip(dates.map((d) => this.cancelSilent(d))).subscribe(() => {
+      zip(dates.map((d) => this.cancelSilent(d).subscribe())).subscribe(() => {
         GC.openSnackBarLong('jobs gestrichen');
         GC.refreshNeeded.emit(true);
       });

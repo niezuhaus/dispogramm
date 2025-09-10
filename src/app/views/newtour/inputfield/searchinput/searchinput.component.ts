@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Injector, Input, OnInit, Output, V
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { Client } from '../../../../classes/Client';
-import { GeoCodingStrategy, LocType, Optionable, SpecialPriceType } from '../../../../common/interfaces';
+import { GeoCodingStrategy, LocType, Optionable, OptionType, SpecialPriceType } from '../../../../common/interfaces';
 import { Messenger } from '../../../../classes/Messenger';
 import { Job } from '../../../../classes/Job';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
@@ -12,6 +12,7 @@ import { HttpService } from '../../../../http.service';
 import { Geolocation, Station } from '../../../../classes/Geolocation';
 import { FormControl, Validators } from '@angular/forms';
 import { Zone } from '../../../../classes/Zone';
+import { Option } from 'src/app/classes/Option';
 
 @Component({
   selector: 'searchinput',
@@ -74,6 +75,7 @@ export class SearchinputComponent implements OnInit {
   dispatcherSelection: Messenger;
   messengerSelection: Messenger;
   searchTerm = '';
+  searchTermNumber = '';
   client: Client;
 
   locationOptions: Geolocation[] = [];
@@ -84,9 +86,7 @@ export class SearchinputComponent implements OnInit {
   dispatcherOptions: Messenger[] = [];
   zoneOptions: Zone[] = [];
   mostPromising: Location;
-  get allOptions(): Optionable[] {
-    return this.clientOptions;
-  }
+  allOptions: Option[] = [];
 
   jobOptions: Job[];
   searching = 0;
@@ -152,9 +152,22 @@ export class SearchinputComponent implements OnInit {
     }
   }
 
+  addOptions(options: Option[]): void {
+    this.allOptions = this.allOptions.concat(options);
+    this.allOptions.sort((a, b) => a.editDistance(this.searchTerm) - b.editDistance(this.searchTerm));
+  }
+
   // Events
 
   setListeners(): void {
+    this.change
+      .pipe(
+        distinctUntilChanged(),
+        filter((term) => term?.length >= 1)
+      )
+      .subscribe(() => {
+        this.allOptions = [];
+      });
     // the red ones, locations with clientId
     if (this.searchClientLocations) {
       this.change
@@ -168,6 +181,11 @@ export class SearchinputComponent implements OnInit {
           }
           if (!this.jobMode) {
             this.clientOptions = HttpService._filterLocationsByAny(GC.clientLocations, searchStr);
+            this.addOptions(
+              this.clientOptions.map((loc) => {
+                return new Option(loc, OptionType.clientLocation, loc.name, 'client-option');
+              })
+            );
           }
         });
     }
@@ -196,6 +214,11 @@ export class SearchinputComponent implements OnInit {
         .subscribe((locations) => {
           if (!this.jobMode) {
             this.locationOptions = locations;
+            this.addOptions(
+              this.locationOptions.map((loc) => {
+                return new Option(loc, OptionType.location, loc.name, 'location-option');
+              })
+            );
           }
         });
     }
@@ -234,6 +257,11 @@ export class SearchinputComponent implements OnInit {
         )
         .subscribe((osmOptions) => {
           this.osmOptions = osmOptions;
+          this.addOptions(
+            this.osmOptions.map((loc) => {
+              return new Option(loc, OptionType.adress, loc.street);
+            })
+          );
           this.searching = 0;
         });
     }
@@ -266,6 +294,11 @@ export class SearchinputComponent implements OnInit {
                 this.searching = 0;
                 this.jobOptions = jobOptions;
                 this.resetOptions(true);
+                this.addOptions(
+                  this.jobOptions.map((job) => {
+                    return new Option(job, OptionType.job, job.center.name, 'job-option');
+                  })
+                );
               });
             }
           }, 0);
@@ -289,6 +322,11 @@ export class SearchinputComponent implements OnInit {
         )
         .subscribe((clients) => {
           this.clientclientOptions = clients;
+          this.addOptions(
+            this.clientclientOptions.map((client) => {
+              return new Option(client, OptionType.client, client.name + ', ' + client.clientId, 'client-client-option');
+            })
+          );
         });
     }
 
@@ -305,6 +343,11 @@ export class SearchinputComponent implements OnInit {
         )
         .subscribe((messenger) => {
           this.messengerOptions = messenger.filter((mess) => !this.ignoredMessenger?.map((m) => m.id).includes(mess.id));
+          this.addOptions(
+            this.messengerOptions.map((mes) => {
+              return new Option(mes, OptionType.messenger, mes.nickname, 'messenger-option');
+            })
+          );
         });
     }
 
@@ -320,10 +363,17 @@ export class SearchinputComponent implements OnInit {
         )
         .subscribe((dispatcher) => {
           this.dispatcherOptions = dispatcher;
+          this.addOptions(
+            this.dispatcherOptions.map((mes) => {
+              console.log(mes);
+
+              return new Option(mes, OptionType.messenger, mes.nickname, 'messenger-option');
+            })
+          );
         });
     }
 
-    // zones
+    // the orange ones, zones
     if (this.searchZones) {
       this.change
         .pipe(
@@ -340,6 +390,11 @@ export class SearchinputComponent implements OnInit {
             list = GC.postCodeZones;
           }
           this.zoneOptions = list.filter((zone) => zone.name.toLowerCase().includes(term.toLowerCase()));
+          this.addOptions(
+            this.zoneOptions.map((zone) => {
+              return new Option(zone, OptionType.zone, zone.name, 'zone-option');
+            })
+          );
         });
     }
   }
@@ -388,6 +443,33 @@ export class SearchinputComponent implements OnInit {
         if (!this.autocomplete.panelOpen) {
           this.autocomplete.openPanel();
         }
+    }
+  }
+
+  _handleSelection(option: Option) {
+    switch (option.type) {
+      case OptionType.adress:
+        this._osmSelected(option.loc);
+        break;
+      case OptionType.clientLocation:
+        this.searching++;
+        this._clientSelected(option.loc);
+        break;
+      case OptionType.location:
+        this._locationSelected(option.loc);
+        break;
+      case OptionType.client:
+        this._clientClientSelected(option.client);
+        break;
+      case OptionType.messenger:
+        this._messengerSelected(option.messenger);
+        break;
+      case OptionType.job:
+        this._jobSelected(option.job);
+        break;
+      case OptionType.zone:
+        this._zoneSelected(option.zone);
+        break;
     }
   }
 
@@ -488,6 +570,7 @@ export class SearchinputComponent implements OnInit {
   }
 
   resetOptions(leavejobs?: boolean): void {
+    this.allOptions = [];
     this.clientOptions = [];
     this.locationOptions = [];
     this.osmOptions = [];
