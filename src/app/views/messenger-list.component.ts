@@ -36,7 +36,12 @@ import { MatMenuTrigger } from '@angular/material/menu';
     </div>
     <!-- right click menu -->
     <div class="container">
-      <div style="visibility: hidden; position: fixed" [style.left.px]="menuTopLeftPosition.x" [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="contextMenu"></div>
+      <div
+        style="visibility: hidden; position: fixed"
+        [style.left.px]="menuTopLeftPosition.x"
+        [style.top.px]="menuTopLeftPosition.y"
+        [matMenuTriggerFor]="contextMenu"
+      ></div>
 
       <mat-menu #contextMenu="matMenu">
         <ng-template matMenuContent let-item="item">
@@ -47,32 +52,32 @@ import { MatMenuTrigger } from '@angular/material/menu';
   `,
   styles: [
     `
-          @import '../../const.scss';
-    
-          .out_container {
-            margin: auto;
-            width: 65vw;
-            display: flex;
-            justify-content: center;
-          }
-    
-          .messContainer {
-            border: 2px solid $fex-dark;
-            background: $fex-dark;
-            color: white;
-            border-radius: 10px;
-            padding: 13px 15px;
-            width: fit-content;
-            height: fit-content;
-            position: relative;
-            margin: 10px;
-            cursor: pointer;
-          }
-    
-          .half-transparent {
-            opacity: 50%;
-          }
-        `
+      @import '../../const.scss';
+
+      .out_container {
+        margin: auto;
+        width: 65vw;
+        display: flex;
+        justify-content: center;
+      }
+
+      .messContainer {
+        border: 2px solid $fex-dark;
+        background: $fex-dark;
+        color: white;
+        border-radius: 10px;
+        padding: 13px 15px;
+        width: fit-content;
+        height: fit-content;
+        position: relative;
+        margin: 10px;
+        cursor: pointer;
+      }
+
+      .half-transparent {
+        opacity: 50%;
+      }
+    `
   ]
 })
 export class MessengerListComponent extends TitleComponent implements OnInit {

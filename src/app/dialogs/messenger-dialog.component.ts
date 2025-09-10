@@ -21,7 +21,13 @@ import { ShiftTableComponent } from '../views/shift-table.component';
         <div class="flex flex-row px-4">
           <mat-form-field class="mr-4 w-25" style="min-width: 200px">
             <mat-label>vorname</mat-label>
-            <input type="text" #name matInput (keyup)="messenger.nickname = messenger.id ? messenger.nickname : name.value.toLowerCase()" [(ngModel)]="messenger.firstName" />
+            <input
+              type="text"
+              #name
+              matInput
+              (keyup)="messenger.nickname = messenger.id ? messenger.nickname : name.value.toLowerCase()"
+              [(ngModel)]="messenger.firstName"
+            />
           </mat-form-field>
           <mat-form-field class="mr-4 w-25" style="min-width: 200px">
             <mat-label>nachname</mat-label>
@@ -56,15 +62,19 @@ import { ShiftTableComponent } from '../views/shift-table.component';
         <div *ngIf="!new" class="p-4">
           <div class="mb-3 flex flex-row align-items-center justify-content-between">
             <datepicker #datepicker [(date)]="date" [monthly]="true" (dateChange)="load()"> </datepicker>
-            <button *ngIf="messenger.shifts?.length > 0" mat-raised-button class="fex-button" (click)="exportShifts(messenger, date)">lohndatei <i class="ml-3 bi bi-download"></i></button>
-            <button mat-raised-button class="fex-button" (click)="shiftTable.newShift()" matTooltip="neue schicht hinzufügen">schicht hinzufügen <i class="ml-3 bi bi-plus-circle"></i></button>
+            <button *ngIf="messenger.shifts?.length > 0" mat-raised-button class="fex-button" (click)="exportShifts(messenger, date)">
+              lohndatei <i class="ml-3 bi bi-download"></i>
+            </button>
+            <button mat-raised-button class="fex-button" (click)="shiftTable.newShift()" matTooltip="neue schicht hinzufügen">
+              schicht hinzufügen <i class="ml-3 bi bi-plus-circle"></i>
+            </button>
           </div>
 
           <div *ngIf="loaded && messenger.shifts.length" class="mb-4" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden">
             <shift-table [messenger]="messenger" #table> </shift-table>
           </div>
 
-          <h2 *ngIf="!messenger.shifts.length" class="center">- keine schichten bisher -</h2>
+          <h4 *ngIf="!messenger.shifts?.length" class="text-center"><i>- keine schichten bisher -</i></h4>
 
           <p *ngIf="messenger.active && messenger.shifts?.length">
             umsatz diesen monat: {{ salesNettoThisMonth._netto }} netto / {{ salesBruttoThisMonth._brutto }} brutto<br />
@@ -79,7 +89,8 @@ import { ShiftTableComponent } from '../views/shift-table.component';
         {{ messenger.id ? 'speichern' : 'hinzufügen' }}
       </button>
       <span class="fex-warn" *ngIf="messenger.shiftsWithoutEnd > 0">
-        für {{ messenger.shiftsWithoutEnd === 1 ? 'eine' : messenger.shiftsWithoutEnd }} schicht{{ messenger.shiftsWithoutEnd > 1 ? 'en' : '' }} wurde noch keine endzeit eingetragen
+        für {{ messenger.shiftsWithoutEnd === 1 ? 'eine' : messenger.shiftsWithoutEnd }} schicht{{ messenger.shiftsWithoutEnd > 1 ? 'en' : '' }} wurde noch
+        keine endzeit eingetragen
       </span>
       <!-- <button *ngIf="isDezwo" mat-raised-button
               class="flex fex-button"

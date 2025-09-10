@@ -15,466 +15,470 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 @Component({
   selector: 'app-config-dialog',
   template: `
-    <h1 mat-dialog-title>einstellungen</h1>
-    <div *ngIf="config" class="flex flex-column" style="overflow-y: scroll; overflow-x: hidden; min-width: 500px">
-      <mat-tab-group dynamicHeight selectedIndex="{{ data?.pageIndex || 0 }}">
-        <mat-tab [label]="'preise'">
-          <div style="max-height:50vh; overflow-y: scroll;" class="flex flex-row">
-            <div style="width: 33%; min-width: 300px">
-              <div class="option w8020 small">
-                <label>
-                  grundpreis bis
-                  <mat-form-field style="width: 55px" class="mx-2 relative-top4px">
-                    <input
-                      matInput
-                      type="number"
-                      #quantityIncl
-                      [(ngModel)]="config.prices.list.quantityIncl"
-                      (change)="changedNumbers.set('price_list_quantityIncl', quantityIncl.valueAsNumber)"
-                      (keyup)="changedNumbers.set('price_list_quantityIncl', quantityIncl.valueAsNumber)"
-                    />
-                  </mat-form-field>
-                  km
-                </label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.list.base"
-                    (touched)="changedPrices.set(config.prices.list.base.name, config.prices.list.base)"
-                    [type]="0"
-                  ></app-price-input>
+    <mat-tab-group dynamicHeight class="animated-width">
+      <mat-tab label="einstellungen">
+        <div *ngIf="config" class="flex flex-column" style="overflow-y: scroll; overflow-x: hidden; min-width: 500px">
+          <mat-tab-group dynamicHeight selectedIndex="{{ data?.pageIndex || 0 }}" class="animated-width">
+            <mat-tab [label]="'preise'">
+              <div style="max-height:50vh; overflow-y: scroll;" class="flex flex-row">
+                <div style="width: 33%; min-width: 300px">
+                  <div class="option w8020 small">
+                    <label>
+                      grundpreis bis
+                      <mat-form-field style="width: 55px" class="mx-2 relative-top4px">
+                        <input
+                          matInput
+                          type="number"
+                          #quantityIncl
+                          [(ngModel)]="config.prices.list.quantityIncl"
+                          (change)="changedNumbers.set('price_list_quantityIncl', quantityIncl.valueAsNumber)"
+                          (keyup)="changedNumbers.set('price_list_quantityIncl', quantityIncl.valueAsNumber)"
+                        />
+                      </mat-form-field>
+                      km
+                    </label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.list.base"
+                        (touched)="changedPrices.set(config.prices.list.base.name, config.prices.list.base)"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="option w8020">
+                    <label> preis pro km </label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.list.extra1"
+                        (touched)="changedPrices.set(config.prices.list.extra1.name, config.prices.list.extra1)"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="option w8020 small">
+                    <label>
+                      ab
+                      <mat-form-field style="width: 55px" class="mx-2 relative-top4px">
+                        <input
+                          matInput
+                          type="number"
+                          #threshold
+                          [(ngModel)]="config.prices.list.threshold"
+                          (change)="changedNumbers.set('price_list_threshold', threshold.valueAsNumber)"
+                          (keyup)="changedNumbers.set('price_list_threshold', threshold.valueAsNumber)"
+                        />
+                      </mat-form-field>
+                      km
+                    </label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.list.extra2"
+                        (touched)="changedPrices.set(config.prices.list.extra2.name, config.prices.list.extra2)"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="option w8020">
+                    <label>zwischenstop</label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.stop"
+                        (touched)="changedPrices.set(config.prices.stop.name, config.prices.stop)"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                </div>
+                <div style="width: 33%; min-width: 300px">
+                  <div class="option w8020">
+                    <label>um's eck</label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.nearby"
+                        (touched)="changedPrices.set(config.prices.nearby.name, config.prices.nearby)"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="option w8020">
+                    <label>innenstadt</label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.city"
+                        (touched)="changedPrices.set(config.prices.city.name, config.prices.city)"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="option w8020">
+                    <label>fünf minuten wartezeit</label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.fiveMinutes"
+                        (touched)="changedPrices.set(config.prices.fiveMinutes.name, config.prices.fiveMinutes)"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="option w8020">
+                    <label>fehlanfahrt</label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.falseArrival"
+                        (touched)="changedPrices.set(config.prices.falseArrival.name, config.prices.falseArrival)"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                </div>
+                <div style="width: 33%; min-width: 300px">
+                  <div class="option w8020 mr-3">
+                    <label> lastzuschlag </label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.extras[1]"
+                        (touched)="changedPrices.set(config.prices.extras[1].name, config.prices.extras[1])"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="option w8020 mr-3">
+                    <label> lastenradzuschlag </label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.extras[2]"
+                        (touched)="changedPrices.set(config.prices.extras[2].name, config.prices.extras[2])"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="option w8020 mr-3">
+                    <label> e-lastenrad + gespann </label>
+                    <div>
+                      <app-price-input
+                        [(price)]="config.prices.extras[3]"
+                        (touched)="changedPrices.set(config.prices.extras[3].name, config.prices.extras[3])"
+                        [type]="0"
+                      ></app-price-input>
+                    </div>
+                  </div>
+                  <hr />
                 </div>
               </div>
-              <hr />
-              <div class="option w8020">
-                <label> preis pro km </label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.list.extra1"
-                    (touched)="changedPrices.set(config.prices.list.extra1.name, config.prices.list.extra1)"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-              <hr />
-              <div class="option w8020 small">
-                <label>
-                  ab
-                  <mat-form-field style="width: 55px" class="mx-2 relative-top4px">
-                    <input
-                      matInput
-                      type="number"
-                      #threshold
-                      [(ngModel)]="config.prices.list.threshold"
-                      (change)="changedNumbers.set('price_list_threshold', threshold.valueAsNumber)"
-                      (keyup)="changedNumbers.set('price_list_threshold', threshold.valueAsNumber)"
-                    />
-                  </mat-form-field>
-                  km
-                </label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.list.extra2"
-                    (touched)="changedPrices.set(config.prices.list.extra2.name, config.prices.list.extra2)"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-              <hr />
-              <div class="option w8020">
-                <label>zwischenstop</label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.stop"
-                    (touched)="changedPrices.set(config.prices.stop.name, config.prices.stop)"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-            </div>
-            <div style="width: 33%; min-width: 300px">
-              <div class="option w8020">
-                <label>um's eck</label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.nearby"
-                    (touched)="changedPrices.set(config.prices.nearby.name, config.prices.nearby)"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-              <hr />
-              <div class="option w8020">
-                <label>innenstadt</label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.city"
-                    (touched)="changedPrices.set(config.prices.city.name, config.prices.city)"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-              <hr />
-              <div class="option w8020">
-                <label>fünf minuten wartezeit</label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.fiveMinutes"
-                    (touched)="changedPrices.set(config.prices.fiveMinutes.name, config.prices.fiveMinutes)"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-              <hr />
-              <div class="option w8020">
-                <label>fehlanfahrt</label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.falseArrival"
-                    (touched)="changedPrices.set(config.prices.falseArrival.name, config.prices.falseArrival)"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-            </div>
-            <div style="width: 33%; min-width: 300px">
-              <div class="option w8020 mr-3">
-                <label> lastzuschlag </label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.extras[1]"
-                    (touched)="changedPrices.set(config.prices.extras[1].name, config.prices.extras[1])"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-              <hr />
-              <div class="option w8020 mr-3">
-                <label> lastenradzuschlag </label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.extras[2]"
-                    (touched)="changedPrices.set(config.prices.extras[2].name, config.prices.extras[2])"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-              <hr />
-              <div class="option w8020 mr-3">
-                <label> e-lastenrad + gespann </label>
-                <div>
-                  <app-price-input
-                    [(price)]="config.prices.extras[3]"
-                    (touched)="changedPrices.set(config.prices.extras[3].name, config.prices.extras[3])"
-                    [type]="0"
-                  ></app-price-input>
-                </div>
-              </div>
-              <hr />
-            </div>
-          </div>
-        </mat-tab>
+            </mat-tab>
 
-        <mat-tab [label]="'sonderpreise & zonen'">
-          <div class="flex flex-row flex-wrap p-4" style="max-width: 800px">
-            <app-container
-              style="overflow: scroll"
-              *ngFor="let price of specialPrices"
-              [price]="price"
-              [type]="'specialPrice'"
-              class="mr-4 mb-4"
-              (contextmenu)="onRightClick($event, price)"
-            >
-            </app-container>
-            <app-container class="mr-4" [type]="'specialPrice'"> </app-container>
-            <app-container *ngFor="let zone of zones" [zone]="zone" [type]="'zone'" class="mr-4 mb-4" (contextmenu)="onRightClick($event, zone)">
-            </app-container>
-            <app-container [type]="'zone'"> </app-container>
-          </div>
-        </mat-tab>
-
-        <mat-tab [label]="'zusätzliche einstellungen'">
-          <div style="max-height:50vh; overflow-y: scroll;" class="pt-2">
-            <div class="option w4060" style="min-width: 800px;">
-              <label> datenquelle für kartendaten </label>
-              <div>
-                <mat-button-toggle-group [value]="config.geocoder.type" (change)="changeGeocoder($event.value)">
-                  <mat-button-toggle [value]="0"> openstreetmap <img src="../../assets/osm.png" alt="osm" style="height: 30px" /> </mat-button-toggle>
-                  <mat-button-toggle [value]="1"> bing maps <img src="../../assets/bing.png" alt="bing" style="height: 30px" /> </mat-button-toggle>
-                  <mat-button-toggle [value]="2"> beide kombiniert </mat-button-toggle>
-                </mat-button-toggle-group>
-              </div>
-            </div>
-            <hr />
-            <div class="option w4060">
-              <label> mehrwertsteuersatz </label>
-              <div>
-                <mat-form-field class="mx-2 price" style="width: 70px">
-                  <input
-                    #MWST
-                    matInput
-                    type="number"
-                    class="pr-2"
-                    [(ngModel)]="config.vat"
-                    (focus)="MWST.select()"
-                    (change)="changedNumbers.set('MWST', MWST.valueAsNumber)"
-                    (keyup)="changedNumbers.set('MWST', MWST.valueAsNumber)"
-                  />
-                </mat-form-field>
-                %
-              </div>
-            </div>
-            <hr />
-            <div class="option w4060">
-              <label> mindestlohn </label>
-              <div>
-                <mat-form-field class="mx-2 price" style="width: 100px">
-                  <input
-                    #minimumWage
-                    matInput
-                    type="number"
-                    class="pr-2"
-                    [(ngModel)]="config.minimumWage"
-                    (focus)="minimumWage.select()"
-                    (change)="changedNumbers.set('minimumWage', minimumWage.valueAsNumber)"
-                    (keyup)="changedNumbers.set('minimumWage', minimumWage.valueAsNumber)"
-                  />
-                </mat-form-field>
-                €
-              </div>
-            </div>
-            <hr />
-            <div class="option w4060">
-              <label>festtouren</label>
-              <div>
-                <mat-form-field style="width: 55px">
-                  <input
-                    matInput
-                    type="number"
-                    #hours
-                    [(ngModel)]="config.tourplan.HOURS_IN_ADVANCE"
-                    (change)="changedNumbers.set('hoursInAdvance', hours.valueAsNumber)"
-                    (keyup)="changedNumbers.set('hoursInAdvance', hours.valueAsNumber)"
-                  />
-                </mat-form-field>
-                stunden im vorraus anzeigen
-              </div>
-            </div>
-            <hr />
-            <div class="option w4060">
-              <label>werktage pro monat</label>
-              <div class="flex flex-column">
-                <mat-form-field style="width: 80px">
-                  <input
-                    matInput
-                    type="number"
-                    #workingDays
-                    [(ngModel)]="config.workingDays"
-                    (change)="changedNumbers.set('workingDays', workingDays.valueAsNumber)"
-                    (keyup)="changedNumbers.set('workingDays', workingDays.valueAsNumber)"
-                  />
-                </mat-form-field>
-                <small class="relative-bot8px">für die berechnung von festtourpreisen</small>
-              </div>
-            </div>
-            <hr />
-            <div class="option w4060">
-              <label>zonen</label>
-              <div>
-                <mat-slide-toggle
-                  [(ngModel)]="config.showZonesPermanently"
-                  #showZonesPermanently
-                  (change)="changedBooleans.set('showZonesPermanently', $event.checked)"
+            <mat-tab [label]="'sonderpreise & zonen'">
+              <div class="flex flex-row flex-wrap p-4" style="max-width: 800px">
+                <app-container
+                  style="overflow: scroll"
+                  *ngFor="let price of specialPrices"
+                  [price]="price"
+                  [type]="'specialPrice'"
+                  class="mr-4 mb-4"
+                  (contextmenu)="onRightClick($event, price)"
                 >
-                  permanent auf der karte anzeigen
-                </mat-slide-toggle>
+                </app-container>
+                <app-container class="mr-4" [type]="'specialPrice'"> </app-container>
+                <app-container *ngFor="let zone of zones" [zone]="zone" [type]="'zone'" class="mr-4 mb-4" (contextmenu)="onRightClick($event, zone)">
+                </app-container>
+                <app-container [type]="'zone'"> </app-container>
               </div>
-            </div>
-            <hr />
-            <div class="option w4060">
-              <label>"um's eck"-tarif anwenden</label>
-              <div>
-                im umkreis von
-                <mat-form-field style="width: 80px">
-                  <input
-                    matInput
-                    type="number"
-                    #nearbyDist
-                    [(ngModel)]="config.nearbyDist"
-                    (change)="changedNumbers.set('nearbyDist', nearbyDist.valueAsNumber)"
-                    (keyup)="changedNumbers.set('nearbyDist', nearbyDist.valueAsNumber)"
-                  />
-                </mat-form-field>
-                m um andere ziele
+            </mat-tab>
+
+            <mat-tab [label]="'zusätzliche einstellungen'">
+              <div style="max-height:50vh; overflow-y: scroll;" class="pt-2">
+                <div class="option w4060" style="min-width: 800px;">
+                  <label> datenquelle für kartendaten </label>
+                  <div>
+                    <mat-button-toggle-group [value]="config.geocoder.type" (change)="changeGeocoder($event.value)">
+                      <mat-button-toggle [value]="0"> openstreetmap <img src="../../assets/osm.png" alt="osm" style="height: 30px" /> </mat-button-toggle>
+                      <mat-button-toggle [value]="1"> bing maps <img src="../../assets/bing.png" alt="bing" style="height: 30px" /> </mat-button-toggle>
+                      <mat-button-toggle [value]="2"> beide kombiniert </mat-button-toggle>
+                    </mat-button-toggle-group>
+                  </div>
+                </div>
+                <hr />
+                <div class="option w4060">
+                  <label> mehrwertsteuersatz </label>
+                  <div>
+                    <mat-form-field class="mx-2 price" style="width: 70px">
+                      <input
+                        #MWST
+                        matInput
+                        type="number"
+                        class="pr-2"
+                        [(ngModel)]="config.vat"
+                        (focus)="MWST.select()"
+                        (change)="changedNumbers.set('MWST', MWST.valueAsNumber)"
+                        (keyup)="changedNumbers.set('MWST', MWST.valueAsNumber)"
+                      />
+                    </mat-form-field>
+                    %
+                  </div>
+                </div>
+                <hr />
+                <div class="option w4060">
+                  <label> mindestlohn </label>
+                  <div>
+                    <mat-form-field class="mx-2 price" style="width: 100px">
+                      <input
+                        #minimumWage
+                        matInput
+                        type="number"
+                        class="pr-2"
+                        [(ngModel)]="config.minimumWage"
+                        (focus)="minimumWage.select()"
+                        (change)="changedNumbers.set('minimumWage', minimumWage.valueAsNumber)"
+                        (keyup)="changedNumbers.set('minimumWage', minimumWage.valueAsNumber)"
+                      />
+                    </mat-form-field>
+                    €
+                  </div>
+                </div>
+                <hr />
+                <div class="option w4060">
+                  <label>festtouren</label>
+                  <div>
+                    <mat-form-field style="width: 55px">
+                      <input
+                        matInput
+                        type="number"
+                        #hours
+                        [(ngModel)]="config.tourplan.HOURS_IN_ADVANCE"
+                        (change)="changedNumbers.set('hoursInAdvance', hours.valueAsNumber)"
+                        (keyup)="changedNumbers.set('hoursInAdvance', hours.valueAsNumber)"
+                      />
+                    </mat-form-field>
+                    stunden im vorraus anzeigen
+                  </div>
+                </div>
+                <hr />
+                <div class="option w4060">
+                  <label>werktage pro monat</label>
+                  <div class="flex flex-column">
+                    <mat-form-field style="width: 80px">
+                      <input
+                        matInput
+                        type="number"
+                        #workingDays
+                        [(ngModel)]="config.workingDays"
+                        (change)="changedNumbers.set('workingDays', workingDays.valueAsNumber)"
+                        (keyup)="changedNumbers.set('workingDays', workingDays.valueAsNumber)"
+                      />
+                    </mat-form-field>
+                    <small class="relative-bot8px">für die berechnung von festtourpreisen</small>
+                  </div>
+                </div>
+                <hr />
+                <div class="option w4060">
+                  <label>zonen</label>
+                  <div>
+                    <mat-slide-toggle
+                      [(ngModel)]="config.showZonesPermanently"
+                      #showZonesPermanently
+                      (change)="changedBooleans.set('showZonesPermanently', $event.checked)"
+                    >
+                      permanent auf der karte anzeigen
+                    </mat-slide-toggle>
+                  </div>
+                </div>
+                <hr />
+                <div class="option w4060">
+                  <label>"um's eck"-tarif anwenden</label>
+                  <div>
+                    im umkreis von
+                    <mat-form-field style="width: 80px">
+                      <input
+                        matInput
+                        type="number"
+                        #nearbyDist
+                        [(ngModel)]="config.nearbyDist"
+                        (change)="changedNumbers.set('nearbyDist', nearbyDist.valueAsNumber)"
+                        (keyup)="changedNumbers.set('nearbyDist', nearbyDist.valueAsNumber)"
+                      />
+                    </mat-form-field>
+                    m um andere ziele
+                  </div>
+                </div>
+                <hr />
+                <div class="option w4060">
+                  <label>warnzeichen anzeigen</label>
+                  <div>
+                    <div>
+                      <mat-form-field style="width: 60px">
+                        <input
+                          matInput
+                          type="number"
+                          #pre_order_alarm
+                          [(ngModel)]="config.tourplan.PRE_ORDER_ALARM"
+                          (change)="changedNumbers.set('PRE_ORDER_ALARM', pre_order_alarm.valueAsNumber)"
+                          (keyup)="changedNumbers.set('PRE_ORDER_ALARM', pre_order_alarm.valueAsNumber)"
+                        />
+                      </mat-form-field>
+                      min davor (bei geplanten aufträgen)
+                    </div>
+                    <div>
+                      <mat-form-field style="width: 60px">
+                        <input
+                          matInput
+                          type="number"
+                          #normal_alarm
+                          [(ngModel)]="config.tourplan.NORMAL_ALARM"
+                          (change)="changedNumbers.set('NORMAL_ALARM', normal_alarm.valueAsNumber)"
+                          (keyup)="changedNumbers.set('NORMAL_ALARM', normal_alarm.valueAsNumber)"
+                        />
+                      </mat-form-field>
+                      min danach (bei ad-hoc aufträgen)
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <div class="option w4060">
+                  <label>warnzeichen stoppen</label>
+                  <div>
+                    <mat-form-field style="width: 60px">
+                      <input
+                        matInput
+                        type="number"
+                        #alarm_stop
+                        [(ngModel)]="config.tourplan.ALARM_STOP"
+                        (change)="changedNumbers.set('ALARM_STOP', alarm_stop.valueAsNumber)"
+                        (keyup)="changedNumbers.set('ALARM_STOP', alarm_stop.valueAsNumber)"
+                      />
+                    </mat-form-field>
+                    h nach dem auftrag
+                  </div>
+                </div>
+                <hr />
+                <div class="option w4060">
+                  <label class="flex align-items-center">
+                    <img
+                      src="../../assets/lex.png"
+                      class="mr-2"
+                      style="height: 17px;
+                      display: inline;"
+                      alt="lexoffice"
+                    />
+                    lexoffice unterstützung
+                  </label>
+                  <div>
+                    <mat-slide-toggle
+                      #lexofficeActivated
+                      [(ngModel)]="config.lexofficeActivated"
+                      (change)="changedBooleans.set('lexofficeActivated', $event.checked)"
+                    >
+                    </mat-slide-toggle>
+                  </div>
+                </div>
               </div>
-            </div>
-            <hr />
-            <div class="option w4060">
-              <label>warnzeichen anzeigen</label>
-              <div>
+            </mat-tab>
+
+            <mat-tab [label]="'api keys'">
+              <div class="option w2080">
+                <label> lexoffice </label>
                 <div>
-                  <mat-form-field style="width: 60px">
+                  <mat-form-field style="width: 450px">
                     <input
                       matInput
-                      type="number"
-                      #pre_order_alarm
-                      [(ngModel)]="config.tourplan.PRE_ORDER_ALARM"
-                      (change)="changedNumbers.set('PRE_ORDER_ALARM', pre_order_alarm.valueAsNumber)"
-                      (keyup)="changedNumbers.set('PRE_ORDER_ALARM', pre_order_alarm.valueAsNumber)"
+                      [type]="isDezwo ? 'text' : 'password'"
+                      #lexOfficeApiKey
+                      (focusin)="lexOfficeApiKey.select()"
+                      [(ngModel)]="config.api.lex"
+                      (change)="changedStrings.set('lexOfficeApiKey', lexOfficeApiKey.value); reloadPage = true"
+                      (keyup)="changedStrings.set('lexOfficeApiKey', lexOfficeApiKey.value)"
                     />
                   </mat-form-field>
-                  min davor (bei geplanten aufträgen)
                 </div>
+              </div>
+              <div class="option w2080">
+                <label> geoapify </label>
                 <div>
-                  <mat-form-field style="width: 60px">
+                  <mat-form-field style="width: 450px">
                     <input
                       matInput
-                      type="number"
-                      #normal_alarm
-                      [(ngModel)]="config.tourplan.NORMAL_ALARM"
-                      (change)="changedNumbers.set('NORMAL_ALARM', normal_alarm.valueAsNumber)"
-                      (keyup)="changedNumbers.set('NORMAL_ALARM', normal_alarm.valueAsNumber)"
+                      [type]="isDezwo ? 'text' : 'password'"
+                      #geoapifyApiKey
+                      (focusin)="geoapifyApiKey.select()"
+                      [(ngModel)]="config.api.geoapify"
+                      (change)="changedStrings.set('geoapifyApiKey', geoapifyApiKey.value); reloadPage = true"
+                      (keyup)="changedStrings.set('geoapifyApiKey', geoapifyApiKey.value)"
                     />
                   </mat-form-field>
-                  min danach (bei ad-hoc aufträgen)
                 </div>
               </div>
-            </div>
-            <hr />
-            <div class="option w4060">
-              <label>warnzeichen stoppen</label>
-              <div>
-                <mat-form-field style="width: 60px">
-                  <input
-                    matInput
-                    type="number"
-                    #alarm_stop
-                    [(ngModel)]="config.tourplan.ALARM_STOP"
-                    (change)="changedNumbers.set('ALARM_STOP', alarm_stop.valueAsNumber)"
-                    (keyup)="changedNumbers.set('ALARM_STOP', alarm_stop.valueAsNumber)"
-                  />
-                </mat-form-field>
-                h nach dem auftrag
+              <div class="option w2080">
+                <label> mapbox </label>
+                <div>
+                  <mat-form-field style="width: 450px">
+                    <input
+                      matInput
+                      [type]="isDezwo ? 'text' : 'password'"
+                      #mapboxApiKey
+                      (focusin)="mapboxApiKey.select()"
+                      [(ngModel)]="config.api.mapbox"
+                      (change)="changedStrings.set('mapboxApiKey', mapboxApiKey.value); reloadPage = true"
+                      (keyup)="changedStrings.set('mapboxApiKey', mapboxApiKey.value)"
+                    />
+                  </mat-form-field>
+                </div>
               </div>
-            </div>
-            <hr />
-            <div class="option w4060">
-              <label class="flex align-items-center">
-                <img
-                  src="../../assets/lex.png"
-                  class="mr-2"
-                  style="height: 17px;
-                  display: inline;"
-                  alt="lexoffice"
-                />
-                lexoffice unterstützung
-              </label>
-              <div>
-                <mat-slide-toggle
-                  #lexofficeActivated
-                  [(ngModel)]="config.lexofficeActivated"
-                  (change)="changedBooleans.set('lexofficeActivated', $event.checked)"
-                >
-                </mat-slide-toggle>
+              <div class="option w2080">
+                <label> bing </label>
+                <div>
+                  <mat-form-field style="width: 450px">
+                    <input
+                      matInput
+                      [type]="isDezwo ? 'text' : 'password'"
+                      #bingApiKey
+                      (focusin)="bingApiKey.select()"
+                      [(ngModel)]="config.api.bing"
+                      (change)="changedStrings.set('bingApiKey', bingApiKey.value); reloadPage = true"
+                      (keyup)="changedStrings.set('bingApiKey', bingApiKey.value)"
+                    />
+                  </mat-form-field>
+                </div>
               </div>
-            </div>
-          </div>
-        </mat-tab>
+            </mat-tab>
 
-        <mat-tab [label]="'api keys'">
-          <div class="option w2080">
-            <label> lexoffice </label>
-            <div>
-              <mat-form-field style="width: 450px">
-                <input
-                  matInput
-                  [type]="isDezwo ? 'text' : 'password'"
-                  #lexOfficeApiKey
-                  (focusin)="lexOfficeApiKey.select()"
-                  [(ngModel)]="config.api.lex"
-                  (change)="changedStrings.set('lexOfficeApiKey', lexOfficeApiKey.value); reloadPage = true"
-                  (keyup)="changedStrings.set('lexOfficeApiKey', lexOfficeApiKey.value)"
-                />
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="option w2080">
-            <label> geoapify </label>
-            <div>
-              <mat-form-field style="width: 450px">
-                <input
-                  matInput
-                  [type]="isDezwo ? 'text' : 'password'"
-                  #geoapifyApiKey
-                  (focusin)="geoapifyApiKey.select()"
-                  [(ngModel)]="config.api.geoapify"
-                  (change)="changedStrings.set('geoapifyApiKey', geoapifyApiKey.value); reloadPage = true"
-                  (keyup)="changedStrings.set('geoapifyApiKey', geoapifyApiKey.value)"
-                />
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="option w2080">
-            <label> mapbox </label>
-            <div>
-              <mat-form-field style="width: 450px">
-                <input
-                  matInput
-                  [type]="isDezwo ? 'text' : 'password'"
-                  #mapboxApiKey
-                  (focusin)="mapboxApiKey.select()"
-                  [(ngModel)]="config.api.mapbox"
-                  (change)="changedStrings.set('mapboxApiKey', mapboxApiKey.value); reloadPage = true"
-                  (keyup)="changedStrings.set('mapboxApiKey', mapboxApiKey.value)"
-                />
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="option w2080">
-            <label> bing </label>
-            <div>
-              <mat-form-field style="width: 450px">
-                <input
-                  matInput
-                  [type]="isDezwo ? 'text' : 'password'"
-                  #bingApiKey
-                  (focusin)="bingApiKey.select()"
-                  [(ngModel)]="config.api.bing"
-                  (change)="changedStrings.set('bingApiKey', bingApiKey.value); reloadPage = true"
-                  (keyup)="changedStrings.set('bingApiKey', bingApiKey.value)"
-                />
-              </mat-form-field>
-            </div>
-          </div>
-        </mat-tab>
+            <mat-tab [label]="'was ist neu?'" style="y-overflow: scroll">
+              <!-- <div class="flex flex-row justify-content-between align-items-end">
+                <div>
+                  <div class="flex flex-row align-items-baseline">
+                    <h1>dispogramm</h1>
+                    <span style="color: gray; font-family: monospace"
+                      ><i>v{{ version }}</i></span
+                    >
+                  </div>
+                  <p>entwickelt 2020 - {{ year }} <br />vom fahrrad express kurier:innenkollektiv</p>
+                  <p>frontend: dezwo</p>
+                  <p>backend: jan</p>
+                </div>
+                <img src="../../assets/logo/fex-logo.png" style="width: 200px" alt="fex logo" />
+              </div> -->
+              <div class="markdownBody p-4" [innerHTML]="readmeHtml"></div>
+            </mat-tab>
 
-        <mat-tab [label]="'was ist neu?'" style="y-overflow: scroll">
-          <!-- <div class="flex flex-row justify-content-between align-items-end">
-            <div>
-              <div class="flex flex-row align-items-baseline">
-                <h1>dispogramm</h1>
-                <span style="color: gray; font-family: monospace"
-                  ><i>v{{ version }}</i></span
-                >
+            <mat-tab *ngIf="isDezwo" [label]="'extras'">
+              <div class="flex w-100 column align-items-center">
+                <button mat-raised-button class="mx-2 fex-button" (click)="getProfile()">profil abrufen</button>
+                <button mat-raised-button class="mx-2 fex-button" (click)="recreateBlueprints()">blueprints neu speichern</button>
               </div>
-              <p>entwickelt 2020 - {{ year }} <br />vom fahrrad express kurier:innenkollektiv</p>
-              <p>frontend: dezwo</p>
-              <p>backend: jan</p>
-            </div>
-            <img src="../../assets/logo/fex-logo.png" style="width: 200px" alt="fex logo" />
-          </div> -->
-          <div class="markdownBody p-4" [innerHTML]="readmeHtml"></div>
-        </mat-tab>
+            </mat-tab>
+          </mat-tab-group>
 
-        <mat-tab *ngIf="isDezwo" [label]="'extras'">
-          <div class="flex w-100 column align-items-center">
-            <button mat-raised-button class="mx-2 fex-button" (click)="getProfile()">profil abrufen</button>
-            <button mat-raised-button class="mx-2 fex-button" (click)="recreateBlueprints()">blueprints neu speichern</button>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
-
-      <hr />
-    </div>
+          <hr />
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <!-- backend settings -->
     <div class="option w4060" style="min-width: 700px">
       <label> server-ip vom backend </label>
       <div style="white-space: nowrap">
@@ -623,6 +627,16 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
         max-height: 50vh;
         overflow-y: auto;
         max-width: 100%;
+      }
+
+      .animated-width {
+        display: inline-block; /* or block with fit-content */
+        transition: width 0.4s ease-in-out;
+        overflow: hidden;
+      }
+
+      mat-tab > div {
+        width: 40em;
       }
     `
   ]
