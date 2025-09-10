@@ -15,7 +15,9 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
       <div class="flex w-100 pt-3 p-4 flex-column justify-content-between" style="background-color: white; z-index: 1;">
         <div class="flex flex-row w-100 align-items-center mb-3">
           <datepicker [(date)]="date" [monthly]="true" (dateChange)="monthChanged($event)" #datepicker></datepicker>
-          <mat-checkbox [checked]="hideShiftless()" (change)="toggleFilter()"> nur kurier:innen mit schicht </mat-checkbox>
+          <mat-checkbox [checked]="hideShiftless()" (change)="toggleFilter()">
+            <span style="font-size: 16px;"> nur kurier:innen mit schicht</span>
+          </mat-checkbox>
           <span class="ml-4">mindestlohn: {{ minimumWage() }}€/stunde</span>
           <a class="ml-4" (click)="openConfig()">ändern</a>
         </div>
@@ -68,33 +70,33 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
   `,
   styles: [
     `
-          @import 'src/const.scss';
-          #panelContainer {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(750px, 50vh));
-            gap: 20px;
-          }
-    
-          .messengerPanel {
-            position: relative;
-            min-width: 750px;
-            box-sizing: border-box;
-            flex: 1 1 auto;
-            padding: 10px 20px 60px 10px;
-            // background-color: $fex-unimportant;
-            border: 1.2pt solid $light-gray;
-          }
-          .buttonContainer {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-          }
-          .buttonContainer > * {
-            margin-right: 20px;
-          }
-        `
+      @import 'src/const.scss';
+      #panelContainer {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(750px, 50vh));
+        gap: 20px;
+      }
+
+      .messengerPanel {
+        position: relative;
+        min-width: 750px;
+        box-sizing: border-box;
+        flex: 1 1 auto;
+        padding: 10px 20px 60px 10px;
+        // background-color: $fex-unimportant;
+        border: 1.2pt solid $light-gray;
+      }
+      .buttonContainer {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        display: flex;
+      }
+      .buttonContainer > * {
+        margin-right: 20px;
+      }
+    `
   ]
 })
 export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, AfterViewInit {
@@ -102,7 +104,7 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
   shiftsLoaded = false;
   allShifts: Shift[] = [];
   get allHours(): number {
-    return this.filteredMessenger.reduce((sum, messenger) => sum + messenger.hours, 0);
+    return this.filteredMessenger.reduce((sum, messenger) => sum + messenger.hours, 0).round(2);
   }
   get shiftsWithoutEnd(): number {
     return this.filteredMessenger.reduce((acc, messenger) => acc + messenger.shiftsWithoutEnd, 0);
