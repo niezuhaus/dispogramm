@@ -23,6 +23,11 @@ declare global {
 
     findAndRemove(item: T): boolean;
 
+    /**
+     * returns first object to match a given id and return.
+     * if not found, returns undefined
+     * @param id the id to look for
+     */
     fastfind<T extends IdObject>(this: Array<T>, id: string): T;
 
     findAndReplace(this: Array<IdObject>, item: IdObject): boolean;
