@@ -399,7 +399,7 @@ export class GC {
   static readConfig(): ConfigDataContract {
     this.readZonePrices();
     return {
-      geocoder: GC.geocoders[GC.readNumber('geocoder') || 2],
+      geocoder: GC.geocoders[0],
       prices: {
         city: GC.readPrice('price_city') || new Price(7, { name: 'price_city' }),
         city2: GC.readPrice('price_city2') || new Price(8.5, { name: 'price_city' }),
