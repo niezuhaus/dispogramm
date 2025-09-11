@@ -17,7 +17,9 @@ import { Zone } from '../classes/Zone';
   selector: 'right-click-menu',
   template: `
     <button *ngIf="!dispatcher && !price" mat-menu-item>
-      <i class="whitespace-pre-wrap" style="line-height: 19px" (click)="openChangeUserDialog()"> bitte als disponent:in einchecken um optionen freizuschalten </i>
+      <i class="whitespace-pre-wrap" style="line-height: 19px" (click)="openChangeUserDialog()">
+        bitte als disponent:in einchecken um optionen freizuschalten
+      </i>
     </button>
 
     <button mat-menu-item *ngIf="date && dispatcher && weekplan" (click)="newTour(date)">
@@ -33,19 +35,31 @@ import { Zone } from '../classes/Zone';
     <div *ngIf="item?.job">
       <button mat-menu-item>
         <div class="flex flex-row justify-around w-100">
-          <div class="colour" *ngFor="let c of colours" [style.background]="c.showColour" (click)="item._colour = c.showColour" [class.selected-colour]="c.showColour === item?.job?.colour"></div>
+          <div
+            class="colour"
+            *ngFor="let c of colours"
+            [style.background]="c.showColour"
+            (click)="item._colour = c.showColour"
+            [class.selected-colour]="c.showColour === item?.job?.colour"
+          ></div>
         </div>
       </button>
       <button *ngIf="!item.edit && !item.job.finished" mat-menu-item [disabled]="!dispatcher" (click)="item.edit = true; editJob.emit(item.job)">
         <i class="p-1 bi bi-pencil bi-context"></i>bearbeiten
       </button>
-      <button *ngIf="item.edit" mat-menu-item (click)="item.edit = false; editJob.emit(undefined)"><i class="p-1 bi bi-x-circle bi-context"></i>bearbeitung abbrechen</button>
-      <button *ngIf="item.job.regularJobId" mat-menu-item (click)="item.job.openEditDialog()"><i class="p-1 bi bi-journal-check bi-context"></i>festtour bearbeiten</button>
+      <button *ngIf="item.edit" mat-menu-item (click)="item.edit = false; editJob.emit(undefined)">
+        <i class="p-1 bi bi-x-circle bi-context"></i>bearbeitung abbrechen
+      </button>
+      <button *ngIf="item.job.regularJobId" mat-menu-item (click)="item.job.openEditDialog()">
+        <i class="p-1 bi bi-journal-check bi-context"></i>festtour bearbeiten
+      </button>
       <button *ngIf="item.job.hasClient; else newClient" mat-menu-item [routerLink]="[routes.client, { id: item.job.client.id }]" (click)="closeDialogs()">
         <i class="p-1 bi bi-person bi-context"></i>kund:innenseite öffnen
       </button>
       <ng-template #newClient>
-        <button mat-menu-item *ngIf="!item.job.client?.clientId" (click)="openNewClientDialog()"><i class="p-1 bi bi-person-plus bi-context"></i>kund:in hinzufügen</button>
+        <button mat-menu-item *ngIf="!item.job.client?.clientId" (click)="openNewClientDialog()">
+          <i class="p-1 bi bi-person-plus bi-context"></i>kund:in hinzufügen
+        </button>
       </ng-template>
       <button *ngIf="tourplanActive && !item.job.finished" mat-menu-item [matMenuTriggerFor]="messengerMenu" [disabled]="!dispatcher">
         <i class="p-1 bi bi-bicycle bi-context"></i>kurier:in zuweisen
@@ -76,23 +90,46 @@ import { Zone } from '../classes/Zone';
           </mat-form-field>
         </div>
       </button>
-      <button mat-menu-item *ngIf="!item.job.finished" (click)="openNewExpenseDialog()" [disabled]="!dispatcher"><i class="p-1 bi bi-cash-coin bi-context"></i>auslage hinzufügen</button>
-      <button mat-menu-item *ngIf="!item.job.finished" (click)="item.job._falseArrival = !item.job._falseArrival; falseArrival.emit(item.job)" [disabled]="!dispatcher">
+      <button mat-menu-item *ngIf="!item.job.finished" (click)="openNewExpenseDialog()" [disabled]="!dispatcher">
+        <i class="p-1 bi bi-cash-coin bi-context"></i>auslage hinzufügen
+      </button>
+      <button
+        mat-menu-item
+        *ngIf="!item.job.finished"
+        (click)="item.job._falseArrival = !item.job._falseArrival; falseArrival.emit(item.job)"
+        [disabled]="!dispatcher"
+      >
         <i [class.bi-x-square]="!item.job._falseArrival" [class.bi-check-square]="item.job._falseArrival" class="p-1 bi bi-context"></i>
         {{ item.job._falseArrival ? 'nicht als fehlanfahrt markieren' : 'als fehlanfahrt markieren' }}
       </button>
-      <button mat-menu-item *ngIf="item.job.regularJobId && item.job._canceled && !item.job.finished" (click)="item.job._canceled = false" [disabled]="!dispatcher">
+      <button
+        mat-menu-item
+        *ngIf="item.job.regularJobId && item.job._canceled && !item.job.finished"
+        (click)="item.job._canceled = false"
+        [disabled]="!dispatcher"
+      >
         <i class="p-1 bi bi-calendar-check bi-context"></i>festtour doch nicht absagen
       </button>
-      <button mat-menu-item *ngIf="item.job.regularJobId && !item.job._canceled && !item.job.finished" (click)="item.job._canceled = true" [disabled]="!dispatcher">
+      <button
+        mat-menu-item
+        *ngIf="item.job.regularJobId && !item.job._canceled && !item.job.finished"
+        (click)="item.job._canceled = true"
+        [disabled]="!dispatcher"
+      >
         <i class="p-1 bi bi-calendar-check bi-context"></i>festtour heute absagen
       </button>
       <button mat-menu-item (click)="item.job.reverse()" *ngIf="!item.job.finished && !item.isConverted" [disabled]="!dispatcher">
         <i class="p-1 bi bi-arrow-repeat bi-context"></i>tour umdrehen
       </button>
-      <button *ngIf="!item.job.finished" mat-menu-item (click)="item.job._finished = true" [disabled]="!dispatcher"><i class="p-1 bi bi-lock bi-context"></i>tour abschließen</button>
-      <button *ngIf="item.job.finished" mat-menu-item [disabled]="!dispatcher" (click)="item.job._finished = false"><i class="p-1 bi bi-unlock bi-context"></i>abgeschlossene tour öffnen</button>
-      <button mat-menu-item *ngIf="!item.job.finished && !item.isRegularJob" (click)="item.job.delete('löschen', 'gelöscht')"><i class="p-1 bi bi-trash bi-context"></i>tour löschen</button>
+      <button *ngIf="!item.job.finished" mat-menu-item (click)="item.job._finished = true" [disabled]="!dispatcher">
+        <i class="p-1 bi bi-lock bi-context"></i>tour abschließen
+      </button>
+      <button *ngIf="item.job.finished" mat-menu-item [disabled]="!dispatcher" (click)="item.job._finished = false">
+        <i class="p-1 bi bi-unlock bi-context"></i>abgeschlossene tour öffnen
+      </button>
+      <button mat-menu-item *ngIf="!item.job.finished && !item.isRegularJob" (click)="item.job.delete('löschen', 'gelöscht')">
+        <i class="p-1 bi bi-trash bi-context"></i>tour löschen
+      </button>
       <button mat-menu-item *ngIf="!item.job.finished && item.isRegularJob" (click)="item.job.delete('zurücksetzen', 'zurückgesetzt')">
         <i class="p-1 bi bi-trash bi-context"></i>tour zurücksetzen
       </button>
@@ -114,24 +151,40 @@ import { Zone } from '../classes/Zone';
       <button *ngIf="item._job.client?.id?.length > 0" mat-menu-item [routerLink]="[routes.client, { id: item._job.client.id }]" (click)="closeDialogs()">
         <i class="p-1 bi bi-person bi-context"></i>kund:innenseite öffnen
       </button>
-      <button mat-menu-item (click)="item.regularJob.openEditDialog()" [disabled]="!dispatcher"><i class="p-1 bi bi-journal-check bi-context"></i>festtour bearbeiten</button>
-      <button mat-menu-item #trigger="matMenuTrigger" [matMenuTriggerFor]="morningTourMenu"><i class="p-1 bi bi-signpost-split bi-context"></i>in morgenrunde verschieben</button>
+      <button mat-menu-item (click)="item.regularJob.openEditDialog()" [disabled]="!dispatcher">
+        <i class="p-1 bi bi-journal-check bi-context"></i>festtour bearbeiten
+      </button>
+      <button mat-menu-item #trigger="matMenuTrigger" [matMenuTriggerFor]="morningTourMenu">
+        <i class="p-1 bi bi-signpost-split bi-context"></i>in morgenrunde verschieben
+      </button>
       <mat-menu #morningTourMenu="matMenu">
         <button mat-menu-item (click)="item.regularJob._morningTour = 0"><i>- keine -</i></button>
         <button *ngFor="let morningTour of morningTours; let i = index" mat-menu-item (click)="item.regularJob._morningTour = i + 1">
           {{ morningTour }}
         </button>
       </mat-menu>
-      <button mat-menu-item (click)="item.regularJob.cancel()" [disabled]="!dispatcher"><i class="p-1 bi bi-calendar-x bi-context"></i>festtour heute absagen</button>
-      <button mat-menu-item (click)="item.regularJob.cancelRange()" [disabled]="!dispatcher"><i class="p-1 bi bi-calendar-range bi-context"></i>festtour für mehrere tage absagen</button>
-      <button mat-menu-item (click)="item.regularJob.cancelPermanently()" [disabled]="!dispatcher"><i class="p-1 bi bi-x-circle bi-context"></i>festtour permanent streichen</button>
+      <button mat-menu-item (click)="item.regularJob.cancel()" [disabled]="!dispatcher">
+        <i class="p-1 bi bi-calendar-x bi-context"></i>festtour heute absagen
+      </button>
+      <button mat-menu-item (click)="item.regularJob.cancelRange()" [disabled]="!dispatcher">
+        <i class="p-1 bi bi-calendar-range bi-context"></i>festtour für mehrere tage absagen
+      </button>
+      <button mat-menu-item (click)="item.regularJob.cancelPermanently()" [disabled]="!dispatcher">
+        <i class="p-1 bi bi-x-circle bi-context"></i>festtour permanent streichen
+      </button>
     </div>
 
     <!-- morningtour -->
     <div *ngIf="item?.isMorningTour">
       <button mat-menu-item style="width: 250px">
         <div class="flex flex-row justify-around w-100">
-          <div class="colour" *ngFor="let c of colours" [style.background]="c.showColour" (click)="item._colour = c.showColour" [class.selected-colour]="c.showColour === item?._colour"></div>
+          <div
+            class="colour"
+            *ngFor="let c of colours"
+            [style.background]="c.showColour"
+            (click)="item._colour = c.showColour"
+            [class.selected-colour]="c.showColour === item?._colour"
+          ></div>
         </div>
       </button>
     </div>
@@ -158,7 +211,9 @@ import { Zone } from '../classes/Zone';
       <button *ngIf="!shift.edit" mat-menu-item [routerLink]="[routes.tourplan, { date: shift.start.yyyymmdd() }]" (click)="closeDialogs()">
         <i class="p-1 bi bi-card-checklist bi-context"></i>tourenzettel öffnen
       </button>
-      <button *ngIf="!shift.edit" mat-menu-item (click)="shift.messenger.openDialog(true)"><i class="p-1 bi bi-bicycle"></i>kurier:in anzeigen</button>
+      <button *ngIf="!shift.edit" mat-menu-item (click)="shift.messenger.openDialog(true)">
+        <i class="p-1 bi bi-bicycle bi-context"></i>kurier:in anzeigen
+      </button>
       <button *ngIf="shift.edit" mat-menu-item (click)="shift.edit = false"><i class="p-1 bi bi-x-circle bi-context"></i>bearbeitung abbrechen</button>
       <button mat-menu-item (click)="shift.delete(onShiftDelete)"><i class="p-1 bi bi-trash bi-context"></i>schicht löschen</button>
     </div>
@@ -177,7 +232,9 @@ import { Zone } from '../classes/Zone';
     <!-- messenger -->
     <div *ngIf="messenger">
       <!-- <button mat-menu-item (click)="messenger.delete()"><i class="p-1 bi bi-trash bi-context"></i>löschen</button> -->
-      <button mat-menu-item (click)="messenger.toggleActivate()"><i class="p-1 bi bi-archive bi-context"></i>{{ messenger.active ? 'deaktivieren' : 'aktivieren' }}</button>
+      <button mat-menu-item (click)="messenger.toggleActivate()">
+        <i class="p-1 bi bi-archive bi-context"></i>{{ messenger.active ? 'deaktivieren' : 'aktivieren' }}
+      </button>
     </div>
 
     <button mat-menu-item *ngIf="item && isDezwo" (click)="print()"><i class="p-1 bi bi-printer bi-context"></i>auf konsole ausgeben</button>
