@@ -90,17 +90,38 @@ export class HttpService {
 
   public static _filterLocationsByAny(list: Geolocation[], value: string): Geolocation[] {
     value = value.toLowerCase();
+
+    // Extract numbers from search string
+    const searchNumbers = value.match(/\d+/g) || [];
+
     let res = list
       .filter((option) => {
-        if (option.name.toLowerCase().includes(value) || option.street.toLowerCase().includes(value)) {
-          option.editDistance = 0;
-        } else {
-          option.editDistance = Math.min(option.name.slice(0, value.length).editDistance(value), option.street.slice(0, value.length).editDistance(value));
+        const optionName = option.name.toLowerCase();
+        const optionStreet = option.street.toLowerCase();
+
+        // If search contains numbers, check if location contains those numbers
+        if (searchNumbers.length > 0) {
+          const locationNumbers = optionStreet.match(/\d+/g) || [];
+
+          // Check if any search number matches location numbers (either at beginning or completely)
+          const hasMatchingNumber = searchNumbers.some((searchNum) => locationNumbers.some((locNum) => locNum.startsWith(searchNum)));
+
+          // If search has numbers but location doesn't have matching numbers, filter out
+          if (!hasMatchingNumber) {
+            return false;
+          }
         }
 
-        return option.editDistance < value.length - 2 && option.editDistance < 5; // everything that's completely different @todo: mix results
+        if (optionName.includes(value) || optionStreet.includes(value)) {
+          option.editDistance = 0;
+        } else {
+          option.editDistance = Math.min(optionName.slice(0, value.length).editDistance(value), optionStreet.slice(0, value.length).editDistance(value));
+        }
+
+        return option.editDistance < value.length - 2 && option.editDistance < 5;
       })
       .sort((a, b) => a.editDistance - b.editDistance);
+
     return res;
   }
 
@@ -237,7 +258,6 @@ export class HttpService {
   }
   searchAzure(searchStr: string, type: LocType): Observable<Geolocation[]> {
     /**
-     * urlTemplate: https://atlas.microsoft.com/search/address/json?subscription-key=3ulXEksqTaGW0az8aai5LbX7YIFwTTSWUxSBA7WZ3hPDAzQjaoQ1JQQJ99BFACi5YpzcFd4vAAAgAZMP3W5Q&api-version=1.0&query=Thedinghauser+10&language=de-DE&countrySet=DE&view=Auto
      * uses the azure api key to search for places.
      */
     const encodedSearch = encodeURIComponent(searchStr);
