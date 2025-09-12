@@ -237,7 +237,6 @@ export class HttpService {
   }
   searchAzure(searchStr: string, type: LocType): Observable<Geolocation[]> {
     /**
-     * urlTemplate: https://atlas.microsoft.com/search/address/json?subscription-key=3ulXEksqTaGW0az8aai5LbX7YIFwTTSWUxSBA7WZ3hPDAzQjaoQ1JQQJ99BFACi5YpzcFd4vAAAgAZMP3W5Q&api-version=1.0&query=Thedinghauser+10&language=de-DE&countrySet=DE&view=Auto
      * uses the azure api key to search for places.
      */
     const encodedSearch = encodeURIComponent(searchStr);
