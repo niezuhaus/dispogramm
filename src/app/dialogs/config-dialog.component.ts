@@ -195,17 +195,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
             <mat-tab [label]="'zusätzliche einstellungen'">
               <div style="max-height:50vh; overflow-y: scroll;" class="pt-2">
-                <div class="option w4060" style="min-width: 800px;">
-                  <label> datenquelle für kartendaten </label>
-                  <div>
-                    <mat-button-toggle-group [value]="config.geocoder.type" (change)="changeGeocoder($event.value)">
-                      <mat-button-toggle [value]="0"> openstreetmap <img src="../../assets/osm.png" alt="osm" style="height: 30px" /> </mat-button-toggle>
-                      <mat-button-toggle [value]="1"> bing maps <img src="../../assets/bing.png" alt="bing" style="height: 30px" /> </mat-button-toggle>
-                      <mat-button-toggle [value]="2"> beide kombiniert </mat-button-toggle>
-                    </mat-button-toggle-group>
-                  </div>
-                </div>
-                <hr />
                 <div class="option w4060">
                   <label> mehrwertsteuersatz </label>
                   <div>
