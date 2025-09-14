@@ -681,13 +681,22 @@ Number.prototype.clamp = function (min?, max?) {
   if ((!min && !max) || (isNaN(min) && isNaN(max))) {
     return this as number;
   }
-  if (!min) {
+  if (min === undefined) {
     return (this as number) > max ? max : (this as number);
   }
-  if (!max) {
+  if (max === undefined) {
     return (this as number) < min ? min : (this as number);
   }
-  return (this as number) < min ? min : (this as number) > max ? max : (this as number);
+  if ((this as number) < min) {
+    return min;
+  }
+  if ((this as number) > max) {
+    return max;
+  } else {
+    return this as number;
+  }
+
+  // return (this as number) < min ? min : (this as number) > max ? max : (this as number);
 };
 
 Number.prototype.map = function (fromLow, fromUp, toLow, toUp) {
