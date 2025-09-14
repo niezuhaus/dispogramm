@@ -21,7 +21,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
           <mat-tab-group dynamicHeight selectedIndex="{{ data?.pageIndex || 0 }}" class="animated-width">
             <mat-tab [label]="'preise'">
               <div style="max-height:50vh; overflow-y: scroll;" class="flex flex-row">
-                <div style="width: 33%; min-width: 300px">
+                <div style="width: 33%; min-width: 260px">
                   <div class="option w8020 small">
                     <label>
                       grundpreis bis
@@ -92,7 +92,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
                     </div>
                   </div>
                 </div>
-                <div style="width: 33%; min-width: 300px">
+                <div style="width: 33%; min-width: 260px">
                   <div class="option w8020">
                     <label>um's eck</label>
                     <div>
@@ -137,7 +137,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
                     </div>
                   </div>
                 </div>
-                <div style="width: 33%; min-width: 300px">
+                <div style="width: 33%; min-width: 260px">
                   <div class="option w8020 mr-3">
                     <label> lastzuschlag </label>
                     <div>
@@ -190,6 +190,11 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
                 <app-container *ngFor="let zone of zones" [zone]="zone" [type]="'zone'" class="mr-4 mb-4" (contextmenu)="onRightClick($event, zone)">
                 </app-container>
                 <app-container [type]="'zone'"> </app-container>
+              </div>
+              <div>
+                <button mat-raised-button class="fex-button mx-4">city 1 hinzufügen</button>
+                <button mat-raised-button class="fex-button mr-4">city 2 hinzufügen</button>
+                <button mat-raised-button class="fex-button">außenring hinzufügen</button>
               </div>
             </mat-tab>
 
@@ -456,7 +461,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
             </mat-tab>
 
             <mat-tab *ngIf="isDezwo" [label]="'extras'">
-              <div class="flex w-100 column align-items-center">
+              <div class="flex w-100 column p-4 align-items-center">
                 <button mat-raised-button class="mx-2 fex-button" (click)="getProfile()">profil abrufen</button>
                 <button mat-raised-button class="mx-2 fex-button" (click)="recreateBlueprints()">blueprints neu speichern</button>
               </div>
@@ -704,6 +709,8 @@ export class ConfigDialogComponent {
       console.log(i.companyName);
     });
   }
+
+  addStandartZone(zone: number): void {}
 
   changeGeocoder(mode: number) {
     GC.config.geocoder = GC.geocoders[mode];
