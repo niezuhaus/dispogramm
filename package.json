@@ -1,6 +1,6 @@
 {
   "name": "dispogramm",
-  "version": "1.4.5",
+  "version": "1.4.5.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
