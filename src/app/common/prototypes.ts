@@ -4,7 +4,6 @@ import { RegularJobDialogComponent } from '../dialogs/regular-job-dialog.compone
 import { Day, IdObject } from './interfaces';
 import { Injectable } from '@angular/core';
 import { Price } from '../classes/Price';
-import { log } from 'console';
 
 declare global {
   interface Array<T> {
@@ -78,6 +77,10 @@ declare global {
      */
     daysDifference(compareWith: Date): number;
 
+    /**
+     * hours of difference not rounded ignoring any date differences
+     * @return a value between -24 and 24 representing the hours of difference. will return a negative value, if the calling date is later than the one being compared
+     */
     hoursDifference(compareWith: Date): number;
 
     minutesDifference(compareWith: Date): number;
@@ -453,7 +456,9 @@ Date.prototype.yyyymm = function () {
   return `${this.getFullYear()}-${this.getMonth() + 1}`;
 };
 Date.prototype.yyyymmddInt = function () {
-  return parseInt(`${this.getFullYear()}${this.getMonth() + 1 <= 9 ? '0' + (this.getMonth() + 1) : this.getMonth() + 1}${this.getDate() <= 9 ? '0' + this.getDate() : this.getDate()}`);
+  return parseInt(
+    `${this.getFullYear()}${this.getMonth() + 1 <= 9 ? '0' + (this.getMonth() + 1) : this.getMonth() + 1}${this.getDate() <= 9 ? '0' + this.getDate() : this.getDate()}`
+  );
 };
 Date.prototype.nearestQuarter = function () {
   this.setMinutes((this.getMinutes() / 15).round(0) * 15);
