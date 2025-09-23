@@ -365,8 +365,6 @@ export class SearchinputComponent implements OnInit {
           this.dispatcherOptions = dispatcher;
           this.addOptions(
             this.dispatcherOptions.map((mes) => {
-              console.log(mes);
-
               return new Option(mes, OptionType.messenger, mes.nickname, 'messenger-option');
             })
           );

@@ -935,8 +935,6 @@ export class HttpService {
         break;
       case 'DISPATCHER':
         res = GC.dispatchers.copy();
-        console.log(res.map((m) => m.nickname));
-
         break;
       case 'BOTH':
         res = GC.messengers.filter((m) => m.active || m.dispatcher);
