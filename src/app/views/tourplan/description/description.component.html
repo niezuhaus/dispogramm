@@ -19,9 +19,9 @@
 
       <!-- cargotype -->
       <div *ngIf="job.cargoType > 0" class="mr-3 flex align-items-center">
-        <img *ngIf="job.cargoType === 1" src="../../../../assets/cargo/last.png" alt="lastzuschlag" [matTooltipDisabled]="hideToolTips" matTooltip="lastzuschlag" width="20px" />
-        <img *ngIf="job.cargoType === 2" src="../../../../assets/cargo/lastenrad.png" alt="lastenrad" [matTooltipDisabled]="hideToolTips" matTooltip="lastenrad" width="35px" />
-        <img *ngIf="job.cargoType === 3" src="../../../../assets/cargo/carla.png" alt="e-lastenrad + anhänger" [matTooltipDisabled]="hideToolTips" matTooltip="e-lastenrad + anhänger" width="45px" />
+        <img *ngIf="job.cargoType === 1" src="../../../../assets/cargo/last.png" alt="lastzuschlag" [matTooltipDisabled]="hideToolTips" matTooltip="lastzuschlag" style="max-width:30px" />
+        <img *ngIf="job.cargoType === 2" src="../../../../assets/cargo/lastenrad.png" alt="lastenrad" [matTooltipDisabled]="hideToolTips" matTooltip="lastenrad" style="max-width:50px" />
+        <img *ngIf="job.cargoType === 3" src="../../../../assets/cargo/carla.png" alt="e-lastenrad + anhänger" [matTooltipDisabled]="hideToolTips" matTooltip="e-lastenrad + anhänger" style="max-width:70px" />
       </div>
     </div>
 
