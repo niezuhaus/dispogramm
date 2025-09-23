@@ -72,14 +72,14 @@ declare global {
     /**
      * calculates the full 24h cycles between the two dates
      * @param compareWith
-     * @return difference as absolute number
+     * @returns difference as absolute number
      * @example a.daysDifference(b) is equal to b.daysDifference(a)
      */
     daysDifference(compareWith: Date): number;
 
     /**
      * hours of difference not rounded ignoring any date differences
-     * @return a value between -24 and 24 representing the hours of difference. will return a negative value, if the calling date is later than the one being compared
+     * @returns a value between -24 and 24 representing the hours of difference. will return a negative value, if the calling date is later than the one being compared
      */
     hoursDifference(compareWith: Date): number;
 
@@ -87,30 +87,33 @@ declare global {
 
     /**
      * @param compareWith
-     * @return returns true if the calling dates date is the same or earlier than the compared ones.
+     * @returns returns true if the calling dates date is the same or earlier than the compared ones.
      */
     beforeOrSameDay(compareWith: Date): boolean;
 
     /**
      * @param compareDate the date to compare with
-     * @return returns true if the calling date is at least 1ms before the compared one
+     * @returns returns true if the calling date is at least 1ms before the compared one
      */
     isBefore(date: Date): boolean;
 
     /**
      * the calling date will copy date, month and year from the given one
      * @param from the source date, which will stay untouched
-     * @return the calling date for chaining calls
+     * @returns the calling date for chaining calls
      */
     copyDate(from: Date): Date;
 
     /**
      * the calling date will copy houres, minutes, seconds and milliseconds from the given one
      * @param from the source date, which will stay untouched
-     * @return the calling date for chaining calls
+     * @returns the calling date for chaining calls
      */
     copyTime(from: Date): Date;
 
+    /**
+     * @returns a new date object containing the same date as the original
+     */
     copy(): Date;
 
     /**
@@ -133,43 +136,43 @@ declare global {
     setDateByString(str: string): Date;
 
     /**
-     * @return a string representing the date in the format yyyymmdd
+     * @returns a string representing the date in the format yyyymmdd
      * @example 2023-1-31
      */
     yyyymmdd(): string;
 
     /**
-     * @return a string representing the date in the format yyyymmdd
+     * @returns a string representing the date in the format yyyymmdd
      * @example 2023-1
      */
     yyyymm(): string;
 
     /**
-     * @return a number representing the date in the format yyyymmdd
+     * @returns a number representing the date in the format yyyymmdd
      * @example 20230131
      */
     yyyymmddInt(): number;
 
     /**
      * modifies the current date to the **closest** quarter of an hour (e.g. *:00, *:15, *:30 or *:45)
-     * @return the modified date
+     * @returns the modified date
      */
     nearestQuarter(): Date;
 
     /**
      * modifies the current date to the **next** full quarter of an hour (e.g. *:00, *:15, *:30 or *:45)
-     * @return the modified date
+     * @returns the modified date
      */
     nextQuarter(): Date;
 
     /**
      * modifies the current date to the **last** full quarter of an hour (e.g. *:00, *:15, *:30 or *:45)
-     * @return the modified date
+     * @returns the modified date
      */
     lastQuarter(): Date;
 
     /**
-     * @return true, if the calling date is today
+     * @returns true, if the calling date is today
      */
     isToday(): boolean;
 
@@ -190,12 +193,12 @@ declare global {
     nextWorkingDay(): Date;
 
     /**
-     * @return a copy of the date on which one day has been subtracted
+     * @returns a copy of the date on which one day has been subtracted
      */
     yesterday(): Date;
 
     /**
-     * @return a copy of the date on which one day has been added
+     * @returns a copy of the date on which one day has been added
      */
     tomorrow(): Date;
 
