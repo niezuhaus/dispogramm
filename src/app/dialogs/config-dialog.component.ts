@@ -11,6 +11,7 @@ import { Zone } from '../classes/Zone';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { marked } from 'marked';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { standartZonesHB } from '../common/zones';
 
 @Component({
   selector: 'app-config-dialog',
@@ -192,9 +193,9 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
                 <app-container [type]="'zone'"> </app-container>
               </div>
               <div>
-                <button mat-raised-button class="fex-button mx-4">city 1 hinzufügen</button>
-                <button mat-raised-button class="fex-button mr-4">city 2 hinzufügen</button>
-                <button mat-raised-button class="fex-button">außenring hinzufügen</button>
+                <button mat-raised-button class="fex-button mx-4" (click)="addStandartZone(1)">city 1 hinzufügen</button>
+                <button mat-raised-button class="fex-button mr-4" (click)="addStandartZone(2)">city 2 hinzufügen</button>
+                <button mat-raised-button class="fex-button" (click)="addStandartZone(3)">außenring hinzufügen</button>
               </div>
             </mat-tab>
 
@@ -710,7 +711,25 @@ export class ConfigDialogComponent {
     });
   }
 
-  addStandartZone(zone: number): void {}
+  addStandartZone(index: number): void {
+    let zone: Zone;
+    switch (index) {
+      case 1:
+        zone = new Zone(standartZonesHB.city1);
+        break;
+
+      case 2:
+        zone = new Zone(standartZonesHB.city2);
+        break;
+
+      default:
+        zone = new Zone(standartZonesHB.aussenring);
+        break;
+    }
+    GC.http.createZone(zone).subscribe(() => {
+      GC.openSnackBarLong('zone gespeichert');
+    });
+  }
 
   changeGeocoder(mode: number) {
     GC.config.geocoder = GC.geocoders[mode];
