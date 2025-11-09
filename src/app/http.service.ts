@@ -1210,10 +1210,7 @@ export class HttpService {
   }
 
   createZone(zone: Zone): Observable<Zone> {
-    return zip([
-      this.http.post<Zone>(`${BACKEND_IP}/zones/create`, zone, { headers: this.backendAuthHeader }),
-      this.saveConfigItem('price_zone_' + zone.name, zone.price.toString())
-    ]).pipe(
+    return this.http.post<Zone>(`${BACKEND_IP}/zones/create`, zone, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map((result) => {
         let z = result[0];
@@ -1226,10 +1223,7 @@ export class HttpService {
   }
   updateZone(zone: Zone): Observable<Zone> {
     GC.zones.findAndReplace(zone);
-    return zip([
-      this.http.post<Zone>(`${BACKEND_IP}/zones/update`, zone, { headers: this.backendAuthHeader }),
-      this.saveConfigItem('price_zone_' + zone.name, zone.price.toString())
-    ]).pipe(
+    return this.http.post<Zone>(`${BACKEND_IP}/zones/update`, zone, { headers: this.backendAuthHeader }).pipe(
       take(1),
       map((result) => {
         return result[0];

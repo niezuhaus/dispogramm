@@ -12,7 +12,7 @@ export class Zone implements IdObject, Optionable {
   id: string;
   @Searchable()
   name: string;
-  price = new Price();
+  price: Price;
   index?: number;
   coordinates: Position[] = [];
   exclusive: boolean = false;
@@ -53,8 +53,8 @@ export class Zone implements IdObject, Optionable {
   constructor(data?: Partial<Zone>) {
     if (data) {
       Object.assign(this, data);
-      this.price = new Price(this.price);
     }
+    this.price = new Price(this.price);
     this._polygon = this.coordinates.length > 0 ? polygon([this.coordinates]) : this._polygon;
     this._area = this._polygon ? (area(this._polygon) / 1000000).round(2) : 0;
   }

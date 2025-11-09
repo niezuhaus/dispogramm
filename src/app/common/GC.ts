@@ -397,7 +397,6 @@ export class GC {
   }
 
   static readConfig(): ConfigDataContract {
-    this.readZonePrices();
     return {
       geocoder: GC.geocoders[0],
       prices: {
@@ -543,18 +542,6 @@ export class GC {
       return [false, false, false, false, false, false, false, false, false];
     }
     return JSON.parse(rc) as boolean[];
-  }
-
-  private static readZonePrices(): void {
-    GC.zones.forEach((zone) => {
-      zone.price = GC.readPrice('price_zone_' + zone.name) || new Price();
-    });
-    // GC.zones.sort((a, b) => {
-    //   return a.price._netto - b.price._netto
-    // });
-    GC.zones.forEach((z, i) => {
-      z.index = i;
-    });
   }
 
   private static readString(key: string): string {
