@@ -70,6 +70,12 @@ h5:not(.normal) {
   padding-left: 20px;
   font-weight: bold;
 }
+.note_done {
+  color: $gray;
+  text-decoration: line-through !important;
+  text-decoration-thickness: 3px !important;
+  text-decoration-color: $gray;
+}
 
 .gray {
   color: $gray !important;

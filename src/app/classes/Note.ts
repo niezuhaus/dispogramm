@@ -7,6 +7,7 @@ export class Note {
   creator: Messenger;
   date = new Date();
   text = '';
+  done = false;
 
   constructor(data?: Partial<Note>) {
     if (data) {
@@ -31,6 +32,13 @@ export class Note {
         GC.openSnackBarLong('notiz wurde gelöscht.');
         GC.refreshNeeded.emit(true);
       });
+    });
+  }
+
+  toggleDone(): void {
+    this.done = !this.done;
+    GC.http.saveNote(this).subscribe(() => {
+      GC.openSnackBarLong(`notiz wurde als ${this.done ? 'erledigt' : 'NICHT erledigt'} markiert.`);
     });
   }
 
