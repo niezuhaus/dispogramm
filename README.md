@@ -1,6 +1,6 @@
 ![fahrrad express](src/assets/logo/fex-logo.png)
 
-### dispogramm `v1.4.4`
+### dispogramm `v1.4.6`
 
 #### demo
 find demo here:
@@ -19,11 +19,19 @@ find demo here:
 
 #### what's new
 
+##### `v1.4.6`
+- notes can now be marked as `done`
+
+##### `v1.4.5`
+- upgrade to material 15 ui elements + layoutchanges because of that
+- removed bing/azure for geocoding
+- added *außenring*. a zone that is substractive / is being triggered when left
+
 ##### `v1.4.4`
 - displaying `README.md` in `einstellungen > information`
 - more improvements to shift view: layout changes
-- fixed: when opening newtour view via `anmeldung` time was set to `0:00` now `8:00`
-- fixed: shift end times were not saved correctly
+- fix: when opening newtour view via `anmeldung` time was set to `0:00` now `8:00`
+- fix: shift end times were not saved correctly
 
 ##### `v1.4.3`
 - finished shift now linked in name of messenger in check-in view > closed shifts
@@ -43,8 +51,8 @@ find demo here:
 - `Shifttype.ag` added
 - minor ui changes
 - compiled backend added
-- fixed: center of route is outside of inclusive but inside of exclusive zone
-- fixed: adding shift button in shifts view not working properly
+- fix: center of route is outside of inclusive but inside of exclusive zone
+- fix: adding shift button in shifts view not working properly
 
 
 ##### `v1.4.1`
@@ -56,9 +64,9 @@ find demo here:
 ##### `v1.4.0`
 - street navigation via osm is available as toggle button in planning view
 - small layout changes
-- fixed: red pin now showing up when `job.clientInvolved = false`
+- fix: red pin now showing up when `job.clientInvolved = false`
 
 ##### `v1.3.10`
 - introduced changelog 🥳
-- fixed: wrong api call while creating zone 
-- fixed: map would not open to show a zone
+- fix: wrong api call while creating zone 
+- fix: map would not open to show a zone
