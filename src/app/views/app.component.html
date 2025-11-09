@@ -25,15 +25,15 @@
       <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().weekplan">wochenplan</button>
       <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().newTour">
         <div class="flex flex-row align-items-center">
-          <i class="mr-1 bi bi-plus-circle"></i>
+          <i class="mr-2 bi bi-plus-circle"></i>
           <span>tour</span>
         </div>
       </button>
       <button *ngIf="backendIP()" mat-raised-button class="fex-button" (click)="openDateDialog()">
         <div class="flex flex-row align-items-center">
-          <i class="mr-1 bi bi-plus-circle"></i>
+          <i class="mr-2 bi bi-plus-circle"></i>
           <span>anmeldung</span>
-        </div>
+        </div>  
       </button>
       <!-- <searchinput
       #fastJobInput
