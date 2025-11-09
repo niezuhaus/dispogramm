@@ -15,10 +15,7 @@ export class Zone implements IdObject, Optionable {
   price = new Price();
   index?: number;
   coordinates: Position[] = [];
-  private _isSubstractive: boolean = false;
-  get isSubstractive() {
-    return this._isSubstractive;
-  }
+  exclusive: boolean = false;
   get _coordinates() {
     return this.coordinates;
   }
@@ -60,9 +57,6 @@ export class Zone implements IdObject, Optionable {
     }
     this._polygon = this.coordinates.length > 0 ? polygon([this.coordinates]) : this._polygon;
     this._area = this._polygon ? (area(this._polygon) / 1000000).round(2) : 0;
-    if (this.name === 'außenring') {
-      this._isSubstractive = true;
-    }
   }
 
   delete(): void {

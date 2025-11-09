@@ -49,7 +49,7 @@ export class FexRules implements PriceStrategy {
         res.add(GC.config.prices.nearby);
         break;
 
-      case !noZones && !!station.zone && !station.zone.isSubstractive:
+      case !noZones && !!station.zone && !station.zone.exclusive:
         res.add(station.zone.price);
         break;
 
@@ -68,7 +68,7 @@ export class FexRules implements PriceStrategy {
     if (station.isConnection) {
       res.sub(GC.config.prices.connectionDiscount);
     }
-    if (station.zone?.isSubstractive) {
+    if (station.zone?.exclusive) {
       res.add(station.zone.price);
       station.job.outerRing = station.zone;
     }
@@ -86,7 +86,7 @@ export class FexRules implements PriceStrategy {
         res += popUp ? `anschluss ums eck' <b>${GC.config.prices.nearby}</b>` : `+${GC.config.prices.nearby.toStringBoth()}`;
         break;
 
-      case !!station.zone && !station.zone.isSubstractive:
+      case !!station.zone && !station.zone.exclusive:
         res += popUp ? `${station.zone.name}-tarif <b>+${station.zone.price.toStringBoth()}</b>` : `+${GC.config.prices.city.toStringBoth()}`;
         break;
 
@@ -132,7 +132,7 @@ export class FexRules implements PriceStrategy {
         }
         break;
     }
-    if (station.zone?.isSubstractive) {
+    if (station.zone?.exclusive) {
       res += `${station.zone.name}-zuschlag <b>+${station.zone.price.toStringBoth()}</b>`;
     }
     return res;

@@ -11,7 +11,7 @@ import { Messenger } from '../classes/Messenger';
       <mat-tab label="hinweis">
         <div class="p-4">
           <div class="flex flex-row">
-            <div *ngIf="data.warning" class="mr-3 flex fex-warn">
+            <div *ngIf="data.warning" class="mr-3  flex-row align-items-center fex-warn">
               <i class="bi bi-exclamation-triangle" style="font-size: 30px"></i>
             </div>
             <div>

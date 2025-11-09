@@ -13,7 +13,14 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
 @Component({
   selector: 'app-container',
   template: `
-    <div class="container flex align-items-center justify-content-center" [class.new]="new" [class.existing]="!new" style="position: relative" (mouseenter)="hover = true" (mouseleave)="hover = false">
+    <div
+      class="container flex align-items-center justify-content-center"
+      [class.new]="new"
+      [class.existing]="!new"
+      style="position: relative"
+      (mouseenter)="hover = true"
+      (mouseleave)="hover = false"
+    >
       <div *ngIf="type === 'contact'">
         <div *ngIf="!contact" (click)="openContactDialog()" class="flex flex-column align-items-center justify-content-center">
           <i class="bi bi-plus-circle"></i><br />
@@ -53,7 +60,11 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
           </span>
           <ng-template #baseExtra>
             <span class="small">
-              <em>{{ price.base?._netto }} für {{ price.quantityIncluded === 1 ? 'einen' : price.quantityIncluded }} stop{{ price.quantityIncluded > 1 ? 's' : '' }}</em>
+              <em
+                >{{ price.base?._netto }} für {{ price.quantityIncluded === 1 ? 'einen' : price.quantityIncluded }} stop{{
+                  price.quantityIncluded > 1 ? 's' : ''
+                }}</em
+              >
             </span>
             <span class="small">
               <em>+ {{ price.extra?._netto }} / weiteren stop</em>
@@ -72,6 +83,7 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
         </div>
         <div *ngIf="zone" class="flex flex-column" (click)="openZoneDialog()">
           <span class="small" style="font-weight: 600">{{ zone.name }}</span>
+          <span class="small italic" *ngIf="zone.exclusive">außenring-zone</span>
           <span class="small">{{ zone.price._netto }} / stop</span>
           <span class="small">{{ zone.area }}km²</span>
         </div>
@@ -82,36 +94,36 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
   `,
   styles: [
     `
-          @import '../../const.scss';
-    
-          .container {
-            border-radius: 10px;
-            padding: 3px 5px;
-            cursor: pointer;
-            max-width: 200px;
-          }
-    
-          .existing {
-            border: 2px solid $fex-dark;
-          }
-    
-          .new {
-            border: 2px dotted $fex-dark;
-            min-width: 120px;
-            min-height: 70px;
-          }
-    
-          span {
-            hyphens: auto;
-          }
-    
-          .pencil {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            color: $fex-dark;
-          }
-        `
+      @import '../../const.scss';
+
+      .container {
+        border-radius: 10px;
+        padding: 3px 5px;
+        cursor: pointer;
+        max-width: 200px;
+      }
+
+      .existing {
+        border: 2px solid $fex-dark;
+      }
+
+      .new {
+        border: 2px dotted $fex-dark;
+        min-width: 120px;
+        min-height: 70px;
+      }
+
+      span {
+        hyphens: auto;
+      }
+
+      .pencil {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        color: $fex-dark;
+      }
+    `
   ]
 })
 export class ContainerComponent implements OnInit {

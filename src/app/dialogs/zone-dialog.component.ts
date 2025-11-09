@@ -19,7 +19,7 @@ import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf
             <input [(ngModel)]="zone.name" matInput type="text" />
           </mat-form-field>
           <app-price-input class="ml-3" [(price)]="zone.price" [label]="'preis pro stop'" [width]="80" [type]="0"></app-price-input>
-          <mat-checkbox class="ml-3" disabled [checked]="zone.isSubstractive">substraktive zone</mat-checkbox>
+          <mat-checkbox class="ml-3" [(ngModel)]="zone.exclusive">preis außerhalb der zone anwenden</mat-checkbox>
         </div>
 
         <div>{{ zone.nrOfPoints }} punkte, {{ zone.area }}km²</div>

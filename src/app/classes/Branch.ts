@@ -192,7 +192,7 @@ export class Branch {
           }
           break;
         case 'BOTH':
-          if (zone.isSubstractive !== booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
+          if (zone.exclusive !== booleanPointInPolygon([station.longitude, station.latitude], zone.polygon)) {
             return zone;
           }
           break;
