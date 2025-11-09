@@ -29,11 +29,17 @@ import { TourplanItem } from '../../classes/TourplanItem';
       <!-- selector -->
       <div
         *ngIf="!!item._messenger || (!messengersNotCheckedIn() && showToggle())"
-        class="flex flex-row align-items-center w-100"
+        class="flex flex-row align-items-center"
         style="justify-content: unset"
         [matTooltip]="item._job?.dispatcher?.nickname ? 'disponiert von ' + item._job?.dispatcher.nickname : ''"
       >
-        <mat-button-toggle-group #toggle name="messenger" [value]="item._messenger?.id || ''" (change)="messengerSelected($event.value)" [disabled]="item._job?.finished || dispatcherNotCheckedIn()">
+        <mat-button-toggle-group
+          #toggle
+          name="messenger"
+          [value]="item._messenger?.id || ''"
+          (change)="messengerSelected($event.value)"
+          [disabled]="item._job?.finished || dispatcherNotCheckedIn()"
+        >
           <mat-button-toggle *ngFor="let messenger of messList" [value]="messenger.id">
             <div class="flex flex-row align-items-center">
               <div class="flex flex-column">
@@ -65,18 +71,18 @@ import { TourplanItem } from '../../classes/TourplanItem';
   `,
   styles: [
     `
-          @import '../../../const.scss';
-    
-          .active {
-            background: #8363b5;
-          }
-    
-          .inactive {
-            border: 1px solid $gray;
-            background: white;
-            color: $gray;
-          }
-        `
+      @import '../../../const.scss';
+
+      .active {
+        background: #8363b5;
+      }
+
+      .inactive {
+        border: 1px solid $gray;
+        background: white;
+        color: $gray;
+      }
+    `
   ]
 })
 export class MessengerSelectorComponent implements OnInit {
@@ -159,20 +165,25 @@ export class MessengerSelectorComponent implements OnInit {
       this.item._job.messenger = messenger;
       this.item._job.dispatcher = GC.dispatcher().messenger;
       setTimeout(() => {
-        this.item._job.save(new Date().hoursDifference(this.item._date) < 2 ? `${messenger.nickname} fährt diese tour` : `${messenger.nickname} ist diese tour gefahren`, true).subscribe({
-          next: () => {
-            if (reload) {
-              GC.tourplan.refresh();
-            } else {
-              GC.tourplan.messengerSet.emit(true);
-              GC.tourplan.calcSales();
+        this.item._job
+          .save(
+            new Date().hoursDifference(this.item._date) < 2 ? `${messenger.nickname} fährt diese tour` : `${messenger.nickname} ist diese tour gefahren`,
+            true
+          )
+          .subscribe({
+            next: () => {
+              if (reload) {
+                GC.tourplan.refresh();
+              } else {
+                GC.tourplan.messengerSet.emit(true);
+                GC.tourplan.calcSales();
+              }
+            },
+            error: (e) => {
+              GC.openSnackBarLong('fehler beim zuweisen (siehe konsole)');
+              console.log(e);
             }
-          },
-          error: (e) => {
-            GC.openSnackBarLong('fehler beim zuweisen (siehe konsole)');
-            console.log(e);
-          }
-        });
+          });
       }, 100);
     };
 
