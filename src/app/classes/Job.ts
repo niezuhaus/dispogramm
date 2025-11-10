@@ -765,6 +765,90 @@ export class Job extends AbstractJob implements Optionable {
     });
     return res;
   }
+
+  // should send a mail to info@sprint-logistik.com with a resume of the job
+  sendMail(): void {
+    const to = 'info@sprint-logistik.com';
+
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const d = this.date || new Date();
+    const dateStr = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}, ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+
+    const clientName = this.client?.name;
+    const clientAddress = `${this.client?.street}, ${this.client?.zipCode} ${this.client?.city}`;
+
+    const formatLoc = (l: Geolocation | Station) => {
+      if (!l) {
+        return '';
+      }
+      const name = l.name ?? '';
+      const addr = (l as any).address ?? (l as any).street ?? '';
+      return addr ? `${name} ${addr}`.trim() : name;
+    };
+
+    const deliveries = (this.deliveries ?? []).filter((x) => !!x);
+    const pickups = (this.pickups ?? []).filter((x) => !!x);
+
+    const deliveriesList = deliveries.length > 0 ? deliveries.map((loc, i) => `  ${i + 1}. ${formatLoc(loc)}`).join('\n') : '  keine';
+
+    const pickupsList = pickups.length > 0 ? pickups.map((loc, i) => `  ${i + 1}. ${formatLoc(loc)}`).join('\n') : '  keine';
+
+    // Kurz-Zusammenfassung: list deliveries first (→) then pickups (←)
+    const summaryLines: string[] = [];
+    let idx = 1;
+    deliveries.forEach((loc) => {
+      summaryLines.push(`${idx++}. ${clientName} → ${loc.name ?? formatLoc(loc)}`);
+    });
+    pickups.forEach((loc) => {
+      summaryLines.push(`${idx++}. ${clientName} ← ${loc.name ?? formatLoc(loc)}`);
+    });
+    const summary = summaryLines.length ? summaryLines.join('\n') : 'keine';
+
+    const priceVal = this.price?._brutto ?? this.price?._netto ?? this.calcedPrice?._brutto ?? this.calcedPrice?._netto ?? 0;
+
+    const cargoExtra = GC.config?.prices?.extras?.[this.cargoType];
+    const cargoExtraStr = cargoExtra ? cargoExtra.toString(!this.billingTour) : 'keiner';
+    const cargos = ['keiner', 'last/sperrzuschlag', 'lastenrad', 'carla cargo'];
+    const cargoTypeName = cargos[this.cargoType] ?? 'keiner';
+
+    const body = [
+      'moin sprint,',
+      'könnt ihr die folgende tour übernehmen?',
+      '',
+      'Datum / Zeit:',
+      dateStr,
+      '',
+      'Kund:in: ',
+      clientName,
+      clientAddress ? clientAddress : '',
+      '',
+      'Abgaben:',
+      deliveriesList,
+      '',
+      'Abholungen:',
+      pickupsList,
+      '',
+      'Kurzzusammenfassung:',
+      summary,
+      '',
+      'Lastenzuschlag:',
+      `  ${cargoTypeName}`,
+      '',
+      'vielen dank und gute fahrt,',
+      'fex'
+    ].join('\n');
+
+    const subject = `Tour-Anfrage ${this.name ?? ''} (${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()})`;
+
+    const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    try {
+      window.open(mailto);
+    } catch (e) {
+      // fallback
+      window.location.href = mailto;
+    }
+  }
 }
 
 export class RegularJob extends Job {

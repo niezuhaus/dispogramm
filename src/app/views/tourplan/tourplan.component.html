@@ -201,11 +201,6 @@
                 [item]="element"
               >
               </messenger-selector>
-              <button *ngIf="element.isJob" mat-raised-button class="ml-2 fex-button" (click)="element.sendMail()">
-                <div class="flex flex-row align-items-center">
-                  <i class="bi bi-envelope-arrow-up"></i>
-                </div>
-              </button>
               <button *ngIf="element.isNote" mat-raised-button class="ml-2 fex-unimportant-button" (click)="element._note.toggleDone()">
                 <div class="flex flex-row align-items-center">
                   <span *ngIf="!element._note.done"><i class="bi bi-check2-square mr-2"></i> abhaken</span>
