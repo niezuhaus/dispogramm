@@ -57,10 +57,19 @@ declare global {
   }
 
   interface Date {
+    /**
+     * @returns the date as a string in format HH:MM
+     */
     timestamp(): string;
 
+    /**
+     * @returns the date as a string in format DD:MM:YYYY
+     */
     dateStampLong(): string;
 
+    /**
+     * @returns the date as a string in format DD:MM
+     */
     dateStampShort(): string;
 
     getDayLiteral(): string;
