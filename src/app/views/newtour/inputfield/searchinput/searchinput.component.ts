@@ -49,6 +49,7 @@ export class SearchinputComponent implements OnInit {
   @Input() required: boolean;
   @Input() hideGroupJobs: boolean;
   @Input() keepMessName: boolean;
+  @Input() customCtrl: FormControl;
   // @Input() autocompleteOffsetY: number;
 
   // events
@@ -136,7 +137,7 @@ export class SearchinputComponent implements OnInit {
   }
 
   setFormControls(): void {
-    this.ctrl = new FormControl({ value: '', disabled: this.disabled }, [Validators.required]);
+    this.ctrl = this.customCtrl || new FormControl({ value: '', disabled: this.disabled }, [Validators.required]);
     this.ctrlVoid = new FormControl({ value: '', disabled: this.disabled }, []);
   }
 
