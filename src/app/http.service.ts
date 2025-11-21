@@ -476,6 +476,9 @@ export class HttpService {
         loc = HttpService._prepareGeolocation(loc);
         location._job = _job;
         GC.locations.push(loc);
+        if (loc.clientId) {
+          GC.clientLocations.push(loc);
+        }
         return loc;
       })
     );
