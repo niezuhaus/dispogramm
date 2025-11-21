@@ -45,7 +45,7 @@ import { Messenger } from '../classes/Messenger';
                 <button
                   #yes
                   mat-raised-button
-                  class="fex-button"
+                  class="fex-button mr-5"
                   [class.fex-button-try]="!data.highlightNo && !data.warning"
                   [class.fex-button-warn]="data.warning"
                   [class.fex-button-abort]="data.highlightNo && !data.warning"
