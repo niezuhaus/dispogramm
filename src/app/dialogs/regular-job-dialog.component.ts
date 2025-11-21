@@ -52,7 +52,6 @@ import { RegularJob } from '../classes/Job';
                 mo
               </mat-checkbox>
               <timepicker [(time)]="regularJob.dates[0]" (timeChange)="timeSync($event)" [disabled]="!datesChecked[0]" [disableAutoReplace]="true"></timepicker>
-              {{ regularJob.dates[0]?.dateStampShort() }}
             </div>
             <div class="flex flex-column align-items-center day">
               <mat-checkbox
@@ -66,7 +65,6 @@ import { RegularJob } from '../classes/Job';
                 di
               </mat-checkbox>
               <timepicker [(time)]="regularJob.dates[1]" [disabled]="sync || !datesChecked[1]" [disableAutoReplace]="true"></timepicker>
-              {{ regularJob.dates[1]?.dateStampShort() }}
             </div>
             <div class="flex flex-column align-items-center day">
               <mat-checkbox
@@ -80,7 +78,6 @@ import { RegularJob } from '../classes/Job';
                 mi
               </mat-checkbox>
               <timepicker [(time)]="regularJob.dates[2]" [disabled]="sync || !datesChecked[2]" [disableAutoReplace]="true"></timepicker>
-              {{ regularJob.dates[2]?.dateStampShort() }}
             </div>
             <div class="flex flex-column align-items-center day">
               <mat-checkbox
@@ -95,7 +92,6 @@ import { RegularJob } from '../classes/Job';
                 do
               </mat-checkbox>
               <timepicker [(time)]="regularJob.dates[3]" [disabled]="sync || !datesChecked[3]" [disableAutoReplace]="true"></timepicker>
-              {{ regularJob.dates[3]?.dateStampShort() }}
             </div>
             <div id="fr" class="flex flex-column align-items-center day">
               <mat-checkbox
@@ -109,7 +105,6 @@ import { RegularJob } from '../classes/Job';
                 fr
               </mat-checkbox>
               <timepicker [(time)]="regularJob.dates[4]" [disabled]="sync || !datesChecked[4]" [disableAutoReplace]="true"></timepicker>
-              {{ regularJob.dates[4]?.dateStampShort() }}
             </div>
           </div>
           <mat-checkbox [(ngModel)]="sync" [checked]="true" (change)="$event.checked ? timeSync(regularJob.dates[0]) : {}"> tage synchronisieren </mat-checkbox>
@@ -266,9 +261,10 @@ export class RegularJobDialogComponent implements OnInit {
   }
 
   /**
-   * finds the next date that has the specified day
-   * @param day
-   * @param from
+   * finds the next date in the future that has the specified day (e.g. monday, tuesday..)
+   * for example: find the next monday after this given date
+   * @param day monday to sunday
+   * @param from the
    * @param obj
    * @private
    */
