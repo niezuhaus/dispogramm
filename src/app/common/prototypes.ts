@@ -54,6 +54,8 @@ declare global {
     diff<T extends IdObject>(this: Array<T>, array: T[]): T[];
 
     pushArray<T>(this: Array<T>, array: T[]): T[];
+
+    has(obj: T): boolean;
   }
 
   interface Date {
@@ -348,6 +350,10 @@ Array.prototype.pushArray = function <T>(this: Array<T>, array: T[]) {
     this.push(item);
   });
   return this;
+};
+
+Array.prototype.has = function <T>(obj: T) {
+  return this.indexOf(obj) >= 0;
 };
 
 Date.prototype.timestamp = function () {
