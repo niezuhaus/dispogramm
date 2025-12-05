@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { LngLat } from 'mapbox-gl';
 import { map } from 'rxjs/operators';
-import { AzureGeocoder, CombinedGeocoder, OSMGeocoder } from '../views/newtour/inputfield/searchinput/searchinput.component';
+import { OSMGeocoder } from '../views/newtour/inputfield/searchinput/searchinput.component';
 import { getBoolean, getItem, setItem } from '../UTIL';
 import { Geolocation } from '../classes/Geolocation';
 import { Shift } from '../classes/Shift';
@@ -51,7 +51,7 @@ export class GC {
   public static apiKeyMissing = false;
   public static openedLast: string;
 
-  public static geocoders: GeoCodingStrategy[] = [new OSMGeocoder(), new AzureGeocoder(), new CombinedGeocoder()];
+  public static geocoders: GeoCodingStrategy[] = [new OSMGeocoder()];
 
   /**
    * the mapbox map style

@@ -188,14 +188,6 @@ export class HttpService {
     return res;
   }
 
-  searchBoth(searchStr: string, type: LocType): Observable<Geolocation[]> {
-    return zip(this.searchOSM(searchStr, type), this.searchAzure(searchStr, type)).pipe(
-      take(1),
-      map((data) => {
-        return data[0].concat(data[1]);
-      })
-    );
-  }
   searchOSM(searchStr: string, type: LocType): Observable<Geolocation[]> {
     return this.http
       .get<IOSMResponse>(
@@ -240,50 +232,7 @@ export class HttpService {
         })
       );
   }
-  searchBing(searchStr: string, type: LocType): Observable<Geolocation[]> {
-    return this.http.get<BingMapsResponse>(`https://dev.virtualearth.net/REST/v1/Locations/DE/${searchStr} bremen?maxResults=10&key=${this.BING_API_KEY}`).pipe(
-      take(1),
-      map((list) => {
-        return list.resourceSets[0].resources
-          .filter((source) => source.address.addressLine)
-          .filter((source) => {
-            const postcode = parseInt(source.address.postalCode);
-            return postcode && ((postcode <= 28779 && postcode >= 28195) || PLZ_EXTRA.includes(postcode));
-          })
-          .map((set) => {
-            return HttpService.mapBingFeature(set, type);
-          });
-      })
-    );
-  }
-  searchAzure(searchStr: string, type: LocType): Observable<Geolocation[]> {
-    /**
-     * uses the azure api key to search for places.
-     */
-    const encodedSearch = encodeURIComponent(searchStr);
-    return this.http
-      .get<AzureMapsResponse>(
-        `https://atlas.microsoft.com/search/address/json?subscription-key=${this.AZURE_API_KEY}&api-version=1.0&query=${encodedSearch}&language=de-DE&countrySet=DE&view=Auto`
-      )
-      .pipe(
-        take(1),
-        map((response) => {
-          // Check if we have results
-          if (!response?.results || response.results.length === 0) {
-            return [];
-          }
 
-          // Filter results based on postcodes like in other search functions
-          const filteredResults = response.results.filter((result) => {
-            const postcode = parseInt(result.address.postalCode);
-            return postcode && ((postcode <= 28779 && postcode >= 28195) || PLZ_EXTRA.includes(postcode));
-          });
-
-          // Map results to Geolocation objects
-          return filteredResults.map((result) => HttpService.mapAzureFeature(result, type));
-        })
-      );
-  }
   reverseGeocode(lat: number, lng: number, type: LocType): Observable<Geolocation[]> {
     return this.http.get<IOSMResponse>(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&limit=1&apiKey=${this.GEOAPIFY_API_KEY}`).pipe(
       take(1),
@@ -421,7 +370,6 @@ export class HttpService {
       take(1),
       map((c) => {
         GC.clients.push(c);
-        console.log(c);
         if (!client.billClient) {
           GC.cashClientIds.push(client.id);
         }
