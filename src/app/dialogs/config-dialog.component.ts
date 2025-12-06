@@ -475,7 +475,7 @@ import { standartZonesHB } from '../common/zones';
     </mat-tab-group>
     <!-- backend settings -->
     <div class="option w4060" style="min-width: 700px">
-      <label> server-ip vom backend </label>
+      <label> backend-ip/url </label>
       <div style="white-space: nowrap">
         <mat-form-field style="width: 350px">
           <input
