@@ -189,8 +189,12 @@ export class ClientListComponent extends TitleComponent implements OnInit {
 
   applyFilter(event: string): void {
     if (event !== null) {
-      this.location.replaceState(`${GC.routes.clientlist};search=${event}`);
-      this.dataSource.filter = event.trim().toLowerCase();
+      if (event.trim().length > 0) {
+        this.location.replaceState(`${GC.routes.clientlist}`, `search=${event}`);
+        this.dataSource.filter = event.trim().toLowerCase();
+      } else {
+        this.location.replaceState(`${GC.routes.clientlist}`);
+      }
     }
   }
 

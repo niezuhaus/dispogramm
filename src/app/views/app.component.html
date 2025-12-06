@@ -21,7 +21,7 @@
           {{ dispatcher()?.messenger.nickname || 'einchecken' }}
         </span>
       </button>
-      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="[routes().tourplan, { date: dateString() }]">tourenzettel</button>
+      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().tourplan">tourenzettel</button>
       <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().weekplan">wochenplan</button>
       <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().newTour">
         <div class="flex flex-row align-items-center">

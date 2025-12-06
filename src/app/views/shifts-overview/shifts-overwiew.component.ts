@@ -144,7 +144,7 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
       if (params.get('month')) {
         this.date.setDateByString(params.get('month') + '-01');
       } else {
-        GC.location.replaceState(`${GC.routes.shifts};month=${this.date.yyyymm()}`);
+        GC.location.replaceState(`${GC.routes.shifts}`, `month=${this.date.yyyymm()}`);
       }
     });
   }
@@ -184,7 +184,7 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
 
   monthChanged(month: Date): void {
     this.load();
-    GC.location.replaceState(`${GC.routes.shifts};month=${this.date.yyyymm()}`);
+    GC.location.replaceState(`${GC.routes.shifts}`, `month=${this.date.yyyymm()}`);
   }
 
   toggleFilter(): void {

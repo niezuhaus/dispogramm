@@ -253,7 +253,7 @@ export class LocationListComponent extends TitleComponent implements OnInit {
   applyFilter(event?: string): void {
     if (event) {
       this.searchterm = event;
-      this.location.replaceState(`${GC.routes.locations};search=${event}`);
+      this.location.replaceState(`${GC.routes.locations}`, `search=${event}`);
       this.dataSource.filter = event.trim().toLowerCase();
     }
   }

@@ -62,7 +62,7 @@ export class WeekplanComponent extends TitleComponent implements OnInit, AfterVi
         if (params.get('year') && params.get('week')) {
           this.week = new Date().getWorkingWeek(parseInt(params.get('year')), parseInt(params.get('week')));
         } else {
-          this.location.replaceState(`${GC.routes.weekplan};year=${this.week[0].getFullYear()};week=${this.weekNumber}`);
+          this.location.replaceState(`${GC.routes.weekplan}`, `year=${this.week[0].getFullYear()}?week=${this.weekNumber}`);
         }
         this.loadWeek();
         GC.refreshNeeded.subscribe(() => {
@@ -97,7 +97,7 @@ export class WeekplanComponent extends TitleComponent implements OnInit, AfterVi
         });
       });
       this.loaded = true;
-      this.location.replaceState(`${GC.routes.weekplan};year=${this.week[0].getFullYear()};week=${this.weekNumber}`);
+      this.location.replaceState(`${GC.routes.weekplan}`, `year=${this.week[0].getFullYear()}?week=${this.weekNumber}`);
       this.title = 'kalenderwoche ' + this.weekNumber;
     });
   }

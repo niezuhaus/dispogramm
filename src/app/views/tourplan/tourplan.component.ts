@@ -180,7 +180,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
       this.route.paramMap.subscribe((params) => {
         if (!params.get('date') || GC.openedLast != new Date().yyyymmdd()) {
           this.date = new Date().nextWorkingDay();
-          this.location.replaceState(`${GC.routes.tourplan};date=${this.date.yyyymmdd()}`);
+          this.location.replaceState(`${GC.routes.tourplan}`, `date=${this.date.yyyymmdd()}`);
           GC.openedLast = new Date().yyyymmdd();
           setItem('openedLast', GC.openedLast);
         } else {
