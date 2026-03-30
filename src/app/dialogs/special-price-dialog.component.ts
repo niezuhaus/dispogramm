@@ -2,6 +2,7 @@ import { Component, Inject, ViewChild } from '@angular/core';
 import { SpecialPrice } from '../classes/SpecialPrice';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SearchinputComponent } from '../views/newtour/inputfield/searchinput/searchinput.component';
+import { Client } from '../classes/Client';
 
 @Component({
   selector: 'app-special-price-dialog',
@@ -61,7 +62,7 @@ import { SearchinputComponent } from '../views/newtour/inputfield/searchinput/se
         [placeholder]="'name, kund:innennummer'"
         [label]="'kund:innen hinzufügen'"
         [searchClients]="true"
-        (clientClientSelected)="specialPrice.clients.push($event); searchbar.reset()"
+        (clientClientSelected)="clientSelected($event)"
       >
       </searchinput>
 
@@ -107,5 +108,12 @@ export class SpecialPriceDialogComponent {
       this.new = false;
       this.specialPrice = new SpecialPrice(data.specialPrice);
     }
+  }
+
+  clientSelected(client: Client): void {
+    if (!this.specialPrice.clients.fastfind(client.id)) {
+      this.specialPrice.clients.push(client);
+    }
+    this.searchbar.reset();
   }
 }
