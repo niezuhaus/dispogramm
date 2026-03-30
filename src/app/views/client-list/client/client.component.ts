@@ -30,6 +30,7 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
   client: Client;
   lexContact: LexContact;
   clientBackup: Client = null;
+  newStreet: Geolocation;
   locations: Geolocation[];
   contacts: Contact[] = [];
   jobs: Job[];
@@ -97,7 +98,7 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
                 this.lexContact = c;
               });
             }
-            this.clientBackup = JSON.parse(JSON.stringify(client));
+            this.clientBackup = new Client(client);
             this.client = client;
             this.titleEmitter.emit(client.name);
             this.title = client.name;
@@ -179,20 +180,46 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
   }
 
   streetSelected(loc: Geolocation): void {
+    loc.clientId = this.client.id;
+    this.newStreet = loc;
     this.client.street = loc.street;
     this.client.zipCode = loc.zipCode;
     this.client.city = loc.city;
   }
 
   saveClient(): void {
-    let calls: Observable<any>[] = [GC.http.updateClient(this.client)];
-    if (GC.config.lexofficeActivated) {
-      calls.push(GC.http.lex_updateContact(this.lexContact.setClient(this.client)));
+    let calls: Observable<any>[];
+
+    const makeCall = (msg: string) => {
+      if (GC.config.lexofficeActivated) {
+        calls.push(GC.http.lex_updateContact(this.lexContact.setClient(this.client)));
+      }
+      zip(calls).subscribe(() => {
+        GC.openSnackBarLong(msg);
+      });
+    };
+
+    if (!!this.newStreet && this.locations.map((loc) => loc.street).has(this.clientBackup.street)) {
+      const dialog = GC.dialog.open(AreYouSureDialogComponent, {
+        data: {
+          headline: `soll die neue adresse als standort hinzugefügt werden?`,
+          verbYes: 'standort hinzufügen und speichern',
+          verbNo: 'nur rechnungsadresse ändern'
+        }
+      });
+      dialog.componentInstance.confirm.subscribe(() => {
+        this.newStreet.name = this.client.name;
+        calls = [GC.http.updateClient(this.client), GC.http.createLocation(this.newStreet)];
+        makeCall(`${this.client.name} und neuer standort wurden gespeichert!`);
+      });
+      dialog.componentInstance.cancel.subscribe(() => {
+        let calls: Observable<any>[] = [GC.http.updateClient(this.client)];
+        makeCall(`${this.client.name} wurde gespeichert!`);
+      });
+    } else {
+      calls = [GC.http.updateClient(this.client)];
+      makeCall(`${this.client.name} wurde gespeichert!`);
     }
-    zip(calls).subscribe(() => {
-      GC.openSnackBarLong(`${this.client.name} wurde gespeichert!`);
-      this.location.back();
-    });
   }
 
   createInvoiceWrapper(): void {
