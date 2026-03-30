@@ -603,19 +603,3 @@ export class OSMGeocoder implements GeoCodingStrategy {
     return GC.http.searchOSM(searchStr, type);
   }
 }
-
-export class AzureGeocoder implements GeoCodingStrategy {
-  type = 1;
-
-  geocode(searchStr: string, type: LocType): Observable<Geolocation[]> {
-    return GC.http.searchAzure(searchStr, type);
-  }
-}
-
-export class CombinedGeocoder implements GeoCodingStrategy {
-  type = 2;
-
-  geocode(searchStr: string, type: LocType): Observable<Geolocation[]> {
-    return GC.http.searchBoth(searchStr, type);
-  }
-}
