@@ -77,6 +77,8 @@ export class NewClientDialogComponent {
       this.clientObject.c.street = data.location.street;
       this.clientObject.c.zipCode = data.location.zipCode;
       this.clientObject.c.city = data.location.city;
+    } else {
+      this.clientObject.l = new Geolocation();
     }
     this.nextClientIds = GC.nextClientIds();
     this.clientObject.c.clientId = this.nextClientIds.netto;
