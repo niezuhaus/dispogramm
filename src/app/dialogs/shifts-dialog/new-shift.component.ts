@@ -22,7 +22,7 @@ import { Shift } from '../../classes/Shift';
       <searchinput
         [disabled]="disabled"
         #search
-        autofocus
+        cdkFocusInitial
         [label]="dispatcher ? 'disponent:in' : 'kurier:in'"
         [searchMessenger]="!dispatcher"
         [searchDispatcher]="dispatcher"
