@@ -12,12 +12,34 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { MatInput } from '@angular/material/input';
 import { MatSort, Sort } from '@angular/material/sort';
 import { ShiftTableComponent } from '../views/shift-table.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-messenger-dialog',
   template: `
     <mat-tab-group dynamicHeight [selectedIndex]="data?.selectedIndex || 0" #tabgroup style="color: black" [headerPosition]="">
       <mat-tab [label]="new ? 'neue kurier:in' : messenger.nickname + ' bearbeiten'">
+        <div class="px-4 flex flex-row">
+          <mat-form-field class="mr-4 w-25" style="min-width: 200px">
+            <mat-label>rufname</mat-label>
+            <input
+              #nick
+              autofocus
+              type="text"
+              matInput
+              required
+              (keyup)="nick.value = nick.value.toLowerCase()"
+              [(ngModel)]="messenger.nickname"
+              [formControl]="nameControl"
+            />
+            <mat-error *ngIf="!(nick.value || '').trim()">feld darf nicht leer sein</mat-error>
+            <mat-error *ngIf="nameControl.invalid">kurier:in "{{ nick.value }}" existiert bereits</mat-error>
+          </mat-form-field>
+          <mat-form-field class="w-25" style="min-width: 200px">
+            <mat-label>telefonnummer</mat-label>
+            <input type="text" matInput [(ngModel)]="messenger.telNumber" />
+          </mat-form-field>
+        </div>
         <div class="flex flex-row px-4">
           <mat-form-field class="mr-4 w-25" style="min-width: 200px">
             <mat-label>vorname</mat-label>
@@ -25,27 +47,20 @@ import { ShiftTableComponent } from '../views/shift-table.component';
               type="text"
               #name
               matInput
+              required
               (keyup)="messenger.nickname = messenger.id ? messenger.nickname : name.value.toLowerCase()"
               [(ngModel)]="messenger.firstName"
             />
+            <mat-error *ngIf="nameControl.invalid">feld darf nicht leer sein</mat-error>
           </mat-form-field>
           <mat-form-field class="mr-4 w-25" style="min-width: 200px">
             <mat-label>nachname</mat-label>
-            <input type="text" matInput [(ngModel)]="messenger.lastName" />
+            <input type="text" matInput required [(ngModel)]="messenger.lastName" />
+            <mat-error *ngIf="nameControl.invalid">feld darf nicht leer sein</mat-error>
           </mat-form-field>
           <mat-form-field class="w-25" style="min-width: 200px">
             <mat-label>personalnummer</mat-label>
             <input type="text" matInput [(ngModel)]="messenger.messengerId" />
-          </mat-form-field>
-        </div>
-        <div class="px-4 flex flex-row">
-          <mat-form-field class="mr-4 w-25" style="min-width: 200px">
-            <mat-label>rufname</mat-label>
-            <input #nick type="text" matInput (keyup)="nick.value = nick.value.toLowerCase()" [(ngModel)]="messenger.nickname" />
-          </mat-form-field>
-          <mat-form-field class="w-25" style="min-width: 200px">
-            <mat-label>telefonnummer</mat-label>
-            <input type="text" matInput [(ngModel)]="messenger.telNumber" />
           </mat-form-field>
         </div>
         <div class="flex flex-row">
@@ -85,9 +100,17 @@ import { ShiftTableComponent } from '../views/shift-table.component';
     </mat-tab-group>
 
     <div class="flex flex-row justify-content-between align-items-center p-4" style="min-width: 650px">
-      <button mat-raised-button class="flex fex-button" (click)="updateMessenger()" matDialogClose>
+      <button
+        mat-raised-button
+        class="flex"
+        [class.fex-button]="messenger.nickname && nameControl.valid"
+        (click)="updateMessenger()"
+        matDialogClose
+        [disabled]="!messenger.nickname || nameControl.invalid"
+      >
         {{ messenger.id ? 'speichern' : 'hinzufügen' }}
       </button>
+      <span class="fex-warn" *ngIf="nameControl.invalid">bitte gib einen anderen rufnamen ein.</span>
       <span class="fex-warn" *ngIf="messenger.shiftsWithoutEnd > 0">
         für {{ messenger.shiftsWithoutEnd === 1 ? 'eine' : messenger.shiftsWithoutEnd }} schicht{{ messenger.shiftsWithoutEnd > 1 ? 'en' : '' }} wurde noch
         keine endzeit eingetragen
@@ -113,6 +136,7 @@ export class MessengerDialogComponent implements OnInit {
   saved = new EventEmitter<boolean>();
   date = new Date();
   loaded = false;
+  nameControl: FormControl;
 
   get isDezwo() {
     return GC._isDezwo;
@@ -155,6 +179,14 @@ export class MessengerDialogComponent implements OnInit {
         }
       });
     }
+    const listOfNames = GC.messengers.map((m) => (m.nickname || '').toLowerCase());
+
+    this.nameControl = new FormControl(this.messenger.firstName || '', [
+      (control: any) => {
+        const val = (control.value || '').toString().trim().toLowerCase();
+        return val.length > 0 && listOfNames.includes(val) ? { nicknameTaken: true } : null;
+      }
+    ]);
   }
 
   load(): void {
