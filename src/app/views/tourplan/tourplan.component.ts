@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Job } from '../../classes/Job';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -26,8 +26,8 @@ import {
   FilterPrePlannedJobs,
   FilterRegularJobs
 } from './FilterStrategies';
-import { MessengerDialogComponent } from 'src/app/dialogs/messenger-dialog.component';
 import { setItem } from 'src/app/UTIL';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'tourplan',
@@ -56,6 +56,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   menuTopLeftPosition = { x: 0, y: 0 };
   noteVisible = false;
   editJob: Job;
+  filterKeyword = '';
 
   // events
   messengerSet = new EventEmitter<boolean>();
@@ -158,6 +159,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   @ViewChild('table') table: MatTable<Job>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('fastJobInput') jobInput: SearchinputComponent;
+  @ViewChild('search') search: MatInput;
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
 
   constructor(
@@ -380,6 +382,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
     this.dataSource.data = this.filterJobsByKeyword().filter(
+      // tpi = TourPlanItem
       (tpi) =>
         tpi._job?.center?.name.toLowerCase().includes(filterValue) ||
         tpi._job?.client?.name.toLowerCase().includes(filterValue) ||
@@ -387,6 +390,11 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
         tpi._job?.deliveries?.map((l) => l.name).filter((s) => s.toLowerCase().includes(filterValue)).length > 0 ||
         tpi._job?.pickups?.map((l) => l.name).filter((s) => s.toLowerCase().includes(filterValue)).length > 0
     );
+    if (filterValue.trim().length > 0) {
+      this.location.replaceState(`${GC.routes.tourplan}`, `date=${this.date.yyyymmdd()}?search=${filterValue}`);
+    } else {
+      this.location.replaceState(`${GC.routes.tourplan}`, `date=${this.date.yyyymmdd()}`);
+    }
     this.cd.detectChanges();
   }
 
@@ -396,7 +404,8 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     this.clicked = true;
     this.date = date;
     this.refresh();
-    this.location.replaceState(`${GC.routes.tourplan};date=${date.yyyymmdd()}`);
+    this.location.replaceState(`${GC.routes.tourplan}`, `date=${date.yyyymmdd()}`);
+    this.filterKeyword = '';
   }
 
   onRightClick(event: MouseEvent, item: TourplanItem | Shift) {
