@@ -346,6 +346,7 @@ Array.prototype.diff = function <T extends IdObject>(this: Array<T>, array: T[])
 };
 
 Array.prototype.pushArray = function <T>(this: Array<T>, array: T[]) {
+  if (!array) return this;
   array.forEach((item) => {
     this.push(item);
   });
