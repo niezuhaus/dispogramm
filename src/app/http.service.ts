@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of, switchMap, take, tap, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -403,11 +403,7 @@ export class HttpService {
     );
   }
   searchClientList(searchStr: string): Observable<Client[]> {
-    const res = new EventEmitter<Client[]>();
-    setTimeout(() => {
-      res.emit(GC.clients.filter((option) => (option.name + option.clientId).toLowerCase().includes(searchStr.toLowerCase())));
-    }, 0);
-    return res;
+    return of(GC.clients.filter((option) => (option.name + option.clientId).toLowerCase().includes(searchStr.toLowerCase())));
   }
   deleteClient(client: Client): Observable<any> {
     const idx = GC.clients.indexOf(client);
@@ -474,11 +470,7 @@ export class HttpService {
     );
   }
   searchLocationList(searchStr: string): Observable<Geolocation[]> {
-    const res = new EventEmitter<Geolocation[]>();
-    setTimeout(() => {
-      res.emit(HttpService._filterLocationsByAny(GC.locations, searchStr));
-    }, 0);
-    return res;
+    return of(HttpService._filterLocationsByAny(GC.locations, searchStr));
   }
   mergeLocations(locs: Geolocation[]): Observable<any> {
     return this.http
@@ -810,11 +802,7 @@ export class HttpService {
     );
   }
   getRegularJobListForClient(clientId: string): Observable<RegularJob[]> {
-    const res = new EventEmitter<RegularJob[]>();
-    setTimeout(() => {
-      res.emit(GC.regularJobs.filter((rj) => rj.client?.id === clientId));
-    }, 0);
-    return res;
+    return of(GC.regularJobs.filter((rj) => rj.client?.id === clientId));
   }
   deleteRegularJob(job: RegularJob): Observable<boolean> {
     const idx = GC.regularJobs.findIndex((j) => j.id === job.id);
