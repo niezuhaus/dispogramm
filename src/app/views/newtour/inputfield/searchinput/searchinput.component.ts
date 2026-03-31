@@ -383,7 +383,7 @@ export class SearchinputComponent implements OnInit {
         .subscribe((term) => {
           let list: Zone[] = [];
           if (this.searchZones) {
-            list = GC.zones.copy();
+            list = [].concat(GC.zones);
             if (this.searchPostCodeZones) list.pushArray(GC.postCodeZones);
           } else if (this.searchPostCodeZones) {
             list = GC.postCodeZones;

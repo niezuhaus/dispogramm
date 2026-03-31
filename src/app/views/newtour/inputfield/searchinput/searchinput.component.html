@@ -85,9 +85,9 @@
       <!-- the green ones -->
       <div *ngIf="option.type == 5" style="width: 300px" (contextmenu)="$event.stopPropagation()">
         <div class="mb-2 ml-4 flex flex-col">
-          <small
-            ><strong>{{ option.job.name }}</strong></small
-          >
+          <small>
+            <strong>{{ option.job.name }} </strong>
+          </small>
         </div>
         <div class="flex flex-row justify-content-between align-items-center">
           <small class="mr-2 w-80 flex-column text-truncate">
@@ -111,6 +111,14 @@
           <span *ngIf="option.job.connection" style="font-family: monospace" class="mr-2"> (Anschluss)</span>
         </div>
       </div>
+
+      <div *ngIf="option.type == 6" class="flex flex-col">
+        <small>
+          <strong>{{ option.zone.name }}</strong>
+        </small>
+        <small>{{ option.zone.area }}km²{{ option.zone.exclusive ? ' · exklusiv' : '' }}</small>
+      </div>
+
     </mat-option>
 
     <!-- ladekreis -->
