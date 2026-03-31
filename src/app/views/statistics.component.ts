@@ -1,5 +1,7 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { GC } from '../common/GC';
 import { TitleComponent } from './app.component';
 
@@ -16,8 +18,9 @@ import { TitleComponent } from './app.component';
   `,
   styles: []
 })
-export class StatisticsComponent extends TitleComponent implements OnInit, AfterViewInit {
+export class StatisticsComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
   override title: 'statistiken';
+  private destroy$ = new Subject<void>();
 
   private weekStats: { name: string; turnover: number }[] = [];
   private dayStats: { name: string; turnover: number }[] = [];
@@ -31,8 +34,13 @@ export class StatisticsComponent extends TitleComponent implements OnInit, After
     super();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
-    GC.http.getWeekStatistic().subscribe((response) => {
+    GC.http.getWeekStatistic().pipe(takeUntil(this.destroy$)).subscribe((response) => {
       response.forEach((stat) => {
         this.weekStats.push({ name: stat.day.slice(0, 2) + ' früh', turnover: stat.statistics[0].turnover });
       });
@@ -42,7 +50,7 @@ export class StatisticsComponent extends TitleComponent implements OnInit, After
       this.createSvg('svg#week');
       this.drawBars('svg#week', this.weekStats);
     });
-    GC.http.getDayStatistic().subscribe((response) => {
+    GC.http.getDayStatistic().pipe(takeUntil(this.destroy$)).subscribe((response) => {
       console.log(response);
       response.forEach((stat) => {
         this.dayStats.push({ name: stat.timeframe.slice(0, 2) + 'h - ' + stat.timeframe.slice(2, 4) + 'h', turnover: stat.turnover });

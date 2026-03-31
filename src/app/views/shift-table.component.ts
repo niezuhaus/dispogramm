@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Shift } from '../classes/Shift';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { GC, ShiftType } from '../common/GC';
 import { Job } from '../classes/Job';
 import { Price } from '../classes/Price';
@@ -176,7 +178,8 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
     ])
   ]
 })
-export class ShiftTableComponent implements OnInit {
+export class ShiftTableComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   dataSource: MatTableDataSource<Shift>;
   displayedColumns: string[] = ['number', 'date', 'startend', 'money'];
   menuTopLeftPosition = { x: 0, y: 0 };
@@ -221,6 +224,11 @@ export class ShiftTableComponent implements OnInit {
 
   constructor() {}
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
     this.shifts = this.messenger.shifts;
     this.dataSource = new MatTableDataSource<Shift>(this.shifts);
@@ -261,12 +269,12 @@ export class ShiftTableComponent implements OnInit {
       shift.messenger.shifts = null;
       GC.openSnackBarLong(GC.shiftLiterals[shift.type] + '-schicht wurde erstellt');
 
-      GC.http.createShift(shift).subscribe((s) => {
+      GC.http.createShift(shift).pipe(takeUntil(this.destroy$)).subscribe((s) => {
         routine(s);
         this.shiftCreated.emit(s);
       });
     } else {
-      shift.update('schicht wurde aktualisiert.', true).subscribe((s) => {
+      shift.update('schicht wurde aktualisiert.', true).pipe(takeUntil(this.destroy$)).subscribe((s) => {
         routine(s);
         this.shiftUpdated.emit(true);
       });

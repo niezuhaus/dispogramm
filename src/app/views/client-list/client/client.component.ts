@@ -97,10 +97,10 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
   ngAfterViewInit(): void {
     this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
-        GC.http.getClient(params.get('id')).subscribe({
+        GC.http.getClient(params.get('id')).pipe(takeUntil(this.destroy$)).subscribe({
           next: (client) => {
             if (GC.config.lexofficeActivated) {
-              GC.http.lex_findClient(client).subscribe((c) => {
+              GC.http.lex_findClient(client).pipe(takeUntil(this.destroy$)).subscribe((c) => {
                 this.lexContact = c;
               });
             }
@@ -121,9 +121,9 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
   query(date: Date): void {
     this.date = date;
     this.loadingTours = true;
-    GC.http.jobsForClientInMonth(this.client.id, date).subscribe({
+    GC.http.jobsForClientInMonth(this.client.id, date).pipe(takeUntil(this.destroy$)).subscribe({
       next: (jobs) => {
-        this.getRegularJobs().subscribe((rjs) => {
+        this.getRegularJobs().pipe(takeUntil(this.destroy$)).subscribe((rjs) => {
           this.regularJobs = rjs;
         });
         this.jobs = jobs.filter((j) => !j.regularJobId);
@@ -157,14 +157,14 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
   }
 
   getLocations(): void {
-    GC.http.getLocationsByClientId(this.client.id).subscribe((locs) => {
+    GC.http.getLocationsByClientId(this.client.id).pipe(takeUntil(this.destroy$)).subscribe((locs) => {
       this.locations = locs;
       this.loading = false;
     });
   }
 
   getContacts(): void {
-    GC.http.getContactsForClient(this.client).subscribe((contacts) => {
+    GC.http.getContactsForClient(this.client).pipe(takeUntil(this.destroy$)).subscribe((contacts) => {
       this.contacts = contacts;
     });
   }

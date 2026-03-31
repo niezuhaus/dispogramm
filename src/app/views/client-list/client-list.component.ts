@@ -1,4 +1,4 @@
-import { Injectable, Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Injectable, Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -6,6 +6,7 @@ import { Client } from '../../classes/Client';
 import { DateAdapter } from '@angular/material/core';
 import { NewClientDialogComponent } from '../../dialogs/new-client-dialog.component';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { GC } from '../../common/GC';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -105,9 +106,10 @@ import { MatMenuTrigger } from '@angular/material/menu';
   `,
   styleUrls: ['./client-list.component.scss']
 })
-export class ClientListComponent extends TitleComponent implements OnInit {
+export class ClientListComponent extends TitleComponent implements OnInit, OnDestroy {
   override title = 'kund:innen';
 
+  private destroy$ = new Subject<void>();
   loaded = false;
   rows = Math.round((window.innerHeight - 350) / 50);
   searchterm: string;
@@ -136,10 +138,15 @@ export class ClientListComponent extends TitleComponent implements OnInit {
     this.lastMonth.setMonth(this.lastMonth.getMonth() - 1);
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    GC.loaded().subscribe(() => {
+    GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.init();
       this.cd.detectChanges();
     });
@@ -162,7 +169,7 @@ export class ClientListComponent extends TitleComponent implements OnInit {
       }
     };
     this.loaded = true;
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       if (params.get('search')) {
         this.searchterm = params.get('search');
         this.applyFilter(this.searchterm);

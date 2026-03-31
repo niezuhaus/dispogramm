@@ -1,8 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { TitleComponent } from '../app.component';
 import { GC } from 'src/app/common/GC';
 import { Messenger } from 'src/app/classes/Messenger';
-import { zip } from 'rxjs';
+import { Subject, zip } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ShiftTableComponent } from '../shift-table.component';
 import { ActivatedRoute } from '@angular/router';
 import { Shift } from 'src/app/classes/Shift';
@@ -99,8 +100,9 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
     `
   ]
 })
-export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, AfterViewInit {
+export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
   override title = 'schichten';
+  private destroy$ = new Subject<void>();
   shiftsLoaded = false;
   allShifts: Shift[] = [];
   get allHours(): number {
@@ -139,8 +141,13 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
     super();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       if (params.get('month')) {
         this.date.setDateByString(params.get('month') + '-01');
       } else {
@@ -150,7 +157,7 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
   }
 
   ngAfterViewInit(): void {
-    GC.loaded().subscribe(() => {
+    GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.messengers = GC.messengers.sort((a, b) => {
         switch (true) {
           case !a.lastName && !b.lastName:
@@ -168,7 +175,7 @@ export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, A
 
   load(): void {
     this.shiftsLoaded = false;
-    zip(this.messengers.map((m) => m.loadShifts(this.date))).subscribe((res) => {
+    zip(this.messengers.map((m) => m.loadShifts(this.date))).pipe(takeUntil(this.destroy$)).subscribe((res) => {
       this.allShifts = res.reduce((acc, shiftArr) => acc.concat(shiftArr), []);
       const shiftsByDate: { [key: string]: Shift[] } = {};
       this.allShifts.forEach((shift) => {
