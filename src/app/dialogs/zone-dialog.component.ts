@@ -10,27 +10,28 @@ import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf
 @Component({
   selector: 'app-zone-dialog',
   template: `
-    <div style="width: 75vw">
-      <h1 mat-dialog-title>zone speichern</h1>
-      <div class="flex flex-row justify-content-between align-items-baseline p-4">
-        <div class="flex flex-row align-items-center">
-          <mat-form-field>
-            <mat-label>name</mat-label>
-            <input [(ngModel)]="zone.name" matInput type="text" />
-          </mat-form-field>
-          <app-price-input class="ml-3" [(price)]="zone.price" [label]="'preis pro stop'" [width]="80" [type]="0"></app-price-input>
-          <mat-checkbox class="ml-3" [(ngModel)]="zone.exclusive">preis außerhalb der zone anwenden</mat-checkbox>
-        </div>
+    <mat-tab-group dynamicHeight class="animated-width">
+      <mat-tab label="zone speichern">
+        <div class="p-4" style="width: 75vw">
+          <div class="flex flex-row justify-content-between align-items-baseline">
+            <div class="flex flex-row align-items-center">
+              <mat-form-field>
+                <mat-label>name</mat-label>
+                <input [(ngModel)]="zone.name" matInput type="text" />
+              </mat-form-field>
+              <app-price-input class="ml-3" [(price)]="zone.price" [label]="'preis pro stop'" [width]="80" [type]="0"></app-price-input>
+              <mat-checkbox class="ml-3" [(ngModel)]="zone.exclusive">preis außerhalb der zone anwenden</mat-checkbox>
+            </div>
 
-        <div>{{ zone.nrOfPoints }} punkte, {{ zone.area }}km²</div>
-      </div>
+            <div>{{ zone.nrOfPoints }} punkte, {{ zone.area }}km²</div>
+          </div>
 
-      <div id="mapcontainer">
-        <div #map id="map"></div>
-      </div>
+          <div id="mapcontainer">
+            <div #map id="map"></div>
+          </div>
 
-      <div class="flex flex-column">
-        <!-- <searchinput
+          <div class="flex flex-column">
+            <!-- <searchinput
           #zoneSearchbar
           [width]="'250px'"
           [label]="'zone hinzufügen'"
@@ -39,9 +40,11 @@ import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf
           (zoneSelected)="addToMap($event.polygon)">
         </searchinput> -->
 
-        <button #yes mat-raised-button class="ml-3 my-4 fex-button" (click)="saveZone()" matDialogClose>speichern</button>
-      </div>
-    </div>
+            <button #yes mat-raised-button class="mt-4 fex-button" (click)="saveZone()" matDialogClose>speichern</button>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   `,
   styles: [
     `

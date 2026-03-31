@@ -7,9 +7,10 @@ import { Client } from '../classes/Client';
 @Component({
   selector: 'app-special-price-dialog',
   template: `
-    <h1 mat-dialog-title>{{ new ? 'neuen sonderpreis erstellen' : 'sonderpreis bearbeiten' }}</h1>
-
-    <div #newExtraPrice class="px-3 flex flex-column">
+    <mat-tab-group dynamicHeight class="animated-width">
+      <mat-tab label="{{ new ? 'neuen sonderpreis erstellen' : 'sonderpreis bearbeiten' }}">
+        <div class="p-4">
+    <div #newExtraPrice class="flex flex-column">
       <mat-form-field style="width: 250px">
         <mat-label>name</mat-label>
         <input matInput type="text" [(ngModel)]="specialPrice.name" />
@@ -90,6 +91,9 @@ import { Client } from '../classes/Client';
     <div class="w-100 mb-3" style="display: flex; justify-content: center;">
       <button mat-raised-button class="fex-button" mat-dialog-close (click)="specialPrice.save()">sonderpreis speichern</button>
     </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   `,
   styles: []
 })

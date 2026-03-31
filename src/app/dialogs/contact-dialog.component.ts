@@ -7,30 +7,33 @@ import { Client } from '../classes/Client';
 @Component({
   selector: 'app-edit-contact-dialog',
   template: `
-    <div>
-      <h1 mat-dialog-title>neuen kontakt erstellen</h1>
-      <div mat-dialog-content style="width: 300px">
-        <mat-form-field class="w-100">
-          <mat-label>name</mat-label>
-          <input #name type="text" matInput [(ngModel)]="contact.name" autofocus />
-        </mat-form-field>
-        <mat-form-field class="w-100">
-          <mat-label>telefon</mat-label>
-          <input #nick type="text" matInput [(ngModel)]="contact.phone" (focus)="nick.select()" autofocus />
-          <mat-error> die mailadresse ist ungültig </mat-error>
-        </mat-form-field>
-        <mat-form-field class="w-100">
-          <mat-label>e-mail</mat-label>
-          <input type="email" email matInput [(ngModel)]="contact.email" />
-          <mat-error> die mailadresse ist ungültig </mat-error>
-        </mat-form-field>
-        <mat-form-field class="w-100">
-          <mat-label>weitere infos</mat-label>
-          <textarea matInput [(ngModel)]="contact.info"></textarea>
-        </mat-form-field>
-      </div>
-      <button mat-raised-button class="fex-button" (click)="this.save()" matDialogClose="true">speichern</button>
-    </div>
+    <mat-tab-group dynamicHeight class="animated-width">
+      <mat-tab label="neuen kontakt erstellen">
+        <div class="p-4">
+          <div style="width: 300px">
+            <mat-form-field class="w-100">
+              <mat-label>name</mat-label>
+              <input #name type="text" matInput [(ngModel)]="contact.name" autofocus />
+            </mat-form-field>
+            <mat-form-field class="w-100">
+              <mat-label>telefon</mat-label>
+              <input #nick type="text" matInput [(ngModel)]="contact.phone" (focus)="nick.select()" autofocus />
+              <mat-error> die mailadresse ist ungültig </mat-error>
+            </mat-form-field>
+            <mat-form-field class="w-100">
+              <mat-label>e-mail</mat-label>
+              <input type="email" email matInput [(ngModel)]="contact.email" />
+              <mat-error> die mailadresse ist ungültig </mat-error>
+            </mat-form-field>
+            <mat-form-field class="w-100">
+              <mat-label>weitere infos</mat-label>
+              <textarea matInput [(ngModel)]="contact.info"></textarea>
+            </mat-form-field>
+          </div>
+          <button mat-raised-button class="fex-button" (click)="this.save()" matDialogClose="true">speichern</button>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   `,
   styles: []
 })
