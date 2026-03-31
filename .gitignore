@@ -32,6 +32,9 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
+# Local notes
+ISSUES.md
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/
