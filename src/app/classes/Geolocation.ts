@@ -97,7 +97,7 @@ export class Station extends Geolocation {
 
   constructor(data: Partial<Geolocation>) {
     super(data);
-    Object.assign(data, this);
+    Object.assign(this, data);
   }
 
   index(): number {
