@@ -70,11 +70,11 @@ export class Shift implements IdObject {
 
   startTimeGuess(byDate?: boolean, triggerEnd?: boolean): Date {
     if (byDate) {
-      let counter = -1;
-      while (GC.startTimes.get(counter).getHours() < this.start.getHours() && counter < GC.startTimes.size) {
+      let counter = 0;
+      while (counter < GC.startTimes.size && GC.startTimes.get(counter)?.getHours() < this.start.getHours()) {
         counter++;
       }
-      counter = counter.clamp(0);
+      counter = counter.clamp(0, GC.startTimes.size - 1);
       return this.start.copyTime(GC.startTimes.get(counter));
     }
     this.start.copyTime(GC.startTimes.get(this.type));
