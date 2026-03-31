@@ -1,7 +1,8 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TitleComponent } from '../app.component';
 import { GC } from '../../common/GC';
-import { zip } from 'rxjs';
+import { Subject, zip } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { TourplanItem } from '../../classes/TourplanItem';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -13,7 +14,7 @@ import { Note } from '../../classes/Note';
   templateUrl: './weekplan.component.html',
   styleUrls: ['./weekplan.component.scss']
 })
-export class WeekplanComponent extends TitleComponent implements OnInit, AfterViewInit {
+export class WeekplanComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   @ViewChild('redBar') redBar: HTMLElement;
   dataSource: String[] = [];
@@ -32,6 +33,7 @@ export class WeekplanComponent extends TitleComponent implements OnInit, AfterVi
   loaded = false;
   menuTopLeftPosition = { x: 0, y: 0 };
   newNote: { column: number; row: number } = null;
+  private destroy$ = new Subject<void>();
 
   get routes() {
     return GC.routes;
@@ -57,15 +59,15 @@ export class WeekplanComponent extends TitleComponent implements OnInit, AfterVi
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    GC.loaded().subscribe(() => {
-      this.route.paramMap.subscribe((params) => {
+    GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
         if (params.get('year') && params.get('week')) {
           this.week = new Date().getWorkingWeek(parseInt(params.get('year')), parseInt(params.get('week')));
         } else {
           this.location.replaceState(`${GC.routes.weekplan}`, `year=${this.week[0].getFullYear()}?week=${this.weekNumber}`);
         }
         this.loadWeek();
-        GC.refreshNeeded.subscribe(() => {
+        GC.refreshNeeded.pipe(takeUntil(this.destroy$)).subscribe(() => {
           this.loadWeek();
         });
       });
@@ -73,6 +75,11 @@ export class WeekplanComponent extends TitleComponent implements OnInit, AfterVi
         this.redBar.scrollIntoView();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadWeek(): void {

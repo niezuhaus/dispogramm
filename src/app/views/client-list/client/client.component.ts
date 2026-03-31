@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpService } from '../../../http.service';
-import { Observable, zip } from 'rxjs';
+import { Observable, Subject, zip } from 'rxjs';
 import { Contact } from '../../../classes/Contact';
 import { Job, RegularJob } from '../../../classes/Job';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -9,7 +9,7 @@ import { DateAdapter } from '@angular/material/core';
 import { MatSort } from '@angular/material/sort';
 import { AreYouSureDialogComponent } from '../../../dialogs/are-you-sure-dialog.component';
 import { GC } from '../../../common/GC';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { Price } from '../../../classes/Price';
 import { Location } from '@angular/common';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -23,7 +23,7 @@ import { LexContact, LexInvoice } from '../../../classes/LexInvoice';
   templateUrl: 'client.component.html',
   styleUrls: ['client.component.scss']
 })
-export class ClientComponent extends AsyncTitleComponent implements OnInit, AfterViewInit {
+export class ClientComponent extends AsyncTitleComponent implements OnInit, AfterViewInit, OnDestroy {
   override titleEmitter = new EventEmitter<string>();
   override title = '';
 
@@ -46,6 +46,7 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
   loading = true;
   loadingTours = false;
   menuTopLeftPosition = { x: 0, y: 0 };
+  private destroy$ = new Subject<void>();
 
   get totalSum() {
     const rjs = this.regularJobs
@@ -79,6 +80,11 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
     super();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
     this.date = new Date().monthStart();
     for (let i = 2019; i <= this.date.getFullYear(); i++) {
@@ -89,8 +95,8 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
   }
 
   ngAfterViewInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      GC.loaded().subscribe(() => {
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
         GC.http.getClient(params.get('id')).subscribe({
           next: (client) => {
             if (GC.config.lexofficeActivated) {

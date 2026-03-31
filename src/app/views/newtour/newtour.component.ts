@@ -6,6 +6,8 @@ import { Extra, IPoint, LocType } from '../../common/interfaces';
 import { Zone } from '../../classes/Zone';
 import { zip } from 'rxjs';
 import { corners, drawText, feature, getItem, initMap, setItem } from '../../UTIL';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { SearchinputComponent } from './inputfield/searchinput/searchinput.component';
 import { ActivatedRoute } from '@angular/router';
 import { LocationDialogComponent } from '../../dialogs/location-dialog.component';
@@ -55,6 +57,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   locationPopUpOpen: boolean;
   polygon: Position[][];
   polygonIds = new Map<string, string>();
+
+  private destroy$ = new Subject<void>();
 
   // STATE VARIABLES
   loaded = false;
@@ -139,7 +143,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   ngAfterViewInit(): void {
-    GC.loaded().subscribe(() => {
+    GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (!this.extras.length) {
         this.extras = [
           { value: 0, viewValue: 'kein zuschlag', price: GC.config.prices.extras[0] },
@@ -153,7 +157,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       this.dInputs.push(this.dInput);
       this.initMap();
       setTimeout(() => {
-        this.route.paramMap.subscribe((params) => {
+        this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
           const id = params.get('id');
           if (id?.length && id !== 'undefined') {
             if (params.get('rj') === 'true') {
@@ -173,6 +177,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.mapGL.remove();
   }
 

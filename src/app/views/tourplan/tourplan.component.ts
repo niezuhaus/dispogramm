@@ -28,6 +28,8 @@ import {
 } from './FilterStrategies';
 import { setItem } from 'src/app/UTIL';
 import { MatInput } from '@angular/material/input';
+import { Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'tourplan',
@@ -57,6 +59,8 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   noteVisible = false;
   editJob: Job;
   filterKeyword = '';
+
+  private destroy$ = new Subject<void>();
 
   // events
   messengerSet = new EventEmitter<boolean>();
@@ -171,15 +175,15 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   }
 
   ngOnInit(): void {
-    GC.messengersChanged.subscribe(() => {
+    GC.messengersChanged.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.refresh();
     });
   }
 
   ngAfterViewInit(): void {
-    GC.loaded().subscribe(() => {
+    GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.loaded = true;
-      this.route.paramMap.subscribe((params) => {
+      this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
         if (!params.get('date') || GC.openedLast != new Date().yyyymmdd()) {
           this.date = new Date().nextWorkingDay();
           this.location.replaceState(`${GC.routes.tourplan}`, `date=${this.date.yyyymmdd()}`);
@@ -194,7 +198,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
         });
         this.refresh();
         this.cd.detectChanges();
-        GC.refreshNeeded.subscribe(() => {
+        GC.refreshNeeded.pipe(takeUntil(this.destroy$)).subscribe(() => {
           this.refresh();
         });
       });
@@ -204,6 +208,8 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
 
   ngOnDestroy() {
     GC.tourplanActive = false;
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   refresh(): void {
@@ -296,7 +302,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
       if (job) {
         this.jobInput.reset();
         this.refresh();
-        GC.dispatcherChanged.subscribe(() => {
+        GC.dispatcherChanged.pipe(take(1)).subscribe(() => {
           setTimeout(() => {
             this.jobInput.setFormControls();
           }, 0);

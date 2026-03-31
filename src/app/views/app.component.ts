@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, HostListener, OnDestroy, ViewChild } from '@angular/core';
 import { GC } from '../common/GC';
 import { HttpService } from '../http.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,6 +6,7 @@ import { CheckInDialog } from '../dialogs/shifts-dialog/check-in-dialog.componen
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getItem } from '../UTIL';
+import { Subscription } from 'rxjs';
 import { ConfigDialogComponent } from '../dialogs/config-dialog.component';
 import { Location } from '@angular/common';
 import { DatepickerComponent } from './datepicker.component';
@@ -27,7 +28,7 @@ export abstract class AsyncTitleComponent extends TitleComponent {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
   get title() {
     return this.componentRef?.title || '';
   }
@@ -35,6 +36,7 @@ export class AppComponent implements AfterViewInit {
   gc: GC;
   componentRef: TitleComponent;
   ref: ComponentRef<any>;
+  private titleSub: Subscription;
   date = new Date();
   loaded = false;
   search = false;
@@ -93,16 +95,21 @@ export class AppComponent implements AfterViewInit {
   }
 
   onActivate(componentRef: any): void {
+    this.titleSub?.unsubscribe();
     this.ref = componentRef as ComponentRef<any>;
     if (componentRef instanceof TitleComponent) {
       this.componentRef = componentRef;
     }
     if (componentRef instanceof AsyncTitleComponent) {
       this.componentRef = componentRef;
-      componentRef.titleEmitter.subscribe((msg: string) => {
+      this.titleSub = componentRef.titleEmitter.subscribe((msg: string) => {
         GC.cd.detectChanges();
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.titleSub?.unsubscribe();
   }
 
   openConfigDialog(): void {
