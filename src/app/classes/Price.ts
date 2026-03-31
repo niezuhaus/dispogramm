@@ -255,7 +255,7 @@ export class Price {
   withExpenses(expense: Expense): Price {
     let result = this.copy();
     this.expenses.forEach((e) => {
-      result.isBrutto ? (result._brutto += expense.price.brutto) : (result._netto += expense.price.brutto);
+      result.isBrutto ? (result._brutto += e.price.brutto) : (result._netto += e.price.brutto);
     });
     return result;
   }
