@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { LocationDialogComponent } from '../dialogs/location-dialog.component';
@@ -60,7 +61,7 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
         <ng-container matColumnDef="checked">
           <th mat-header-cell *matHeaderCellDef style="width: 40px"></th>
           <td mat-cell *matCellDef="let element">
-            <mat-checkbox (change)="checkedLocations.push(element)"></mat-checkbox>
+            <mat-checkbox (change)="toggleLocation($event, element)"></mat-checkbox>
           </td>
         </ng-container>
 
@@ -248,6 +249,16 @@ export class LocationListComponent extends TitleComponent implements OnInit {
       });
       this.checkedLocations = [];
     });
+  }
+
+  toggleLocation(event: MatCheckboxChange, loc: Geolocation): void {
+    if (event.checked) {
+      if (!this.checkedLocations.includes(loc)) {
+        this.checkedLocations.push(loc);
+      }
+    } else {
+      this.checkedLocations = this.checkedLocations.filter((l) => l !== loc);
+    }
   }
 
   applyFilter(event?: string): void {

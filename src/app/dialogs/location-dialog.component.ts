@@ -112,7 +112,7 @@ import { Client } from '../classes/Client';
   `,
   styles: [
     `
-      * {
+      :host {
         flex-direction: column;
       }
 
@@ -183,7 +183,9 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       if (this.data.location.clientId) {
         GC.http.getClient(this.data.location.clientId).subscribe((client) => {
-          this.searchClient.searchTerm = client.name;
+          if (client) {
+            this.searchClient.searchTerm = client.name;
+          }
         });
       }
     });

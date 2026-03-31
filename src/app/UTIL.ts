@@ -92,6 +92,7 @@ export function getBoolean(key: string): boolean {
 
 export function getItem<E>(key: string): E {
   const json = localStorage.getItem(key);
+  if (!json) return null;
   try {
     return JSON.parse(json) as E;
   } catch (e) {
