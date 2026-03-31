@@ -410,7 +410,8 @@ export class HttpService {
     return res;
   }
   deleteClient(client: Client): Observable<any> {
-    GC.clients.splice(GC.clients.indexOf(client), 1);
+    const idx = GC.clients.indexOf(client);
+    if (idx >= 0) GC.clients.splice(idx, 1);
     return this.http.post<any>(`${BACKEND_IP}/clients/delete`, { id: client.id }, { headers: this.backendAuthHeader }).pipe(take(1));
   }
 
@@ -437,7 +438,8 @@ export class HttpService {
     location._job = null;
     GC.locations.findAndReplace(location);
     if (location.clientId) {
-      GC.clientLocations[GC.clientLocations.indexOf(GC.clientLocations.filter((loc) => loc.id === location.id)[0])] = location;
+      const idx = GC.clientLocations.findIndex((loc) => loc.id === location.id);
+      if (idx >= 0) GC.clientLocations[idx] = location;
     }
     return this.http.post<Geolocation>(`${BACKEND_IP}/locations/update`, location, { headers: this.backendAuthHeader }).pipe(
       take(1),
@@ -815,7 +817,8 @@ export class HttpService {
     return res;
   }
   deleteRegularJob(job: RegularJob): Observable<boolean> {
-    GC.regularJobs.splice(GC.regularJobs.indexOf(GC.regularJobs.filter((j) => j.id === job.id)[0]), 1);
+    const idx = GC.regularJobs.findIndex((j) => j.id === job.id);
+    if (idx >= 0) GC.regularJobs.splice(idx, 1);
     return this.http.post<boolean>(`${BACKEND_IP}/regularjobs/delete`, { id: job.id }, { headers: this.backendAuthHeader }).pipe(take(1));
   }
 
@@ -899,7 +902,8 @@ export class HttpService {
     return of(res);
   }
   deleteMessenger(messenger: Messenger): Observable<boolean> {
-    GC.messengers.splice(GC.messengers.indexOf(GC.messengers.filter((m) => m.id === messenger.id)[0]), 1);
+    const idx = GC.messengers.findIndex((m) => m.id === messenger.id);
+    if (idx >= 0) GC.messengers.splice(idx, 1);
     if (messenger.dispatcher) {
       GC.loadDispatchers(this);
     }
