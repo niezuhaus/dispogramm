@@ -12,7 +12,16 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { MatInput } from '@angular/material/input';
 import { MatSort, Sort } from '@angular/material/sort';
 import { ShiftTableComponent } from '../views/shift-table.component';
-import { FormControl } from '@angular/forms';
+import { FormControl, NgForm, FormGroupDirective, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
+  constructor(private shouldShowErrors: () => boolean) {}
+
+  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
+  }
+}
 
 @Component({
   selector: 'app-edit-messenger-dialog',
@@ -30,10 +39,11 @@ import { FormControl } from '@angular/forms';
               required
               (keyup)="nick.value = nick.value.toLowerCase()"
               [(ngModel)]="messenger.nickname"
+              [errorStateMatcher]="saveAttemptMatcher"
               [formControl]="nameControl"
             />
-            <mat-error *ngIf="!(nick.value || '').trim()">feld darf nicht leer sein</mat-error>
-            <mat-error *ngIf="nameControl.invalid">kurier:in "{{ nick.value }}" existiert bereits</mat-error>
+            <mat-error *ngIf="nameControl.hasError('required')">feld darf nicht leer sein</mat-error>
+            <mat-error *ngIf="nameControl.hasError('nicknameTaken')">"{{ nick.value }}" existiert bereits</mat-error>
           </mat-form-field>
           <mat-form-field class="w-25" style="min-width: 200px">
             <mat-label>telefonnummer</mat-label>
@@ -43,20 +53,13 @@ import { FormControl } from '@angular/forms';
         <div class="flex flex-row px-4">
           <mat-form-field class="mr-4 w-25" style="min-width: 200px">
             <mat-label>vorname</mat-label>
-            <input
-              type="text"
-              #name
-              matInput
-              required
-              (keyup)="messenger.nickname = messenger.id ? messenger.nickname : name.value.toLowerCase()"
-              [(ngModel)]="messenger.firstName"
-            />
-            <mat-error *ngIf="nameControl.invalid">feld darf nicht leer sein</mat-error>
+            <input type="text" #name matInput required [(ngModel)]="messenger.firstName" [errorStateMatcher]="saveAttemptMatcher" #firstNameModel="ngModel" />
+            <mat-error *ngIf="firstNameModel.hasError('required')">feld darf nicht leer sein</mat-error>
           </mat-form-field>
           <mat-form-field class="mr-4 w-25" style="min-width: 200px">
             <mat-label>nachname</mat-label>
-            <input type="text" matInput required [(ngModel)]="messenger.lastName" />
-            <mat-error *ngIf="nameControl.invalid">feld darf nicht leer sein</mat-error>
+            <input type="text" matInput required [(ngModel)]="messenger.lastName" [errorStateMatcher]="saveAttemptMatcher" #lastNameModel="ngModel" />
+            <mat-error *ngIf="lastNameModel.hasError('required')">feld darf nicht leer sein</mat-error>
           </mat-form-field>
           <mat-form-field class="w-25" style="min-width: 200px">
             <mat-label>personalnummer</mat-label>
@@ -100,27 +103,13 @@ import { FormControl } from '@angular/forms';
     </mat-tab-group>
 
     <div class="flex flex-row justify-content-between align-items-center p-4" style="min-width: 650px">
-      <button
-        mat-raised-button
-        class="flex"
-        [class.fex-button]="messenger.nickname && nameControl.valid"
-        (click)="updateMessenger()"
-        matDialogClose
-        [disabled]="!messenger.nickname || nameControl.invalid"
-      >
+      <button mat-raised-button class="flex fex-button" (click)="onSaveClicked()">
         {{ messenger.id ? 'speichern' : 'hinzufügen' }}
       </button>
-      <span class="fex-warn" *ngIf="nameControl.invalid">bitte gib einen anderen rufnamen ein.</span>
       <span class="fex-warn" *ngIf="messenger.shiftsWithoutEnd > 0">
         für {{ messenger.shiftsWithoutEnd === 1 ? 'eine' : messenger.shiftsWithoutEnd }} schicht{{ messenger.shiftsWithoutEnd > 1 ? 'en' : '' }} wurde noch
         keine endzeit eingetragen
       </span>
-      <!-- <button *ngIf="isDezwo" mat-raised-button
-              class="flex fex-button"
-              (click)="deleteMessenger()"
-              matDialogClose>
-        löschen
-      </button> -->
     </div>
   `,
   styles: []
@@ -137,6 +126,8 @@ export class MessengerDialogComponent implements OnInit {
   date = new Date();
   loaded = false;
   nameControl: FormControl;
+  saveAttempted = false;
+  saveAttemptMatcher: ErrorStateMatcher;
 
   get isDezwo() {
     return GC._isDezwo;
@@ -158,6 +149,7 @@ export class MessengerDialogComponent implements OnInit {
       createShiftFor: Date;
     }
   ) {
+    this.saveAttemptMatcher = new SaveAttemptErrorStateMatcher(() => this.saveAttempted);
     if (data?.messenger) {
       this.messenger = data.messenger.copy();
       this.new = false;
@@ -181,12 +173,33 @@ export class MessengerDialogComponent implements OnInit {
     }
     const listOfNames = GC.messengers.map((m) => (m.nickname || '').toLowerCase());
 
-    this.nameControl = new FormControl(this.messenger.firstName || '', [
+    this.nameControl = new FormControl(this.messenger.nickname || '', [
+      Validators.required,
       (control: any) => {
         const val = (control.value || '').toString().trim().toLowerCase();
-        return val.length > 0 && listOfNames.includes(val) ? { nicknameTaken: true } : null;
+        return !this.messenger.id && val.length > 0 && listOfNames.includes(val) ? { nicknameTaken: true } : null;
       }
     ]);
+  }
+
+  isEmpty(value: string): boolean {
+    return !(value || '').trim();
+  }
+
+  canSave(): boolean {
+    return (
+      !this.isEmpty(this.messenger.nickname) && !this.isEmpty(this.messenger.firstName) && !this.isEmpty(this.messenger.lastName) && this.nameControl.valid
+    );
+  }
+
+  onSaveClicked(): void {
+    this.saveAttempted = true;
+    this.nameControl.setValue(this.messenger.nickname || '', { emitEvent: false });
+    this.nameControl.updateValueAndValidity({ emitEvent: false });
+    if (!this.canSave()) {
+      return;
+    }
+    this.updateMessenger();
   }
 
   load(): void {
@@ -222,11 +235,13 @@ export class MessengerDialogComponent implements OnInit {
       GC.http.updateMessenger(m).subscribe((m) => {
         GC.openSnackBarLong(`${m.nickname} wurde aktualisiert.`);
         this.saved.emit(true);
+        GC.dialog.closeAll();
       });
     } else {
       GC.http.createMessenger(this.messenger).subscribe((m) => {
         GC.openSnackBarLong(`${m.nickname} wurde hinzugefügt.`);
         this.saved.emit(true);
+        GC.dialog.closeAll();
       });
     }
   }
