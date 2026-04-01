@@ -260,6 +260,30 @@ th.mat-mdc-header-cell:last-of-type {
   justify-content: center;
 }
 
+.app-shake-dialog {
+  animation: app-dialog-shake 0.28s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes app-dialog-shake {
+  10%,
+  90% {
+    transform: translate3d(-2px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(4px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-7px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(7px, 0, 0);
+  }
+}
+
 .mat-mdc-paginator-icon {
   color: rgba(0, 0, 0, 0.54);
 }
