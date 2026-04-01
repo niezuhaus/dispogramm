@@ -9,88 +9,75 @@ import { Client } from '../classes/Client';
   template: `
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="{{ new ? 'neuen sonderpreis erstellen' : 'sonderpreis bearbeiten' }}">
-        <div class="p-4">
-    <div #newExtraPrice class="flex flex-column">
-      <mat-form-field style="width: 250px">
-        <mat-label>name</mat-label>
-        <input matInput type="text" [(ngModel)]="specialPrice.name" />
-      </mat-form-field>
-
-      <div class="flex flex-column">
-        <mat-form-field style="width: 250px">
-          <mat-label>art des sonderpreises</mat-label>
-          <mat-select #mode [(ngModel)]="specialPrice.type">
-            <mat-option [value]="0">keine auswahl</mat-option>
-            <mat-option [value]="2">gruppentarif</mat-option>
-            <mat-option [value]="3">grundpreis + inkludierte stops</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <div *ngIf="mode.value === 2">
-          <app-price-input [width]="45" [(price)]="specialPrice.group" [type]="0"> </app-price-input>
-          <span class="ml-2">€ pro stop</span>
-        </div>
-
-        <div *ngIf="mode.value === 3">
-          <app-price-input class="inline" [width]="45" [(price)]="specialPrice.base" [type]="0"> </app-price-input>
-          <span class="mx-3 whitespace-nowrap inline">€ für</span>
-          <mat-form-field class="mr-3 inline" style="width: 45px">
-            <input #number [(ngModel)]="specialPrice.quantityIncluded" matInput type="number" />
+        <div class="flex flex-column p-4">
+          <mat-form-field style="width: 250px">
+            <mat-label>name</mat-label>
+            <input matInput type="text" [(ngModel)]="specialPrice.name" autofocus />
           </mat-form-field>
-          <span class="mr-3 whitespace-nowrap inline">stop{{ number.valueAsNumber > 1 ? 's' : '' }}</span>
-          <br />
-          <app-price-input [width]="45" [(price)]="specialPrice.extra" [type]="0"> </app-price-input>
-          <span class="mx-3 whitespace-nowrap inline">für jeden weiteren</span>
-        </div>
-        <mat-checkbox [(ngModel)]="specialPrice.grossPrice" class="mb-4"> preise sind barpreise </mat-checkbox>
-      </div>
 
-      <p>verknüpfte kund:innen</p>
-      <small style="max-width: 270px">auf diese kund:innen wird der sonderpreis automatisch angewandt</small>
+          <searchinput
+            #searchbar
+            [width]="'250px'"
+            [placeholder]="'name, kund:innennummer'"
+            [label]="'kund:innen verknüpfen'"
+            [searchClients]="true"
+            (clientClientSelected)="clientSelected($event)"
+          ></searchinput>
 
-      <mat-chip-listbox *ngIf="specialPrice.clients.length" selectable multiple class="mb-3">
-        <mat-chip-option *ngFor="let client of specialPrice.clients" (removed)="specialPrice.clients.findAndRemove(client)">
-          {{ client.name }}
-          <button matChipRemove>
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </mat-chip-option>
-      </mat-chip-listbox>
+          <mat-chip-listbox *ngIf="specialPrice.clients.length" selectable multiple class="mb-3">
+            <mat-chip-option *ngFor="let client of specialPrice.clients" (removed)="specialPrice.clients.findAndRemove(client)">
+              {{ client.name }}
+              <button matChipRemove><mat-icon>cancel</mat-icon></button>
+            </mat-chip-option>
+          </mat-chip-listbox>
 
-      <searchinput
-        #searchbar
-        [width]="'250px'"
-        [placeholder]="'name, kund:innennummer'"
-        [label]="'kund:innen hinzufügen'"
-        [searchClients]="true"
-        (clientClientSelected)="clientSelected($event)"
-      >
-      </searchinput>
+          <mat-form-field style="width: 250px">
+            <mat-label>preismodell</mat-label>
+            <mat-select #mode [(ngModel)]="specialPrice.type">
+              <mat-option [value]="0">keine auswahl</mat-option>
+              <mat-option [value]="2">gruppentarif</mat-option>
+              <mat-option [value]="3">grundpreis + inkludierte stops</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <p>zonen</p>
+          <div *ngIf="mode.value === 2" class="flex flex-row align-items-center mb-3">
+            <app-price-input [width]="45" [(price)]="specialPrice.group" [type]="0"></app-price-input>
+            <span class="ml-2">€ pro stop</span>
+          </div>
 
-      <mat-chip-listbox *ngIf="specialPrice.zones?.length" selectable multiple class="mb-4">
-        <mat-chip-option *ngFor="let zone of specialPrice.zones" (removed)="specialPrice.zones.findAndRemove(zone)">
-          {{ zone.name }}
-          <button matChipRemove>
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </mat-chip-option>
-      </mat-chip-listbox>
+          <div *ngIf="mode.value === 3" class="mb-3">
+            <div class="flex flex-row align-items-center mb-2">
+              <app-price-input [width]="45" [(price)]="specialPrice.base" [type]="0"></app-price-input>
+              <span class="mx-2">€ für</span>
+              <mat-form-field style="width: 45px">
+                <input #number [(ngModel)]="specialPrice.quantityIncluded" matInput type="number" />
+              </mat-form-field>
+              <span class="ml-2">stop{{ number.valueAsNumber > 1 ? 's' : '' }}</span>
+            </div>
+            <div class="flex flex-row align-items-center">
+              <app-price-input [width]="45" [(price)]="specialPrice.extra" [type]="0"></app-price-input>
+              <span class="ml-2">€ für jeden weiteren</span>
+            </div>
+          </div>
 
-      <searchinput
-        #zoneSearchbar
-        [width]="'250px'"
-        [label]="'zone hinzufügen'"
-        [searchPostCodeZones]="true"
-        [searchZones]="true"
-        (zoneSelected)="specialPrice.zones.push($event); zoneSearchbar.reset()"
-      >
-      </searchinput>
-    </div>
-    <div class="w-100 mb-3" style="display: flex; justify-content: center;">
-      <button mat-raised-button class="fex-button" mat-dialog-close (click)="specialPrice.save()">sonderpreis speichern</button>
-    </div>
+          <mat-checkbox [(ngModel)]="specialPrice.grossPrice" class="mb-4">preise sind barpreise</mat-checkbox>
+
+          <searchinput
+            #zoneSearchbar
+            [width]="'250px'"
+            [label]="'zone hinzufügen'"
+            [searchPostCodeZones]="true"
+            [searchZones]="true"
+            (zoneSelected)="specialPrice.zones.push($event); zoneSearchbar.reset()"
+          ></searchinput>
+
+          <mat-chip-listbox *ngIf="specialPrice.zones?.length" selectable multiple class="mb-3 mt-3">
+            <mat-chip-option *ngFor="let zone of specialPrice.zones" (removed)="specialPrice.zones.findAndRemove(zone)">
+              {{ zone.name }}
+              <button matChipRemove><mat-icon>cancel</mat-icon></button>
+            </mat-chip-option>
+          </mat-chip-listbox>
+          <button mat-raised-button class="mt-3 fex-button" mat-dialog-close (click)="specialPrice.save()">speichern</button>
         </div>
       </mat-tab>
     </mat-tab-group>
