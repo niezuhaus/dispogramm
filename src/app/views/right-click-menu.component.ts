@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Job } from '../classes/Job';
 import { Messenger } from '../classes/Messenger';
 import { GC } from '../common/GC';
@@ -157,12 +158,26 @@ import { Zone } from '../classes/Zone';
       <button mat-menu-item (click)="item.regularJob.openEditDialog()" [disabled]="!dispatcher">
         <i class="p-1 bi bi-journal-check bi-context"></i>festtour bearbeiten
       </button>
-      <button mat-menu-item #trigger="matMenuTrigger" [matMenuTriggerFor]="morningTourMenu">
+      <button
+        mat-menu-item
+        #morningTourTrigger="matMenuTrigger"
+        (mouseenter)="onMorningTourTriggerEnter()"
+        (mouseleave)="onMorningTourTriggerLeave()"
+        [matMenuTriggerFor]="morningTourMenu"
+      >
         <i class="p-1 bi bi-signpost-split bi-context"></i>in morgenrunde verschieben
       </button>
-      <mat-menu #morningTourMenu="matMenu">
-        <button mat-menu-item (click)="item.regularJob._morningTour = 0"><i>- keine -</i></button>
-        <button *ngFor="let morningTour of morningTours; let i = index" mat-menu-item (click)="item.regularJob._morningTour = i + 1">
+      <mat-menu #morningTourMenu="matMenu" class="morning-tour-submenu">
+        <button mat-menu-item (mouseenter)="cancelMorningTourClose()" (mouseleave)="scheduleMorningTourClose()" (click)="item.regularJob._morningTour = 0">
+          <i>- keine -</i>
+        </button>
+        <button
+          *ngFor="let morningTour of morningTours; let i = index"
+          mat-menu-item
+          (mouseenter)="cancelMorningTourClose()"
+          (mouseleave)="scheduleMorningTourClose()"
+          (click)="item.regularJob._morningTour = i + 1"
+        >
           {{ morningTour }}
         </button>
       </mat-menu>
@@ -283,6 +298,9 @@ export class RightClickMenuComponent implements OnInit {
   @Output() falseArrival = new EventEmitter<Job>();
   @Output() waitingMinutes = new EventEmitter<Job>();
 
+  @ViewChild('morningTourTrigger') morningTourTrigger: MatMenuTrigger;
+  private morningTourCloseTimer: ReturnType<typeof setTimeout> | null = null;
+
   colours: { showColour: string; code: string; selected: boolean }[] = [
     { showColour: '#ffffff00', code: '#ffffff00', selected: false },
     { showColour: '#FF6FB5', code: '#f5e6e0', selected: false },
@@ -377,5 +395,32 @@ export class RightClickMenuComponent implements OnInit {
 
   openChangeUserDialog(): void {
     GC.dialog.open(CheckInDialog);
+  }
+
+  onMorningTourTriggerEnter(): void {
+    this.cancelMorningTourClose();
+    if (this.morningTourTrigger && !this.morningTourTrigger.menuOpen) {
+      this.morningTourTrigger.openMenu();
+    }
+  }
+
+  onMorningTourTriggerLeave(): void {
+    this.scheduleMorningTourClose();
+  }
+
+  scheduleMorningTourClose(): void {
+    this.cancelMorningTourClose();
+    this.morningTourCloseTimer = setTimeout(() => {
+      if (this.morningTourTrigger && this.morningTourTrigger.menuOpen) {
+        this.morningTourTrigger.closeMenu();
+      }
+    }, 250);
+  }
+
+  cancelMorningTourClose(): void {
+    if (this.morningTourCloseTimer) {
+      clearTimeout(this.morningTourCloseTimer);
+      this.morningTourCloseTimer = null;
+    }
   }
 }
