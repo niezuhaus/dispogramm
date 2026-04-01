@@ -87,7 +87,8 @@ export enum MorningTour {
   kaefer,
   uni,
   gross,
-  klein
+  klein,
+  käfer2
 }
 
 /**

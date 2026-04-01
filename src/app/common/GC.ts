@@ -148,7 +148,7 @@ export class GC {
   public static days = ['sonntag', 'montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag'];
   public static monthLiterals = ['januar', 'februar', 'märz', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'dezember'];
   public static monthLiteralsShort = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
-  public static posttours = ['käfer 1', 'ohb + dhpg', 'große runde', 'kleine runde + emde', 'käfer 2'];
+  public static posttours = ['keine', 'käfer 1', 'ohb + dhpg', 'große runde', 'kleine runde + emde', 'käfer 2'];
   public static posttoursStartTimes = [8, 9, 10, 10, 10];
   public static dispatcherShiftLiterals = ['dispo früh', 'dispo spät'];
   public static messengerShiftLiterals = ['früh', 'zwischi', 'spät', 'doppel', 'friki', 'ag zeit'];

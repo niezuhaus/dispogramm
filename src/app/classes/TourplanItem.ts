@@ -157,7 +157,7 @@ export class TourplanItem {
   openMorningTour(): void {
     GC.dialog.open(MorningTourDialogComponent, {
       data: {
-        name: GC.posttours[this.morningTour],
+        name: this._name,
         items: this.convertedJobs.map((j) => new TourplanItem({ job: j })).concat(this.regularJobs.map((rj) => new TourplanItem({ regularJob: rj })))
       }
     });
