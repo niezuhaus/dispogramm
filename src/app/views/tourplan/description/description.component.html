@@ -6,12 +6,12 @@
       morgenrunde
     </div>
 
-    <div *ngIf="job && !hideHighlights" class="flex flex-row">
-      <div *ngIf="pre && !item.isRegularJob" class="mr-3 flex align-items-center">
+    <div *ngIf="job" class="flex flex-row">
+      <div *ngIf="pre && !item.isRegularJob && !hideHighlights" class="mr-3 flex align-items-center">
         <span class="hightlight" [class.hightlight-gray]="gray"> vorangemeldet </span>
       </div>
 
-      <div *ngIf="job._falseArrival" class="mr-3 flex align-items-center">
+      <div *ngIf="job._falseArrival && !hideHighlights" class="mr-3 flex align-items-center">
         <span class="hightlight" [class.hightlight-gray]="gray"> fehlanfahrt </span>
       </div>
 
