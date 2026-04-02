@@ -12,15 +12,30 @@
 <div [style.visibility]="loaded ? '' : 'hidden'" [style.filter]="!dispatcher ? 'unset' : 'unset'" style="animation-duration: 2s">
   <!-- left side bar -->
   <div class="flex-column">
-    <div id="leftSide" class="p-2 flex-column justify-content-between" style="height: calc(100vh - 56px)">
+    <div id="leftSide" class="p-2 pt-3 flex-column justify-content-between" style="height: calc(100vh - 56px)">
       <div class="flex-column">
         <datepicker #datepicker [(date)]="job.date" (touched)="timeEdited = true; touched = true" [disabled]="job.finished"> </datepicker>
         <div class="flex-row pt-2 justify-content-around align-items-center">
-          <timepicker [disabled]="job.finished" *ngIf="loaded" [(time)]="job.date" (timeChange)="this.timeEdited = true; this.touched = true" [class.opacity-50]="job.finished"> </timepicker>
+          <timepicker
+            [disabled]="job.finished"
+            *ngIf="loaded"
+            [(time)]="job.date"
+            (timeChange)="this.timeEdited = true; this.touched = true"
+            [class.opacity-50]="job.finished"
+          >
+          </timepicker>
 
           <mat-form-field class="extra">
             <mat-label>zuschlag</mat-label>
-            <mat-select [(ngModel)]="job.cargoType" (selectionChange)="touched = true; refresh({ zoom: false })" tabindex="-1" #extra id="extra" class="extra" [disabled]="job.finished">
+            <mat-select
+              [(ngModel)]="job.cargoType"
+              (selectionChange)="touched = true; refresh({ zoom: false })"
+              tabindex="-1"
+              #extra
+              id="extra"
+              class="extra"
+              [disabled]="job.finished"
+            >
               <mat-option *ngFor="let extra of extras; let i = index" [value]="extra.value" class="detailedOption">
                 {{ extra.viewValue }}
                 <span *ngIf="i !== 0" class="optionDetail">(+{{ extra.price.print(!job.billingTour) }})</span>
@@ -53,15 +68,28 @@
             ngDefaultControl
           ></searchinput>
 
-          <a mat-icon-button class="ml-1 flex align-items-center" (click)="!job.finished ? toggleClientInvolved() : ''" tabindex="-1" matTooltip="auftraggeber:in anfahren" [disabled]="job.finished">
+          <a
+            mat-icon-button
+            class="ml-1 flex align-items-center"
+            (click)="!job.finished ? toggleClientInvolved() : ''"
+            tabindex="-1"
+            matTooltip="auftraggeber:in anfahren"
+            [disabled]="job.finished"
+          >
             <i *ngIf="job.clientInvolved" class="bi bi-person-check fex-accent" tabindex="-1"></i>
             <i *ngIf="!job.clientInvolved" class="bi bi-person-x" style="color: black"></i>
           </a>
         </div>
-        <a *ngIf="cInput?.selection?.id?.length === 0 || (cInput?.selection && !job.hasClient)" class="mb-2 ml-5 relative-bot8px" (click)="openClientDialog(this.cInput.selection)">
+        <a
+          *ngIf="cInput?.selection?.id?.length === 0 || (cInput?.selection && !job.hasClient)"
+          class="mb-2 ml-5 relative-bot8px"
+          (click)="openClientDialog(this.cInput.selection)"
+        >
           kund:in hinzufügen</a
         >
-        <a *ngIf="job.client?.specialPrices?.length" class="mb-2 ml-5 relative-bot8px" (click)="job.acceptSpecialPrice(); refresh({ zoom: false })"> sonderpreis anwenden </a>
+        <a *ngIf="job.client?.specialPrices?.length" class="mb-2 ml-5 relative-bot8px" (click)="job.acceptSpecialPrice(); refresh({ zoom: false })">
+          sonderpreis anwenden
+        </a>
         <div class="flex flex-column" [class.opacity-50]="job.finished">
           <app-inputfield
             #delivery
@@ -123,7 +151,13 @@
             </div>
           </button>
 
-          <button *ngIf="job.hasData && job.regularJob && !job.regularJobId" (click)="openRegularJobOptions()" mat-raised-button class="my-3 fex-green-button" style="margin: auto">
+          <button
+            *ngIf="job.hasData && job.regularJob && !job.regularJobId"
+            (click)="openRegularJobOptions()"
+            mat-raised-button
+            class="my-3 fex-green-button"
+            style="margin: auto"
+          >
             <div class="flex flex-row align-items-center">
               <i class="mr-2 bi bi-check"></i>
               festtour konfiguriert
@@ -135,19 +169,25 @@
           <mat-form-field class="w-100">
             <mat-label>preismodus</mat-label>
             <mat-select class="w-100" (valueChange)="touched = true; asyncRefresh({ zoom: false })" [(ngModel)]="job._priceStrategy" [disabled]="job.finished">
-              <mat-option [value]="''" class="flex-column info-option">
-                <div>normal</div>
-                <small> nach fex-preispolitik </small>
-              </mat-option>
-              <mat-option *ngFor="let price of specialPrices; let i = index" [value]="price.id" class="flex-column info-option">
-                <div>
-                  {{ price.name }}
+              <mat-option [value]="''" class="info-option">
+                <div class="flex flex-col">
+                  <div>normal</div>
+                  <small> nach fex-preispolitik </small>
                 </div>
-                <small *ngIf="price.type === 2"> {{ price.group.toString(!job.billingTour) }} / stop </small>
-                <small *ngIf="price.type === 3">
-                  grundtarif {{ price.base.toString(!job.billingTour) }} für {{ price.quantityIncluded }} stop{{ price.quantityIncluded > 1 ? 's' : '' }} +
-                  {{ price.extra.toString(!job.billingTour) }} / stop
-                </small>
+              </mat-option>
+              <mat-option *ngFor="let price of specialPrices; let i = index" [value]="price.id" class="info-option">
+                <div class="flex flex-col">
+                  <div>
+                    {{ price.name }}
+                  </div>
+                  <div>
+                    <small *ngIf="price.type === 2"> {{ price.group.toString(!job.billingTour) }} / stop </small>
+                    <small *ngIf="price.type === 3">
+                      grundtarif {{ price.base.toString(!job.billingTour) }} für {{ price.quantityIncluded }} stop{{ price.quantityIncluded > 1 ? 's' : '' }} +
+                      {{ price.extra.toString(!job.billingTour) }} / stop
+                    </small>
+                  </div>
+                </div>
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -169,22 +209,35 @@
 
         <mat-form-field class="w-100">
           <mat-label>routenmodus</mat-label>
-          <mat-select class="w-100" (valueChange)="touched = true; job._routeMode = $event; job.init(); refresh({ zoom: true })" [value]="job.routeMode" [disabled]="job.finished">
-            <mat-option [value]="0" class="flex-column info-option">
-              <div>normal</div>
-              <small> fex messregeln </small>
+          <mat-select
+            class="w-100"
+            (valueChange)="touched = true; job._routeMode = $event; job.init(); refresh({ zoom: true })"
+            [value]="job.routeMode"
+            [disabled]="job.finished"
+          >
+            <mat-option [value]="0" class="info-option">
+              <div class="flex flex-col">
+                <strong>normal</strong>
+                <small> fex messregeln </small>
+              </div>
             </mat-option>
-            <mat-option [value]="1" class="flex-column info-option">
-              <div>stern</div>
-              <small> alle zielen separat </small>
+            <mat-option [value]="1" class="info-option">
+              <div class="flex flex-col">
+                <strong>stern</strong>
+                <small> alle zielen separat </small>
+              </div>
             </mat-option>
-            <mat-option [value]="2" class="flex-column info-option">
-              <div>kürzester rundkurs</div>
-              <small> alle ziele im kleinstmöglichen rundkurs </small>
+            <mat-option [value]="2" class="info-option">
+              <div class="flex flex-col">
+                <strong>kürzester rundkurs</strong>
+                <small> alle ziele im kleinstmöglichen rundkurs </small>
+              </div>
             </mat-option>
-            <mat-option [value]="3" class="flex-column info-option">
-              <div>eigener rundkurs</div>
-              <small> rundkurs in der reihenfolge der eingabe </small>
+            <mat-option [value]="3" class="info-option">
+              <div class="flex flex-col">
+                <strong>eigener rundkurs</strong>
+                <small> rundkurs in der reihenfolge der eingabe </small>
+              </div>
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -201,7 +254,12 @@
     <!-- trash and resize buttons -->
     <div class="m-3 flex-column justify-content-between">
       <div class="flex-row">
-        <button mat-mini-fab class="flashButton" [disabled]="!(touched || job.hasData)" (click)="job.reset(); resetUI(); this.cInput.inputRef.nativeElement.focus()">
+        <button
+          mat-mini-fab
+          class="flashButton"
+          [disabled]="!(touched || job.hasData)"
+          (click)="job.reset(); resetUI(); this.cInput.inputRef.nativeElement.focus()"
+        >
           <i class="bi bi-trash-fill"></i>
         </button>
         <button mat-mini-fab class="flashButton" [disabled]="!zoomed" (click)="!zoomed || refreshMapZoom(true)">
@@ -222,7 +280,12 @@
       <div class="p-2 flex-column">
         <div id="description" *ngIf="job._center" class="text-monospace" style="padding-top: 5px">
           <div class="ml-2 flex-column w-100">
-            <a *ngIf="job.client?.clientId; else noClient" matTooltip="kund:innenseite aufrufen" [routerLink]="[routes.client, { id: job.client.id }]" style="width: max-content">
+            <a
+              *ngIf="job.client?.clientId; else noClient"
+              matTooltip="kund:innenseite aufrufen"
+              [routerLink]="[routes.client, { id: job.client.id }]"
+              style="width: max-content"
+            >
               <span style="color: rgb(65, 131, 197); max-width: 500px">
                 <u>{{ job.center.name || job.center.street }}</u>
               </span>
@@ -233,12 +296,18 @@
               ><u>{{ job.center.name || job.center.street }}</u></ng-template
             >
 
-            <div class="ml-3 flex flex-column" *ngIf="job.pBranches.branches.length + job.pBranches.branches.length + job.pBranches.branches.length + job.pBranches.branches.length > 6">
+            <div
+              class="ml-3 flex flex-column"
+              *ngIf="job.pBranches.branches.length + job.pBranches.branches.length + job.pBranches.branches.length + job.pBranches.branches.length > 6"
+            >
               <div class="delivery-tone">{{ job.pBranches.branches.length + job.pBranches.branches.length }} abgaben</div>
               <div class="pickup-tone">{{ job.pBranches.branches.length + job.pBranches.branches.length }} abholungen</div>
             </div>
 
-            <div *ngIf="!(job.pBranches.branches.length + job.pBranches.branches.length + job.pBranches.branches.length + job.pBranches.branches.length > 6)" class="flex flex-column">
+            <div
+              *ngIf="!(job.pBranches.branches.length + job.pBranches.branches.length + job.pBranches.branches.length + job.pBranches.branches.length > 6)"
+              class="flex flex-column"
+            >
               <!--          pBranches-->
               <div *ngFor="let branch of job.pBranches.branches" class="flex-row pt-2 branch">
                 <div class="flex-column w-100">
@@ -247,7 +316,13 @@
                       <span *ngIf="branch.center.locType >= 5" class="dBranch" (click)="openLocationDialog(job._center, !(job._center.id.length > 0))">
                         {{ job._center.name }}
                       </span>
-                      <span (click)="openLocationDialog(station, !(station.id.length > 0))" [innerHTML]="station.tail()" class="pBranch align-items-center" matTooltip="ort bearbeiten"> </span>
+                      <span
+                        (click)="openLocationDialog(station, !(station.id.length > 0))"
+                        [innerHTML]="station.tail()"
+                        class="pBranch align-items-center"
+                        matTooltip="ort bearbeiten"
+                      >
+                      </span>
                     </div>
                     <span class="pl-3 optionDetail" [class.line-through-2px]="job.regularJob?.monthlyPrice"
                       >{{ station.price.toString(!job.billingTour) }}
@@ -262,7 +337,12 @@
               <div *ngFor="let branch of job.pBacktourBranches.branches" class="flex-row pt-2 branch">
                 <div class="flex-column w-100">
                   <div *ngFor="let station of branch.route" class="flex-row justify-content-between w-100">
-                    <span (click)="openLocationDialog(station, !(station.id.length > 0))" [innerHTML]="station.tail() + '(rücktour)'" class="dBranch align-items-center" matTooltip="ort bearbeiten">
+                    <span
+                      (click)="openLocationDialog(station, !(station.id.length > 0))"
+                      [innerHTML]="station.tail() + '(rücktour)'"
+                      class="dBranch align-items-center"
+                      matTooltip="ort bearbeiten"
+                    >
                     </span>
                     <span class="pl-3 optionDetail" [class.line-through-2px]="job.regularJob?.monthlyPrice"
                       >{{ station.price.toString(!job.billingTour) }}
@@ -279,7 +359,12 @@
                       <span *ngIf="branch.center.locType >= 5" class="pBranch" (click)="openLocationDialog(job._center, !(job._center.id.length > 0))">
                         {{ job._center.name }}
                       </span>
-                      <span (click)="openLocationDialog(station, !(station.id.length > 0))" [innerHTML]="station.tail()" class="dBranch align-items-center" matTooltip="ort bearbeiten"></span>
+                      <span
+                        (click)="openLocationDialog(station, !(station.id.length > 0))"
+                        [innerHTML]="station.tail()"
+                        class="dBranch align-items-center"
+                        matTooltip="ort bearbeiten"
+                      ></span>
                     </div>
                     <span class="pl-3 optionDetail" [class.line-through-2px]="job.regularJob?.monthlyPrice"
                       >{{ station.price.toString(!job.billingTour) }}
@@ -294,9 +379,15 @@
               <div *ngFor="let branch of job.dBacktourBranches.branches" class="pt-2 branch flex-column justify-content-between w-100">
                 <div class="flex-column w-100">
                   <div *ngFor="let station of branch.route.slice().reverse()" class="flex-row justify-content-between">
-                    <span (click)="openLocationDialog(station, !(station.id.length > 0))" [innerHTML]="station.tail()" class="pBranch align-items-center" matTooltip="ort bearbeiten"></span>
+                    <span
+                      (click)="openLocationDialog(station, !(station.id.length > 0))"
+                      [innerHTML]="station.tail()"
+                      class="pBranch align-items-center"
+                      matTooltip="ort bearbeiten"
+                    ></span>
                     <span class="pl-3 optionDetail"
-                      >{{ station.price.toString(!job.billingTour) }} <span *ngIf="branch.isConnection"> {{ ' (-' + configPrices.connectionDiscount.toString(!job.billingTour) }})</span></span
+                      >{{ station.price.toString(!job.billingTour) }}
+                      <span *ngIf="branch.isConnection"> {{ ' (-' + configPrices.connectionDiscount.toString(!job.billingTour) }})</span></span
                     >
                   </div>
                 </div>
@@ -306,7 +397,9 @@
                 <div class="flex-column w-100">
                   <div class="flex-row justify-content-between">
                     <span class="dBranch"> und {{ job.distributeNumber - job.deliveries?.length }} mehr </span>
-                    <span class="pl-3 optionDetail" [class.line-through-2px]="job.regularJob?.monthlyPrice">{{ job.groupExtra.toString(!job.billingTour) }}</span>
+                    <span class="pl-3 optionDetail" [class.line-through-2px]="job.regularJob?.monthlyPrice">{{
+                      job.groupExtra.toString(!job.billingTour)
+                    }}</span>
                   </div>
                 </div>
 
@@ -321,8 +414,12 @@
             </div>
 
             <div *ngIf="job.cargoType > 0" class="flex-row justify-content-between">
-              <span [class.line-through-2px]="job.regularJob?.monthlyPrice || job.priceStrategyObj.mode > 1"> zuschlag: {{ extras[job.cargoType].viewValue }} </span>
-              <span class="optionDetail" [class.line-through-2px]="job.regularJob?.monthlyPrice || job.priceStrategyObj.mode > 1"> +{{ extras[job.cargoType].price.toString(!job.billingTour) }} </span>
+              <span [class.line-through-2px]="job.regularJob?.monthlyPrice || job.priceStrategyObj.mode > 1">
+                zuschlag: {{ extras[job.cargoType].viewValue }}
+              </span>
+              <span class="optionDetail" [class.line-through-2px]="job.regularJob?.monthlyPrice || job.priceStrategyObj.mode > 1">
+                +{{ extras[job.cargoType].price.toString(!job.billingTour) }}
+              </span>
             </div>
             <div *ngIf="job.connection" class="flex-row justify-content-between">
               <span>rabatt: anschlusstour</span>
@@ -372,7 +469,10 @@
                 (keyup)="touched = true; job.changePrice(netto.value.valueOf(), false)"
                 (click)="netto.select()"
                 [value]="
-                  job?.regularJob?.monthlyPrice.regularJobPrice._netto.toString() || job?.regularJob?.price._netto.toString() || job?.customPrice?._netto.toString() || job?.price._netto.toString()
+                  job?.regularJob?.monthlyPrice.regularJobPrice._netto.toString() ||
+                  job?.regularJob?.price._netto.toString() ||
+                  job?.customPrice?._netto.toString() ||
+                  job?.price._netto.toString()
                 "
                 [disabled]="job.finished || job.regularJob?.monthlyPrice?._netto > 0"
               />
@@ -460,15 +560,34 @@
       </div>
       <!--  buttons to save etc..  -->
       <div class="position-relative w-100" style="bottom: -1px; padding: 0">
-        <button mat-raised-button *ngIf="!job.finished && touched && job.id && !job.regularJob" class="fex-button saveButton justify-content-center w-100" (click)="saveJob(true)">
-          <div class="flex flex-row align-items-center">auftrag vom {{ job.creationDate.toLocaleDateString() }} aktualisieren <i class="ml-3 bi bi-bicycle"></i></div>
+        <button
+          mat-raised-button
+          *ngIf="!job.finished && touched && job.id && !job.regularJob"
+          class="fex-button saveButton justify-content-center w-100"
+          (click)="saveJob(true)"
+        >
+          <div class="flex flex-row align-items-center">
+            auftrag vom {{ job.creationDate.toLocaleDateString() }} aktualisieren <i class="ml-3 bi bi-bicycle"></i>
+          </div>
         </button>
 
-        <button mat-raised-button *ngIf="!job.id && !job.regularJob" class="fex-button saveButton justify-content-center w-100" (click)="saveJob()" [disabled]="clientRequired()">
+        <button
+          mat-raised-button
+          *ngIf="!job.id && !job.regularJob"
+          class="fex-button saveButton justify-content-center w-100"
+          (click)="saveJob()"
+          [disabled]="clientRequired()"
+        >
           <div class="flex flex-row align-items-center">neuen auftrag speichern <i class="ml-3 bi bi-bicycle"></i></div>
         </button>
 
-        <button mat-raised-button *ngIf="touched && isTemplate" class="fex-button saveButton justify-content-center w-100" (click)="saveRegularJob(true)" [disabled]="clientRequired()">
+        <button
+          mat-raised-button
+          *ngIf="touched && isTemplate"
+          class="fex-button saveButton justify-content-center w-100"
+          (click)="saveRegularJob(true)"
+          [disabled]="clientRequired()"
+        >
           <div class="flex flex-row align-items-center">festtour aktualisieren <i class="ml-3 bi bi-bicycle"></i></div>
         </button>
 
@@ -482,7 +601,13 @@
           <div class="flex flex-row align-items-center">festtour für {{ job.date.dateStampShort() }} aktualisieren <i class="ml-3 bi bi-bicycle"></i></div>
         </button>
 
-        <button mat-raised-button *ngIf="!job.id && job.regularJob" class="fex-button saveButton justify-content-center w-100" (click)="saveRegularJob()" [disabled]="clientRequired()">
+        <button
+          mat-raised-button
+          *ngIf="!job.id && job.regularJob"
+          class="fex-button saveButton justify-content-center w-100"
+          (click)="saveRegularJob()"
+          [disabled]="clientRequired()"
+        >
           <div class="flex flex-row align-items-center">neue festtour speichern <i class="ml-3 bi bi-bicycle"></i></div>
         </button>
       </div>
