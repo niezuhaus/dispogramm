@@ -169,7 +169,7 @@ export class ClientListComponent extends TitleComponent implements OnInit, OnDes
       }
     };
     this.loaded = true;
-    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+    this.route.queryParamMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       if (params.get('search')) {
         this.searchterm = params.get('search');
         this.applyFilter(this.searchterm);
