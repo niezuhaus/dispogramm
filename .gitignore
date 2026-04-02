@@ -8,6 +8,7 @@ src/app/config.private.ts
 /tmp
 /out-tsc
 /bazel-out
+*.jar
 
 # Node
 /node_modules
