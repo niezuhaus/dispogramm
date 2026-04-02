@@ -23,7 +23,7 @@ jobs:
       - name: Download Backend
         run: |
           gh release download latest \
-            --repo BosqueNuboso/fex-backend \
+            --repo niezuhaus/dispogramm-backend \
             --pattern '*.jar' \
             --dir .
         env:
