@@ -490,6 +490,9 @@ import { standartZonesHB } from '../common/zones';
             (selectionchange)="changedBackendIP = backendIP.value"
           />
           <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'unset'">
+            <mat-option [value]="'http://localhost:8081/'">
+              <div class="flex flex-row justify-between">http://localhost:8081/</div>
+            </mat-option>
             <mat-option *ngFor="let ip of recentBackendIPs" [value]="ip">
               <div class="flex flex-row justify-between">
                 {{ ip }}
