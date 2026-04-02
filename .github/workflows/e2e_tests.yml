@@ -22,7 +22,7 @@ jobs:
 
       - name: Download Backend
         run: |
-          gh release download latest \
+          gh release download \
             --repo niezuhaus/dispogramm-backend \
             --pattern '*.jar' \
             --dir .
