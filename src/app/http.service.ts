@@ -15,7 +15,7 @@ import {
   TimeframeStatistic,
   WeekStatistic
 } from './common/interfaces';
-import { IOSMFeature, IOSMResponse, IOSMRouteFeatureCollection } from './common/DataContracts';
+import { IOSMFeature, IOSMResponse, IOSMRouteFeatureCollection, IGeoapifyAutocompleteResponse, IGeoapifyAutocompleteResult } from './common/DataContracts';
 import { Contact } from './classes/Contact';
 import { Zone } from './classes/Zone';
 import { Job, RegularJob } from './classes/Job';
@@ -227,6 +227,60 @@ export class HttpService {
           });
         })
       );
+  }
+
+  searchAutocomplete(searchStr: string, type: LocType): Observable<Geolocation[]> {
+    return this.http
+      .get<IGeoapifyAutocompleteResponse>(
+        `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(searchStr)}&filter=circle:${CIRCLE_LAT},${CIRCLE_LON},${RANGE}&bias=proximity:${CIRCLE_LAT},${CIRCLE_LON}&limit=10&format=json&apiKey=${this.GEOAPIFY_API_KEY}`
+      )
+      .pipe(
+        take(1),
+        map((response: IGeoapifyAutocompleteResponse) => {
+          const filtered = response.results.filter((r) => {
+            const postcode = parseInt(r.postcode);
+            return postcode && ((postcode <= 28779 && postcode >= 28195) || PLZ_EXTRA.includes(postcode));
+          });
+          const locations = filtered.map((r) => HttpService.mapAutocompleteResult(r, type));
+          const seen = new Set<string>();
+          return locations
+            .filter((l) => {
+              if (seen.has(l.street)) return false;
+              seen.add(l.street);
+              return true;
+            })
+            .sort((a, b) => {
+              let res = Routing.dist(b, CENTER) - Routing.dist(a, CENTER);
+              const aInCore = parseInt(a.zipCode) >= 28195 && parseInt(a.zipCode) <= 28779;
+              const bInCore = parseInt(b.zipCode) >= 28195 && parseInt(b.zipCode) <= 28779;
+              if (aInCore) res -= 10;
+              else res += 10;
+              if (bInCore) res += 10;
+              else res -= 10;
+              return res;
+            });
+        })
+      );
+  }
+
+  static mapAutocompleteResult(r: IGeoapifyAutocompleteResult, type: LocType): Geolocation {
+    let housenumber = r.housenumber ? r.housenumber.replace('; ', '-') : '';
+    while (housenumber.includes(';')) {
+      housenumber = housenumber.replace(';', ', ');
+    }
+    const res = new Geolocation({
+      street: `${r.street}${housenumber ? ' ' + housenumber : ''}`,
+      zipCode: r.postcode,
+      quarter: r.suburb || r.quarter || '',
+      city: r.city,
+      latitude: r.lat.round(5),
+      longitude: r.lon.round(5),
+      locType: type,
+      priceZone: this.findPriceZone(r.postcode)
+    });
+    res.geocoder = GeoCodingMode.osm;
+    res.name = res.street;
+    return res;
   }
 
   reverseGeocode(lat: number, lng: number, type: LocType): Observable<Geolocation[]> {

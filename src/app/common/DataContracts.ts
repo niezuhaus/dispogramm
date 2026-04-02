@@ -86,6 +86,35 @@ interface FeatureCollectionProperties {
   units: string;
 }
 
+export interface IGeoapifyAutocompleteResult {
+  name: string;
+  street: string;
+  housenumber: string;
+  suburb: string;
+  quarter: string;
+  district: string;
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
+  country_code: string;
+  lon: number;
+  lat: number;
+  formatted: string;
+  address_line1: string;
+  address_line2: string;
+  result_type: string;
+  rank: {
+    confidence: number;
+    confidence_street_level: number;
+    match_type: string;
+  };
+}
+
+export interface IGeoapifyAutocompleteResponse {
+  results: IGeoapifyAutocompleteResult[];
+}
+
 export interface IOSMRouteFeatureCollection {
   type: string;
   features: Feature[];

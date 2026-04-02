@@ -600,6 +600,6 @@ export class OSMGeocoder implements GeoCodingStrategy {
   type = 0;
 
   geocode(searchStr: string, type: LocType): Observable<Geolocation[]> {
-    return GC.http.searchOSM(searchStr, type);
+    return GC.http.searchAutocomplete(searchStr, type);
   }
 }
