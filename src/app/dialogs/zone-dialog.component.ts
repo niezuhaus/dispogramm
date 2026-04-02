@@ -6,10 +6,20 @@ import { LngLatBoundsLike, Map } from 'mapbox-gl';
 import { initMap } from '../UTIL';
 import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf';
+import { FormControl, NgForm, FormGroupDirective } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
+  constructor(private shouldShowErrors: () => boolean) {}
+  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
+  }
+}
 
 @Component({
   selector: 'app-zone-dialog',
   template: `
+    <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="zone speichern">
         <div class="p-4" style="width: 75vw">
@@ -17,7 +27,8 @@ import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf
             <div class="flex flex-row align-items-center">
               <mat-form-field>
                 <mat-label>name</mat-label>
-                <input [(ngModel)]="zone.name" matInput type="text" />
+                <input [(ngModel)]="zone.name" matInput type="text" required [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
+                <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
               </mat-form-field>
               <app-price-input class="ml-3" [(price)]="zone.price" [label]="'preis pro stop'" [width]="80" [type]="0"></app-price-input>
               <mat-checkbox class="ml-3" [(ngModel)]="zone.exclusive">preis außerhalb der zone anwenden</mat-checkbox>
@@ -31,20 +42,12 @@ import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf
           </div>
 
           <div class="flex flex-column">
-            <!-- <searchinput
-          #zoneSearchbar
-          [width]="'250px'"
-          [label]="'zone hinzufügen'"
-          [searchZones]="true"
-          [searchPostCodeZones]="true"
-          (zoneSelected)="addToMap($event.polygon)">
-        </searchinput> -->
-
-            <button #yes mat-raised-button class="mt-4 fex-button" (click)="saveZone()" matDialogClose>speichern</button>
+            <button #yes mat-raised-button class="mt-4 fex-button" (click)="onSaveClicked()">speichern</button>
           </div>
         </div>
       </mat-tab>
     </mat-tab-group>
+    </div>
   `,
   styles: [
     `
@@ -66,6 +69,9 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit {
   mapboxDraw: MapboxDraw;
   zone: Zone;
   polygonIds: string[] = [];
+  saveAttempted = false;
+  saveAttemptCount = 0;
+  saveAttemptMatcher: ErrorStateMatcher;
 
   @ViewChild('map') mapContainer: ElementRef;
 
@@ -75,6 +81,7 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit {
       zone: Zone;
     }
   ) {
+    this.saveAttemptMatcher = new SaveAttemptErrorStateMatcher(() => this.saveAttempted);
     this.zone = data.zone ? new Zone(data.zone) : new Zone();
   }
 
@@ -126,16 +133,29 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit {
     this.mapboxDraw.add(this.zone.polygon);
   }
 
+  canSave(): boolean {
+    return !!(this.zone.name || '').trim();
+  }
+
+  onSaveClicked(): void {
+    this.saveAttempted = true;
+    this.saveAttemptCount += 1;
+    if (!this.canSave()) return;
+    this.saveZone();
+  }
+
   saveZone(): void {
     if (this.zone.id) {
       GC.http.updateZone(this.zone).subscribe(() => {
         GC.openSnackBarLong('zone gespeichert');
         this.confirm.emit(this.zone);
+        GC.dialog.closeAll();
       });
     } else {
       GC.http.createZone(this.zone).subscribe(() => {
         GC.openSnackBarLong('zone gespeichert');
         this.confirm.emit(this.zone);
+        GC.dialog.closeAll();
       });
     }
   }

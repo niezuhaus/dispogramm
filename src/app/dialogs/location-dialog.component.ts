@@ -1,4 +1,13 @@
 import { Component, EventEmitter, Inject, ViewChild, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormControl, NgForm, FormGroupDirective } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
+  constructor(private shouldShowErrors: () => boolean) {}
+  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
+  }
+}
 import { LocType } from '../common/interfaces';
 import { Job } from '../classes/Job';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -16,6 +25,7 @@ import { Client } from '../classes/Client';
   selector: 'app-edit-location-dialog',
   template: `
     <div style="width: 760px">
+      <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
       <mat-tab-group dynamicHeight>
         <mat-tab [label]="newLocation ? 'neuen standort erstellen' : 'standort bearbeiten'" class="flex overflow-hidden pr-5 flex-column">
           <div class="flex flex-row justify-content-between"></div>
@@ -23,7 +33,8 @@ import { Client } from '../classes/Client';
           <div mat-dialog-content class="mt-3 h-100">
             <mat-form-field>
               <mat-label>name</mat-label>
-              <input #name type="text" matInput [(ngModel)]="data.location.name" autofocus />
+              <input #name type="text" matInput required [(ngModel)]="data.location.name" autofocus [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
+              <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
             </mat-form-field>
 
             <div class="flex flex-row align-items-baseline justify-content-between">
@@ -54,8 +65,8 @@ import { Client } from '../classes/Client';
           </div>
 
           <div class="p-4 flex flex-row justify-content-between w-100">
-            <button *ngIf="!newLocation" mat-raised-button class="fex-button" (click)="update(data.location)" matDialogClose="true">standort aktualisieren</button>
-            <button *ngIf="newLocation" mat-raised-button class="fex-button" (click)="create(data.location)" matDialogClose="true">neuen standort speichern</button>
+            <button *ngIf="!newLocation" mat-raised-button class="fex-button" (click)="onSaveClicked()">standort aktualisieren</button>
+            <button *ngIf="newLocation" mat-raised-button class="fex-button" (click)="onSaveClicked()">neuen standort speichern</button>
 
             <button
               *ngIf="!newLocation"
@@ -73,6 +84,7 @@ import { Client } from '../classes/Client';
         </mat-tab>
 
         <mat-tab *ngIf="jobs.length > 0" [label]="'kommt in diesen aufträgen vor (' + jobs.length + ')'" style="max-height: 45vh;">
+
           <div *ngIf="jobs.length > 0" style="max-height: 45vh; overflow-y: scroll">
             <!--            <h1 mat-dialog-title>kommt in diesen aufträgen vor</h1>-->
             <table *ngIf="loaded && jobs.length > 0" mat-table [dataSource]="dataSource" class="mt-3" style="width: 95%; margin: auto">
@@ -104,6 +116,7 @@ import { Client } from '../classes/Client';
           </div>
         </mat-tab>
       </mat-tab-group>
+      </div>
 
       <div id="mapcontainer" style="max-height: 30vh">
         <div #map id="mapEdit"></div>
@@ -133,6 +146,9 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
   client = new Client();
   jobs: Job[] = [];
   newLocation: boolean;
+  saveAttempted = false;
+  saveAttemptCount = 0;
+  saveAttemptMatcher: ErrorStateMatcher;
 
   loaded = false;
   marker: mapboxgl.Marker;
@@ -160,6 +176,7 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
       client: Client;
     }
   ) {
+    this.saveAttemptMatcher = new SaveAttemptErrorStateMatcher(() => this.saveAttempted);
     if (!data.location) {
       data.location = new Geolocation({
         latitude: GC.INIT_MAPCENTER.lat,
@@ -195,6 +212,21 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
     this.map.remove();
   }
 
+  canSave(): boolean {
+    return !!(this.data.location.name || '').trim();
+  }
+
+  onSaveClicked(): void {
+    this.saveAttempted = true;
+    this.saveAttemptCount += 1;
+    if (!this.canSave()) return;
+    if (this.newLocation) {
+      this.create(this.data.location);
+    } else {
+      this.update(this.data.location);
+    }
+  }
+
   update(loc: Geolocation): void {
     const s = new Station(loc);
     const branch = s.branch;
@@ -204,6 +236,7 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
     GC.http.updateLocation(s).subscribe(() => {
       GC.openSnackBarLong(`"${this.data.location.name}" wurde aktualisiert!`);
       this.updated.emit(s);
+      GC.dialog.closeAll();
       s.branch = branch;
       s._job = j;
     });
@@ -220,6 +253,7 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
       savedStation.inputfield = s.inputfield;
       this.created.emit(savedStation);
       GC.openSnackBarLong(`${savedStation.name} wurde gespeichert!`);
+      GC.dialog.closeAll();
     });
   }
 

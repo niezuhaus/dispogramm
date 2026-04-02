@@ -3,16 +3,28 @@ import { SpecialPrice } from '../classes/SpecialPrice';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SearchinputComponent } from '../views/newtour/inputfield/searchinput/searchinput.component';
 import { Client } from '../classes/Client';
+import { GC } from '../common/GC';
+import { FormControl, NgForm, FormGroupDirective } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
+  constructor(private shouldShowErrors: () => boolean) {}
+  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
+  }
+}
 
 @Component({
   selector: 'app-special-price-dialog',
   template: `
+    <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="{{ new ? 'neuen sonderpreis erstellen' : 'sonderpreis bearbeiten' }}">
         <div class="flex flex-column p-4">
           <mat-form-field style="width: 250px">
             <mat-label>name</mat-label>
-            <input matInput type="text" [(ngModel)]="specialPrice.name" autofocus />
+            <input matInput type="text" required [(ngModel)]="specialPrice.name" autofocus [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
+            <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
           </mat-form-field>
 
           <searchinput
@@ -77,16 +89,21 @@ import { Client } from '../classes/Client';
               <button matChipRemove><mat-icon>cancel</mat-icon></button>
             </mat-chip-option>
           </mat-chip-listbox>
-          <button mat-raised-button class="mt-3 fex-button" mat-dialog-close (click)="specialPrice.save()">speichern</button>
+          <button mat-raised-button class="mt-3 fex-button" (click)="onSaveClicked()">speichern</button>
         </div>
       </mat-tab>
     </mat-tab-group>
+    </div>
   `,
   styles: []
 })
 export class SpecialPriceDialogComponent {
   specialPrice = new SpecialPrice();
   new = true;
+  saveAttempted = false;
+  saveAttemptCount = 0;
+  saveAttemptMatcher: ErrorStateMatcher;
+
   @ViewChild('searchbar') searchbar: SearchinputComponent;
 
   constructor(
@@ -95,10 +112,23 @@ export class SpecialPriceDialogComponent {
       specialPrice: SpecialPrice;
     }
   ) {
+    this.saveAttemptMatcher = new SaveAttemptErrorStateMatcher(() => this.saveAttempted);
     if (data.specialPrice) {
       this.new = false;
       this.specialPrice = new SpecialPrice(data.specialPrice);
     }
+  }
+
+  canSave(): boolean {
+    return !!(this.specialPrice.name || '').trim();
+  }
+
+  onSaveClicked(): void {
+    this.saveAttempted = true;
+    this.saveAttemptCount += 1;
+    if (!this.canSave()) return;
+    this.specialPrice.save();
+    GC.dialog.closeAll();
   }
 
   clientSelected(client: Client): void {

@@ -26,7 +26,8 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-edit-messenger-dialog',
   template: `
-    <mat-tab-group dynamicHeight [selectedIndex]="data?.selectedIndex || 0" #tabgroup style="color: black" [headerPosition]="">
+    <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
+      <mat-tab-group dynamicHeight [selectedIndex]="data?.selectedIndex || 0" #tabgroup style="color: black" [headerPosition]="">
       <mat-tab [label]="new ? 'neue kurier:in' : messenger.nickname + ' bearbeiten'">
         <div class="px-4 flex flex-row">
           <mat-form-field class="mr-4 w-25" style="min-width: 200px">
@@ -100,16 +101,17 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
           </p>
         </div>
       </mat-tab>
-    </mat-tab-group>
+      </mat-tab-group>
 
-    <div class="flex flex-row justify-content-between align-items-center p-4" style="min-width: 650px">
-      <button mat-raised-button class="flex fex-button" (click)="onSaveClicked()">
-        {{ messenger.id ? 'speichern' : 'hinzufügen' }}
-      </button>
-      <span class="fex-warn" *ngIf="messenger.shiftsWithoutEnd > 0">
-        für {{ messenger.shiftsWithoutEnd === 1 ? 'eine' : messenger.shiftsWithoutEnd }} schicht{{ messenger.shiftsWithoutEnd > 1 ? 'en' : '' }} wurde noch
-        keine endzeit eingetragen
-      </span>
+      <div class="flex flex-row justify-content-between align-items-center p-4" style="min-width: 650px">
+        <button mat-raised-button class="flex fex-button" (click)="onSaveClicked()">
+          {{ messenger.id ? 'speichern' : 'hinzufügen' }}
+        </button>
+        <span class="fex-warn" *ngIf="messenger.shiftsWithoutEnd > 0">
+          für {{ messenger.shiftsWithoutEnd === 1 ? 'eine' : messenger.shiftsWithoutEnd }} schicht{{ messenger.shiftsWithoutEnd > 1 ? 'en' : '' }} wurde noch
+          keine endzeit eingetragen
+        </span>
+      </div>
     </div>
   `,
   styles: []
@@ -127,6 +129,7 @@ export class MessengerDialogComponent implements OnInit {
   loaded = false;
   nameControl: FormControl;
   saveAttempted = false;
+  saveAttemptCount = 0;
   saveAttemptMatcher: ErrorStateMatcher;
 
   get isDezwo() {
@@ -194,6 +197,7 @@ export class MessengerDialogComponent implements OnInit {
 
   onSaveClicked(): void {
     this.saveAttempted = true;
+    this.saveAttemptCount += 1;
     this.nameControl.setValue(this.messenger.nickname || '', { emitEvent: false });
     this.nameControl.updateValueAndValidity({ emitEvent: false });
     if (!this.canSave()) {

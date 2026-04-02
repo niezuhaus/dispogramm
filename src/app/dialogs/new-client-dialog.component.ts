@@ -1,12 +1,22 @@
-import { Component, EventEmitter, Inject } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
 import { GC } from '../common/GC';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Geolocation } from '../classes/Geolocation';
 import { Client } from '../classes/Client';
+import { FormControl, NgForm, FormGroupDirective } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
+  constructor(private shouldShowErrors: () => boolean) {}
+  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
+  }
+}
 
 @Component({
   selector: 'app-new-client-dialog',
   template: `
+    <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="neue kund:in erstellen">
         <div class="p-4" style="min-width: 400px">
@@ -18,7 +28,8 @@ import { Client } from '../classes/Client';
           </div>
           <mat-form-field>
             <mat-label>name</mat-label>
-            <input #name type="text" cdkFocusInitial matInput [(ngModel)]="clientObject.c.name" (keyup)="clientObject.l.name = name.value" />
+            <input #name type="text" cdkFocusInitial matInput required [(ngModel)]="clientObject.c.name" (keyup)="clientObject.l.name = name.value" [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
+            <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
           </mat-form-field>
           <mat-form-field>
             <mat-label>rufname</mat-label>
@@ -47,10 +58,11 @@ import { Client } from '../classes/Client';
             <mat-label>fred kund:innennummer</mat-label>
             <input type="text" matInput [(ngModel)]="clientObject.c.clientId" />
           </mat-form-field>
-          <button mat-raised-button class="fex-button" (click)="this.save()" matDialogClose="true">speichern</button>
+          <button mat-raised-button class="fex-button" (click)="onSaveClicked()">speichern</button>
         </div>
       </mat-tab>
     </mat-tab-group>
+    </div>
   `,
   styles: [
     `
@@ -61,10 +73,13 @@ import { Client } from '../classes/Client';
     `
   ]
 })
-export class NewClientDialogComponent {
+export class NewClientDialogComponent implements OnInit {
   saved = new EventEmitter<{ c: Client; l: Geolocation }>();
   clientObject: { c: Client; l: Geolocation } = { c: new Client(), l: null };
   nextClientIds: { netto: string; brutto: string };
+  saveAttempted = false;
+  saveAttemptCount = 0;
+  saveAttemptMatcher: ErrorStateMatcher;
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
@@ -72,6 +87,7 @@ export class NewClientDialogComponent {
       location: Geolocation;
     }
   ) {
+    this.saveAttemptMatcher = new SaveAttemptErrorStateMatcher(() => this.saveAttempted);
     this.clientObject.c.billClient = true;
     if (data?.location) {
       this.clientObject.l = data.location;
@@ -85,6 +101,19 @@ export class NewClientDialogComponent {
     this.clientObject.c.clientId = this.nextClientIds.netto;
   }
 
+  ngOnInit(): void {}
+
+  canSave(): boolean {
+    return !!(this.clientObject.c.name || '').trim();
+  }
+
+  onSaveClicked(): void {
+    this.saveAttempted = true;
+    this.saveAttemptCount += 1;
+    if (!this.canSave()) return;
+    this.save();
+  }
+
   save(): void {
     GC.http.createClient(this.clientObject.c).subscribe((client) => {
       this.clientObject.c = client;
@@ -95,6 +124,7 @@ export class NewClientDialogComponent {
             GC.openSnackBarLong(`kund:in und standort ${client.name} wurden gespeichert!`);
             this.clientObject.l = l;
             this.saved.emit(this.clientObject);
+            GC.dialog.closeAll();
           });
         } else {
           console.log(this.clientObject.l);
@@ -102,11 +132,13 @@ export class NewClientDialogComponent {
             GC.openSnackBarLong(`kund:in und standort ${client.name} wurden gespeichert!`);
             this.clientObject.l = l;
             this.saved.emit(this.clientObject);
+            GC.dialog.closeAll();
           });
         }
       } else {
         GC.openSnackBarLong(`kund:in ${client.name} wurde gespeichert!`);
         this.saved.emit(this.clientObject);
+        GC.dialog.closeAll();
       }
     });
   }

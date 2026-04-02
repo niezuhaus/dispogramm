@@ -3,19 +3,28 @@ import { Day } from '../common/interfaces';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GC } from '../common/GC';
 import { AreYouSureDialogComponent } from './are-you-sure-dialog.component';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, NgForm, FormGroupDirective, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { RegularJob } from '../classes/Job';
+
+class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
+  constructor(private shouldShowErrors: () => boolean) {}
+  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
+  }
+}
 
 @Component({
   selector: 'app-regular-job-options-dialog',
   template: `
+    <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="required()">
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="festtour-optionen">
         <div class="flex flex-column p-4">
           <mat-form-field>
             <mat-label>name</mat-label>
-            <input matInput type="text" [(ngModel)]="regularJob.name" [formControl]="ctrlName" required />
-            <mat-error *ngIf="ctrlName.invalid">bitte einen namen eingeben</mat-error>
+            <input matInput type="text" [(ngModel)]="regularJob.name" [formControl]="ctrlName" required [errorStateMatcher]="saveAttemptMatcher" />
+            <mat-error *ngIf="ctrlName.hasError('required')">bitte einen namen eingeben</mat-error>
           </mat-form-field>
 
           <div class="flex flex-row justify-content-between">
@@ -28,9 +37,10 @@ import { RegularJob } from '../classes/Job';
                 (click)="pickerStart.open()"
                 [formControl]="ctrlStartDate"
                 (dateChange)="dateChange($event.value)"
+                [errorStateMatcher]="saveAttemptMatcher"
               />
               <mat-datepicker #pickerStart></mat-datepicker>
-              <mat-error *ngIf="ctrlStartDate.invalid">bitte ein datum eingeben</mat-error>
+              <mat-error *ngIf="ctrlStartDate.hasError('required')">bitte ein datum eingeben</mat-error>
             </mat-form-field>
             <mat-form-field style="width: 200px">
               <mat-label>läuft bis</mat-label>
@@ -111,8 +121,8 @@ import { RegularJob } from '../classes/Job';
           <div class="mt-3 flex flex-row">
             <mat-form-field style="width: 200px">
               <mat-label>pauschalbetrag</mat-label>
-              <input matInput type="number" [(ngModel)]="regularJob.monthlyPrice._netto" [formControl]="ctrlMonthlyPrice" required />
-              <mat-error *ngIf="ctrlMonthlyPrice.invalid">bitte einen pauschalbetrag eingeben</mat-error>
+              <input matInput type="number" [(ngModel)]="regularJob.monthlyPrice._netto" [formControl]="ctrlMonthlyPrice" required [errorStateMatcher]="saveAttemptMatcher" />
+              <mat-error *ngIf="ctrlMonthlyPrice.hasError('required')">bitte einen pauschalbetrag eingeben</mat-error>
             </mat-form-field>
             <mat-form-field style="width: 200px" class="ml-4">
               <mat-label>postrunde</mat-label>
@@ -125,7 +135,7 @@ import { RegularJob } from '../classes/Job';
             </mat-form-field>
           </div>
           <div class="flex flex-row justify-content-between">
-            <button (click)="save(data.locally)" mat-raised-button class="mt-3 fex-button" [disabled]="required()">speichern</button>
+            <button (click)="onSaveClicked()" mat-raised-button class="mt-3 fex-button">speichern</button>
             <button *ngIf="regularJob.id && tourplan" (click)="delete()" mat-button class="mt-3 fex-button-warn">
               ab {{ tourplan.date.dateStampShort() }} streichen
             </button>
@@ -134,6 +144,7 @@ import { RegularJob } from '../classes/Job';
       </mat-tab>
       <mat-tab-group> </mat-tab-group
     ></mat-tab-group>
+    </div>
   `,
   styles: [
     `
@@ -165,6 +176,9 @@ export class RegularJobDialogComponent implements OnInit {
   ctrlName = new FormControl('', [Validators.required]);
   ctrlMonthlyPrice = new FormControl('', [Validators.required]);
   ctrlStartDate = new FormControl('', [Validators.required]);
+  saveAttempted = false;
+  saveAttemptCount = 0;
+  saveAttemptMatcher: ErrorStateMatcher;
 
   get posttours() {
     return GC.posttours;
@@ -181,6 +195,7 @@ export class RegularJobDialogComponent implements OnInit {
       locally: boolean;
     }
   ) {
+    this.saveAttemptMatcher = new SaveAttemptErrorStateMatcher(() => this.saveAttempted);
     this.today.nearestQuarter();
     this.regularJob = data.rj || new RegularJob();
 
@@ -202,6 +217,13 @@ export class RegularJobDialogComponent implements OnInit {
 
   required(): boolean {
     return this.ctrlName.hasError('required') || this.ctrlMonthlyPrice.hasError('required');
+  }
+
+  onSaveClicked(): void {
+    this.saveAttempted = true;
+    this.saveAttemptCount += 1;
+    if (this.required()) return;
+    this.save(this.data.locally);
   }
 
   delete(): void {
