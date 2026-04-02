@@ -12,83 +12,93 @@
         <img src="/assets/lex_white.png" style="height: 17px; display: inline" alt="lexoffice" />
       </button>
       <a [href]="'https://app.lexoffice.de/contacts/' + lexContact?.id" target="_blank">
-        <button mat-raised-button class="mr-4 flex lex-button align-items-center" [disabled]="!lexContact">kund:in in lexoffice<i class="ml-3 bi bi-box-arrow-right"></i></button>
+        <button mat-raised-button class="mr-4 flex lex-button align-items-center" [disabled]="!lexContact">
+          kund:in in lexoffice<i class="ml-3 bi bi-box-arrow-right"></i>
+        </button>
       </a>
     </div>
   </div>
   <div class="flex flex-row justify-content-between" *ngIf="!loading">
-    <mat-accordion style="min-width: 400px; max-width: 500px" class="mt-3" multiple>
-      <mat-expansion-panel expanded>
-        <mat-expansion-panel-header>
-          <mat-panel-title> stammdaten </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="flex flex-column">
-          <mat-form-field>
-            <mat-label>#kund:in</mat-label>
-            <input type="text" matInput [placeholder]="clientBackup.clientId?.toString()" [(ngModel)]="client.clientId" />
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>name</mat-label>
-            <input type="text" matInput [placeholder]="clientBackup.name" [(ngModel)]="client.name" />
-          </mat-form-field>
-          <div class="flex flex-row justify-content-between align-items-center">
-            <searchinput
-              [label]="'straße'"
-              [searchOSM]="true"
-              [placeholder]="clientBackup.street"
-              (locationSelected)="streetSelected($event)"
-              class="pr-3 pl-0 w-100"
-              ngDefaultControl
-              [content]="clientBackup.street"
-              [(str)]="client.street"
-              style="margin-right: 15px"
-            >
-            </searchinput>
-            <mat-form-field class="w-20" style="min-width: 80px">
-              <mat-label>postleitzahl</mat-label>
-              <input type="text" matInput [placeholder]="clientBackup.zipCode" [(ngModel)]="client.zipCode" />
+    <div class="flex flex-col">
+      <mat-tab-group dynamicHeight style="min-width: 400px; max-width: 500px" class="mt-3" (selectedTabChange)="$event.index === 2 && getContacts()">
+        <mat-tab label="stammdaten">
+          <div class="flex flex-column pt-3">
+            <mat-form-field>
+              <mat-label>#kund:in</mat-label>
+              <input type="text" matInput [placeholder]="clientBackup.clientId?.toString()" [(ngModel)]="client.clientId" />
             </mat-form-field>
+            <mat-form-field>
+              <mat-label>name</mat-label>
+              <input type="text" matInput [placeholder]="clientBackup.name" [(ngModel)]="client.name" />
+            </mat-form-field>
+            <div class="flex flex-row justify-content-between align-items-center">
+              <searchinput
+                [label]="'straße'"
+                [searchOSM]="true"
+                [placeholder]="clientBackup.street"
+                (locationSelected)="streetSelected($event)"
+                class="pr-3 pl-0 w-100"
+                ngDefaultControl
+                [content]="clientBackup.street"
+                [(str)]="client.street"
+                style="margin-right: 15px"
+              >
+              </searchinput>
+              <mat-form-field class="w-20" style="min-width: 80px">
+                <mat-label>postleitzahl</mat-label>
+                <input type="text" matInput [placeholder]="clientBackup.zipCode" [(ngModel)]="client.zipCode" />
+              </mat-form-field>
+            </div>
+            <mat-form-field>
+              <mat-label>stadt</mat-label>
+              <input type="text" matInput [placeholder]="clientBackup.city" [(ngModel)]="client.city" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>weitere infos</mat-label>
+              <textarea matInput [(ngModel)]="client.info"></textarea>
+            </mat-form-field>
+
+            <div class="flex justify-content-center" style="width: 100%">
+              <mat-button-toggle-group [(ngModel)]="client.billClient" style="margin-bottom: 10px" class="flex flex-row">
+                <mat-button-toggle [value]="true">rechnungskund:in</mat-button-toggle>
+                <mat-button-toggle [value]="false">barkund:in</mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
           </div>
-          <mat-form-field>
-            <mat-label>stadt</mat-label>
-            <input type="text" matInput [placeholder]="clientBackup.city" [(ngModel)]="client.city" />
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>weitere infos</mat-label>
-            <textarea matInput [(ngModel)]="client.info"></textarea>
-          </mat-form-field>
+        </mat-tab>
 
-          <div class="flex justify-content-center" style="width: 100%">
-            <mat-button-toggle-group [(ngModel)]="client.billClient" style="margin-bottom: 10px" class="flex flex-row">
-              <mat-button-toggle [value]="true">rechnungskund:in</mat-button-toggle>
-              <mat-button-toggle [value]="false">barkund:in</mat-button-toggle>
-            </mat-button-toggle-group>
+        <mat-tab [label]="'standorte (' + locations.length + ')'">
+          <div class="flex flex-row flex-wrap pt-3">
+            <app-container
+              *ngFor="let loc of locations"
+              [type]="'location'"
+              [location]="loc"
+              (updated)="getLocations()"
+              (deleted)="getLocations()"
+              class="mr-4 mb-4"
+            >
+            </app-container>
+            <app-container [type]="'location'" [client]="client" (created)="locations.push($event)"> </app-container>
           </div>
-          <button mat-raised-button class="fex-button" style="width: 100% !important" (click)="saveClient()">kund:innendaten speichern</button>
-        </div>
-      </mat-expansion-panel>
+        </mat-tab>
 
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          {{ 'standorte (' + locations.length + ')' }}
-        </mat-expansion-panel-header>
-        <div class="flex flex-row flex-wrap">
-          <app-container *ngFor="let loc of locations" [type]="'location'" [location]="loc" (updated)="getLocations()" (deleted)="getLocations()" class="mr-4 mb-4"> </app-container>
-          <app-container [type]="'location'" [client]="client" (created)="locations.push($event)"> </app-container>
-        </div>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          {{ 'kontakte (' + contacts.length + ')' }}
-        </mat-expansion-panel-header>
-
-        <div class="flex flex-row flex-wrap">
-          <app-container *ngFor="let con of contacts" [type]="'contact'" [contact]="con" (updated)="getContacts()" (deleted)="getContacts()" class="mr-4 mb-4"> </app-container>
-          <app-container [type]="'contact'" [client]="client"> </app-container>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
+        <mat-tab [label]="'kontakte (' + contacts.length + ')'">
+          <div class="flex flex-row flex-wrap pt-3">
+            <app-container
+              *ngFor="let con of contacts"
+              [type]="'contact'"
+              [contact]="con"
+              (updated)="getContacts()"
+              (deleted)="getContacts()"
+              class="mr-4 mb-4"
+            >
+            </app-container>
+            <app-container [type]="'contact'" [client]="client"> </app-container>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+      <button mat-raised-button class="fex-button mt-4" style="width: 100% !important" (click)="saveClient()">kund:innendaten speichern</button>
+    </div>
 
     <!--  gefahrene touren-->
     <div class="ml-5 w-100" style="margin-right: 20px">
@@ -110,7 +120,17 @@
       <!--      </div>-->
       <div class="flex flex-column justify-content-between" style="height: calc(100vh - 350px)">
         <div style="overflow-y: scroll; overflow-x: hidden; padding-bottom: 75px">
-          <table *ngIf="!loadingTours && jobs.length > 0" mat-table #table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="asc" class="h-100" style="overflow-y: scroll">
+          <table
+            *ngIf="!loadingTours && jobs.length > 0"
+            mat-table
+            #table
+            [dataSource]="dataSource"
+            matSort
+            matSortActive="date"
+            matSortDirection="asc"
+            class="h-100"
+            style="overflow-y: scroll"
+          >
             <ng-container matColumnDef="date">
               <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 155px; text-align: right">zeit</th>
               <td mat-cell *matCellDef="let element">
@@ -141,7 +161,13 @@
               <th mat-header-cell *matHeaderCellDef><span class="ml-5">beschreibung</span></th>
               <td mat-cell *matCellDef="let element" class="toBottom">
                 <a class="flex-column">
-                  <description [job]="element" [moreLocations]="locations && locations.length > 1" [clientView]="true" [hideHighlights]="true" [hideTimeAlarms]="true"></description>
+                  <description
+                    [job]="element"
+                    [moreLocations]="locations && locations.length > 1"
+                    [clientView]="true"
+                    [hideHighlights]="true"
+                    [hideTimeAlarms]="true"
+                  ></description>
                 </a>
               </td>
             </ng-container>
@@ -169,7 +195,12 @@
         </div>
 
         <div class="container">
-          <div style="visibility: hidden; position: fixed" [style.left.px]="menuTopLeftPosition.x" [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"></div>
+          <div
+            style="visibility: hidden; position: fixed"
+            [style.left.px]="menuTopLeftPosition.x"
+            [style.top.px]="menuTopLeftPosition.y"
+            [matMenuTriggerFor]="rightMenu"
+          ></div>
 
           <mat-menu #rightMenu="matMenu">
             <ng-template matMenuContent let-item="item">
@@ -221,6 +252,6 @@
     </div>
 
     <!--  löschen button -->
-    <button mat-raised-button class="fex-button" id="delete" *ngIf="jobs?.length === 0 || isDezwo" (click)="deleteClient()">kund:in löschen</button>
+    <!-- <button mat-raised-button class="fex-button" id="delete" *ngIf="jobs?.length === 0 || isDezwo" (click)="deleteClient()">kund:in löschen</button> -->
   </div>
 </div>
