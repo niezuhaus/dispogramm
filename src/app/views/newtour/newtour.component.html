@@ -171,15 +171,15 @@
             <mat-select class="w-100" (valueChange)="touched = true; asyncRefresh({ zoom: false })" [(ngModel)]="job._priceStrategy" [disabled]="job.finished">
               <mat-option [value]="''" class="info-option">
                 <div class="flex flex-col">
-                  <div>normal</div>
+                  <strong>normal</strong>
                   <small> nach fex-preispolitik </small>
                 </div>
               </mat-option>
               <mat-option *ngFor="let price of specialPrices; let i = index" [value]="price.id" class="info-option">
                 <div class="flex flex-col">
-                  <div>
+                  <strong>
                     {{ price.name }}
-                  </div>
+                  </strong>
                   <div>
                     <small *ngIf="price.type === 2"> {{ price.group.toString(!job.billingTour) }} / stop </small>
                     <small *ngIf="price.type === 3">

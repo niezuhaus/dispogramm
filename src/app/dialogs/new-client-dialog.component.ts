@@ -19,8 +19,8 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
     <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
       <mat-tab-group dynamicHeight class="animated-width">
         <mat-tab label="neue kund:in erstellen">
-          <div class="pb-4 px-4" style="min-width: 400px">
-            <div class="m-auto" style="width: fit-content;">
+          <div class="flex flex-col pb-4 px-4" style="min-width: 400px">
+            <div class="m-auto mb-4" style="width: fit-content;">
               <mat-button-toggle-group [value]="clientObject.c.billClient" style="margin-bottom: 10px" class="flex flex-row">
                 <mat-button-toggle [value]="true" (click)="billClientChange(true)">rechnungskund:in</mat-button-toggle>
                 <mat-button-toggle [value]="false" (click)="billClientChange(false)">barkund:in</mat-button-toggle>
@@ -74,14 +74,7 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
       </mat-tab-group>
     </div>
   `,
-  styles: [
-    `
-      * {
-        display: flex;
-        flex-direction: column;
-      }
-    `
-  ]
+  styles: []
 })
 export class NewClientDialogComponent implements OnInit {
   saved = new EventEmitter<{ c: Client; l: Geolocation }>();
