@@ -17,33 +17,33 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-edit-contact-dialog',
   template: `
     <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
-    <mat-tab-group dynamicHeight class="animated-width">
-      <mat-tab label="neuen kontakt erstellen">
-        <div class="p-4">
-          <div style="width: 300px">
-            <mat-form-field class="w-100">
-              <mat-label>name</mat-label>
-              <input #name type="text" matInput required [(ngModel)]="contact.name" autofocus [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
-              <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
-            </mat-form-field>
-            <mat-form-field class="w-100">
-              <mat-label>telefon</mat-label>
-              <input #nick type="text" matInput [(ngModel)]="contact.phone" (focus)="nick.select()" autofocus />
-            </mat-form-field>
-            <mat-form-field class="w-100">
-              <mat-label>e-mail</mat-label>
-              <input type="email" email matInput [(ngModel)]="contact.email" [errorStateMatcher]="saveAttemptMatcher" #emailModel="ngModel" />
-              <mat-error *ngIf="emailModel.hasError('email')">die mailadresse ist ungültig</mat-error>
-            </mat-form-field>
-            <mat-form-field class="w-100">
-              <mat-label>weitere infos</mat-label>
-              <textarea matInput [(ngModel)]="contact.info"></textarea>
-            </mat-form-field>
+      <mat-tab-group dynamicHeight class="animated-width">
+        <mat-tab label="neuen kontakt erstellen">
+          <div class="pb-4 px-4">
+            <div style="width: 300px">
+              <mat-form-field class="w-100">
+                <mat-label>name</mat-label>
+                <input #name type="text" matInput required [(ngModel)]="contact.name" autofocus [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
+                <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
+              </mat-form-field>
+              <mat-form-field class="w-100">
+                <mat-label>telefon</mat-label>
+                <input #nick type="text" matInput [(ngModel)]="contact.phone" (focus)="nick.select()" autofocus />
+              </mat-form-field>
+              <mat-form-field class="w-100">
+                <mat-label>e-mail</mat-label>
+                <input type="email" email matInput [(ngModel)]="contact.email" [errorStateMatcher]="saveAttemptMatcher" #emailModel="ngModel" />
+                <mat-error *ngIf="emailModel.hasError('email')">die mailadresse ist ungültig</mat-error>
+              </mat-form-field>
+              <mat-form-field class="w-100">
+                <mat-label>weitere infos</mat-label>
+                <textarea matInput [(ngModel)]="contact.info"></textarea>
+              </mat-form-field>
+            </div>
+            <button mat-raised-button class="fex-button" (click)="onSaveClicked()">speichern</button>
           </div>
-          <button mat-raised-button class="fex-button" (click)="onSaveClicked()">speichern</button>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
+        </mat-tab>
+      </mat-tab-group>
     </div>
   `,
   styles: []

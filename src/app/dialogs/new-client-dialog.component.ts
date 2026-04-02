@@ -17,51 +17,61 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-new-client-dialog',
   template: `
     <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
-    <mat-tab-group dynamicHeight class="animated-width">
-      <mat-tab label="neue kund:in erstellen">
-        <div class="p-4" style="min-width: 400px">
-          <div class="m-auto" style="width: fit-content;">
-            <mat-button-toggle-group [value]="clientObject.c.billClient" style="margin-bottom: 10px" class="flex flex-row">
-              <mat-button-toggle [value]="true" (click)="billClientChange(true)">rechnungskund:in</mat-button-toggle>
-              <mat-button-toggle [value]="false" (click)="billClientChange(false)">barkund:in</mat-button-toggle>
-            </mat-button-toggle-group>
+      <mat-tab-group dynamicHeight class="animated-width">
+        <mat-tab label="neue kund:in erstellen">
+          <div class="pb-4 px-4" style="min-width: 400px">
+            <div class="m-auto" style="width: fit-content;">
+              <mat-button-toggle-group [value]="clientObject.c.billClient" style="margin-bottom: 10px" class="flex flex-row">
+                <mat-button-toggle [value]="true" (click)="billClientChange(true)">rechnungskund:in</mat-button-toggle>
+                <mat-button-toggle [value]="false" (click)="billClientChange(false)">barkund:in</mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+            <mat-form-field>
+              <mat-label>name</mat-label>
+              <input
+                #name
+                type="text"
+                cdkFocusInitial
+                matInput
+                required
+                [(ngModel)]="clientObject.c.name"
+                (keyup)="clientObject.l.name = name.value"
+                [errorStateMatcher]="saveAttemptMatcher"
+                #nameModel="ngModel"
+              />
+              <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>rufname</mat-label>
+              <input #nick type="text" matInput [value]="clientObject.c.name" [(ngModel)]="clientObject.l.name" (focus)="nick.select()" autofocus />
+            </mat-form-field>
+            <searchinput
+              [label]="'straße'"
+              [searchOSM]="true"
+              (locationSelected)="addressSelected($event)"
+              (keyup)="clientObject.c.street = search.searchTerm"
+              [(str)]="clientObject.c.street"
+              class="w-100"
+              (resetted)="clientObject.c.zipCode = ''; clientObject.c.city = ''"
+              #search
+            >
+            </searchinput>
+            <mat-form-field>
+              <mat-label>postleitzahl</mat-label>
+              <input type="text" matInput [(ngModel)]="clientObject.c.zipCode" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>stadt</mat-label>
+              <input type="text" matInput [(ngModel)]="clientObject.c.city" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>fred kund:innennummer</mat-label>
+              <input type="text" matInput [(ngModel)]="clientObject.c.clientId" />
+            </mat-form-field>
+            <button mat-raised-button class="fex-button" (click)="onSaveClicked()">speichern</button>
           </div>
-          <mat-form-field>
-            <mat-label>name</mat-label>
-            <input #name type="text" cdkFocusInitial matInput required [(ngModel)]="clientObject.c.name" (keyup)="clientObject.l.name = name.value" [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
-            <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>rufname</mat-label>
-            <input #nick type="text" matInput [value]="clientObject.c.name" [(ngModel)]="clientObject.l.name" (focus)="nick.select()" autofocus />
-          </mat-form-field>
-          <searchinput
-            [label]="'straße'"
-            [searchOSM]="true"
-            (locationSelected)="addressSelected($event)"
-            (keyup)="clientObject.c.street = search.searchTerm"
-            [(str)]="clientObject.c.street"
-            class="w-100"
-            (resetted)="clientObject.c.zipCode = ''; clientObject.c.city = ''"
-            #search
-          >
-          </searchinput>
-          <mat-form-field>
-            <mat-label>postleitzahl</mat-label>
-            <input type="text" matInput [(ngModel)]="clientObject.c.zipCode" />
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>stadt</mat-label>
-            <input type="text" matInput [(ngModel)]="clientObject.c.city" />
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>fred kund:innennummer</mat-label>
-            <input type="text" matInput [(ngModel)]="clientObject.c.clientId" />
-          </mat-form-field>
-          <button mat-raised-button class="fex-button" (click)="onSaveClicked()">speichern</button>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
+        </mat-tab>
+      </mat-tab-group>
     </div>
   `,
   styles: [

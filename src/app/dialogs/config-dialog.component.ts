@@ -18,7 +18,7 @@ import { standartZonesHB } from '../common/zones';
   template: `
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="einstellungen">
-        <div *ngIf="config" class="flex flex-column" style="overflow-y: scroll; overflow-x: hidden; min-width: 500px">
+        <div *ngIf="config" class="flex flex-column pb-4 px-4" style="overflow-y: scroll; overflow-x: hidden; min-width: 500px">
           <mat-tab-group dynamicHeight selectedIndex="{{ data?.pageIndex || 0 }}" class="animated-width">
             <mat-tab [label]="'preise'">
               <div style="max-height:50vh; overflow-y: scroll;" class="flex flex-row">

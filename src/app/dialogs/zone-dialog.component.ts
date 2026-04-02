@@ -20,33 +20,33 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-zone-dialog',
   template: `
     <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
-    <mat-tab-group dynamicHeight class="animated-width">
-      <mat-tab label="zone speichern">
-        <div class="p-4" style="width: 75vw">
-          <div class="flex flex-row justify-content-between align-items-baseline">
-            <div class="flex flex-row align-items-center">
-              <mat-form-field>
-                <mat-label>name</mat-label>
-                <input [(ngModel)]="zone.name" matInput type="text" required [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
-                <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
-              </mat-form-field>
-              <app-price-input class="ml-3" [(price)]="zone.price" [label]="'preis pro stop'" [width]="80" [type]="0"></app-price-input>
-              <mat-checkbox class="ml-3" [(ngModel)]="zone.exclusive">preis außerhalb der zone anwenden</mat-checkbox>
+      <mat-tab-group dynamicHeight class="animated-width">
+        <mat-tab label="zone speichern">
+          <div class="pb-4 px-4" style="width: 75vw">
+            <div class="flex flex-row justify-content-between align-items-baseline">
+              <div class="flex flex-row align-items-center">
+                <mat-form-field>
+                  <mat-label>name</mat-label>
+                  <input [(ngModel)]="zone.name" matInput type="text" required [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
+                  <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
+                </mat-form-field>
+                <app-price-input class="ml-3" [(price)]="zone.price" [label]="'preis pro stop'" [width]="80" [type]="0"></app-price-input>
+                <mat-checkbox class="ml-3" [(ngModel)]="zone.exclusive">preis außerhalb der zone anwenden</mat-checkbox>
+              </div>
+
+              <div>{{ zone.nrOfPoints }} punkte, {{ zone.area }}km²</div>
             </div>
 
-            <div>{{ zone.nrOfPoints }} punkte, {{ zone.area }}km²</div>
-          </div>
+            <div id="mapcontainer">
+              <div #map id="map"></div>
+            </div>
 
-          <div id="mapcontainer">
-            <div #map id="map"></div>
+            <div class="flex flex-column">
+              <button #yes mat-raised-button class="mt-4 fex-button" (click)="onSaveClicked()">speichern</button>
+            </div>
           </div>
-
-          <div class="flex flex-column">
-            <button #yes mat-raised-button class="mt-4 fex-button" (click)="onSaveClicked()">speichern</button>
-          </div>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
+        </mat-tab>
+      </mat-tab-group>
     </div>
   `,
   styles: [

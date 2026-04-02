@@ -15,7 +15,7 @@ import { FormControl, Validators } from '@angular/forms';
   template: `
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="{{ data.shift.messenger.nickname }}s {{ shiftLiterals[this.data.shift.type] }}schicht vom {{ data.shift.start.dateStampLong() }}">
-        <div class="p-4 overflow-hidden">
+        <div class="pb-4 px-4 overflow-hidden">
           <div style="min-width: 600px">
             <div class="flex flex-row justify-content-between">
               <div>

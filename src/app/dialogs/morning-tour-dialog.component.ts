@@ -11,7 +11,7 @@ import { TourplanItem } from '../classes/TourplanItem';
   template: `
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="{{ data.name }}">
-        <div class="p-4">
+        <div class="pb-4 px-4">
           <table mat-table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="asc" class="h-100" style="overflow-y: scroll">
             <ng-container matColumnDef="date">
               <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 155px; text-align: right">zeit</th>

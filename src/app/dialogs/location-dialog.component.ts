@@ -26,96 +26,112 @@ import { Client } from '../classes/Client';
   template: `
     <div style="width: 760px">
       <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
-      <mat-tab-group dynamicHeight>
-        <mat-tab [label]="newLocation ? 'neuen standort erstellen' : 'standort bearbeiten'" class="flex overflow-hidden pr-5 flex-column">
-          <div class="flex flex-row justify-content-between"></div>
+        <mat-tab-group dynamicHeight>
+          <mat-tab [label]="newLocation ? 'neuen standort erstellen' : 'standort bearbeiten'" class="flex overflow-hidden pr-5 flex-column">
+            <div class="flex flex-row justify-content-between"></div>
 
-          <div mat-dialog-content class="mt-3 h-100">
-            <mat-form-field>
-              <mat-label>name</mat-label>
-              <input #name type="text" matInput required [(ngModel)]="data.location.name" autofocus [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
-              <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
-            </mat-form-field>
-
-            <div class="flex flex-row align-items-baseline justify-content-between">
-              <searchinput #street [(str)]="data.location.street" [searchOSM]="true" [label]="'straße'" (locationSelected)="addressSelected($event)" style="width: 350px;" class="mr-4"> </searchinput>
-              <mat-form-field class="mr-4" style="width: 100px">
-                <mat-label>postleitzahl</mat-label>
-                <input type="text" matInput [(ngModel)]="data.location.zipCode" />
+            <div class="pb-4 px-4 h-100">
+              <mat-form-field>
+                <mat-label>name</mat-label>
+                <input
+                  #name
+                  type="text"
+                  matInput
+                  required
+                  [(ngModel)]="data.location.name"
+                  autofocus
+                  [errorStateMatcher]="saveAttemptMatcher"
+                  #nameModel="ngModel"
+                />
+                <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
               </mat-form-field>
-              <mat-form-field style="width: 200px">
-                <mat-label>stadt</mat-label>
-                <input type="text" matInput [(ngModel)]="data.location.city" />
+
+              <div class="flex flex-row align-items-baseline justify-content-between">
+                <searchinput
+                  #street
+                  [(str)]="data.location.street"
+                  [searchOSM]="true"
+                  [label]="'straße'"
+                  (locationSelected)="addressSelected($event)"
+                  style="width: 350px;"
+                  class="mr-4"
+                >
+                </searchinput>
+                <mat-form-field class="mr-4" style="width: 100px">
+                  <mat-label>postleitzahl</mat-label>
+                  <input type="text" matInput [(ngModel)]="data.location.zipCode" />
+                </mat-form-field>
+                <mat-form-field style="width: 200px">
+                  <mat-label>stadt</mat-label>
+                  <input type="text" matInput [(ngModel)]="data.location.city" />
+                </mat-form-field>
+              </div>
+              <searchinput
+                #searchClient
+                [label]="'kund:innenname'"
+                [searchClients]="true"
+                (clientClientSelected)="clientSelected($event)"
+                (resetted)="data.location.clientId = ''"
+                class="p-0 col w-100"
+                #search
+              >
+              </searchinput>
+              <mat-form-field class="w-100">
+                <mat-label>weitere infos zum auffinden</mat-label>
+                <textarea matInput [(ngModel)]="data.location.description"></textarea>
               </mat-form-field>
             </div>
-            <searchinput
-              #searchClient
-              [label]="'kund:innenname'"
-              [searchClients]="true"
-              (clientClientSelected)="clientSelected($event)"
-              (resetted)="data.location.clientId = ''"
-              class="p-0 col w-100"
-              #search
-            >
-            </searchinput>
-            <mat-form-field class="w-100">
-              <mat-label>weitere infos zum auffinden</mat-label>
-              <textarea matInput [(ngModel)]="data.location.description"></textarea>
-            </mat-form-field>
-          </div>
 
-          <div class="p-4 flex flex-row justify-content-between w-100">
-            <button *ngIf="!newLocation" mat-raised-button class="fex-button" (click)="onSaveClicked()">standort aktualisieren</button>
-            <button *ngIf="newLocation" mat-raised-button class="fex-button" (click)="onSaveClicked()">neuen standort speichern</button>
+            <div class="p-4 flex flex-row justify-content-between w-100">
+              <button *ngIf="!newLocation" mat-raised-button class="fex-button" (click)="onSaveClicked()">standort aktualisieren</button>
+              <button *ngIf="newLocation" mat-raised-button class="fex-button" (click)="onSaveClicked()">neuen standort speichern</button>
 
-            <button
-              *ngIf="!newLocation"
-              [disabled]="jobs.length > 0"
-              [class.dis]="jobs.length > 0"
-              mat-raised-button
-              class="ml-3 fex-button"
-              (click)="deleteMe()"
-              [matTooltipDisabled]="!(jobs.length > 0)"
-              [matTooltip]="'dieser standort ist in ' + jobs.length + ' aufträgen enthalten und kann nicht gelöscht werden.'"
-            >
-              standort löschen
-            </button>
-          </div>
-        </mat-tab>
+              <button
+                *ngIf="!newLocation"
+                [disabled]="jobs.length > 0"
+                [class.dis]="jobs.length > 0"
+                mat-raised-button
+                class="ml-3 fex-button"
+                (click)="deleteMe()"
+                [matTooltipDisabled]="!(jobs.length > 0)"
+                [matTooltip]="'dieser standort ist in ' + jobs.length + ' aufträgen enthalten und kann nicht gelöscht werden.'"
+              >
+                standort löschen
+              </button>
+            </div>
+          </mat-tab>
 
-        <mat-tab *ngIf="jobs.length > 0" [label]="'kommt in diesen aufträgen vor (' + jobs.length + ')'" style="max-height: 45vh;">
-
-          <div *ngIf="jobs.length > 0" style="max-height: 45vh; overflow-y: scroll">
-            <!--            <h1 mat-dialog-title>kommt in diesen aufträgen vor</h1>-->
-            <table *ngIf="loaded && jobs.length > 0" mat-table [dataSource]="dataSource" class="mt-3" style="width: 95%; margin: auto">
-              <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef>beschreibung</th>
-                <td mat-cell *matCellDef="let element" class="toBottom">
-                  <description [job]="element" [moreLocations]="true" [hideHighlights]="true" [hideToolTips]="true" matDialogClose></description>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="traveldist">
-                <th mat-header-cell *matHeaderCellDef class="text-center" style="width: 100px">streckenlänge</th>
-                <td mat-cell *matCellDef="let element" class="text-center">{{ element.traveldist }} km</td>
-              </ng-container>
-              <ng-container matColumnDef="price">
-                <th mat-header-cell *matHeaderCellDef class="text-center" style="width: 120px">preis</th>
-                <td mat-cell *matCellDef="let element" class="text-center">
-                  <span [style.color]="!element.showBrutto ? 'black' : '#BBB'">{{ element.priceWithoutWaitingPrice?.netto || element.price.netto }}</span>
-                  / <span [style.color]="element.showBrutto ? 'black' : '#BBB'">{{ element.priceWithoutWaitingPrice?.brutto || element.price.brutto }}</span
-                  ><br />
-                  <span *ngIf="element.waitingPrice?.netto > 0">
-                    + <span [style.color]="!element.showBrutto ? 'black' : '#BBB'">{{ element.waitingPrice.netto }}</span> /
-                    <span [style.color]="element.showBrutto ? 'black' : '#BBB'">{{ element.waitingPrice.brutto }}</span></span
-                  >
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-            </table>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
+          <mat-tab *ngIf="jobs.length > 0" [label]="'kommt in diesen aufträgen vor (' + jobs.length + ')'" style="max-height: 45vh;">
+            <div *ngIf="jobs.length > 0" class="pb-4 px-4" style="max-height: 45vh; overflow-y: scroll">
+              <table *ngIf="loaded && jobs.length > 0" mat-table [dataSource]="dataSource" class="mt-3" style="width: 95%; margin: auto">
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef>beschreibung</th>
+                  <td mat-cell *matCellDef="let element" class="toBottom">
+                    <description [job]="element" [moreLocations]="true" [hideHighlights]="true" [hideToolTips]="true" matDialogClose></description>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="traveldist">
+                  <th mat-header-cell *matHeaderCellDef class="text-center" style="width: 100px">streckenlänge</th>
+                  <td mat-cell *matCellDef="let element" class="text-center">{{ element.traveldist }} km</td>
+                </ng-container>
+                <ng-container matColumnDef="price">
+                  <th mat-header-cell *matHeaderCellDef class="text-center" style="width: 120px">preis</th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <span [style.color]="!element.showBrutto ? 'black' : '#BBB'">{{ element.priceWithoutWaitingPrice?.netto || element.price.netto }}</span>
+                    / <span [style.color]="element.showBrutto ? 'black' : '#BBB'">{{ element.priceWithoutWaitingPrice?.brutto || element.price.brutto }}</span
+                    ><br />
+                    <span *ngIf="element.waitingPrice?.netto > 0">
+                      + <span [style.color]="!element.showBrutto ? 'black' : '#BBB'">{{ element.waitingPrice.netto }}</span> /
+                      <span [style.color]="element.showBrutto ? 'black' : '#BBB'">{{ element.waitingPrice.brutto }}</span></span
+                    >
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              </table>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
       </div>
 
       <div id="mapcontainer" style="max-height: 30vh">

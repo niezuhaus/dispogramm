@@ -9,7 +9,7 @@ import { Expense } from '../classes/Expense';
   template: `
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="{{ expense?.id ? 'auslage bearbeiten' : 'neue auslage hinzufügen' }}">
-        <div class="p-4">
+        <div class="pb-4 px-4">
           <!--    <div style="width: fit-content;">-->
           <!--      <mat-button-toggle-group [(ngModel)]="isBrutto" style="margin-bottom: 10px" class="flex flex-row">-->
           <!--        <mat-button-toggle [value]="false" (click)="isBrutto = false">netto</mat-button-toggle>-->
