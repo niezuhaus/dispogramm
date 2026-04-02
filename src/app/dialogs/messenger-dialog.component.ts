@@ -28,79 +28,78 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
   template: `
     <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
       <mat-tab-group dynamicHeight [selectedIndex]="data?.selectedIndex || 0" #tabgroup style="color: black" [headerPosition]="">
-      <mat-tab [label]="new ? 'neue kurier:in' : messenger.nickname + ' bearbeiten'">
-        <div class="px-4 flex flex-row">
-          <mat-form-field class="mr-4 w-25" style="min-width: 200px">
-            <mat-label>rufname</mat-label>
-            <input
-              #nick
-              autofocus
-              type="text"
-              matInput
-              required
-              (keyup)="nick.value = nick.value.toLowerCase()"
-              [(ngModel)]="messenger.nickname"
-              [errorStateMatcher]="saveAttemptMatcher"
-              [formControl]="nameControl"
-            />
-            <mat-error *ngIf="nameControl.hasError('required')">feld darf nicht leer sein</mat-error>
-            <mat-error *ngIf="nameControl.hasError('nicknameTaken')">"{{ nick.value }}" existiert bereits</mat-error>
-          </mat-form-field>
-          <mat-form-field class="w-25" style="min-width: 200px">
-            <mat-label>telefonnummer</mat-label>
-            <input type="text" matInput [(ngModel)]="messenger.telNumber" />
-          </mat-form-field>
-        </div>
-        <div class="flex flex-row px-4">
-          <mat-form-field class="mr-4 w-25" style="min-width: 200px">
-            <mat-label>vorname</mat-label>
-            <input type="text" #name matInput required [(ngModel)]="messenger.firstName" [errorStateMatcher]="saveAttemptMatcher" #firstNameModel="ngModel" />
-            <mat-error *ngIf="firstNameModel.hasError('required')">feld darf nicht leer sein</mat-error>
-          </mat-form-field>
-          <mat-form-field class="mr-4 w-25" style="min-width: 200px">
-            <mat-label>nachname</mat-label>
-            <input type="text" matInput required [(ngModel)]="messenger.lastName" [errorStateMatcher]="saveAttemptMatcher" #lastNameModel="ngModel" />
-            <mat-error *ngIf="lastNameModel.hasError('required')">feld darf nicht leer sein</mat-error>
-          </mat-form-field>
-          <mat-form-field class="w-25" style="min-width: 200px">
-            <mat-label>personalnummer</mat-label>
-            <input type="text" matInput [(ngModel)]="messenger.messengerId" />
-          </mat-form-field>
-        </div>
-        <div class="flex flex-row">
-          <div class="mr-5 ml-3">
-            <mat-checkbox [(ngModel)]="messenger.dispatcher">ist disponent:in</mat-checkbox>
+        <mat-tab [label]="new ? 'neue kurier:in' : messenger.nickname + ' bearbeiten'">
+          <div class="flex flex-row px-4">
+            <mat-form-field class="mr-4 w-25" style="min-width: 200px">
+              <mat-label>vorname</mat-label>
+              <input type="text" #name matInput [(ngModel)]="messenger.firstName" />
+            </mat-form-field>
+            <mat-form-field class="mr-4 w-25" style="min-width: 200px">
+              <mat-label>nachname</mat-label>
+              <input type="text" matInput [(ngModel)]="messenger.lastName" />
+            </mat-form-field>
+            <mat-form-field class="w-25" style="min-width: 200px">
+              <mat-label>personalnummer</mat-label>
+              <input type="text" matInput [(ngModel)]="messenger.messengerId" />
+            </mat-form-field>
           </div>
-          <div>
-            <mat-checkbox [(ngModel)]="messenger.active">fährt im tagesgeschäft</mat-checkbox>
-          </div>
-        </div>
-      </mat-tab>
-
-      <mat-tab *ngIf="messenger.id" [label]="'schichten (' + messenger.shifts?.length + ')'">
-        <div *ngIf="!new" class="p-4">
-          <div class="mb-3 flex flex-row align-items-center justify-content-between">
-            <datepicker #datepicker [(date)]="date" [monthly]="true" (dateChange)="load()"> </datepicker>
-            <button *ngIf="messenger.shifts?.length > 0" mat-raised-button class="fex-button" (click)="exportShifts(messenger, date)">
-              lohndatei <i class="ml-3 bi bi-download"></i>
-            </button>
-            <button mat-raised-button class="fex-button" (click)="shiftTable.newShift()" matTooltip="neue schicht hinzufügen">
-              schicht hinzufügen <i class="ml-3 bi bi-plus-circle"></i>
-            </button>
+          <div class="px-4 flex flex-row">
+            <mat-form-field class="mr-4 w-25" style="min-width: 200px">
+              <mat-label>rufname</mat-label>
+              <input
+                #nick
+                autofocus
+                type="text"
+                matInput
+                required
+                (keyup)="nick.value = nick.value.toLowerCase()"
+                [(ngModel)]="messenger.nickname"
+                [errorStateMatcher]="saveAttemptMatcher"
+                [formControl]="nameControl"
+              />
+              <mat-error *ngIf="nameControl.hasError('required')">feld darf nicht leer sein</mat-error>
+              <mat-error *ngIf="nameControl.hasError('nicknameTaken')">"{{ nick.value }}" existiert bereits</mat-error>
+            </mat-form-field>
+            <mat-form-field class="w-25" style="min-width: 200px">
+              <mat-label>telefonnummer</mat-label>
+              <input type="text" matInput [(ngModel)]="messenger.telNumber" />
+            </mat-form-field>
           </div>
 
-          <div *ngIf="loaded && messenger.shifts.length" class="mb-4" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden">
-            <shift-table [messenger]="messenger" #table> </shift-table>
+          <div class="flex flex-row">
+            <div class="mr-5 ml-3">
+              <mat-checkbox [(ngModel)]="messenger.dispatcher">ist disponent:in</mat-checkbox>
+            </div>
+            <div>
+              <mat-checkbox [(ngModel)]="messenger.active">fährt im tagesgeschäft</mat-checkbox>
+            </div>
           </div>
+        </mat-tab>
 
-          <h4 *ngIf="!messenger.shifts?.length" class="text-center"><i>- keine schichten bisher -</i></h4>
+        <mat-tab *ngIf="messenger.id" [label]="'schichten (' + messenger.shifts?.length + ')'">
+          <div *ngIf="!new" class="p-4">
+            <div class="mb-3 flex flex-row align-items-center justify-content-between">
+              <datepicker #datepicker [(date)]="date" [monthly]="true" (dateChange)="load()"> </datepicker>
+              <button *ngIf="messenger.shifts?.length > 0" mat-raised-button class="fex-button" (click)="exportShifts(messenger, date)">
+                lohndatei <i class="ml-3 bi bi-download"></i>
+              </button>
+              <button mat-raised-button class="fex-button" (click)="shiftTable.newShift()" matTooltip="neue schicht hinzufügen">
+                schicht hinzufügen <i class="ml-3 bi bi-plus-circle"></i>
+              </button>
+            </div>
 
-          <p *ngIf="messenger.active && messenger.shifts?.length">
-            umsatz diesen monat: {{ salesNettoThisMonth._netto }} netto / {{ salesBruttoThisMonth._brutto }} brutto<br />
-            insgesamt {{ messenger.hours }} stunden
-          </p>
-        </div>
-      </mat-tab>
+            <div *ngIf="loaded && messenger.shifts.length" class="mb-4" style="max-height: 50vh; overflow-y: scroll; overflow-x: hidden">
+              <shift-table [messenger]="messenger" #table> </shift-table>
+            </div>
+
+            <h4 *ngIf="!messenger.shifts?.length" class="text-center"><i>- keine schichten bisher -</i></h4>
+
+            <p *ngIf="messenger.active && messenger.shifts?.length">
+              umsatz diesen monat: {{ salesNettoThisMonth._netto }} netto / {{ salesBruttoThisMonth._brutto }} brutto<br />
+              insgesamt {{ messenger.hours }} stunden
+            </p>
+          </div>
+        </mat-tab>
       </mat-tab-group>
 
       <div class="flex flex-row justify-content-between align-items-center p-4" style="min-width: 650px">
@@ -190,9 +189,7 @@ export class MessengerDialogComponent implements OnInit {
   }
 
   canSave(): boolean {
-    return (
-      !this.isEmpty(this.messenger.nickname) && !this.isEmpty(this.messenger.firstName) && !this.isEmpty(this.messenger.lastName) && this.nameControl.valid
-    );
+    return !this.isEmpty(this.messenger.nickname) && this.nameControl.valid;
   }
 
   onSaveClicked(): void {
