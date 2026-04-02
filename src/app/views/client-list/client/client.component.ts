@@ -17,13 +17,14 @@ import { Geolocation } from '../../../classes/Geolocation';
 import { AsyncTitleComponent } from '../../app.component';
 import { Client } from '../../../classes/Client';
 import { LexContact, LexInvoice } from '../../../classes/LexInvoice';
+import { HasUnsavedChanges } from '../../../guards/unsaved-changes.guard';
 
 @Component({
   selector: 'app-client',
   templateUrl: 'client.component.html',
   styleUrls: ['client.component.scss']
 })
-export class ClientComponent extends AsyncTitleComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ClientComponent extends AsyncTitleComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedChanges {
   override titleEmitter = new EventEmitter<string>();
   override title = '';
 
@@ -96,77 +97,96 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
 
   ngAfterViewInit(): void {
     this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
-        GC.http.getClient(params.get('id')).pipe(takeUntil(this.destroy$)).subscribe({
-          next: (client) => {
-            if (GC.config.lexofficeActivated) {
-              GC.http.lex_findClient(client).pipe(takeUntil(this.destroy$)).subscribe((c) => {
-                this.lexContact = c;
-              });
-            }
-            this.clientBackup = new Client(client);
-            this.client = client;
-            this.titleEmitter.emit(client.name);
-            this.title = client.name;
-            this.query(this.date);
-          },
-          error: (error) => {
-            console.log(error);
-          }
+      GC.loaded()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          GC.http
+            .getClient(params.get('id'))
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (client) => {
+                if (GC.config.lexofficeActivated) {
+                  GC.http
+                    .lex_findClient(client)
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe((c) => {
+                      this.lexContact = c;
+                    });
+                }
+                this.clientBackup = new Client(client);
+                this.client = new Client(client);
+                this.titleEmitter.emit(client.name);
+                this.title = client.name;
+                this.query(this.date);
+              },
+              error: (error) => {
+                console.log(error);
+              }
+            });
         });
-      });
     });
   }
 
   query(date: Date): void {
     this.date = date;
     this.loadingTours = true;
-    GC.http.jobsForClientInMonth(this.client.id, date).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (jobs) => {
-        this.getRegularJobs().pipe(takeUntil(this.destroy$)).subscribe((rjs) => {
-          this.regularJobs = rjs;
-        });
-        this.jobs = jobs.filter((j) => !j.regularJobId);
-        this.dataSource = new MatTableDataSource(this.jobs);
-        this.dataSource.sort = this.sort;
-        this.dataSource.sortingDataAccessor = (item, property): string | number => {
-          switch (property) {
-            case 'date':
-              return new Date(item.date).getTime();
-            case 'traveldist':
-              return item.traveldist;
-            case 'price':
-              return item.price._netto;
-            default:
-              return property;
-          }
-        };
-        this.sum = new Price();
-        jobs
-          .filter((j) => !j.regularJobId)
-          .forEach((j) => {
-            this.sum.add(j.price);
-          });
-        this.loadingTours = false;
-        this.getLocations();
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    });
+    GC.http
+      .jobsForClientInMonth(this.client.id, date)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (jobs) => {
+          this.getRegularJobs()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((rjs) => {
+              this.regularJobs = rjs;
+            });
+          this.jobs = jobs.filter((j) => !j.regularJobId);
+          this.dataSource = new MatTableDataSource(this.jobs);
+          this.dataSource.sort = this.sort;
+          this.dataSource.sortingDataAccessor = (item, property): string | number => {
+            switch (property) {
+              case 'date':
+                return new Date(item.date).getTime();
+              case 'traveldist':
+                return item.traveldist;
+              case 'price':
+                return item.price._netto;
+              default:
+                return property;
+            }
+          };
+          this.sum = new Price();
+          jobs
+            .filter((j) => !j.regularJobId)
+            .forEach((j) => {
+              this.sum.add(j.price);
+            });
+          this.loadingTours = false;
+          this.getLocations();
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
   }
 
   getLocations(): void {
-    GC.http.getLocationsByClientId(this.client.id).pipe(takeUntil(this.destroy$)).subscribe((locs) => {
-      this.locations = locs;
-      this.loading = false;
-    });
+    GC.http
+      .getLocationsByClientId(this.client.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((locs) => {
+        this.locations = locs;
+        this.loading = false;
+      });
   }
 
   getContacts(): void {
-    GC.http.getContactsForClient(this.client).pipe(takeUntil(this.destroy$)).subscribe((contacts) => {
-      this.contacts = contacts;
-    });
+    GC.http
+      .getContactsForClient(this.client)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((contacts) => {
+        this.contacts = contacts;
+      });
   }
 
   getRegularJobs(): Observable<RegularJob[]> {
@@ -182,6 +202,19 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.data = this.jobs.filter((j) => {
       return j.contains(filterValue);
+    });
+  }
+
+  hasUnsavedChanges(): boolean {
+    if (!this.client || !this.clientBackup) return false;
+    const fields: (keyof Client)[] = ['clientId', 'name', 'street', 'zipCode', 'city', 'info', 'billClient'];
+    return fields.some((f) => this.client[f] !== this.clientBackup[f]);
+  }
+
+  save(): void {
+    GC.http.updateClient(this.client).subscribe(() => {
+      const idx = GC.clients.findIndex((c) => c.id === this.client.id);
+      if (idx >= 0) GC.clients[idx] = this.client;
     });
   }
 
@@ -201,30 +234,64 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
         calls.push(GC.http.lex_updateContact(this.lexContact.setClient(this.client)));
       }
       zip(calls).subscribe(() => {
+        const idx = GC.clients.findIndex((c) => c.id === this.client.id);
+        if (idx >= 0) GC.clients[idx] = this.client;
+        this.clientBackup = new Client(this.client);
         GC.openSnackBarLong(msg);
       });
     };
 
-    if (!!this.newStreet && this.locations.map((loc) => loc.street).has(this.clientBackup.street)) {
+    const proceedWithStreet = (renameLocations: boolean) => {
+      if (renameLocations) {
+        const matchingLocs = this.locations.filter((loc) => loc.name === this.clientBackup.name);
+        matchingLocs.forEach((loc) => (loc.name = this.client.name));
+        calls = [GC.http.updateClient(this.client), ...matchingLocs.map((loc) => GC.http.updateLocation(loc))];
+      } else {
+        calls = [GC.http.updateClient(this.client)];
+      }
+
+      if (!!this.newStreet && this.locations.map((loc) => loc.street).has(this.clientBackup.street)) {
+        const dialog = GC.dialog.open(AreYouSureDialogComponent, {
+          data: {
+            headline: `soll die neue adresse als standort hinzugefügt werden?`,
+            verbYes: 'standort hinzufügen und speichern',
+            verbNo: 'nur rechnungsadresse ändern'
+          }
+        });
+        dialog.componentInstance.confirm.subscribe(() => {
+          this.newStreet.name = this.client.name;
+          calls.push(GC.http.createLocation(this.newStreet));
+          const oldLocation = this.locations.find((loc) => loc.street === this.clientBackup.street);
+          if (oldLocation) {
+            oldLocation.deactivated = true;
+            calls.push(GC.http.updateLocation(oldLocation));
+          }
+          makeCall(`${this.client.name} und neuer standort wurden gespeichert!`);
+        });
+        dialog.componentInstance.cancel.subscribe(() => {
+          makeCall(`${this.client.name} wurde gespeichert!`);
+        });
+      } else {
+        makeCall(`${this.client.name} wurde gespeichert!`);
+      }
+    };
+
+    const nameChanged = this.client.name !== this.clientBackup.name;
+    const locationsWithOldName = nameChanged ? this.locations.filter((loc) => loc.name === this.clientBackup.name) : [];
+
+    if (locationsWithOldName.length > 0) {
+      const names = locationsWithOldName.map((loc) => `<i>${loc.name}</i>`).join(', ');
       const dialog = GC.dialog.open(AreYouSureDialogComponent, {
         data: {
-          headline: `soll die neue adresse als standort hinzugefügt werden?`,
-          verbYes: 'standort hinzufügen und speichern',
-          verbNo: 'nur rechnungsadresse ändern'
+          headline: `soll${locationsWithOldName.length === 1 ? ' der standort' : ' die standorte'} ${names} ebenfalls in <i>${this.client.name}</i> umbenannt werden?`,
+          verbYes: 'standort umbenennen',
+          verbNo: 'nur kund:in umbenennen'
         }
       });
-      dialog.componentInstance.confirm.subscribe(() => {
-        this.newStreet.name = this.client.name;
-        calls = [GC.http.updateClient(this.client), GC.http.createLocation(this.newStreet)];
-        makeCall(`${this.client.name} und neuer standort wurden gespeichert!`);
-      });
-      dialog.componentInstance.cancel.subscribe(() => {
-        let calls: Observable<any>[] = [GC.http.updateClient(this.client)];
-        makeCall(`${this.client.name} wurde gespeichert!`);
-      });
+      dialog.componentInstance.confirm.subscribe(() => proceedWithStreet(true));
+      dialog.componentInstance.cancel.subscribe(() => proceedWithStreet(false));
     } else {
-      calls = [GC.http.updateClient(this.client)];
-      makeCall(`${this.client.name} wurde gespeichert!`);
+      proceedWithStreet(false);
     }
   }
 

@@ -10,12 +10,13 @@ import { MessengerListComponent } from './views/messenger-list.component';
 import { WeekplanComponent } from './views/weekplan/weekplan.component';
 import { StatisticsComponent } from './views/statistics.component';
 import { ShiftsOverwiewComponent } from './views/shifts-overview/shifts-overwiew.component';
+import { UnsavedChangesGuard } from './guards/unsaved-changes.guard';
 
 const routes: Routes = [
   { path: GC.routes.tourplan.slice(1), component: TourplanComponent },
   { path: GC.routes.weekplan.slice(1), component: WeekplanComponent },
   { path: GC.routes.clientlist.slice(1), component: ClientListComponent },
-  { path: GC.routes.client.slice(1), component: ClientComponent },
+  { path: GC.routes.client.slice(1), component: ClientComponent, canDeactivate: [UnsavedChangesGuard] },
   { path: GC.routes.newTour.slice(1), component: NewtourComponent },
   { path: GC.routes.showTour.slice(1), component: NewtourComponent },
   { path: GC.routes.locations.slice(1), component: LocationListComponent },
