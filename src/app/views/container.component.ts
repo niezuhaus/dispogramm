@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Geolocation } from '../classes/Geolocation';
 import { GC } from '../common/GC';
 import { LocationDialogComponent } from '../dialogs/location-dialog.component';
@@ -17,6 +18,7 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
       class="container flex align-items-center justify-content-center"
       [class.new]="new"
       [class.existing]="!new"
+      [class.deactivated]="type === 'location' && location?.deactivated"
       style="position: relative"
       (mouseenter)="hover = true"
       (mouseleave)="hover = false"
@@ -38,10 +40,11 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
           <i class="bi bi-plus-circle"></i><br />
           <span>neuer standort</span>
         </div>
-        <div *ngIf="location" (click)="openLocationDialog()" class="flex flex-column">
+        <div *ngIf="location" (click)="openLocationDialog()" (contextmenu)="onRightClick($event)" class="flex flex-column" [class.deactivated-location]="location.deactivated">
           <span class="small" style="font-weight: 600">{{ location.name }}</span>
           <span class="small">{{ location.street }}</span>
           <span class="small">{{ location.zipCode }} {{ location.city }}</span>
+          <span *ngIf="location.deactivated" class="small deactivated-label">deaktiviert</span>
         </div>
       </div>
 
@@ -91,6 +94,25 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
 
       <div *ngIf="!new && hover"><i class="pencil bi bi-pencil" (click)="openEditDialog()"></i></div>
     </div>
+
+    <div *ngIf="type === 'location' && location">
+      <div
+        style="visibility: hidden; position: fixed"
+        [style.left.px]="menuTopLeftPosition.x"
+        [style.top.px]="menuTopLeftPosition.y"
+        [matMenuTriggerFor]="locationMenu"
+      ></div>
+      <mat-menu #locationMenu="matMenu">
+        <ng-template matMenuContent>
+          <button mat-menu-item (click)="openLocationDialog()">
+            <i class="p-1 bi bi-pencil bi-context"></i>bearbeiten
+          </button>
+          <button mat-menu-item (click)="toggleDeactivated()">
+            <i class="p-1 bi bi-archive bi-context"></i>{{ location.deactivated ? 'aktivieren' : 'deaktivieren' }}
+          </button>
+        </ng-template>
+      </mat-menu>
+    </div>
   `,
   styles: [
     `
@@ -105,6 +127,10 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
 
       .existing {
         border: 2px solid $fex-dark;
+      }
+
+      .existing.deactivated {
+        border-color: #aaa;
       }
 
       .new {
@@ -123,6 +149,16 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
         right: 5px;
         color: $fex-dark;
       }
+
+      .deactivated-location {
+        opacity: 0.45;
+      }
+
+      .deactivated-label {
+        color: #888;
+        font-style: italic;
+        margin-top: 2px;
+      }
     `
   ]
 })
@@ -136,8 +172,10 @@ export class ContainerComponent implements OnInit {
   @Output() deleted = new EventEmitter<boolean>();
   @Output() updated = new EventEmitter<Geolocation>();
   @Output() created = new EventEmitter<Geolocation>();
+  @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
   hover = false;
   new = false;
+  menuTopLeftPosition = { x: 0, y: 0 };
 
   constructor() {}
 
@@ -220,6 +258,22 @@ export class ContainerComponent implements OnInit {
       data: {
         zone: this.zone
       }
+    });
+  }
+
+  onRightClick(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.menuTopLeftPosition.x = event.clientX;
+    this.menuTopLeftPosition.y = event.clientY;
+    this.matMenuTrigger.openMenu();
+  }
+
+  toggleDeactivated(): void {
+    this.location.deactivated = !this.location.deactivated;
+    GC.http.updateLocation(this.location).subscribe(() => {
+      GC.openSnackBarLong(`"${this.location.name}" wurde ${this.location.deactivated ? 'deaktiviert' : 'aktiviert'}.`);
+      this.updated.emit(this.location);
     });
   }
 }

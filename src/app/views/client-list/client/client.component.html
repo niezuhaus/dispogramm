@@ -68,17 +68,33 @@
         </mat-tab>
 
         <mat-tab [label]="'standorte (' + locations.length + ')'">
-          <div class="flex flex-row flex-wrap pt-3">
-            <app-container
-              *ngFor="let loc of locations"
-              [type]="'location'"
-              [location]="loc"
-              (updated)="getLocations()"
-              (deleted)="getLocations()"
-              class="mr-4 mb-4"
-            >
-            </app-container>
-            <app-container [type]="'location'" [client]="client" (created)="locations.push($event)"> </app-container>
+          <div class="flex flex-column pt-3">
+            <div class="flex flex-row flex-wrap">
+              <app-container
+                *ngFor="let loc of locations | activeLocations"
+                [type]="'location'"
+                [location]="loc"
+                (updated)="getLocations()"
+                (deleted)="getLocations()"
+                class="mr-4 mb-4"
+              >
+              </app-container>
+              <app-container [type]="'location'" [client]="client" (created)="locations.push($event)"> </app-container>
+            </div>
+            <ng-container *ngIf="(locations | activeLocations:true).length > 0">
+              <h6 class="mt-2 mb-2" style="color: #888; font-style: italic">deaktivierte standorte</h6>
+              <div class="flex flex-row flex-wrap">
+                <app-container
+                  *ngFor="let loc of locations | activeLocations:true"
+                  [type]="'location'"
+                  [location]="loc"
+                  (updated)="getLocations()"
+                  (deleted)="getLocations()"
+                  class="mr-4 mb-4"
+                >
+                </app-container>
+              </div>
+            </ng-container>
           </div>
         </mat-tab>
 

@@ -35,6 +35,7 @@ export class Geolocation implements IdObject, Optionable {
   description: string = '';
 
   locType: LocType;
+  deactivated: boolean;
   hasBacktour: boolean;
   inputfield: number;
   geocoder: GeoCodingMode;

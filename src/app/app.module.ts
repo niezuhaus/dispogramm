@@ -75,6 +75,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { AppCommonModule } from './common/common.module';
 import { ShiftsOverwiewComponent } from './views/shifts-overview/shifts-overwiew.component';
 import { ShiftTableComponent } from './views/shift-table.component';
+import { ActiveLocationsPipe } from './common/active-locations.pipe';
 
 @NgModule({
   declarations: [
@@ -115,7 +116,8 @@ import { ShiftTableComponent } from './views/shift-table.component';
     InlineRangeCalendarComponent,
     MessengerViewComponent,
     ShiftsOverwiewComponent,
-    ShiftTableComponent
+    ShiftTableComponent,
+    ActiveLocationsPipe
   ],
   imports: [
     BrowserModule,
