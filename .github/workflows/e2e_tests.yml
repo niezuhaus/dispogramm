@@ -41,6 +41,20 @@ jobs:
           sleep 15
 
       # Frontend Setup
+      - name: Create config.private.ts
+        run: |
+          cat > src/app/config.private.ts << 'TSEOF'
+          export const config = {
+            "fallBackend": "${{ secrets.FALL_BACKEND }}",
+            "apiAuthName": "${{ secrets.API_AUTH_NAME }}",
+            "apiAuthPwd": "${{ secrets.API_AUTH_PWD }}",
+            "VAPID_PUBLIC_KEY": "${{ secrets.VAPID_PUBLIC_KEY }}",
+            "lexOfficeApiKey": "${{ secrets.LEXOFFICE_API_KEY }}",
+            "geoapifyApiKey": "${{ secrets.GEOAPIFY_API_KEY }}",
+            "mapboxApiKey": "${{ secrets.MAPBOX_API_KEY }}"
+          }
+          TSEOF
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
