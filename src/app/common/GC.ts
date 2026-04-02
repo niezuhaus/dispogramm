@@ -76,7 +76,7 @@ export class GC {
   public static readonly INIT_ZOOM = 12;
 
   /**
-   * time in ms after the last keystroke before OSM and BING are queried
+   * time in ms after the last keystroke before OSM is queried
    */
   public static readonly DEBOUNCE_TIME = 700;
   /**
@@ -350,7 +350,7 @@ export class GC {
       next: () => {
         GC.loadConfig(http).subscribe(() => {
           GC.config = GC.readConfig();
-          if (!GC.config.api.bing || !GC.config.api.mapbox || !GC.config.api.geoapify) {
+          if (!GC.config.api.mapbox || !GC.config.api.geoapify) {
             GC.apiKeyMissing = true;
             return;
           }
@@ -459,9 +459,7 @@ export class GC {
       api: {
         lex: GC.readString('lexOfficeApiKey') || config.lexOfficeApiKey,
         geoapify: GC.readString('geoapifyApiKey') || config.geoapifyApiKey,
-        mapbox: GC.readString('mapboxApiKey') || config.mapboxApiKey,
-        bing: GC.readString('bingApiKey') || config.bingApiKey,
-        azure: GC.readString('azureApiKey') || config.azureApiKey
+        mapbox: GC.readString('mapboxApiKey') || config.mapboxApiKey
       },
       workingDays: GC.readNumber('workingDays') || 21.3,
       nearbyDist: GC.readNumber('nearbyDist') || 150,

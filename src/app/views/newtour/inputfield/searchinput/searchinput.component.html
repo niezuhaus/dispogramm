@@ -35,7 +35,6 @@
       <div *ngIf="option.type == 0" class="flex flex-col">
         <small class="flex flex-row align-items-center pt-1">
           <img *ngIf="option.loc.geocoder === 0" src="assets/osm.png" alt="osm" class="mr-1" style="height: 14px" />
-          <img *ngIf="option.loc.geocoder === 1" src="assets/azure.png" alt="bing" class="mr-1" style="height: 14px" />
           <strong>
             {{ option.loc.street }}
           </strong>

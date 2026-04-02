@@ -425,22 +425,6 @@ import { standartZonesHB } from '../common/zones';
                   </mat-form-field>
                 </div>
               </div>
-              <div class="option w2080">
-                <label> bing </label>
-                <div>
-                  <mat-form-field style="width: 450px">
-                    <input
-                      matInput
-                      [type]="isDezwo ? 'text' : 'password'"
-                      #bingApiKey
-                      (focusin)="bingApiKey.select()"
-                      [(ngModel)]="config.api.bing"
-                      (change)="changedStrings.set('bingApiKey', bingApiKey.value); reloadPage = true"
-                      (keyup)="changedStrings.set('bingApiKey', bingApiKey.value)"
-                    />
-                  </mat-form-field>
-                </div>
-              </div>
             </mat-tab>
 
             <mat-tab [label]="'was ist neu?'" style="y-overflow: scroll">
@@ -731,15 +715,6 @@ export class ConfigDialogComponent {
     }
     GC.http.createZone(zone).subscribe(() => {
       GC.openSnackBarLong('zone gespeichert');
-    });
-  }
-
-  changeGeocoder(mode: number) {
-    GC.config.geocoder = GC.geocoders[mode];
-    this.saveConfigValue('geocoder', mode.toString()).subscribe((msg) => {
-      GC.openSnackBarLong(
-        `du suchst adressen jetzt mit ${parseInt(msg.value) === 0 ? 'openstreetmap' : parseInt(msg.value) === 1 ? 'bing maps' : 'beiden geocodern zugleich'}!`
-      );
     });
   }
 

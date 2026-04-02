@@ -210,16 +210,6 @@ export interface ConfigDataContract {
      * to generate a new token click <a href="https://account.mapbox.com/access-tokens/">here</a>
      */
     mapbox: string;
-    /**
-     * the API key for bing maps.
-     * see usage <a href="https://www.bingmapsportal.com/Application">here</a>
-     */
-    bing: string;
-    /**
-     * the API key for bing maps.
-     * more information <a href="https://portal.azure.com/">here</a>
-     */
-    azure: string;
   };
   workingDays: number;
   nearbyDist: number;
@@ -305,13 +295,8 @@ export interface GeoCodingStrategy {
   geocode(searchStr: string, type: LocType): Observable<Geolocation[]>;
 }
 
-/**
- * 0 osm, 1 bing, 2 both
- */
 export enum GeoCodingMode {
-  osm,
-  azure,
-  both
+  osm
 }
 
 /**

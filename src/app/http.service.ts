@@ -15,7 +15,7 @@ import {
   TimeframeStatistic,
   WeekStatistic
 } from './common/interfaces';
-import { AzureMapsResponse, BingMapsResponse, BingResource, IOSMFeature, IOSMResponse, IOSMRouteFeatureCollection, Result } from './common/DataContracts';
+import { IOSMFeature, IOSMResponse, IOSMRouteFeatureCollection } from './common/DataContracts';
 import { Contact } from './classes/Contact';
 import { Zone } from './classes/Zone';
 import { Job, RegularJob } from './classes/Job';
@@ -58,8 +58,6 @@ export class HttpService {
   private backendAuthHeader: HttpHeaders;
   private GEOAPIFY_API_KEY: string;
   private MAPBOX_API_KEY: string;
-  private BING_API_KEY: string;
-  private AZURE_API_KEY: string;
 
   constructor(
     private http: HttpClient,
@@ -78,14 +76,12 @@ export class HttpService {
     });
   }
 
-  set keys(keys: { lex: string; geoapify: string; mapbox: string; bing: string; azure: string }) {
+  set keys(keys: { lex: string; geoapify: string; mapbox: string }) {
     this.lexAuthHeader = new HttpHeaders({
       Authorization: `Bearer ${keys.lex}`
     });
     this.GEOAPIFY_API_KEY = keys.geoapify;
     this.MAPBOX_API_KEY = keys.mapbox;
-    this.BING_API_KEY = keys.bing;
-    this.AZURE_API_KEY = keys.azure;
   }
 
   public static _filterLocationsByAny(list: Geolocation[], value: string): Geolocation[] {
@@ -313,42 +309,6 @@ export class HttpService {
     });
     res.geocoder = GeoCodingMode.osm;
     res.name = res.street;
-    return res;
-  }
-
-  static mapBingFeature(set: BingResource, type: LocType): Geolocation {
-    set.address.addressLine = set.address.addressLine.replace('str ', 'straße ');
-    if (set.address.addressLine.slice(-3) === 'str') {
-      set.address.addressLine = set.address.addressLine.replace('str', 'straße');
-    }
-    const res: Geolocation = new Geolocation({
-      name: set.address.addressLine,
-      street: set.address.addressLine,
-      zipCode: set.address.postalCode,
-      city: set.address.locality,
-      latitude: set.point.coordinates['0'],
-      longitude: set.point.coordinates['1'],
-      locType: type,
-      priceZone: this.findPriceZone(set.address.postalCode)
-    });
-    res.geocoder = GeoCodingMode.azure;
-    return res;
-  }
-
-  static mapAzureFeature(result: Result, type: LocType): Geolocation {
-    const address = result.address;
-    const position = result.position;
-    const res: Geolocation = new Geolocation({
-      name: address.streetName && address.streetNumber ? `${address.streetName} ${address.streetNumber}` : address.streetName || '',
-      street: address.streetName && address.streetNumber ? `${address.streetName} ${address.streetNumber}` : address.streetName || '',
-      zipCode: address.postalCode || '',
-      city: address.municipality || address.countrySubdivision || '',
-      latitude: position.lat,
-      longitude: position.lon || position.lon,
-      locType: type,
-      priceZone: this.findPriceZone(address.postalCode || '')
-    });
-    res.geocoder = GeoCodingMode.azure;
     return res;
   }
 

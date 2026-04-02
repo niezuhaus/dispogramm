@@ -74,7 +74,6 @@ jobs:
           API_AUTH_PWD: ${{ secrets.API_AUTH_PWD }}
           GEOAPIFY_API_KEY: ${{ secrets.GEOAPIFY_API_KEY }}
           MAPBOX_API_KEY: ${{ secrets.MAPBOX_API_KEY }}
-          BING_API_KEY: ${{ secrets.BING_API_KEY }}
         run: npx playwright test
 
       # Upload Playwright Report
