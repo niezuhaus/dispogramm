@@ -256,7 +256,7 @@ export class MessengerDialogComponent implements OnInit {
       GC.dialog.open(AreYouSureDialogComponent, {
         data: {
           headline: `bitte erst für ${this.messenger.shiftsWithoutEnd} schichten die endzeiten eintragen`,
-          verbNo: 'schließen'
+          verbYes: 'schließen'
         }
       });
     } else {
