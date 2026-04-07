@@ -21,6 +21,7 @@ export class Messenger implements IdObject, Optionable {
   dispatcher = false;
   active = true;
   telNumber: string;
+  lastSeenVersion: string;
 
   // runtime variables
   /**
