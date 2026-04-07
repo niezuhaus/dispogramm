@@ -4,7 +4,7 @@ import { Job } from '../classes/Job';
 import { Messenger } from '../classes/Messenger';
 import { GC } from '../common/GC';
 import { NewClientDialogComponent } from '../dialogs/new-client-dialog.component';
-import { Station } from '../classes/Geolocation';
+import { Geolocation, Station } from '../classes/Geolocation';
 import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
 import { Client } from '../classes/Client';
 import { Shift } from '../classes/Shift';
@@ -13,6 +13,7 @@ import { SpecialPrice } from '../classes/SpecialPrice';
 import { CheckInDialog } from '../dialogs/shifts-dialog/check-in-dialog.component';
 import { TourplanItem } from '../classes/TourplanItem';
 import { Zone } from '../classes/Zone';
+import { LocationDialogComponent } from '../dialogs/location-dialog.component';
 
 @Component({
   selector: 'right-click-menu',
@@ -263,6 +264,20 @@ import { Zone } from '../classes/Zone';
       <button mat-menu-item (click)="zone.delete()"><i class="p-1 bi bi-trash bi-context"></i>zone löschen</button>
     </div>
 
+    <!-- location -->
+    <div *ngIf="location">
+      <button mat-menu-item (click)="openLocationDialog()"><i class="p-1 bi bi-pencil bi-context"></i>bearbeiten</button>
+      <button *ngIf="location.clientId" mat-menu-item [routerLink]="[routes.client, { id: location.clientId }]">
+        <i class="p-1 bi bi-person bi-context"></i>kund:innenseite öffnen
+      </button>
+      <button mat-menu-item (click)="toggleDeactivateLocation()">
+        <i class="p-1 bi bi-archive bi-context"></i>{{ location.deactivated ? 'aktivieren' : 'deaktivieren' }}
+      </button>
+      <button mat-menu-item [disabled]="jobsWithLocation(location).length > 0" (click)="deleteLocation()">
+        <i class="p-1 bi bi-trash bi-context"></i>löschen
+      </button>
+    </div>
+
     <!-- messenger -->
     <div *ngIf="messenger">
       <!-- <button mat-menu-item (click)="messenger.delete()"><i class="p-1 bi bi-trash bi-context"></i>löschen</button> -->
@@ -304,6 +319,7 @@ export class RightClickMenuComponent implements OnInit {
   @Input() shift: Shift;
   @Input() price: SpecialPrice;
   @Input() zone: Zone;
+  @Input() location: Geolocation;
   @Input() weekplan: Boolean;
   @Input() date: Date;
   @Input() onShiftDelete: (shift: Shift) => void;
@@ -413,6 +429,29 @@ export class RightClickMenuComponent implements OnInit {
 
   openChangeUserDialog(): void {
     GC.dialog.open(CheckInDialog);
+  }
+
+  jobsWithLocation = (loc: Geolocation) => GC.http.jobsWithLocation(loc);
+
+  openLocationDialog(): void {
+    GC.dialog.open(LocationDialogComponent, { data: { location: this.location } });
+  }
+
+  toggleDeactivateLocation(): void {
+    this.location.deactivated = !this.location.deactivated;
+    GC.http.updateLocation(this.location).subscribe();
+  }
+
+  deleteLocation(): void {
+    const dialog = GC.dialog.open(AreYouSureDialogComponent, {
+      data: { headline: `standort "${this.location.name}" löschen?`, verbYes: 'löschen', verbNo: 'abbrechen', warning: true }
+    });
+    dialog.componentInstance.confirm.subscribe(() => {
+      GC.http.deleteLocation(this.location).subscribe(() => {
+        GC.openSnackBarLong(`"${this.location.name}" wurde gelöscht.`);
+        GC.locationChanged.emit(true);
+      });
+    });
   }
 
   onMorningTourTriggerEnter(): void {

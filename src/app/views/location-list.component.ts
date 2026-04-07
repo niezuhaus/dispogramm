@@ -96,21 +96,23 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns" (contextmenu)="onRightClick($event, row)"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" [class.row-deactivated]="row.deactivated" (contextmenu)="onRightClick($event, row)"></tr>
       </table>
       <mat-paginator [class.hidden]="!loaded" [length]="1000" [pageSize]="rows" showFirstLastButtons> </mat-paginator>
     </div>
 
     <div class="container">
       <!-- an hidden div is created to set the position of appearance of the menu-->
-      <div style="visibility: hidden; position: fixed" [style.left.px]="menuTopLeftPosition.x" [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"></div>
+      <div
+        style="visibility: hidden; position: fixed"
+        [style.left.px]="menuTopLeftPosition.x"
+        [style.top.px]="menuTopLeftPosition.y"
+        [matMenuTriggerFor]="rightMenu"
+      ></div>
 
-      <!-- standar material menu -->
       <mat-menu #rightMenu="matMenu">
         <ng-template matMenuContent let-item="item">
-          <button mat-menu-item (click)="openDialog(item)"><i class="p-1 bi bi-pencil bi-context"></i>bearbeiten</button>
-          <button *ngIf="item.clientId" mat-menu-item [routerLink]="[routes.client, { id: item.clientId }]"><i class="p-1 bi bi-person bi-context"></i>kund:innenseite öffnen</button>
-          <button mat-menu-item [disabled]="jobsWithLocation(item).length > 0" (click)="deleteMe(item)"><i class="p-1 bi bi-trash bi-context"></i>standort löschen</button>
+          <right-click-menu [location]="item"></right-click-menu>
         </ng-template>
       </mat-menu>
     </div>
@@ -128,10 +130,6 @@ export class LocationListComponent extends TitleComponent implements OnInit {
 
   displayedColumns: string[] = ['checked', 'clientId', 'name', 'address'];
   dataSource: MatTableDataSource<Geolocation>;
-  jobsWithLocation = (loc: Geolocation) => {
-    return GC.http.jobsWithLocation(loc);
-  };
-
   filterStrategies = [new FilterLocationsWithClient(), new FilterLocationsWithoutClient()];
   checkedLocations: Geolocation[] = [];
   menuTopLeftPosition = { x: 0, y: 0 };
@@ -252,24 +250,6 @@ export class LocationListComponent extends TitleComponent implements OnInit {
           });
         }
       });
-    });
-  }
-
-  deleteMe(loc: Geolocation): void {
-    const dialog = GC.dialog.open(AreYouSureDialogComponent, {
-      data: {
-        headline: `standort "${loc.name}" löschen?`,
-        verbYes: 'löschen',
-        verbNo: 'abbrechen'
-      }
-    });
-    dialog.componentInstance.confirm.subscribe(() => {
-      GC.http.deleteLocation(loc).subscribe(() => {
-        GC.openSnackBarLong(`"${loc.name}" wurde gelöscht.`);
-        this.dataSource.data = GC.locations;
-        this.dataSource.sort = this.sort;
-      });
-      this.checkedLocations = [];
     });
   }
 
