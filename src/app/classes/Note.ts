@@ -1,6 +1,7 @@
 import { Messenger } from './Messenger';
 import { GC } from '../common/GC';
 import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
+import { TourplanItem } from './TourplanItem';
 
 export class Note {
   id: string;
@@ -24,7 +25,8 @@ export class Note {
         verbYes: 'löschen',
         verbNo: 'abbrechen',
         highlightNo: true,
-        warning: true
+        warning: true,
+        item: new TourplanItem({ note: this })
       }
     });
     dialog.componentInstance.confirm.subscribe(() => {

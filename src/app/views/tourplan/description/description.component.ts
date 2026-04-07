@@ -26,6 +26,7 @@ export class DescriptionComponent implements OnInit {
   @Input() clientView: boolean;
   @Input() purpleRegularJobs: boolean;
   @Input() showPrices: boolean;
+  @Input() isOnTourplan: boolean;
   @Output() showJobsForPosttour = new EventEmitter<number>();
 
   pre: boolean;

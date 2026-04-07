@@ -14,6 +14,7 @@ import { map } from 'rxjs/operators';
 import { Zone } from './Zone';
 import { SpecialPrice } from './SpecialPrice';
 import { CalendarRangeDialogComponent } from '../dialogs/calendar-range-dialog/calendar-range-dialog.component';
+import { TourplanItem } from './TourplanItem';
 
 export abstract class AbstractJob {
   center: Station; // clients position NOT necessarily the center
@@ -650,7 +651,7 @@ export class Job extends AbstractJob implements Optionable {
         headline: `möchtest du diesen auftrag ${verb}?`,
         verbYes: verb,
         verbNo: 'abbrechen',
-        job: this,
+        item: new TourplanItem({ job: this }),
         highlightNo: true,
         warning: true
       }

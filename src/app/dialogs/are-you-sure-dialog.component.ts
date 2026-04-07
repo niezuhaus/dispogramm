@@ -3,12 +3,14 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { Job } from '../classes/Job';
 import { Messenger } from '../classes/Messenger';
+import { TourplanItem } from '../classes/TourplanItem';
 
 @Component({
   selector: 'app-are-you-sure-dialog',
   template: `
     <div class="dialog-wrap">
-      <div *ngIf="data.warning" class="warning-bar"><i class="bi bi-exclamation-triangle mr-2"></i> achtung</div>
+      <div *ngIf="data.warning" class="warning bar"><i class="bi bi-exclamation-triangle mr-2"></i> achtung</div>
+      <div *ngIf="!data.warning" class="info bar"><i class="bi bi-info-circle mr-2"></i> hinweis</div>
 
       <div class="dialog-body p-4">
         <h3 class="headline" [innerHTML]="data.headline" style="white-space: nowrap;"></h3>
@@ -16,9 +18,9 @@ import { Messenger } from '../classes/Messenger';
 
         <description
           class="m-3"
-          *ngIf="data.job"
+          *ngIf="data.item"
           [hideTimeAlarms]="true"
-          [job]="data.job"
+          [item]="data.item"
           [headline]="true"
           [hideToolTips]="true"
           [hideHighlights]="true"
@@ -57,7 +59,6 @@ import { Messenger } from '../classes/Messenger';
         <button
           #no
           mat-stroked-button
-          [autofocus]="data.highlightNo"
           class="action-btn"
           [class.primary-btn]="data.highlightNo"
           [class.cancel-btn]="!data.highlightNo"
@@ -69,11 +70,6 @@ import { Messenger } from '../classes/Messenger';
         </button>
       </div>
     </div>
-    <!-- <mat-tab-group>
-      <mat-tab label="hinweis">
-
-      </mat-tab>
-    </mat-tab-group> -->
   `,
   styles: [
     `
@@ -82,21 +78,27 @@ import { Messenger } from '../classes/Messenger';
       .dialog-wrap {
         display: flex;
         flex-direction: column;
-        min-width: 340px;
         // max-width: 500px;
       }
 
-      .warning-bar {
+      .bar {
         display: flex;
         flex-direction: row;
         align-items: center;
-        background: $warn;
         color: white;
         padding: 8px 20px;
         font-size: 13px;
         font-weight: 600;
         letter-spacing: 0.04em;
         text-transform: uppercase;
+      }
+
+      .warning {
+        background: $warn;
+      }
+
+      .info {
+        background: $fex-dark;
       }
 
       .dialog-body {
@@ -109,7 +111,7 @@ import { Messenger } from '../classes/Messenger';
         font-weight: 500;
         line-height: 1.4;
         margin: 0 0 8px;
-        color: $fex-light;
+        // color: $fex-light;
       }
 
       .subtext {
@@ -181,7 +183,7 @@ export class AreYouSureDialogComponent {
       verbNo: string;
       verbThird?: string;
       highlightNo: boolean;
-      job: Job;
+      item: TourplanItem;
       messSearch: boolean;
       warning: boolean;
     }
