@@ -27,62 +27,58 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-edit-messenger-dialog',
   template: `
     <div [appShakeOnInvalidSubmit]="saveAttemptCount" [appShakeInvalid]="!canSave()">
-      <mat-tab-group dynamicHeight [selectedIndex]="data?.selectedIndex || 0" #tabgroup style="color: black" [headerPosition]="">
+      <mat-tab-group dynamicHeight [selectedIndex]="data?.selectedIndex || 0" #tabgroup style="color: black; width: 700px" [headerPosition]="">
         <mat-tab [label]="new ? 'neue kurier:in' : messenger.nickname + ' bearbeiten'">
-          <div class="pb-4 px-4">
-            <div class="flex flex-row">
-              <mat-form-field class="mr-4 w-25" style="min-width: 200px">
-                <mat-label>vorname</mat-label>
-                <input type="text" #name matInput [(ngModel)]="messenger.firstName" />
-              </mat-form-field>
-              <mat-form-field class="mr-4 w-25" style="min-width: 200px">
-                <mat-label>nachname</mat-label>
-                <input type="text" matInput [(ngModel)]="messenger.lastName" />
-              </mat-form-field>
-              <mat-form-field class="w-25" style="min-width: 200px">
-                <mat-label>personalnummer</mat-label>
-                <input type="text" matInput [(ngModel)]="messenger.messengerId" />
-              </mat-form-field>
-            </div>
-            <div class="flex flex-row">
-              <mat-form-field class="mr-4 w-25" style="min-width: 200px">
-                <mat-label>rufname</mat-label>
-                <input
-                  #nick
-                  autofocus
-                  type="text"
-                  matInput
-                  required
-                  (keyup)="nick.value = nick.value.toLowerCase()"
-                  [(ngModel)]="messenger.nickname"
-                  [errorStateMatcher]="saveAttemptMatcher"
-                  [formControl]="nameControl"
-                />
-                <mat-error *ngIf="nameControl.hasError('required')">feld darf nicht leer sein</mat-error>
-                <mat-error *ngIf="nameControl.hasError('nicknameTaken')">"{{ nick.value }}" existiert bereits</mat-error>
-              </mat-form-field>
-              <mat-form-field class="w-25" style="min-width: 200px">
-                <mat-label>telefonnummer</mat-label>
-                <input type="text" matInput [(ngModel)]="messenger.telNumber" />
-              </mat-form-field>
-            </div>
-          </div>
-
-          <div class="flex flex-row">
-            <div class="mr-5 ml-3">
+          <div class="px-4">
+            <mat-form-field class="w-100">
+              <mat-label>rufname</mat-label>
+              <input
+                #nick
+                cdkFocusInitial
+                type="text"
+                matInput
+                required
+                (keyup)="nick.value = nick.value.toLowerCase()"
+                [(ngModel)]="messenger.nickname"
+                [errorStateMatcher]="saveAttemptMatcher"
+                [formControl]="nameControl"
+              />
+              <mat-error *ngIf="nameControl.hasError('required')">feld darf nicht leer sein</mat-error>
+              <mat-error *ngIf="nameControl.hasError('nicknameTaken')">"{{ nick.value }}" existiert bereits</mat-error>
+            </mat-form-field>
+            <mat-form-field class="w-100">
+              <mat-label>vorname</mat-label>
+              <input type="text" #name matInput [(ngModel)]="messenger.firstName" />
+            </mat-form-field>
+            <mat-form-field class="w-100">
+              <mat-label>nachname</mat-label>
+              <input type="text" matInput [(ngModel)]="messenger.lastName" />
+            </mat-form-field>
+            <mat-form-field class="w-100">
+              <mat-label>telefonnummer</mat-label>
+              <input type="text" matInput [(ngModel)]="messenger.telNumber" />
+            </mat-form-field>
+            <mat-form-field class="w-100">
+              <mat-label>personalnummer</mat-label>
+              <input type="text" matInput [(ngModel)]="messenger.messengerId" />
+            </mat-form-field>
+            <div class="mb-2">
               <mat-checkbox [(ngModel)]="messenger.dispatcher">ist disponent:in</mat-checkbox>
             </div>
             <div>
               <mat-checkbox [(ngModel)]="messenger.active">fährt im tagesgeschäft</mat-checkbox>
             </div>
+            <!-- <button mat-raised-button class="fex-button" (click)="onSaveClicked()">
+              {{ messenger.id ? 'speichern' : 'hinzufügen' }}
+            </button> -->
           </div>
         </mat-tab>
 
         <mat-tab *ngIf="messenger.id" [label]="'schichten (' + messenger.shifts?.length + ')'">
-          <div *ngIf="!new" class="pb-4 px-4">
-            <div class="mb-3 flex flex-row align-items-center justify-content-between">
+          <div *ngIf="!new" class="px-4">
+            <div class="flex flex-row align-items-center justify-content-between">
               <datepicker #datepicker [(date)]="date" [monthly]="true" (dateChange)="load()"> </datepicker>
-              <button *ngIf="messenger.shifts?.length > 0" mat-raised-button class="fex-button" (click)="exportShifts(messenger, date)">
+              <button *ngIf="messenger.shifts?.length > 0" mat-raised-button class="fex-button mr-3" (click)="exportShifts(messenger, date)">
                 lohndatei <i class="ml-3 bi bi-download"></i>
               </button>
               <button mat-raised-button class="fex-button" (click)="shiftTable.newShift()" matTooltip="neue schicht hinzufügen">
