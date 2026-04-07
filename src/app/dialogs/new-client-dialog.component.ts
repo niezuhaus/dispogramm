@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, ViewChild } from '@angular/core';
 import { GC } from '../common/GC';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Geolocation } from '../classes/Geolocation';
