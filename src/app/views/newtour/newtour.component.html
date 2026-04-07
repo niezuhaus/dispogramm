@@ -54,6 +54,7 @@
             [searchJobs]="true"
             [type]="locType.client"
             [placeholder]="'name, adresse...'"
+            [deactivateNoSearchResults]="true"
             #clientInput
             (clientSelected)="clientSelected($event)"
             (locationSelected)="clientSelected({ c: null, l: $event })"

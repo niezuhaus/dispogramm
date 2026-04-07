@@ -47,6 +47,7 @@ export class SearchinputComponent implements OnInit {
   @Input() disabled: boolean;
   @Input() width: string;
   @Input() required: boolean;
+  @Input() deactivateNoSearchResults: boolean;
   @Input() hideGroupJobs: boolean;
   @Input() keepMessName: boolean;
   @Input() customCtrl: FormControl;

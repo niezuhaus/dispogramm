@@ -126,7 +126,7 @@
         <mat-spinner class="position-absolute" [diameter]="20"></mat-spinner>
       </div>
     </mat-option>
-    <mat-option *ngIf="selection && searching === 0 && searchJobs && jobOptions?.length === 0" class="flex align-items-center justify-content-center">
+    <mat-option *ngIf="!deactivateNoSearchResults && selection && searching === 0 && searchJobs && jobOptions?.length === 0" class="flex align-items-center justify-content-center">
       <div class="flex h-100 align-items-center justify-content-center">
         <i>- keine aufträge gefunden -</i>
       </div>
