@@ -18,8 +18,8 @@ import { standartZonesHB } from '../common/zones';
   template: `
     <mat-tab-group dynamicHeight class="animated-width">
       <mat-tab label="einstellungen">
-        <div *ngIf="config" class="flex flex-column pb-4 px-4" style="overflow-y: scroll; overflow-x: hidden; min-width: 500px">
-          <mat-tab-group dynamicHeight selectedIndex="{{ data?.pageIndex || 0 }}" class="animated-width">
+        <div class="flex flex-column pb-4 px-4" style="overflow-y: scroll; overflow-x: hidden; min-width: 500px">
+          <mat-tab-group *ngIf="config" dynamicHeight selectedIndex="{{ data?.pageIndex || 0 }}" class="animated-width">
             <mat-tab [label]="'preise'">
               <div style="max-height:50vh; overflow-y: scroll;" class="flex flex-row">
                 <div style="width: 33%; min-width: 260px">
@@ -452,80 +452,79 @@ import { standartZonesHB } from '../common/zones';
               </div>
             </mat-tab>
           </mat-tab-group>
-
-          <hr />
+          <hr *ngIf="config" />
+          <!-- backend settings -->
+          <div class="option w4060" style="min-width: 700px">
+            <label> backend-ip/url </label>
+            <div style="white-space: nowrap">
+              <mat-form-field style="width: 350px">
+                <input
+                  matInput
+                  #trigger="matAutocompleteTrigger"
+                  [matAutocomplete]="auto"
+                  type="text"
+                  #backendIP
+                  [value]="backend"
+                  (change)="changedBackendIP = backendIP.value"
+                  (keyup)="changedBackendIP = backendIP.value"
+                  (selectionchange)="changedBackendIP = backendIP.value"
+                />
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'unset'">
+                  <mat-option [value]="'http://localhost:8081/'">
+                    <div class="flex flex-row justify-between">http://localhost:8081/</div>
+                  </mat-option>
+                  <mat-option *ngFor="let ip of recentBackendIPs" [value]="ip">
+                    <div class="flex flex-row justify-between">
+                      {{ ip }}
+                      <a (click)="$event.stopPropagation(); deleteFromRecent(ip)"><i class="ml-2 bi bi-x-circle"></i></a>
+                    </div>
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <button mat-button (click)="settings = !settings" class="ml-3"><i class="bi bi-gear"></i></button>
+            </div>
+          </div>
+          <div *ngIf="settings">
+            <div class="option w4060">
+              <label> nutzer:innenname (optional) </label>
+              <div>
+                <mat-form-field style="width: 350px">
+                  <input
+                    matInput
+                    type="text"
+                    #authNameInput
+                    [value]="authName"
+                    (change)="changedAuthName = authNameInput.value"
+                    (keyup)="changedAuthName = authNameInput.value"
+                    (selectionchange)="changedAuthName = authNameInput.value"
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="option w4060">
+              <label> passwort </label>
+              <div>
+                <mat-form-field style="width: 350px">
+                  <input
+                    matInput
+                    type="password"
+                    #authPwdInput
+                    [value]="authPwd"
+                    (change)="changedAuthPwd = authPwdInput.value"
+                    (keyup)="changedAuthPwd = authPwdInput.value"
+                    (selectionchange)="changedAuthPwd = authPwdInput.value"
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="w-100 flex justify-between">
+            <button mat-raised-button class="fex-button" matDialogClose (click)="save()">speichern</button>
+            <button mat-raised-button class="fex-button" matDialogClose>schließen</button>
+          </div>
         </div>
       </mat-tab>
     </mat-tab-group>
-    <!-- backend settings -->
-    <div class="option w4060" style="min-width: 700px">
-      <label> backend-ip/url </label>
-      <div style="white-space: nowrap">
-        <mat-form-field style="width: 350px">
-          <input
-            matInput
-            #trigger="matAutocompleteTrigger"
-            [matAutocomplete]="auto"
-            type="text"
-            #backendIP
-            [value]="backend"
-            (change)="changedBackendIP = backendIP.value"
-            (keyup)="changedBackendIP = backendIP.value"
-            (selectionchange)="changedBackendIP = backendIP.value"
-          />
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'unset'">
-            <mat-option [value]="'http://localhost:8081/'">
-              <div class="flex flex-row justify-between">http://localhost:8081/</div>
-            </mat-option>
-            <mat-option *ngFor="let ip of recentBackendIPs" [value]="ip">
-              <div class="flex flex-row justify-between">
-                {{ ip }}
-                <a (click)="$event.stopPropagation(); deleteFromRecent(ip)"><i class="ml-2 bi bi-x-circle"></i></a>
-              </div>
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-        <button mat-button (click)="settings = !settings" class="ml-3"><i class="bi bi-gear"></i></button>
-      </div>
-    </div>
-    <div *ngIf="settings">
-      <div class="option w4060">
-        <label> nutzer:innenname (optional) </label>
-        <div>
-          <mat-form-field style="width: 350px">
-            <input
-              matInput
-              type="text"
-              #authNameInput
-              [value]="authName"
-              (change)="changedAuthName = authNameInput.value"
-              (keyup)="changedAuthName = authNameInput.value"
-              (selectionchange)="changedAuthName = authNameInput.value"
-            />
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="option w4060">
-        <label> passwort </label>
-        <div>
-          <mat-form-field style="width: 350px">
-            <input
-              matInput
-              type="password"
-              #authPwdInput
-              [value]="authPwd"
-              (change)="changedAuthPwd = authPwdInput.value"
-              (keyup)="changedAuthPwd = authPwdInput.value"
-              (selectionchange)="changedAuthPwd = authPwdInput.value"
-            />
-          </mat-form-field>
-        </div>
-      </div>
-    </div>
-    <div class="p-4 w-100 flex justify-between">
-      <button mat-raised-button class="fex-button" matDialogClose (click)="save()">speichern</button>
-      <button mat-raised-button class="fex-button" matDialogClose>schließen</button>
-    </div>
 
     <div class="container">
       <div
