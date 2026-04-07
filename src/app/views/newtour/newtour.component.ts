@@ -851,7 +851,10 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         this.job.center.latitude = newPos.lat.round(5);
         this.job.center.longitude = newPos.lng.round(5);
       } else if (station.inputfield >= 0) {
-        const loc = station.locType === LocType.delivery ? this.dInputs[station.inputfield].searchinput.selection : this.pInputs[station.inputfield].searchinput.selection;
+        const loc =
+          station.locType === LocType.delivery
+            ? this.dInputs[station.inputfield].searchinput.selection
+            : this.pInputs[station.inputfield].searchinput.selection;
         loc.latitude = newPos.lat.round(5);
         loc.longitude = newPos.lng.round(5);
       }
