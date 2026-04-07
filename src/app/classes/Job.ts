@@ -65,6 +65,7 @@ export class Job extends AbstractJob implements Optionable {
   dispatcher: Messenger;
   messenger: Messenger;
   billingTour: boolean;
+  streetRouted: boolean;
   connection = false;
   outerRing: Zone = null;
   distributeNumber = 0;

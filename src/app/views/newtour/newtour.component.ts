@@ -81,6 +81,9 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     setItem('streetRouting', value ? 'true' : 'false');
     const differs = GC.streetRouting != value;
     GC.streetRouting = value;
+    if (this.job) {
+      this.job.streetRouted = value;
+    }
     if (differs) {
       GC.openSnackBarShort('straßennavigation ' + (value ? 'aktiviert' : 'deaktiviert'));
     }
@@ -275,6 +278,9 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   createUI(job: Job): void {
     this.resetUI({ leaveUrl: true });
     this.touched = true;
+    if (job.streetRouted != null) {
+      this.routingActivated = job.streetRouted;
+    }
     if (!this.cInput.selection) {
       this.cInput.selection = job.center;
       this.cInput.searchTerm = this.cInput.selection.name;
