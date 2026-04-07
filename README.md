@@ -1,72 +1,59 @@
 ![fahrrad express](src/assets/logo/fex-logo.png)
 
-### dispogramm `v1.4.6`
+# dispogramm `v1.4.6`
 
-#### demo
-find demo here:
+A dispatch management tool for courier services.
+
+---
+
+## Demo
+
 [https://cloud.niezuhaus.de/](https://cloud.niezuhaus.de)
 
-#### how to install
+---
 
-1. set up a mongo db instance with standart port
-1.1 you can use a [docker container](https://hub.docker.com/_/mongo) for that
-2. `git clone git@github.com:niezuhaus/dispogramm.git`
-3. start the backend via `java -jar backend-latest.jar`
-4. run the frontend
-4.1 install the node packeages via `npm install`
-4.2 start the server via `npm run start` and access on `localhost:4200` or compile a production version via `npm run build` and host content of `/dist/dispogram`
-5. connect to backend running on `localhost:8081` if configured with standart ports
+## Installation
 
-#### what's new
+### 1. Set up MongoDB
 
-##### `v1.4.6`
-- notes can now be marked as `done`
+Start a MongoDB instance on the default port (27017). You can use a [Docker container](https://hub.docker.com/_/mongo):
 
-##### `v1.4.5`
-- upgrade to material 15 ui elements + layoutchanges because of that
-- removed bing/azure for geocoding
-- added *außenring*. a zone that is substractive / is being triggered when left
+```bash
+docker run -d -p 27017:27017 mongo
+```
 
-##### `v1.4.4`
-- displaying `README.md` in `einstellungen > information`
-- more improvements to shift view: layout changes
-- fix: when opening newtour view via `anmeldung` time was set to `0:00` now `8:00`
-- fix: shift end times were not saved correctly
+### 2. Clone the repository
 
-##### `v1.4.3`
-- finished shift now linked in name of messenger in check-in view > closed shifts
-- more shift right click options
-- fix: when adding new shift, only shifttypes are available, that match `messenger.dispatcher` status
-- fix `shifts-overview`: no page reload when adding/deleting shifts
-- fix `shifts-overview`: hours didn't get reculculated when a shift was edited
-- minor ui fixes
+```bash
+git clone git@github.com:niezuhaus/dispogramm.git
+```
 
-##### `v1.4.2`
-- messengers in shifts view can be filtered to the ones having shifts
-- search improvements
-- shift table now refreshing when deleting shifts from it
-- version tag now visible in menu bar
-- dispatcher-only people were not to be found
-- `Shifttype.kitah` removed
-- `Shifttype.ag` added
-- minor ui changes
-- compiled backend added
-- fix: center of route is outside of inclusive but inside of exclusive zone
-- fix: adding shift button in shifts view not working properly
+### 3. Start the backend
 
+```bash
+java -jar backend-latest.jar
+```
 
-##### `v1.4.1`
-- "exclusive zones" are available (currently hardcoded to work only on the name "außenring")
-- minimum wage can be configured in options
-- new shifts overwiw available in side menu
-- minor fixes and typos
+The backend runs on `localhost:8081` with default configuration.
 
-##### `v1.4.0`
-- street navigation via osm is available as toggle button in planning view
-- small layout changes
-- fix: red pin now showing up when `job.clientInvolved = false`
+### 4. Start the frontend
 
-##### `v1.3.10`
-- introduced changelog 🥳
-- fix: wrong api call while creating zone 
-- fix: map would not open to show a zone
+```bash
+npm install
+npm run start
+```
+
+Access the app at `localhost:4200`.
+
+For production, build and host the output:
+
+```bash
+npm run build
+# serve contents of /dist/dispogram
+```
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md)
