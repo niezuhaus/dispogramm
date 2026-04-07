@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, HostListener, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Geolocation } from '../classes/Geolocation';
 import { Job } from '../classes/Job';
 import { Expense } from '../classes/Expense';
@@ -21,12 +21,12 @@ import { Expense } from '../classes/Expense';
             <div class="flex flex-row">
               <mat-form-field class="mr-4" style="max-width: 200px">
                 <mat-label>beschreibung</mat-label>
-                <input #search matInput [(ngModel)]="expense.description" />
+                <input #search matInput cdkFocusInitial [(ngModel)]="expense.description" />
               </mat-form-field>
 
               <mat-form-field style="width: 75px">
                 <mat-label>euro</mat-label>
-                <input #value matInput type="number" (click)="value.select()" [(ngModel)]="expense.price._brutto" autofocus />
+                <input #value matInput type="number" (click)="value.select()" [(ngModel)]="expense.price._brutto" />
               </mat-form-field>
             </div>
 
@@ -44,7 +44,14 @@ import { Expense } from '../classes/Expense';
 export class NewExpenseDialogComponent implements OnInit {
   expense = new Expense();
 
+  @HostListener('keydown.enter')
+  onEnter(): void {
+    this.save();
+    this.dialogRef.close();
+  }
+
   constructor(
+    private dialogRef: MatDialogRef<NewExpenseDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       expense: Expense;

@@ -23,12 +23,21 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
             <div style="width: 300px">
               <mat-form-field class="w-100">
                 <mat-label>name</mat-label>
-                <input #name type="text" matInput required [(ngModel)]="contact.name" autofocus [errorStateMatcher]="saveAttemptMatcher" #nameModel="ngModel" />
+                <input
+                  #name
+                  type="text"
+                  matInput
+                  required
+                  [(ngModel)]="contact.name"
+                  cdkFocusInitial
+                  [errorStateMatcher]="saveAttemptMatcher"
+                  #nameModel="ngModel"
+                />
                 <mat-error *ngIf="nameModel.hasError('required')">feld darf nicht leer sein</mat-error>
               </mat-form-field>
               <mat-form-field class="w-100">
                 <mat-label>telefon</mat-label>
-                <input #nick type="text" matInput [(ngModel)]="contact.phone" (focus)="nick.select()" autofocus />
+                <input #nick type="text" matInput [(ngModel)]="contact.phone" />
               </mat-form-field>
               <mat-form-field class="w-100">
                 <mat-label>e-mail</mat-label>

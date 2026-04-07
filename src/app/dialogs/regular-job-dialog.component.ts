@@ -23,7 +23,15 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
           <div class="flex flex-column pb-4 px-4">
             <mat-form-field>
               <mat-label>name</mat-label>
-              <input matInput type="text" [(ngModel)]="regularJob.name" [formControl]="ctrlName" required [errorStateMatcher]="saveAttemptMatcher" />
+              <input
+                matInput
+                cdkFocusInitial
+                type="text"
+                [(ngModel)]="regularJob.name"
+                [formControl]="ctrlName"
+                required
+                [errorStateMatcher]="saveAttemptMatcher"
+              />
               <mat-error *ngIf="ctrlName.hasError('required')">bitte einen namen eingeben</mat-error>
             </mat-form-field>
 

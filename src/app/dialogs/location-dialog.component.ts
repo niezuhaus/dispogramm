@@ -39,7 +39,7 @@ import { Client } from '../classes/Client';
                   matInput
                   required
                   [(ngModel)]="data.location.name"
-                  autofocus
+                  cdkFocusInitial
                   [errorStateMatcher]="saveAttemptMatcher"
                   #nameModel="ngModel"
                 />

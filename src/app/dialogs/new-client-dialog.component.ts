@@ -43,7 +43,7 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
             </mat-form-field>
             <mat-form-field>
               <mat-label>rufname</mat-label>
-              <input #nick type="text" matInput [value]="clientObject.c.name" [(ngModel)]="clientObject.l.name" (focus)="nick.select()" autofocus />
+              <input #nick type="text" matInput [value]="clientObject.c.name" [(ngModel)]="clientObject.l.name" />
             </mat-form-field>
             <searchinput
               [label]="'straße'"
