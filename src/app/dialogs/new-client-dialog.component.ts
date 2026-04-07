@@ -5,6 +5,7 @@ import { Geolocation } from '../classes/Geolocation';
 import { Client } from '../classes/Client';
 import { FormControl, NgForm, FormGroupDirective } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { SearchinputComponent } from '../views/newtour/inputfield/searchinput/searchinput.component';
 
 class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
   constructor(private shouldShowErrors: () => boolean) {}
@@ -52,6 +53,7 @@ class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
               (keyup)="clientObject.c.street = search.searchTerm"
               [(str)]="clientObject.c.street"
               class="w-100"
+              [required]="true"
               (resetted)="clientObject.c.zipCode = ''; clientObject.c.city = ''"
               #search
             >
@@ -84,6 +86,8 @@ export class NewClientDialogComponent implements OnInit {
   saveAttemptCount = 0;
   saveAttemptMatcher: ErrorStateMatcher;
 
+  @ViewChild('search') streetSearch: SearchinputComponent;
+
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: {
@@ -107,13 +111,14 @@ export class NewClientDialogComponent implements OnInit {
   ngOnInit(): void {}
 
   canSave(): boolean {
-    return !!(this.clientObject.c.name || '').trim();
+    return !!(this.clientObject.c.name || '').trim() && !!(this.clientObject.c.street || '').trim();
   }
 
   onSaveClicked(): void {
     this.saveAttempted = true;
     this.saveAttemptCount += 1;
-    if (!this.canSave()) return;
+    if (!this.canSave()) this.streetSearch.triggerError();
+    return;
     this.save();
   }
 

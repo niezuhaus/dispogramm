@@ -595,6 +595,16 @@ export class SearchinputComponent implements OnInit {
   isEmpty(): boolean {
     return this.searchTerm === '';
   }
+
+  triggerError(): void {
+    this.ctrl.markAsTouched();
+    this.ctrl.markAsDirty();
+    this.ctrl.updateValueAndValidity();
+  }
+
+  focus(): void {
+    this.inputRef.nativeElement.focus();
+  }
 }
 
 export class OSMGeocoder implements GeoCodingStrategy {
