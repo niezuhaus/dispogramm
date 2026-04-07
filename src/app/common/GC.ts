@@ -457,7 +457,7 @@ export class GC {
         hideInactive: GC.readBoolean('hideInactive') === undefined ? true : GC.readBoolean('hideInactive')
       },
       locations: {
-        hideDeactivated: GC.readBoolean('hideDeactivatedLocations') === undefined ? false : GC.readBoolean('hideDeactivatedLocations')
+        hideDeactivated: GC.readBoolean('hideDeactivatedLocations') === undefined ? true : GC.readBoolean('hideDeactivatedLocations')
       },
       api: {
         lex: GC.readString('lexOfficeApiKey') || config.lexOfficeApiKey,

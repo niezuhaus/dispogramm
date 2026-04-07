@@ -13,16 +13,22 @@ import { Geolocation } from '../classes/Geolocation';
 import { TitleComponent } from './app.component';
 
 export interface LocationFilterStrategy {
+  selected: boolean;
+  name: (selected: boolean) => string;
   filter(locs: Geolocation[]): Geolocation[];
 }
 
 export class FilterLocationsWithoutClient implements LocationFilterStrategy {
+  selected = false;
+  name = (_: boolean) => 'weitere standorte';
   filter(locs: Geolocation[]): Geolocation[] {
     return locs.filter((l) => !l.clientId);
   }
 }
 
 export class FilterLocationsWithClient implements LocationFilterStrategy {
+  selected = false;
+  name = (_: boolean) => 'kund:innen';
   filter(locs: Geolocation[]): Geolocation[] {
     return locs.filter((l) => l.clientId);
   }
@@ -38,18 +44,18 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
           <input matInput type="text" (ngModelChange)="applyFilter($event)" #input [(ngModel)]="searchterm" />
         </mat-form-field>
 
-        <mat-form-field #filterJobs style="width: 200px" class="ml-5">
-          <mat-label>standort filtern</mat-label>
-          <mat-select (valueChange)="filter(filterStrategies[$event])" [value]="-1">
-            <mat-option [value]="-1">alle standorte</mat-option>
-            <mat-option [value]="0">kund:innen</mat-option>
-            <mat-option [value]="1">weitere standorte</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <mat-chip-listbox selectable multiple class="ml-5 width-100">
+          <mat-chip-option *ngFor="let f of filterStrategies" color="primary" [selected]="f.selected" (click)="f.selected = !f.selected; applyTypeFilter()">
+            {{ f.name(f.selected) }}
+          </mat-chip-option>
+          <mat-chip-option color="primary" [selected]="!hideDeactivated" (click)="toggleHideDeactivated()"> deaktivierte standorte </mat-chip-option>
+        </mat-chip-listbox>
 
-        <button (click)="mergeLocations(checkedLocations)" *ngIf="checkedLocations.length > 1 && isD2" mat-raised-button class="ml-5 fex-button">ausgewählte standorte zusammenführen</button>
+        <button (click)="mergeLocations(checkedLocations)" *ngIf="checkedLocations.length > 1 && isD2" mat-raised-button class="ml-5 fex-button">
+          ausgewählte standorte zusammenführen
+        </button>
       </div>
-      <div class="flex w-100 justify-content-end">
+      <div class="flex justify-content-end">
         <button (click)="openDialog()" mat-raised-button class="fex-button">
           <i class="pr-2 bi bi-plus-circle-fill"></i>
           neuer standort
@@ -109,7 +115,9 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
       </mat-menu>
     </div>
   `,
-  styles: [``]
+  styles: [`
+    .row-deactivated { opacity: 0.4; text-decoration: line-through; }
+  `]
 })
 export class LocationListComponent extends TitleComponent implements OnInit {
   override title = 'standorte';
@@ -140,6 +148,9 @@ export class LocationListComponent extends TitleComponent implements OnInit {
   get isD2() {
     return GC._isDezwo;
   }
+  get hideDeactivated() {
+    return GC.config?.locations.hideDeactivated;
+  }
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -158,8 +169,12 @@ export class LocationListComponent extends TitleComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+  locations(): Geolocation[] {
+    return this.hideDeactivated ? GC.locations.filter((l) => !l.deactivated) : GC.locations;
+  }
+
   init(): void {
-    this.dataSource = new MatTableDataSource(GC.locations);
+    this.dataSource = new MatTableDataSource(this.locations());
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.dataSource.sortingDataAccessor = (item, property): string | number => {
@@ -182,16 +197,23 @@ export class LocationListComponent extends TitleComponent implements OnInit {
     this.loaded = true;
 
     GC.locationChanged.subscribe(() => {
-      this.dataSource.data = GC.locations;
+      this.applyTypeFilter();
     });
   }
 
-  filter(filter: LocationFilterStrategy) {
-    if (filter === null) {
-      this.dataSource.data = GC.locations;
+  applyTypeFilter(): void {
+    const active = this.filterStrategies.filter((f) => f.selected);
+    if (!active.length) {
+      this.dataSource.data = this.locations();
     } else {
-      this.dataSource.data = filter.filter(GC.locations);
+      this.dataSource.data = active.flatMap((f) => f.filter(this.locations())).filter((v, i, a) => a.indexOf(v) === i);
     }
+  }
+
+  toggleHideDeactivated(): void {
+    GC.config.locations.hideDeactivated = !GC.config.locations.hideDeactivated;
+    GC.http.saveConfigItem('hideDeactivatedLocations', GC.config.locations.hideDeactivated.toString()).subscribe();
+    this.applyTypeFilter();
   }
 
   openDialog(loc?: Location): void {
