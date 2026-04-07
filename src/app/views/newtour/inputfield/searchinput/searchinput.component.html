@@ -2,7 +2,7 @@
   <mat-label><i *ngIf="icon" class="mr-1 bi" [class]="icon"></i>{{ label }}</mat-label>
   <textarea
     type="text"
-    autofocus
+    cdkFocusInitial
     matInput
     #input
     #trigger="matAutocompleteTrigger"

@@ -146,37 +146,44 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   }
 
   ngAfterViewInit(): void {
-    GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (!this.extras.length) {
-        this.extras = [
-          { value: 0, viewValue: 'kein zuschlag', price: GC.config.prices.extras[0] },
-          { value: 1, viewValue: 'last', price: GC.config.prices.extras[1] },
-          { value: 2, viewValue: 'lastenrad', price: GC.config.prices.extras[2] },
-          { value: 3, viewValue: 'carla', price: GC.config.prices.extras[3] }
-        ];
-      }
-      this.focussedInput = this.cInput;
-      this.pInputs.push(this.pInput);
-      this.dInputs.push(this.dInput);
-      this.initMap();
-      setTimeout(() => {
-        this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-          const id = params.get('id');
-          if (id?.length && id !== 'undefined') {
-            if (params.get('rj') === 'true') {
-              this.isTemplate = true;
-              this.loadRegularJob(id);
-            } else {
-              this.isTemplate = false;
-              this.loadJobById(id);
+    GC.loaded()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (!this.extras.length) {
+          this.extras = [
+            { value: 0, viewValue: 'kein zuschlag', price: GC.config.prices.extras[0] },
+            { value: 1, viewValue: 'last', price: GC.config.prices.extras[1] },
+            { value: 2, viewValue: 'lastenrad', price: GC.config.prices.extras[2] },
+            { value: 3, viewValue: 'carla', price: GC.config.prices.extras[3] }
+          ];
+        }
+        this.focussedInput = this.cInput;
+        this.pInputs.push(this.pInput);
+        this.dInputs.push(this.dInput);
+        this.initMap();
+        setTimeout(() => {
+          this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+            const id = params.get('id');
+            if (id?.length && id !== 'undefined') {
+              if (params.get('rj') === 'true') {
+                this.isTemplate = true;
+                this.loadRegularJob(id);
+              } else {
+                this.isTemplate = false;
+                this.loadJobById(id);
+              }
+            } else if (params.get('time')) {
+              this.timeEdited = true;
+              this.job.date = new Date(params.get('time')).set(8);
             }
-          } else if (params.get('time')) {
-            this.timeEdited = true;
-            this.job.date = new Date(params.get('time')).set(8);
-          }
+          });
+        }, 100);
+        this.mapGL.on('load', () => {
+          setTimeout(() => {
+            this.cInput.focus();
+          }, 0);
         });
-      }, 100);
-    });
+      });
   }
 
   ngOnDestroy(): void {
