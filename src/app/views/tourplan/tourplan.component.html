@@ -38,7 +38,7 @@
           *ngFor="let filter of filterStrategies; let i = index"
           color="primary"
           [selected]="filter.selected"
-          (click)="filter.selected = !filter.selected; filterJobsByKeyword(); filterStatus[i] = filter.selected; saveFilterStatus()"
+          (click)="filter.selected = !filter.selected; filterJobsByKeyword();"
         >
           <!-- <i *ngIf="filter.selected" class="mr-2 bi bi-check"></i> -->
           <div [innerHTML]="filter.name(filter.selected)"></div>

@@ -449,12 +449,15 @@ export class GC {
         NORMAL_ALARM: GC.readNumber('NORMAL_ALARM') || 30, // 30 minutes after creating the tour
         ALARM_STOP: GC.readNumber('ALARM_STOP') || 8, // 8h after
         HOURS_IN_ADVANCE: GC.readNumber('hoursInAdvance') || 2,
-        salesMinimized: GC.readBoolean('salesMinimized'),
-        filterStatus: GC.readBooleanArray('filterStatus') || [false, false, false, false, false, false, false, false, false]
+        salesMinimized: GC.readBoolean('salesMinimized')
+        // filterStatus: GC.readBooleanArray('filterStatus') || [false, false, false, false, false, false, false, false, false]
       },
       lexofficeActivated: GC.readBoolean('lexofficeActivated') === undefined ? false : GC.readBoolean('lexofficeActivated'),
       messenger: {
         hideInactive: GC.readBoolean('hideInactive') === undefined ? true : GC.readBoolean('hideInactive')
+      },
+      locations: {
+        hideDeactivated: GC.readBoolean('hideDeactivatedLocations') === undefined ? false : GC.readBoolean('hideDeactivatedLocations')
       },
       api: {
         lex: GC.readString('lexOfficeApiKey') || config.lexOfficeApiKey,

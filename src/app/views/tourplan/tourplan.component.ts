@@ -154,9 +154,9 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     return GC.dispatcherShiftLiterals.concat(GC.messengerShiftLiterals);
   }
 
-  get filterStatus() {
-    return GC.config.tourplan.filterStatus;
-  }
+  // get filterStatus() {
+  //   return GC.config.tourplan.filterStatus;
+  // }
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('datepicker') datepicker: DatepickerComponent;
@@ -181,29 +181,31 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
   }
 
   ngAfterViewInit(): void {
-    GC.loaded().pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.loaded = true;
-      this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-        if (!params.get('date') || GC.openedLast != new Date().yyyymmdd()) {
-          // this.date = new Date().nextWorkingDay();
-          this.location.replaceState(`${GC.routes.tourplan}`, `date=${this.date.yyyymmdd()}`);
-          GC.openedLast = new Date().yyyymmdd();
-          setItem('openedLast', GC.openedLast);
-        } else {
-          this.date.setDateByString(params.get('date'));
-          this.note.date.setDateByString(params.get('date'));
-        }
-        GC.config.tourplan.filterStatus.forEach((bool, i) => {
-          this.filterStrategies[i].selected = bool;
-        });
-        this.refresh();
-        this.cd.detectChanges();
-        GC.refreshNeeded.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    GC.loaded()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loaded = true;
+        this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+          if (!params.get('date') || GC.openedLast != new Date().yyyymmdd()) {
+            // this.date = new Date().nextWorkingDay();
+            this.location.replaceState(`${GC.routes.tourplan}`, `date=${this.date.yyyymmdd()}`);
+            GC.openedLast = new Date().yyyymmdd();
+            setItem('openedLast', GC.openedLast);
+          } else {
+            this.date.setDateByString(params.get('date'));
+            this.note.date.setDateByString(params.get('date'));
+          }
+          // GC.config.tourplan.filterStatus.forEach((bool, i) => {
+          //   this.filterStrategies[i].selected = bool;
+          // });
           this.refresh();
+          this.cd.detectChanges();
+          GC.refreshNeeded.pipe(takeUntil(this.destroy$)).subscribe(() => {
+            this.refresh();
+          });
         });
+        GC.tourplan = this;
       });
-      GC.tourplan = this;
-    });
   }
 
   ngOnDestroy() {
@@ -381,9 +383,9 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     return items;
   }
 
-  saveFilterStatus(): void {
-    GC.http.saveConfigItem('filterStatus', JSON.stringify(GC.config.tourplan.filterStatus)).subscribe((rc) => {});
-  }
+  // saveFilterStatus(): void {
+  //   GC.http.saveConfigItem('filterStatus', JSON.stringify(GC.config.tourplan.filterStatus)).subscribe((rc) => {});
+  // }
 
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();

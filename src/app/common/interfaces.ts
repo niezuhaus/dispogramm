@@ -192,10 +192,13 @@ export interface ConfigDataContract {
     ALARM_STOP: number;
     HOURS_IN_ADVANCE: number;
     salesMinimized: boolean;
-    filterStatus: boolean[];
+    // filterStatus: boolean[];
   };
   messenger: {
     hideInactive: boolean;
+  };
+  locations: {
+    hideDeactivated: boolean;
   };
   lexofficeActivated: boolean;
   api: {
