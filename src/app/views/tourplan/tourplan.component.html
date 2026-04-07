@@ -46,7 +46,7 @@
         <mat-chip-option
           [selectable]="filterKeyword.trim().length > 0"
           [selected]="filterKeyword.trim().length > 0"
-          (click)="filterKeyword = ''; filterJobsByKeyword()"
+          (click)="search.focus(); filterKeyword = ''; filterJobsByKeyword()"
         >
           Stichwortsuche
         </mat-chip-option>
@@ -172,7 +172,7 @@
                 <i class="mr-2 bi bi-clock small"></i>{{ element._job._waitingMinutes + 'min: ' + element._job?.waitingPrice?.netto }}
               </span>
               <span *ngIf="!element.edit && element.isJob && element.job?.expenses?.length > 0">
-                {{ element.job.expenses.length + ' auslage(n): ' + element.job.expenseSum.toStringFillZero(2) }}
+                {{ element.job.expenses.length + ' auslage(n): ' + element.job.expenseSum }}
               </span>
               <div
                 style="color: black; border-top: 1px solid gray; min-width: 80px"
