@@ -64,12 +64,12 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
     </div>
     <div id="tableholder">
       <table #table mat-table [dataSource]="dataSource" matSort [class.hidden]="!loaded">
-        <ng-container matColumnDef="checked">
+        <!-- <ng-container matColumnDef="checked">
           <th mat-header-cell *matHeaderCellDef style="width: 40px"></th>
           <td mat-cell *matCellDef="let element">
             <mat-checkbox (change)="toggleLocation($event, element)"></mat-checkbox>
           </td>
-        </ng-container>
+        </ng-container> -->
 
         <ng-container matColumnDef="clientId">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 80px">art</th>
@@ -117,9 +117,14 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
       </mat-menu>
     </div>
   `,
-  styles: [`
-    .row-deactivated { opacity: 0.4; text-decoration: line-through; }
-  `]
+  styles: [
+    `
+      .row-deactivated {
+        opacity: 0.4;
+        text-decoration: line-through;
+      }
+    `
+  ]
 })
 export class LocationListComponent extends TitleComponent implements OnInit {
   override title = 'standorte';
@@ -128,7 +133,7 @@ export class LocationListComponent extends TitleComponent implements OnInit {
   rows = Math.round((window.innerHeight - 300) / 50);
   searchterm: string;
 
-  displayedColumns: string[] = ['checked', 'clientId', 'name', 'address'];
+  displayedColumns: string[] = ['clientId', 'name', 'address'];
   dataSource: MatTableDataSource<Geolocation>;
   filterStrategies = [new FilterLocationsWithClient(), new FilterLocationsWithoutClient()];
   checkedLocations: Geolocation[] = [];
