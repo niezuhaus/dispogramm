@@ -181,7 +181,7 @@ export class SearchinputComponent implements OnInit {
             this.loadMode = false;
           }
           if (!this.jobMode) {
-            this.clientOptions = HttpService._filterLocationsByAny(GC.clientLocations, searchStr);
+            this.clientOptions = HttpService._filterLocationsByAny(GC.clientLocations, searchStr).filter((loc) => !loc.deactivated);
             this.addOptions(
               this.clientOptions.map((loc) => {
                 return new Option(loc, OptionType.clientLocation, loc.name, 'client-option');
