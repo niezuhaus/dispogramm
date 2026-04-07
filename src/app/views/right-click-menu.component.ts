@@ -62,15 +62,31 @@ import { Zone } from '../classes/Zone';
           <i class="p-1 bi bi-person-plus bi-context"></i>kund:in hinzufügen
         </button>
       </ng-template>
-      <button *ngIf="tourplanActive && !item.job.finished" mat-menu-item [matMenuTriggerFor]="messengerMenu" [disabled]="!dispatcher">
+      <button
+        *ngIf="tourplanActive && !item.job.finished"
+        mat-menu-item
+        #messengerTrigger="matMenuTrigger"
+        (mouseenter)="onMessengerTriggerEnter()"
+        (mouseleave)="onMessengerTriggerLeave()"
+        [matMenuTriggerFor]="messengerMenu"
+        [disabled]="!dispatcher"
+      >
         <i class="p-1 bi bi-bicycle bi-context"></i>kurier:in zuweisen
       </button>
       <button *ngIf="tourplanActive && !item.job.finished" mat-menu-item (click)="item._job.sendMail()">
         <i class="bi bi-envelope-arrow-up bi-context"></i> an sprint senden
       </button>
       <mat-menu #messengerMenu="matMenu">
-        <button *ngIf="!messengerToday.length" mat-menu-item><span class style="font-style: italic">- keine kurier:innen eingecheckt -</span></button>
-        <button *ngFor="let messenger of messengerToday; let i = index" mat-menu-item (click)="('')">
+        <button *ngIf="!messengerToday.length" mat-menu-item (mouseenter)="cancelMessengerClose()" (mouseleave)="scheduleMessengerClose()">
+          <span style="font-style: italic">- keine kurier:innen eingecheckt -</span>
+        </button>
+        <button
+          *ngFor="let messenger of messengerToday; let i = index"
+          mat-menu-item
+          (mouseenter)="cancelMessengerClose()"
+          (mouseleave)="scheduleMessengerClose()"
+          (click)="('')"
+        >
           <span *ngIf="messenger.fexNumber" class="mr-2 phoneNumber">
             {{ messenger.fexNumber }}
           </span>
@@ -299,7 +315,9 @@ export class RightClickMenuComponent implements OnInit {
   @Output() waitingMinutes = new EventEmitter<Job>();
 
   @ViewChild('morningTourTrigger') morningTourTrigger: MatMenuTrigger;
+  @ViewChild('messengerTrigger') messengerTrigger: MatMenuTrigger;
   private morningTourCloseTimer: ReturnType<typeof setTimeout> | null = null;
+  private messengerCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
   colours: { showColour: string; code: string; selected: boolean }[] = [
     { showColour: '#ffffff00', code: '#ffffff00', selected: false },
@@ -421,6 +439,33 @@ export class RightClickMenuComponent implements OnInit {
     if (this.morningTourCloseTimer) {
       clearTimeout(this.morningTourCloseTimer);
       this.morningTourCloseTimer = null;
+    }
+  }
+
+  onMessengerTriggerEnter(): void {
+    this.cancelMessengerClose();
+    if (this.messengerTrigger && !this.messengerTrigger.menuOpen) {
+      this.messengerTrigger.openMenu();
+    }
+  }
+
+  onMessengerTriggerLeave(): void {
+    this.scheduleMessengerClose();
+  }
+
+  scheduleMessengerClose(): void {
+    this.cancelMessengerClose();
+    this.messengerCloseTimer = setTimeout(() => {
+      if (this.messengerTrigger && this.messengerTrigger.menuOpen) {
+        this.messengerTrigger.closeMenu();
+      }
+    }, 250);
+  }
+
+  cancelMessengerClose(): void {
+    if (this.messengerCloseTimer) {
+      clearTimeout(this.messengerCloseTimer);
+      this.messengerCloseTimer = null;
     }
   }
 }
