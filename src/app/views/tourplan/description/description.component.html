@@ -142,7 +142,7 @@
     <div
       *ngFor="let expense of item.job?.expenses?.reverse()"
       (click)="expense.openEdit(item.job)"
-      class="mr-3 mb-2 flex cursor-pointer flex-row px-2 expense align-items-center"
+      class="mr-3 mb-2 flex cursor-pointer flex-row p-2 expense align-items-center"
       [style.border-color]="gray ? 'unset' : '#5E3993'"
     >
       <i class="mx-2 bi bi-cash-coin" *ngIf="!item.edit"></i>
