@@ -34,6 +34,8 @@
     "bootstrap": "^5.2.0",
     "bootstrap-icons": "^1.8.0",
     "d3": "^7.8.2",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.7",
     "mapbox-gl": "^2.7.0",
     "marked": "^15.0.12",
     "rxjs": "~7.5.0",

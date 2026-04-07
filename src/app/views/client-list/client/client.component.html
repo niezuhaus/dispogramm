@@ -114,6 +114,9 @@
         </mat-tab>
       </mat-tab-group>
       <button mat-raised-button class="fex-button mt-4" style="width: 100% !important" (click)="saveClient()">kund:innendaten speichern</button>
+      <button mat-raised-button class="fex-button mt-4" style="width: 100% !important" (click)="exportPdf()" [disabled]="loading">
+            <i class="bi bi-file-earmark-pdf mr-2" style="font-size: 20px"></i> stammblatt exportieren
+          </button>
     </div>
 
     <!--  gefahrene touren-->
@@ -123,10 +126,12 @@
           <h4>gefahrene touren im</h4>
           <datepicker [date]="date" [monthly]="true" (dateChange)="query($event)" class="mx-2"></datepicker>
         </div>
-        <mat-form-field class="mt-2 ml-2 px-2" style="width: 200px">
-          <mat-label>auftrag suchen</mat-label>
-          <input matInput (keyup)="applyFilter($event)" #input />
-        </mat-form-field>
+        <div class="flex flex-row align-items-center">
+          <mat-form-field class="mt-2 ml-2 px-2" style="width: 200px">
+            <mat-label>auftrag suchen</mat-label>
+            <input matInput (keyup)="applyFilter($event)" #input />
+          </mat-form-field>
+        </div>
       </div>
       <!--      <div class="flex flex-row justify-content-between" style="align-items: baseline">-->
       <!--        <button mat-raised-button class="mx-2 fex-button" (click)="createInvoiceWrapper()"-->

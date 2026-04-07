@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpService } from '../../../http.service';
 import { Observable, Subject, zip } from 'rxjs';
 import { Contact } from '../../../classes/Contact';
+import jsPDF from 'jspdf';
 import { Job, RegularJob } from '../../../classes/Job';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { DateAdapter } from '@angular/material/core';
@@ -237,6 +238,7 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
         const idx = GC.clients.findIndex((c) => c.id === this.client.id);
         if (idx >= 0) GC.clients[idx] = this.client;
         this.clientBackup = new Client(this.client);
+        this.getLocations();
         GC.openSnackBarLong(msg);
       });
     };
@@ -352,6 +354,39 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
         this.location.back();
       });
     });
+  }
+
+  exportPdf(): void {
+    const doc = new jsPDF();
+    const rightX = 196;
+    let y = 30;
+
+    if (this.client.clientId) {
+      doc.setFontSize(16);
+      doc.setFont(undefined, 'bolditalic');
+      doc.text(this.client.clientId, rightX, y, { align: 'right' });
+      y += 8;
+    }
+
+    doc.setDrawColor(0);
+    doc.setLineWidth(0.6);
+    doc.line(14, y, rightX, y);
+    y += 2;
+
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bolditalic');
+    doc.text(this.client.name.toLowerCase(), rightX, y + 6, { align: 'right' });
+    y += 20;
+
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'normal');
+    doc.text(this.client.name, rightX, y, { align: 'right' });
+    y += 8;
+    doc.text(this.client.street, rightX, y, { align: 'right' });
+    y += 6;
+    doc.text(`${this.client.zipCode} ${this.client.city}`, rightX, y, { align: 'right' });
+
+    doc.save(`${this.client.name.toLowerCase().replace(/\s+/g, '-')}-stammblatt.pdf`);
   }
 
   onRightClick(event: MouseEvent, item: any) {
