@@ -403,8 +403,13 @@ export class HttpService {
     return this.http.post<Client>(`${BACKEND_IP}/clients/update`, client, { headers: this.backendAuthHeader }).pipe(take(1));
   }
   getClient(id: string): Observable<Client> {
-    return of(GC.clients.filter((c) => c.id === id)[0]);
-    // return this.http.post<Client>(`${BACKEND_IP}/clients/find/`, {id});
+    // return of(GC.clients.filter((c) => c.id === id)[0]);
+    return this.http.post<Client>(`${BACKEND_IP}/clients/find/`, {id}).pipe(
+      take(1),
+            map((client) => {
+        return HttpService._prepareClient(client);
+      })
+    );
   }
   getClientList(): Observable<Client[]> {
     return this.http.get<Client[]>(`${BACKEND_IP}/clients/all`, { headers: this.backendAuthHeader }).pipe(
