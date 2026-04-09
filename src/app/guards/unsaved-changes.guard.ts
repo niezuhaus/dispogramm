@@ -23,7 +23,7 @@ export class UnsavedChangesGuard implements CanDeactivate<HasUnsavedChanges> {
         headline: 'ungespeicherte änderungen',
         text: 'möchtest du die änderungen speichern?',
         verbYes: 'speichern',
-        verbThird: 'löschen',
+        verbThird: 'verwerfen',
         verbNo: 'abbrechen'
       }
     });
