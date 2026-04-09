@@ -718,11 +718,6 @@ export class HttpService {
         return HttpService._prepareJobs(list);
       })
     );
-    // return this.getJobList(, {headers: this.backendAuthHeader}).pipe(
-    //   map(list => {
-    //     return list.filter(job => job.creationDate.getMonth() === month);
-    //   })
-    // );
   }
   jobsThisMonthForMessenger(messenger: Messenger): Observable<Job[]> {
     return of(GC.jobsThisMonth.filter((j) => j.messenger?.nickname === messenger.nickname));
@@ -1009,7 +1004,6 @@ export class HttpService {
     );
   }
   deleteShift(shift: Shift): Observable<boolean> {
-    // GC.shifts.splice(GC.shifts.indexOf(shift), 1);
     return this.http.post<boolean>(`${BACKEND_IP}/shifts/delete`, { id: shift.id }, { headers: this.backendAuthHeader }).pipe(take(1));
   }
 
