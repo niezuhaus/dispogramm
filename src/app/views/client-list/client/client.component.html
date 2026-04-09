@@ -7,9 +7,13 @@
     <div *ngIf="config.lexofficeActivated" class="flex flex-row">
       <button [disabled]="!lexContact" mat-raised-button class="mr-4 lex-button" (click)="lexInvoice()">neue rechnung</button>
       <button [disabled]="!lexContact" mat-raised-button class="mr-4 lex-button" (click)="getInvoices(lexContact)">rechnungen...</button>
-      <button mat-raised-button class="mr-4 flex lex-button align-items-center" [disabled]="!!lexContact" (click)="createMe()">
-        in lexoffice anlegen
-        <img src="/assets/lex_white.png" style="height: 17px; display: inline" alt="lexoffice" />
+      <button mat-raised-button class="mr-4 lex-button align-items-center" [disabled]="!!lexContact" (click)="createMe()">
+        <div class="flex flex-row align-items-center">
+          <span>
+            in lexoffice anlegen
+          </span>
+          <img src="/assets/lex_white.png" class="ml-3" style="height: 17px; display: inline" alt="lexoffice" />
+        </div>
       </button>
       <a [href]="'https://app.lexoffice.de/contacts/' + lexContact?.id" target="_blank">
         <button mat-raised-button class="mr-4 flex lex-button align-items-center" [disabled]="!lexContact">
@@ -133,12 +137,6 @@
           </mat-form-field>
         </div>
       </div>
-      <!--      <div class="flex flex-row justify-content-between" style="align-items: baseline">-->
-      <!--        <button mat-raised-button class="mx-2 fex-button" (click)="createInvoiceWrapper()"-->
-      <!--                matTooltip="rechnung speichern">-->
-      <!--          rechnung speichern <i class="ml-2 bi bi-download"></i>-->
-      <!--        </button>-->
-      <!--      </div>-->
       <div class="flex flex-column justify-content-between" style="height: calc(100vh - 350px)">
         <div style="overflow-y: scroll; overflow-x: hidden; padding-bottom: 75px">
           <table
@@ -167,14 +165,6 @@
                   >
                     {{ element.date.dateStampShort() }} {{ element.date.timestamp() }}
                   </a>
-                  <!--                  <div class="flex flex-column align-items-baseline">-->
-                  <!--                    <div *ngIf="element.creator" class="flex align-items-center"><i class="mr-1 bi bi-telephone-inbound" style="font-size: 14px"></i> {{element.creator?.nickname}}-->
-                  <!--                    </div>-->
-                  <!--                    <div *ngIf="element.dispatcher" class="relative bottom-2 flex align-items-center">-->
-                  <!--                      <i class="mr-1 bi bi-check" style="font-size: 24px"></i> {{element.dispatcher?.nickname}}</div>-->
-                  <!--                    <div *ngIf="element.messenger" class="relative bottom-5 flex align-items-center">-->
-                  <!--                      <i class="mr-1 bi bi-bicycle" style="font-size: 18px"></i>{{element.messenger?.nickname}}</div>-->
-                  <!--                  </div>-->
                 </div>
               </td></ng-container
             >
@@ -272,7 +262,5 @@
       </div>
     </div>
 
-    <!--  löschen button -->
-    <!-- <button mat-raised-button class="fex-button" id="delete" *ngIf="jobs?.length === 0 || isDezwo" (click)="deleteClient()">kund:in löschen</button> -->
   </div>
 </div>
