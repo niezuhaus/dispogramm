@@ -278,7 +278,8 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
       data: {
         headline: `möchtest du "${this.data.location.name}" wirklich löschen?`,
         verbYes: 'löschen',
-        verbNo: 'abbrechen'
+        verbNo: 'abbrechen',
+        warning: true
       }
     });
     d.componentInstance.confirm.subscribe(() => {
