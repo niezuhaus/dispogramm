@@ -33,9 +33,7 @@ import { LexContact, LexContactsListPage, LexInvoice, LexInvoiceListPage, LexCre
 import { SpecialPrice } from './classes/SpecialPrice';
 import { TourplanItem } from './classes/TourplanItem';
 import { Position } from '@turf/turf';
-import { log } from 'console';
 import { Branch } from './classes/Branch';
-import { filter } from 'd3';
 
 // CONNECTION CONFIG
 const BACKEND_IP = GC.backendIP;
@@ -121,18 +119,17 @@ export class HttpService {
     return res;
   }
 
+  private static _prepareMany<T>(items: T[], prepareFn: (item: T) => T): T[] {
+    return items.map(prepareFn);
+  }
   static _prepareClients(clients: Client[]): Client[] {
-    return clients.map((c) => {
-      return this._prepareClient(c);
-    });
+    return this._prepareMany(clients, (c) => this._prepareClient(c));
   }
   static _prepareClient(c: Client): Client {
     return new Client(c);
   }
   static _prepareGeolocations(locs: Geolocation[]): Geolocation[] {
-    return locs.map((loc) => {
-      return this._prepareGeolocation(loc);
-    });
+    return this._prepareMany(locs, (loc) => this._prepareGeolocation(loc));
   }
   static _prepareGeolocation(l: Geolocation): Geolocation {
     const loc = new Geolocation(l);
@@ -140,40 +137,36 @@ export class HttpService {
     return loc;
   }
   private static _prepareJobs(jobs: Job[]): Job[] {
-    return jobs.map((job) => {
-      return this._prepareJob(job);
-    });
+    return this._prepareMany(jobs, (job) => new Job(job));
   }
   private static _prepareJob(job: Job): Job {
     return new Job(job);
   }
   static _prepareRegularJobs(rjs: RegularJob[]): RegularJob[] {
-    return rjs.map((rj) => {
-      return this._prepareRegularJob(rj);
-    });
+    return this._prepareMany(rjs, (rj) => new RegularJob(rj));
   }
   static _prepareRegularJob(rj: RegularJob): RegularJob {
     return new RegularJob(rj);
   }
   private static _prepareShifts(shifts: Shift[]): Shift[] {
-    return shifts.map((s) => this._prepareShift(s));
+    return this._prepareMany(shifts, (s) => new Shift(s));
   }
   private static _prepareShift(shift: Shift): Shift {
     return new Shift(shift);
   }
-  private static _prepareExpenses(expenses: Expense[]) {
-    return expenses.map((s) => this._prepareExpense(s));
+  private static _prepareExpenses(expenses: Expense[]): Expense[] {
+    return this._prepareMany(expenses, (s) => new Expense(s));
   }
-  private static _prepareExpense(expense: Expense) {
+  private static _prepareExpense(expense: Expense): Expense {
     return new Expense(expense);
   }
-  private static _prepareSpecialPrices(specialPrices: SpecialPrice[]) {
-    return specialPrices.map((s) => this._prepareSpecialPrice(s));
+  private static _prepareSpecialPrices(specialPrices: SpecialPrice[]): SpecialPrice[] {
+    return this._prepareMany(specialPrices, (s) => new SpecialPrice(s));
   }
-  private static _prepareSpecialPrice(specialPrice: SpecialPrice) {
+  private static _prepareSpecialPrice(specialPrice: SpecialPrice): SpecialPrice {
     return new SpecialPrice(specialPrice);
   }
-  private static _prepareZone(zone: Zone) {
+  private static _prepareZone(zone: Zone): Zone {
     return new Zone(zone);
   }
 
@@ -403,7 +396,6 @@ export class HttpService {
     return this.http.post<Client>(`${BACKEND_IP}/clients/update`, client, { headers: this.backendAuthHeader }).pipe(take(1));
   }
   getClient(id: string): Observable<Client> {
-    // return of(GC.clients.filter((c) => c.id === id)[0]);
     return this.http.post<Client>(`${BACKEND_IP}/clients/find/`, {id}).pipe(
       take(1),
             map((client) => {
@@ -1274,7 +1266,6 @@ export class HttpService {
     return this.http.get<LexProfile>(`${this.LEX_API_PROXY}/profile`, { headers: this.lexAuthHeader }).pipe(take(1));
   }
   lex_createInvoice(invoice: LexInvoice): Observable<LexCreateResponse> {
-    console.log(invoice);
     return this.http.post<LexCreateResponse>(`${this.LEX_API_PROXY}/invoices`, invoice, { headers: this.lexAuthHeader }).pipe(take(1));
   }
   lex_getContacts(page: number): Observable<LexContact[]> {
