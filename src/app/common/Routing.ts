@@ -64,16 +64,10 @@ export class Routing {
       const second = [array[i].longitude, array[i].latitude];
       const line = lineString([first, second]);
       let func = (pp: Position) => {
-        // this.toggleObject('path', [first, pp, second], true)
         array.splice(i + 1, 0, { longitude: pp[0], latitude: pp[1] });
         i++;
       };
-      // wedersee
       if (booleanIntersects(line, lineString(Zones.weserParts.east))) {
-        // note: turf.shortestPath really doesn't work so well.
-        // it works grid based and places unnecessary points in between
-        // let options = {obstacles: polygon([Zones.weserParts.south.concat(Zones.weserParts.south[0])])}
-        // path = shortestPath(point(first), point(second), options).geometry.coordinates;
         func(Zones.extraPoints.east);
       }
       //weser

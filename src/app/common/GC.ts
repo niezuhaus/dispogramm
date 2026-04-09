@@ -450,7 +450,6 @@ export class GC {
         ALARM_STOP: GC.readNumber('ALARM_STOP') || 8, // 8h after
         HOURS_IN_ADVANCE: GC.readNumber('hoursInAdvance') || 2,
         salesMinimized: GC.readBoolean('salesMinimized')
-        // filterStatus: GC.readBooleanArray('filterStatus') || [false, false, false, false, false, false, false, false, false]
       },
       lexofficeActivated: GC.readBoolean('lexofficeActivated') === undefined ? false : GC.readBoolean('lexofficeActivated'),
       messenger: {
@@ -537,13 +536,6 @@ export class GC {
     return undefined;
   }
 
-  private static readBooleanArray(key: string): boolean[] {
-    const rc = GC.rawConfigsMap.get(key);
-    if (!rc) {
-      return [false, false, false, false, false, false, false, false, false];
-    }
-    return JSON.parse(rc) as boolean[];
-  }
 
   private static readString(key: string): string {
     return GC.rawConfigsMap.get(key);
@@ -652,10 +644,6 @@ export class GC {
             GC.inclusiveZones.push(z);
           }
         });
-        // GC.postCodeZones = plz.map(plz => new Zone({
-        //   name: `${plz.properties.postcode} ${plz.properties.name}`,
-        //   coordinates: plz.geometry.coordinates[0], // @todo hier wird grad nur eine zone angezeigt
-        // }))
         GC.zones = zones.sort((z1, z2) => z1.area - z2.area); // kleinste Zone zuerst
 
         GC.loadedParts.zones = true;
@@ -769,8 +757,6 @@ export class GC {
   public static loadSpecialPrices = (http: HttpService) => {
     http.getSpecialPriceList().subscribe((list) => {
       GC.specialPrices = list;
-      // list.filter(s => s.group._netto === 0 && s.base._netto === 0).map(s => s.delete(true))
-      // return;
       let i = 0;
       list.forEach((price) => {
         price.clients.forEach((c) => {

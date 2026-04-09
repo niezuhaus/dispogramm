@@ -54,12 +54,6 @@ export class TimepickerComponent implements OnInit {
     this.timeChange.pipe(debounceTime(1000)).subscribe((date) => this.timeChangeDebounce.emit(date));
   }
 
-  onTimeUpdate(event: Event): void {
-    const input = event.target as HTMLInputElement;
-
-    // this.setTime(input.value, 'timeupdate');
-  }
-
   setTime(s: string): void {
     if (!s || s === '') {
       if (!this.disableAutoReplace) {

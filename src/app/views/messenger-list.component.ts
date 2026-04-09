@@ -11,7 +11,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
   template: `
     <div class="flex flex-row justify-content-between p-5">
       <a (click)="saveConfig()">{{ 'inaktive kurier:innen ' + (hideInactive ? 'einblenden' : 'ausblenden') }}</a>
-      <!--      <mat-checkbox [checked]="hideInactive()" (click)="saveConfig()">inaktive kurier:innen ausblenden</mat-checkbox>-->
       <button mat-raised-button class="fex-button" (click)="openDialog(null)">
         <i class="pr-2 bi bi-plus-circle-fill"></i>
         neue kurier:in

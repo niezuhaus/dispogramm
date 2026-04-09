@@ -318,23 +318,6 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
     });
   }
 
-  deleteJob(job: Job): void {
-    const dialog = GC.dialog.open(AreYouSureDialogComponent, {
-      data: {
-        headline: 'möchtest du diesen auftrag wirklich löschen?',
-        verbYes: 'löschen',
-        verbNo: 'abbrechen',
-        highlightNo: true
-      }
-    });
-    dialog.componentInstance.confirm.subscribe(() => {
-      GC.http.deleteJob(job).subscribe(() => {
-        GC.openSnackBarLong('auftrag wurde gelöscht.');
-        this.query(this.date);
-      });
-    });
-  }
-
   deleteClient(): void {
     const dialog = GC.dialog.open(AreYouSureDialogComponent, {
       data: {

@@ -192,7 +192,6 @@ export interface ConfigDataContract {
     ALARM_STOP: number;
     HOURS_IN_ADVANCE: number;
     salesMinimized: boolean;
-    // filterStatus: boolean[];
   };
   messenger: {
     hideInactive: boolean;

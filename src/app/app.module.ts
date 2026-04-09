@@ -55,7 +55,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CheckoutDialogComponent } from './dialogs/checkout-dialog.component';
 import { CustomDateAdapter } from './common/prototypes';
 import { MorningTourDialogComponent } from './dialogs/morning-tour-dialog.component';
-import { ShiftsWithoutEndDialogComponent } from './dialogs/shifts-without-end-dialog.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ContactDialogComponent } from './dialogs/contact-dialog.component';
 import { WeekplanComponent } from './views/weekplan/weekplan.component';
@@ -104,7 +103,6 @@ import { ActiveLocationsPipe } from './common/active-locations.pipe';
     ZoneDialogComponent,
     CheckoutDialogComponent,
     MorningTourDialogComponent,
-    ShiftsWithoutEndDialogComponent,
     ContactDialogComponent,
     WeekplanComponent,
     RightClickMenuComponent,

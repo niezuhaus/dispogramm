@@ -154,10 +154,6 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     return GC.dispatcherShiftLiterals.concat(GC.messengerShiftLiterals);
   }
 
-  // get filterStatus() {
-  //   return GC.config.tourplan.filterStatus;
-  // }
-
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('datepicker') datepicker: DatepickerComponent;
   @ViewChild('table') table: MatTable<Job>;
@@ -195,9 +191,6 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
             this.date.setDateByString(params.get('date'));
             this.note.date.setDateByString(params.get('date'));
           }
-          // GC.config.tourplan.filterStatus.forEach((bool, i) => {
-          //   this.filterStrategies[i].selected = bool;
-          // });
           this.refresh();
           this.cd.detectChanges();
           GC.refreshNeeded.pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -382,10 +375,6 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     this.cd.detectChanges();
     return items;
   }
-
-  // saveFilterStatus(): void {
-  //   GC.http.saveConfigItem('filterStatus', JSON.stringify(GC.config.tourplan.filterStatus)).subscribe((rc) => {});
-  // }
 
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
