@@ -3,16 +3,10 @@ import { Day } from '../common/interfaces';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GC } from '../common/GC';
 import { AreYouSureDialogComponent } from './are-you-sure-dialog.component';
-import { FormControl, NgForm, FormGroupDirective, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { RegularJob } from '../classes/Job';
-
-class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
-  constructor(private shouldShowErrors: () => boolean) {}
-  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
-    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
-  }
-}
+import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state-matcher';
 
 @Component({
   selector: 'app-regular-job-options-dialog',

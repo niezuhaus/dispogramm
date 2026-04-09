@@ -6,15 +6,8 @@ import { LngLatBoundsLike, Map } from 'mapbox-gl';
 import { initMap } from '../UTIL';
 import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf';
-import { FormControl, NgForm, FormGroupDirective } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-
-class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
-  constructor(private shouldShowErrors: () => boolean) {}
-  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
-    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
-  }
-}
+import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state-matcher';
 
 @Component({
   selector: 'app-zone-dialog',

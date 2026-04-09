@@ -12,16 +12,9 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { MatInput } from '@angular/material/input';
 import { MatSort, Sort } from '@angular/material/sort';
 import { ShiftTableComponent } from '../views/shift-table.component';
-import { FormControl, NgForm, FormGroupDirective, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-
-class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
-  constructor(private shouldShowErrors: () => boolean) {}
-
-  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
-    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
-  }
-}
+import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state-matcher';
 
 @Component({
   selector: 'app-edit-messenger-dialog',

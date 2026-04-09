@@ -1,13 +1,6 @@
 import { Component, EventEmitter, Inject, ViewChild, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormControl, NgForm, FormGroupDirective } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-
-class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
-  constructor(private shouldShowErrors: () => boolean) {}
-  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
-    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
-  }
-}
+import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state-matcher';
 import { LocType } from '../common/interfaces';
 import { Job } from '../classes/Job';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';

@@ -3,15 +3,8 @@ import { Contact } from '../classes/Contact';
 import { GC } from '../common/GC';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Client } from '../classes/Client';
-import { FormControl, NgForm, FormGroupDirective } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-
-class SaveAttemptErrorStateMatcher implements ErrorStateMatcher {
-  constructor(private shouldShowErrors: () => boolean) {}
-  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
-    return !!control && control.invalid && (control.touched || control.dirty || this.shouldShowErrors());
-  }
-}
+import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state-matcher';
 
 @Component({
   selector: 'app-edit-contact-dialog',
