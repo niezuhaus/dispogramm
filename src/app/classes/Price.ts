@@ -154,6 +154,7 @@ export class Price {
    * @returns the calling price divided by the provided scalar
    */
   div(scalar: number): Price {
+    if (scalar === 0) return this;
     this.netto /= scalar;
     this.brutto = this.calcBrutto(this.netto);
     this.paypal = this.calcPayPal(this.brutto);
