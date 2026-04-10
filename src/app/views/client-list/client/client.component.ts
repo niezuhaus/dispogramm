@@ -10,7 +10,7 @@ import { DateAdapter } from '@angular/material/core';
 import { MatSort } from '@angular/material/sort';
 import { AreYouSureDialogComponent } from '../../../dialogs/are-you-sure-dialog.component';
 import { GC } from '../../../common/GC';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { Price } from '../../../classes/Price';
 import { Location } from '@angular/common';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -260,7 +260,7 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
             verbNo: 'nur rechnungsadresse ändern'
           }
         });
-        dialog.componentInstance.confirm.subscribe(() => {
+        dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
           this.newStreet.name = this.client.name;
           calls.push(GC.http.createLocation(this.newStreet));
           const oldLocation = this.locations.find((loc) => loc.street === this.clientBackup.street);
@@ -270,7 +270,7 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
           }
           makeCall(`${this.client.name} und neuer standort wurden gespeichert!`);
         });
-        dialog.componentInstance.cancel.subscribe(() => {
+        dialog.componentInstance.cancel.pipe(take(1)).subscribe(() => {
           makeCall(`${this.client.name} wurde gespeichert!`);
         });
       } else {
@@ -290,8 +290,8 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
           verbNo: 'nur kund:in umbenennen'
         }
       });
-      dialog.componentInstance.confirm.subscribe(() => proceedWithStreet(true));
-      dialog.componentInstance.cancel.subscribe(() => proceedWithStreet(false));
+      dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => proceedWithStreet(true));
+      dialog.componentInstance.cancel.pipe(take(1)).subscribe(() => proceedWithStreet(false));
     } else {
       proceedWithStreet(false);
     }
@@ -331,7 +331,7 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
         highlightNo: true
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteClient(this.client).subscribe(() => {
         GC.openSnackBarLong(`${this.client.name} wurde gelöscht!`);
         this.location.back();

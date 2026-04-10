@@ -1,4 +1,5 @@
 import { Messenger } from './Messenger';
+import { take } from 'rxjs/operators';
 import { GC } from '../common/GC';
 import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
 import { TourplanItem } from './TourplanItem';
@@ -29,7 +30,7 @@ export class Note {
         item: new TourplanItem({ note: this })
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteNote(this).subscribe(() => {
         GC.openSnackBarLong('notiz wurde gelöscht.');
         GC.refreshNeeded.emit(true);

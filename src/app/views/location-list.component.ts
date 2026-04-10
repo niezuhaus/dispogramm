@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -225,7 +226,7 @@ export class LocationListComponent extends TitleComponent implements OnInit {
         location: loc || null
       }
     });
-    dialog.componentInstance.deleted.subscribe(() => {
+    dialog.componentInstance.deleted.pipe(take(1)).subscribe(() => {
       this.dataSource.data = GC.locations;
       dialog.close();
     });
@@ -239,7 +240,7 @@ export class LocationListComponent extends TitleComponent implements OnInit {
       }
     });
 
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.mergeLocations(locs).subscribe({
         next: () => {
           GC.http.getLocationList().subscribe((list) => {

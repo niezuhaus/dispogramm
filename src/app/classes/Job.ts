@@ -10,7 +10,7 @@ import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.compon
 import { Messenger } from './Messenger';
 import { Client } from './Client';
 import { Expense } from './Expense';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { Zone } from './Zone';
 import { SpecialPrice } from './SpecialPrice';
 import { CalendarRangeDialogComponent } from '../dialogs/calendar-range-dialog/calendar-range-dialog.component';
@@ -234,7 +234,7 @@ export class Job extends AbstractJob implements Optionable {
           messSearch: true
         }
       });
-      dialog.componentInstance.confirm.subscribe((value) => {
+      dialog.componentInstance.confirm.pipe(take(1)).subscribe((value) => {
         if (value instanceof Messenger) {
           this.messenger = value.copy();
         }
@@ -656,7 +656,7 @@ export class Job extends AbstractJob implements Optionable {
         warning: true
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteJob(this).subscribe(() => {
         GC.openSnackBarLong(`auftrag wurde ${perfectForm}`);
         GC.dialog.closeAll();
@@ -980,7 +980,7 @@ export class RegularJob extends Job {
         job: this
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       this.endDate = GC.tourplan.date.yesterday().set(0);
       this.save(`tour wurde ab ${GC.tourplan.isToday ? 'heute' : GC.tourplan.date.dateStampLong()} gestrichen`).subscribe(() => {
         GC.dialog.closeAll();

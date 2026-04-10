@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { Day } from '../common/interfaces';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GC } from '../common/GC';
@@ -252,7 +253,7 @@ export class RegularJobDialogComponent implements OnInit {
         warning: true
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       this.regularJob.endDate = this.tourplan.date.yesterday().set(0);
       this.regularJob.save().subscribe(() => {
         GC.openSnackBarShort('tour wurde ab heute gestrichen');

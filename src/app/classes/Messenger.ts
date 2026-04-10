@@ -6,6 +6,7 @@ import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.compon
 import { IdObject, Optionable } from '../common/interfaces';
 import { MessengerDialogComponent } from '../dialogs/messenger-dialog.component';
 import { map, Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Searchable } from '../common/decorators/Searchable';
 
 export class Messenger implements IdObject, Optionable {
@@ -115,7 +116,7 @@ export class Messenger implements IdObject, Optionable {
         warning: true
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteMessenger(this).subscribe(() => {
         GC.openSnackBarLong('kurier:in gelöscht');
       });

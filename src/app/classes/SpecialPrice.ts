@@ -1,4 +1,5 @@
 import { Client } from './Client';
+import { take } from 'rxjs/operators';
 import { Price } from './Price';
 import { GC } from '../common/GC';
 import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
@@ -87,7 +88,7 @@ export class SpecialPrice implements IdObject {
         warning: true
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteSpecialPrice(this).subscribe(() => {
         GC.openSnackBarLong('sonderpreis wurde gelöscht.');
       });

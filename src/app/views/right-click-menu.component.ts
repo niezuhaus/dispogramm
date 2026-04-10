@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Job } from '../classes/Job';
 import { Messenger } from '../classes/Messenger';
@@ -397,7 +398,7 @@ export class RightClickMenuComponent implements OnInit {
         location: this.item._job.center
       }
     });
-    dialog.componentInstance.saved.subscribe((client) => {
+    dialog.componentInstance.saved.pipe(take(1)).subscribe((client) => {
       const newDialog = GC.dialog.open(AreYouSureDialogComponent, {
         data: {
           headline: 'soll die aktuelle tour als rechnungstour markiert werden?',
@@ -405,7 +406,7 @@ export class RightClickMenuComponent implements OnInit {
           verbNo: 'nein'
         }
       });
-      newDialog.componentInstance.confirm.subscribe(() => {
+      newDialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
         this.item._job.client = client.c;
         this.item._job.center = client.l as Station;
         this.item._job.billingTour = true;
@@ -446,7 +447,7 @@ export class RightClickMenuComponent implements OnInit {
     const dialog = GC.dialog.open(AreYouSureDialogComponent, {
       data: { headline: `standort "${this.location.name}" löschen?`, verbYes: 'löschen', verbNo: 'abbrechen', warning: true }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteLocation(this.location).subscribe(() => {
         GC.openSnackBarLong(`"${this.location.name}" wurde gelöscht.`);
         GC.locationChanged.emit(true);

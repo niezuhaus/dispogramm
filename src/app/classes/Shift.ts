@@ -2,7 +2,7 @@ import { GC, ShiftType } from '../common/GC';
 import { Price } from './Price';
 import { Messenger } from './Messenger';
 import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Job } from './Job';
 import { IdObject } from '../common/interfaces';
@@ -108,7 +108,7 @@ export class Shift implements IdObject {
         warning: true
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteShift(this).subscribe(() => {
         GC.openSnackBarLong('schicht wurde gelöscht.');
         GC.loadShiftsToday(GC.http);

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Geolocation } from '../classes/Geolocation';
 import { GC } from '../common/GC';
@@ -234,13 +235,13 @@ export class ContainerComponent implements OnInit {
         client: this.client
       }
     });
-    dialog.componentInstance.deleted.subscribe(() => {
+    dialog.componentInstance.deleted.pipe(take(1)).subscribe(() => {
       this.deleted.emit(true);
     });
-    dialog.componentInstance.created.subscribe((loc) => {
+    dialog.componentInstance.created.pipe(take(1)).subscribe((loc) => {
       this.created.emit(loc);
     });
-    dialog.componentInstance.updated.subscribe((loc) => {
+    dialog.componentInstance.updated.pipe(take(1)).subscribe((loc) => {
       this.updated.emit(loc);
     });
   }

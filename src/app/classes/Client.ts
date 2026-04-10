@@ -1,4 +1,5 @@
 import { GC } from '../common/GC';
+import { take } from 'rxjs/operators';
 import { Optionable, OptionType } from '../common/interfaces';
 import { AreYouSureDialogComponent } from '../dialogs/are-you-sure-dialog.component';
 import { SpecialPrice } from './SpecialPrice';
@@ -41,7 +42,7 @@ export class Client implements Optionable {
         warning: true
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteClient(this).subscribe(() => {
         GC.openSnackBarLong(`${this.name} wurde gelöscht`);
       });

@@ -1,4 +1,5 @@
 import { Feature, MultiPolygon, Polygon, Position } from '@turf/turf';
+import { take } from 'rxjs/operators';
 import { Price } from './Price';
 import { area, polygon } from '@turf/turf';
 import { IdObject, Optionable } from '../common/interfaces';
@@ -70,7 +71,7 @@ export class Zone implements IdObject, Optionable {
         warning: true
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteZone(this).subscribe(() => {
         GC.openSnackBarLong('zone wurde gelöscht.');
         GC.refreshNeeded.emit(true);

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Inject, ViewChild, OnDestroy, OnInit, Output } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state-matcher';
 import { LocType } from '../common/interfaces';
@@ -275,7 +276,7 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
         warning: true
       }
     });
-    d.componentInstance.confirm.subscribe(() => {
+    d.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.deleteLocation(this.data.location).subscribe(() => {
         GC.openSnackBarLong(`${this.data.location.name} wurde gelöscht`);
         this.deleted.emit(true);

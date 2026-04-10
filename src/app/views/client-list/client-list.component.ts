@@ -6,7 +6,7 @@ import { Client } from '../../classes/Client';
 import { DateAdapter } from '@angular/material/core';
 import { NewClientDialogComponent } from '../../dialogs/new-client-dialog.component';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { GC } from '../../common/GC';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -179,7 +179,7 @@ export class ClientListComponent extends TitleComponent implements OnInit, OnDes
 
   openDialog(): void {
     const dialog = GC.dialog.open(NewClientDialogComponent);
-    dialog.componentInstance.saved.subscribe((client) => {
+    dialog.componentInstance.saved.pipe(take(1)).subscribe((client) => {
       this.init();
     });
   }

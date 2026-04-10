@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { LocType } from '../../../common/interfaces';
 import { Note } from '../../../classes/Note';
 import { Job, RegularJob } from '../../../classes/Job';
@@ -82,7 +83,7 @@ export class DescriptionComponent implements OnInit {
         warning: true
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       if (this.item.isConverted) {
         this.goTo();
       } else {

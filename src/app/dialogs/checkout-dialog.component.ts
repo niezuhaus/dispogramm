@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { Job } from '../classes/Job';
 import { MatTableDataSource } from '@angular/material/table';
 import { GC } from '../common/GC';
@@ -301,7 +302,7 @@ export class CheckoutDialogComponent implements OnInit {
           highlightNo: true
         }
       });
-      dialog.componentInstance.confirm.subscribe(() => {
+      dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
         checkout();
       });
     } else {

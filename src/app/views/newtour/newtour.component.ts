@@ -7,7 +7,7 @@ import { Zone } from '../../classes/Zone';
 import { zip } from 'rxjs';
 import { corners, drawText, feature, getItem, initMap, setItem } from '../../UTIL';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { SearchinputComponent } from './inputfield/searchinput/searchinput.component';
 import { ActivatedRoute } from '@angular/router';
 import { LocationDialogComponent } from '../../dialogs/location-dialog.component';
@@ -530,7 +530,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         zone: zone
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.createZone(zone).subscribe(() => {
         GC.openSnackBarLong(`zone \'${zone.name}\' gespeichert!`);
       });
@@ -544,7 +544,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         zone: zone
       }
     });
-    dialog.componentInstance.confirm.subscribe(() => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
       GC.http.createZone(zone).subscribe(() => {
         GC.openSnackBarLong(`zone \'${zone.name}\' gespeichert!`);
       });
@@ -558,7 +558,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         zone: GC.zones[1]
       }
     });
-    dialog.componentInstance.confirm.subscribe((zone) => {
+    dialog.componentInstance.confirm.pipe(take(1)).subscribe((zone) => {
       GC.http.updateZone(zone).subscribe((update) => {
         GC.openSnackBarLong(`zone \'${update.name}\' gespeichert!`);
       });
@@ -950,7 +950,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         locally: true
       }
     });
-    dialog.componentInstance.saved.subscribe((msg) => {
+    dialog.componentInstance.saved.pipe(take(1)).subscribe((msg) => {
       this.touched = true;
       if (this.job) {
         this.job.regularJob = msg;
@@ -974,7 +974,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         location: location
       }
     });
-    dialog.componentInstance.saved.subscribe((client) => {
+    dialog.componentInstance.saved.pipe(take(1)).subscribe((client) => {
       this.cInput.setSelection(client.l);
       this.cInput.client = client.c;
       this.job.billingTour = client.c.billClient;
@@ -990,7 +990,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         newLocation: newlocation
       }
     });
-    dialog.componentInstance.created.subscribe((station) => {
+    dialog.componentInstance.created.pipe(take(1)).subscribe((station) => {
       if (input && input.searchinput.selection) {
         input.searchinput.setSelection(station);
       } else {
@@ -998,7 +998,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       }
       this.refresh({ zoom: false });
     });
-    dialog.componentInstance.updated.subscribe((station) => {
+    dialog.componentInstance.updated.pipe(take(1)).subscribe((station) => {
       if (input && input.searchinput.selection) {
         input.searchinput.setSelection(station);
       } else {
@@ -1072,10 +1072,10 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
           warning: true
         }
       });
-      dialog.componentInstance.confirm.subscribe(() => {
+      dialog.componentInstance.confirm.pipe(take(1)).subscribe(() => {
         save();
       });
-      dialog.componentInstance.cancel.subscribe(() => {
+      dialog.componentInstance.cancel.pipe(take(1)).subscribe(() => {
         save(this.job.priceBackup);
       });
     } else {
@@ -1143,7 +1143,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
 
   switchBillingMode(): void {
     if (!this.job.client?.clientId) {
-      this.openClientDialog(this.job.center).componentInstance.saved.subscribe(() => {
+      this.openClientDialog(this.job.center).componentInstance.saved.pipe(take(1)).subscribe(() => {
         this.job.billingTour = !this.job.billingTour;
       });
     } else {
