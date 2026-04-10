@@ -633,7 +633,7 @@ export class HttpService {
               const convertedInstance = convertedJobs.find((j) => j.regularJobId === rj.id);
               if (convertedInstance) {
                 convertedInstance.morningTour = rj.morningTour;
-                if (rj.morningTour > 0) {
+                if (rj.morningTour > 0 && rj.morningTour <= posttourTPIs.length) {
                   posttourTPIs[rj.morningTour - 1].convertedJobs.push(convertedInstance);
                   posttourTPIs[rj.morningTour - 1].regularJobs.findAndRemove(rj);
                 }
