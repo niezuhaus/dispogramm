@@ -1,19 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# config
-src/app/config.private.ts
-
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
-*.jar
-
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
+# System files
+.DS_Store
+Thumbs.db
 
 # IDEs and editors
 .idea/
@@ -23,7 +12,6 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
-.vscode
 
 # Visual Studio Code
 .vscode/*
@@ -33,28 +21,48 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-
-# System files
-.DS_Store
-Thumbs.db
-
-# Playwright
-node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-
 # Claude
-/.claude
+.claude/
 ISSUES.md
 ANALYSIS.md
 CLAUDE.md
+
+# ── frontend (apps/frontend/) ──────────────────────────────────────────────────
+
+# config
+apps/frontend/src/app/config.private.ts
+
+# Compiled output
+apps/frontend/dist/
+apps/frontend/tmp/
+apps/frontend/out-tsc/
+apps/frontend/bazel-out/
+
+# Node
+apps/frontend/node_modules/
+apps/frontend/.angular/cache/
+apps/frontend/.sass-cache/
+apps/frontend/connect.lock
+apps/frontend/coverage/
+apps/frontend/libpeerconnection.log
+apps/frontend/testem.log
+apps/frontend/typings/
+npm-debug.log
+yarn-error.log
+
+# Playwright
+apps/frontend/test-results/
+apps/frontend/playwright-report/
+apps/frontend/blob-report/
+apps/frontend/playwright/.cache/
+
+# ── middleware-api-proxy (apps/middleware-api-proxy/) ─────────────────────────
+
+apps/middleware-api-proxy/node_modules/
+apps/middleware-api-proxy/.env
+
+# ── backend (apps/backend/) ────────────────────────────────────────────────────
+
+*.jar
+apps/backend/backend/target/
+apps/backend/.mvn/
