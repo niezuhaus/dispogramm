@@ -219,7 +219,7 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.map.remove();
+    this.map?.remove();
   }
 
   canSave(): boolean {
