@@ -33,10 +33,6 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
-# Local notes
-ISSUES.md
-ANALYSIS.md
-
 # Miscellaneous
 /.angular/cache
 .sass-cache/
@@ -59,3 +55,6 @@ node_modules/
 
 # Claude
 /.claude
+ISSUES.md
+ANALYSIS.md
+CLAUDE.md
