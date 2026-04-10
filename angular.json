@@ -127,16 +127,6 @@
             ],
             "scripts": []
           }
-        },
-        "deploy": {
-          "builder": "@angular/fire:deploy",
-          "options": {
-            "prerender": false,
-            "ssr": false,
-            "browserTarget": "dispogramm:build:production",
-            "firebaseProject": "axial-yen-361001",
-            "firebaseHostingSite": "axial-yen-361001"
-          }
         }
       }
     }
