@@ -438,7 +438,7 @@ export class Job extends AbstractJob implements Optionable {
 
   public priceString(): string {
     let res = '';
-    res += this.price?.toString(!this.billingTour) || this.price.toString(!this.billingTour);
+    res += this.price?.toString(!this.billingTour);
     res += this.billingTour ? ' netto' : ' brutto';
     res +=
       this._waitingMinutes > GC.config.prices.waitingTimeQuantityIncl
