@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  creationTimestamp: null
+  labels:
+    app: mongodb-client
+  name: mongodb-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-client
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mongodb-client
+    spec:
+      containers:
+      - image: mongo
+        name: mongodb-client
