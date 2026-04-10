@@ -178,7 +178,7 @@ export class Branch {
         zones = GC.zones;
         break;
     }
-    for (let i = startIndex || 0; i < zones.length; i++) {
+    for (let i = startIndex ?? 0; i < zones.length; i++) {
       let zone = zones[i];
       switch (inclusive) {
         case 'IN':
