@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Job } from '../classes/Job';
 import { GC } from '../common/GC';
@@ -106,7 +108,13 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
   `,
   styles: []
 })
-export class MessengerDialogComponent implements OnInit {
+export class MessengerDialogComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
   messenger: Messenger = new Messenger();
 
   shifts: Shift[] = [];
@@ -151,7 +159,7 @@ export class MessengerDialogComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.new) {
-      GC.http.jobsThisMonthForMessenger(this.messenger).subscribe((list) => {
+      GC.http.jobsThisMonthForMessenger(this.messenger).pipe(takeUntil(this.destroy$)).subscribe((list) => {
         this.jobsThisMonth = list;
         list.forEach((j) => {
           j.billingTour ? this.salesNettoThisMonth.add(j.price) : this.salesBruttoThisMonth.add(j.price);
@@ -195,7 +203,7 @@ export class MessengerDialogComponent implements OnInit {
   }
 
   load(): void {
-    this.messenger.loadShifts(this.date).subscribe((shifts) => {
+    this.messenger.loadShifts(this.date).pipe(takeUntil(this.destroy$)).subscribe((shifts) => {
       this.shifts = shifts;
       this.init();
     });
@@ -224,13 +232,13 @@ export class MessengerDialogComponent implements OnInit {
         .forEach((s) => {
           this.shiftTable.updateShift(s);
         });
-      GC.http.updateMessenger(m).subscribe((m) => {
+      GC.http.updateMessenger(m).pipe(takeUntil(this.destroy$)).subscribe((m) => {
         GC.openSnackBarLong(`${m.nickname} wurde aktualisiert.`);
         this.saved.emit(true);
         GC.dialog.closeAll();
       });
     } else {
-      GC.http.createMessenger(this.messenger).subscribe((m) => {
+      GC.http.createMessenger(this.messenger).pipe(takeUntil(this.destroy$)).subscribe((m) => {
         GC.openSnackBarLong(`${m.nickname} wurde hinzugefügt.`);
         this.saved.emit(true);
         GC.dialog.closeAll();
@@ -239,7 +247,7 @@ export class MessengerDialogComponent implements OnInit {
   }
 
   deleteMessenger(): void {
-    GC.http.deleteMessenger(this.messenger).subscribe(() => {
+    GC.http.deleteMessenger(this.messenger).pipe(takeUntil(this.destroy$)).subscribe(() => {
       GC.openSnackBarLong('kurier:in gelöscht');
     });
   }
@@ -253,7 +261,7 @@ export class MessengerDialogComponent implements OnInit {
         }
       });
     } else {
-      GC.http.exportShfitsForMessengerAndMonth(messenger, date).subscribe((xml) => {
+      GC.http.exportShfitsForMessengerAndMonth(messenger, date).pipe(takeUntil(this.destroy$)).subscribe((xml) => {
         const blob = new Blob([xml], { type: 'application/xml' });
         const link = document.createElement('a');
         link.download = `Stundenerfassung_${date.getFullYear()}_${GC.monthLiteralsShort[date.getMonth()]}_${messenger.messengerId}_${messenger.lastName}_${messenger.firstName}.xml`;

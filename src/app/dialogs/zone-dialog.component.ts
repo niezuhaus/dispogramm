@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Zone } from '../classes/Zone';
 import { GC } from '../common/GC';
@@ -56,7 +56,7 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
     `
   ]
 })
-export class ZoneDialogComponent implements OnInit, AfterViewInit {
+export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   confirm = new EventEmitter<Zone>();
   mapGL: Map;
   mapboxDraw: MapboxDraw;
@@ -79,6 +79,10 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {}
+
+  ngOnDestroy(): void {
+    this.mapGL?.remove();
+  }
 
   ngAfterViewInit(): void {
     this.mapGL = initMap({

@@ -1,4 +1,6 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Price } from '../classes/Price';
 import { GC } from '../common/GC';
 import { Observable } from 'rxjs';
@@ -622,7 +624,13 @@ import { standartZonesHB } from '../common/zones';
     `
   ]
 })
-export class ConfigDialogComponent {
+export class ConfigDialogComponent implements OnDestroy {
+  private destroy$ = new Subject<void>();
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
   config = GC.config;
   year: string = Math.max(new Date().getFullYear(), 2023).toString();
   changedPrices: Map<string, Price> = new Map<string, Price>();
@@ -692,7 +700,7 @@ export class ConfigDialogComponent {
   }
 
   getProfile(): void {
-    GC.http.lex_getProfileInfo().subscribe((i) => {
+    GC.http.lex_getProfileInfo().pipe(takeUntil(this.destroy$)).subscribe((i) => {
       console.log(i.companyName);
     });
   }
@@ -712,7 +720,7 @@ export class ConfigDialogComponent {
         zone = new Zone(standartZonesHB.aussenring);
         break;
     }
-    GC.http.createZone(zone).subscribe(() => {
+    GC.http.createZone(zone).pipe(takeUntil(this.destroy$)).subscribe(() => {
       GC.openSnackBarLong('zone gespeichert');
     });
   }
@@ -738,7 +746,7 @@ export class ConfigDialogComponent {
             return this.saveConfigValue(s[0], s[1]);
           })
         )
-    ).subscribe(() => {
+    ).pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (this.reloadPage) {
         location.reload();
         return;
