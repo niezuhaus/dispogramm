@@ -1,4 +1,4 @@
-![fahrrad express](src/assets/logo/fex-logo.png)
+![fahrrad express](apps/frontend/src/assets/logo/fex-logo.png)
 
 # dispogramm `v1.4.6`
 
@@ -9,6 +9,16 @@ A dispatch management tool for courier services.
 ## Demo
 
 [https://cloud.niezuhaus.de/](https://cloud.niezuhaus.de)
+
+---
+
+## Repository Structure
+
+```
+apps/
+  frontend/   Angular SPA (port 4200)
+  backend/    Spring Boot API (port 8081)
+```
 
 ---
 
@@ -31,14 +41,23 @@ git clone git@github.com:niezuhaus/dispogramm.git
 ### 3. Start the backend
 
 ```bash
-java -jar backend-latest.jar
+cd apps/backend
+docker compose up
 ```
 
-The backend runs on `localhost:8081` with default configuration.
+Or without Docker (requires Java 11 + Maven 3.8+):
+
+```bash
+cd apps/backend
+mvn -pl backend spring-boot:run
+```
+
+The backend runs on `localhost:8081`.
 
 ### 4. Start the frontend
 
 ```bash
+cd apps/frontend
 npm install
 npm run start
 ```
@@ -48,12 +67,13 @@ Access the app at `localhost:4200`.
 For production, build and host the output:
 
 ```bash
+cd apps/frontend
 npm run build
-# serve contents of /dist/dispogram
+# serve contents of apps/frontend/dist/dispogramm
 ```
 
 ---
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md)
+See [apps/frontend/CHANGELOG.md](apps/frontend/CHANGELOG.md)
