@@ -479,7 +479,7 @@ export class GC {
       res.name = key;
       return res;
     }
-    return undefined;
+    return new Price(0);
   }
 
   static readBaseExtraExtraPrices(): BaseExtraExtraPrice[] {
