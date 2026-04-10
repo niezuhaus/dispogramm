@@ -285,7 +285,7 @@ Array.prototype.move = function (from: number, to: number) {
   return this.splice(to, 0, this.splice(from, 1)[0]);
 };
 Array.prototype.copy = function () {
-  return structuredClone(this);
+  return this.map((item) => (item && typeof item.copy === 'function' ? item.copy() : structuredClone(item)));
 };
 Array.prototype.findAndRemove = function (item) {
   let index = this.findIndex((i) => item.id == i.id) || this.findIndex((i) => item == i);
