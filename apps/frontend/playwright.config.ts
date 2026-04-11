@@ -1,4 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
+import { storagePath } from './e2e/backend.setup';
 
 /**
  * Read environment variables from file.
@@ -41,7 +43,7 @@ export default defineConfig({
     },
     {
       name: 'after setup',
-      use: { ...devices['Desktop Firefox'] },
+      use: { ...devices['Desktop Firefox'], storageState: storagePath },
       dependencies: ['backend setup']
     },
 
