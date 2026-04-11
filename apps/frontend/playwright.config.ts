@@ -1,6 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import path from 'path';
-import { storagePath } from './e2e/backend.setup';
+import { storagePath } from './e2e/paths';
 
 /**
  * Read environment variables from file.
