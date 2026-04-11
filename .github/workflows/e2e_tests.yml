@@ -20,30 +20,26 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Download Backend
-        run: |
-          gh release download \
-            --repo niezuhaus/dispogramm-backend \
-            --pattern '*.jar' \
-            --dir .
-        env:
-          GH_TOKEN: ${{ secrets.BACKEND_REPO_TOKEN }}
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '11'
 
+      - name: Build Backend
+        working-directory: apps/backend
+        run: mvn package -pl backend -DskipTests
+
       - name: Start Java Backend
+        working-directory: apps/backend
         run: |
-          nohup java -jar *.jar &
+          nohup java -jar backend/target/*.jar &
           sleep 15
 
       # Frontend Setup
       - name: Create config.private.ts
         run: |
-          cat > src/app/config.private.ts << 'TSEOF'
+          cat > apps/frontend/src/app/config.private.ts << 'TSEOF'
           export const config = {
             "fallBackend": "${{ secrets.FALL_BACKEND }}",
             "apiAuthName": "${{ secrets.API_AUTH_NAME }}",
@@ -61,13 +57,16 @@ jobs:
           node-version: lts/*
 
       - name: Install Node Dependencies
+        working-directory: apps/frontend
         run: npm ci
 
       - name: Install Playwright Browsers
+        working-directory: apps/frontend
         run: npx playwright install --with-deps
 
       # Playwright Tests
       - name: Run Playwright Tests
+        working-directory: apps/frontend
         env:
           FALL_BACKEND: ${{ secrets.FALL_BACKEND }}
           API_AUTH_NAME: ${{ secrets.API_AUTH_NAME }}
@@ -81,5 +80,5 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
-          path: playwright-report/
+          path: apps/frontend/playwright-report/
           retention-days: 30
