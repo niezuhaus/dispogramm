@@ -47,6 +47,7 @@ export class SearchinputComponent implements OnInit {
   @Input() disabled: boolean;
   @Input() width: string;
   @Input() required: boolean;
+  @Input() autofocus: boolean;
   @Input() deactivateNoSearchResults: boolean;
   @Input() hideGroupJobs: boolean;
   @Input() keepMessName: boolean;
@@ -110,6 +111,7 @@ export class SearchinputComponent implements OnInit {
     this.setFormControls();
     this.searchTerm = this.content ? this.content : '';
     this.searchTerm = this.str ? this.str : '';
+    if (this.autofocus) this.focus();
     this.setListeners();
     this.change.subscribe((str) => {
       if (str) {
