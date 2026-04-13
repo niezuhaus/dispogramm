@@ -14,22 +14,22 @@
         class="fex-button"
         [class.fex-button-warn]="!dispatcher()"
         style="min-width: unset"
-        (click)="openChangeUserDialog()"
+        (click)="openChangeUserDialog(); drawer.close()"
       >
         <span>
           <i class="bi bi-person mr-2"></i>
           {{ dispatcher()?.messenger.nickname || 'einchecken' }}
         </span>
       </button>
-      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().tourplan">tourenzettel</button>
-      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().weekplan">wochenplan</button>
-      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().newTour">
+      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().tourplan" (click)="drawer.close()">tourenzettel</button>
+      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().weekplan" (click)="drawer.close()">wochenplan</button>
+      <button *ngIf="backendIP()" mat-raised-button class="fex-button" [routerLink]="routes().newTour" (click)="drawer.close()">
         <div class="flex flex-row align-items-center">
           <i class="mr-2 bi bi-plus-circle"></i>
           <span>tour</span>
         </div>
       </button>
-      <button *ngIf="backendIP()" mat-raised-button class="fex-button" (click)="openDateDialog()">
+      <button *ngIf="backendIP()" mat-raised-button class="fex-button" (click)="openDateDialog(); drawer.close()">
         <div class="flex flex-row align-items-center">
           <i class="mr-2 bi bi-plus-circle"></i>
           <span>anmeldung</span>
