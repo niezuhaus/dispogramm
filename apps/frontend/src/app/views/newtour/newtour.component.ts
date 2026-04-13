@@ -197,14 +197,14 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
    * @param id the id of the shown to be shown
    */
   loadJobById(id: string): void {
-    GC.http.getJob(id).subscribe((job) => {
+    GC.http.getJob(id).pipe(takeUntil(this.destroy$)).subscribe((job) => {
       this.job = new Job(job).init();
       this.mapGL.on('load', () => {
         this.createUI(this.job);
         this.refresh({ zoom: true, pushPrice: job.price });
       });
       if (job.regularJobId) {
-        GC.http.getRegularJob(job.regularJobId).subscribe((rj) => {
+        GC.http.getRegularJob(job.regularJobId).pipe(takeUntil(this.destroy$)).subscribe((rj) => {
           this.job.regularJob = rj;
         });
       }

@@ -215,7 +215,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
     this.note.date.copyDate(this.date);
     GC.shiftsAnyDay = [];
 
-    GC.http.tourplanItemsForDay(this.date).subscribe({
+    GC.http.tourplanItemsForDay(this.date).pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         this.items = data.items;
         this.jobs = data.jobs;
@@ -262,7 +262,7 @@ export class TourplanComponent extends TitleComponent implements OnInit, AfterVi
         };
 
         if (!this.date.isToday()) {
-          GC.http.getShiftsForDay(this.date).subscribe((shifts) => {
+          GC.http.getShiftsForDay(this.date).pipe(takeUntil(this.destroy$)).subscribe((shifts) => {
             this.shifts = shifts;
             this.calcSales();
             this.loaded = true;
