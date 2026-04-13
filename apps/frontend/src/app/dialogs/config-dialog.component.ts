@@ -612,6 +612,40 @@ import { standartZonesHB } from '../common/zones';
         max-width: 100%;
       }
 
+      ::ng-deep .markdownBody {
+        ul {
+          display: block;
+          list-style-type: disc;
+          padding-left: 1.5em;
+          margin: 0.5em 0;
+        }
+
+        li {
+          display: list-item;
+          margin: 0.2em 0;
+        }
+
+        h2 {
+          display: block;
+          margin: 1em 0 0.4em;
+        }
+
+        h3 {
+          display: block;
+          margin: 0.8em 0 0.3em;
+        }
+
+        p {
+          display: block;
+          margin: 0.4em 0;
+        }
+
+        hr {
+          display: block;
+          margin: 1em 0;
+        }
+      }
+
       .animated-width {
         display: inline-block; /* or block with fit-content */
         transition: width 0.4s ease-in-out;
@@ -693,16 +727,19 @@ export class ConfigDialogComponent implements OnDestroy {
   }
 
   async loadReadme() {
-    const res = await fetch('assets/README.md');
+    const res = await fetch('assets/CHANGELOG.md');
     const md = await res.text();
     const html = await marked(md);
     this.readmeHtml = this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
   getProfile(): void {
-    GC.http.lex_getProfileInfo().pipe(takeUntil(this.destroy$)).subscribe((i) => {
-      console.log(i.companyName);
-    });
+    GC.http
+      .lex_getProfileInfo()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((i) => {
+        console.log(i.companyName);
+      });
   }
 
   addStandartZone(index: number): void {
@@ -720,9 +757,12 @@ export class ConfigDialogComponent implements OnDestroy {
         zone = new Zone(standartZonesHB.aussenring);
         break;
     }
-    GC.http.createZone(zone).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      GC.openSnackBarLong('zone gespeichert');
-    });
+    GC.http
+      .createZone(zone)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        GC.openSnackBarLong('zone gespeichert');
+      });
   }
 
   save(): void {
@@ -746,16 +786,18 @@ export class ConfigDialogComponent implements OnDestroy {
             return this.saveConfigValue(s[0], s[1]);
           })
         )
-    ).pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.reloadPage) {
-        location.reload();
-        return;
-      }
-      GC.config = this.config;
-      GC.loadConfig(GC.http).subscribe(() => {});
-      GC.openSnackBarLong('einstellungen gespeichert');
-      GC.refreshNeeded.emit(true);
-    });
+    )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.reloadPage) {
+          location.reload();
+          return;
+        }
+        GC.config = this.config;
+        GC.loadConfig(GC.http).subscribe(() => {});
+        GC.openSnackBarLong('einstellungen gespeichert');
+        GC.refreshNeeded.emit(true);
+      });
     if (this.changedBackendIP || this.changedAuthName || this.changedAuthPwd) {
       if (this.changedBackendIP) {
         setItem<string>('backendIP', this.changedBackendIP);
