@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, Inject, ViewChild } from '@angular/core';
 import { removeItem, setItem } from '../../UTIL';
 import { GC, ShiftType } from '../../common/GC';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -6,6 +6,7 @@ import { TimepickerComponent } from '../../views/timepicker.component';
 import { MatSelect } from '@angular/material/select';
 import { Shift } from '../../classes/Shift';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { NewShiftComponent } from './new-shift.component';
 
 @Component({
   selector: 'change-user-dialog',
@@ -110,7 +111,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
     `
   ]
 })
-export class CheckInDialog {
+export class CheckInDialog implements AfterViewInit {
   dispatcherShift: Shift = null;
   messengerShifts: Shift[] = [];
   nextCheckout: Date;
@@ -132,6 +133,7 @@ export class CheckInDialog {
   @ViewChild('type') shiftType: MatSelect;
   @ViewChild('timepicker') timepicker: TimepickerComponent;
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
+  @ViewChild('messengerInput') messengerInputComp: NewShiftComponent;
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
@@ -140,6 +142,12 @@ export class CheckInDialog {
     }
   ) {
     this.nextCheckout = new Date().nextQuarter();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.dispatcher) {
+      setTimeout(() => this.messengerInputComp.search.focus(), 200);
+    }
   }
 
   ngOnInit(): void {
