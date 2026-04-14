@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { Client } from '../../../../classes/Client';
@@ -19,7 +19,7 @@ import { Option } from 'src/app/classes/Option';
   templateUrl: './searchinput.component.html',
   styleUrls: ['./searchinput.component.scss']
 })
-export class SearchinputComponent implements OnInit {
+export class SearchinputComponent implements OnInit, AfterViewInit {
   constructor(private injector: Injector) {}
 
   // customization
@@ -111,7 +111,6 @@ export class SearchinputComponent implements OnInit {
     this.setFormControls();
     this.searchTerm = this.content ? this.content : '';
     this.searchTerm = this.str ? this.str : '';
-    if (this.autofocus) this.focus();
     this.setListeners();
     this.change.subscribe((str) => {
       if (str) {
@@ -130,6 +129,12 @@ export class SearchinputComponent implements OnInit {
         this.resetOptions();
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.autofocus) {
+      this.inputRef.nativeElement.focus();
+    }
   }
 
   createInjector(option: Geolocation) {
