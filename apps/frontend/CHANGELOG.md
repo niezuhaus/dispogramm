@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.4.7
+## v1.5.0
 
 ### Features
 - client *stammblatt* can be exported as PDF

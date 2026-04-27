@@ -1,6 +1,6 @@
 ![fahrrad express](apps/frontend/src/assets/logo/fex-logo.png)
 
-# dispogramm `v1.4.6`
+# dispogramm `v1.5.0`
 
 A dispatch management tool for courier services.
 
