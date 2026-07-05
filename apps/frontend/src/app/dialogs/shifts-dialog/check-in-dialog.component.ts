@@ -25,7 +25,12 @@ import { NewShiftComponent } from './new-shift.component';
           <div class="flex flex-column justify-content-around">
             <div class="p-4 input-section">
               <new-shift-input [disabled]="!!dispatcher" [dispatcher]="true" (dispatcherShiftCreated)="dispatcherShift = $event"> </new-shift-input>
-              <new-shift-input (messengerShiftCreated)="messengerShifts.push($event)" #messengerInput [ignoredMessenger]="messengerToday"> </new-shift-input>
+              <new-shift-input
+                (messengerShiftCreated)="messengerShifts.push($event)"
+                #messengerInput
+                [ignoredMessenger]="messengerToday.concat(dispatcherShift?.messenger)"
+              >
+              </new-shift-input>
             </div>
 
             <div class="overflow-y-scroll shifts-scroll" style="max-height: 60vh">
