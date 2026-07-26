@@ -21,6 +21,11 @@ export class FexRules implements PriceStrategy {
     const res = new Price();
     set.branches.forEach((b) => res.add(this.calcBranchPrice(b, noZones)));
     set.price = res;
+    let job = set.branches[0].job;
+    if (job.outerRing) {
+      res.add(job.outerRing.price);
+    }
+
     return res;
   }
 
@@ -29,9 +34,17 @@ export class FexRules implements PriceStrategy {
     if (!branch.route) {
       return res;
     }
+    let isOuterRing = false;
     branch.route.forEach((station) => {
       res.add(this.calcStationPrice(station, noZones));
+      if (station.zone?.exclusive) {
+        isOuterRing = true;
+        station.job.outerRing = station.zone;
+      }
     });
+    if (isOuterRing) {
+      res.add(branch.job.outerRing.price);
+    }
     if (branch.isConnection) {
       res.sub(GC.config.prices.connectionDiscount);
     }
@@ -69,7 +82,6 @@ export class FexRules implements PriceStrategy {
       res.sub(GC.config.prices.connectionDiscount);
     }
     if (station.zone?.exclusive) {
-      res.add(station.zone.price);
       station.job.outerRing = station.zone;
     }
     return res;
@@ -133,7 +145,7 @@ export class FexRules implements PriceStrategy {
         break;
     }
     if (station.zone?.exclusive) {
-      res += `${station.zone.name}-zuschlag <b>+${station.zone.price.toStringBoth()}</b>`;
+      res += `<br>${station.zone.name}-zuschlag <b>+${station.zone.price.toStringBoth()}</b>`;
     }
     return res;
   }
