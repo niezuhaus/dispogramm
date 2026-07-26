@@ -20,7 +20,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
           <ng-container matColumnDef="number">
             <th mat-header-cell *matHeaderCellDef class="text-center" style="padding: unset; width: 50px">#</th>
             <td mat-cell *matCellDef="let element; let i = index" class="text-center">
-              <div *ngIf="!element.edit">
+              <div *ngIf="!element.edit" class="row-num">
                 {{ i + 1 }}
               </div>
               <div *ngIf="element.edit">
@@ -103,7 +103,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
                 <span>{{ element.start.timestamp() }}</span>
                 <span class="mx-2">-</span>
                 <span *ngIf="element.end">{{ element.end?.timestamp() }}</span>
-                <a *ngIf="!element.end" class="fex-warn" (click)="enableEditMode(element)">endzeit eintragen</a>
+                <a *ngIf="!element.end" class="missing-end" (click)="enableEditMode(element)">endzeit eintragen</a>
               </div>
             </td>
           </ng-container>
@@ -137,7 +137,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
       </div>
     </div>
     <div *ngIf="!shifts" class="flex justify-content-center align-items-center" style="height: 20vh">
-      <h3>- keine schichten gefunden -</h3>
+      <span class="empty-state">keine schichten gefunden</span>
     </div>
     <div class="container">
       <div style="visibility: hidden; position: fixed" [style.left.px]="menuTopLeftPosition.x" [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"></div>
@@ -150,14 +150,89 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   `,
   styles: [
     `
-          .table-container {
-            overflow: hidden;
-            position: relative;
-          }
-          .expand-button {
-            margin-top: 10px;
-          }
-        `
+      @import '../../const';
+
+      .table-container {
+        overflow: hidden;
+        position: relative;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      }
+
+      .expand-button {
+        margin-top: 8px;
+        color: #999;
+        font-size: 12px;
+      }
+
+      .expand-button button {
+        color: $fex-dark;
+      }
+
+      .row-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: rgba(92, 56, 142, 0.08);
+        color: $fex-dark;
+        font-size: 11px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+      }
+
+      .missing-end {
+        background: rgba(185, 18, 27, 0.08);
+        color: $warn;
+        padding: 2px 9px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.15s;
+      }
+
+      .missing-end:hover {
+        background: rgba(185, 18, 27, 0.16);
+      }
+
+      .empty-state {
+        color: #bbb;
+        font-size: 14px;
+        letter-spacing: 0.3px;
+      }
+
+      :host ::ng-deep .mat-header-row {
+        background: rgba(92, 56, 142, 0.04);
+      }
+
+      :host ::ng-deep th.mat-header-cell {
+        color: $fex-dark;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+        border-bottom: 2px solid rgba(92, 56, 142, 0.12) !important;
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+
+      :host ::ng-deep td.mat-cell {
+        border-bottom-color: rgba(0, 0, 0, 0.04) !important;
+      }
+
+      :host ::ng-deep tr.mat-row {
+        transition: background 0.12s;
+      }
+
+      :host ::ng-deep tr.mat-row:hover {
+        background: rgba(92, 56, 142, 0.025);
+      }
+    `
   ],
   animations: [
     trigger('tableExpand', [
