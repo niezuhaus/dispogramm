@@ -24,7 +24,8 @@ import { standartZonesHB } from '../common/zones';
           <mat-tab-group *ngIf="config" dynamicHeight selectedIndex="{{ data?.pageIndex || 0 }}" class="animated-width">
             <mat-tab [label]="'preise'">
               <div style="max-height:50vh; overflow-y: scroll;" class="flex flex-row">
-                <div style="width: 33%; min-width: 260px">
+                <div class="price-col" style="width: 33%; min-width: 260px">
+                  <div class="col-header">listenpreis</div>
                   <div class="option w8020 small">
                     <label>
                       grundpreis bis
@@ -95,7 +96,8 @@ import { standartZonesHB } from '../common/zones';
                     </div>
                   </div>
                 </div>
-                <div style="width: 33%; min-width: 260px">
+                <div class="price-col" style="width: 33%; min-width: 260px">
+                  <div class="col-header">entfernungspreise</div>
                   <div class="option w8020">
                     <label>um's eck</label>
                     <div>
@@ -140,7 +142,8 @@ import { standartZonesHB } from '../common/zones';
                     </div>
                   </div>
                 </div>
-                <div style="width: 33%; min-width: 260px">
+                <div class="price-col" style="width: 33%; min-width: 260px">
+                  <div class="col-header">zuschläge</div>
                   <div class="option w8020 mr-3">
                     <label> lastzuschlag </label>
                     <div>
@@ -429,22 +432,10 @@ import { standartZonesHB } from '../common/zones';
               </div>
             </mat-tab>
 
-            <mat-tab [label]="'was ist neu?'" style="y-overflow: scroll">
-              <!-- <div class="flex flex-row justify-content-between align-items-end">
-                <div>
-                  <div class="flex flex-row align-items-baseline">
-                    <h1>dispogramm</h1>
-                    <span style="color: gray; font-family: monospace"
-                      ><i>v{{ version }}</i></span
-                    >
-                  </div>
-                  <p>entwickelt 2020 - {{ year }} <br />vom fahrrad express kurier:innenkollektiv</p>
-                  <p>frontend: dezwo</p>
-                  <p>backend: jan</p>
-                </div>
-                <img src="../../assets/logo/fex-logo.png" style="width: 200px" alt="fex logo" />
-              </div> -->
-              <div class="markdownBody p-4" [innerHTML]="readmeHtml"></div>
+            <mat-tab [label]="'was ist neu?'">
+              <div style="max-height: 50vh; overflow-y: auto;">
+                <div class="markdownBody p-4" [innerHTML]="readmeHtml"></div>
+              </div>
             </mat-tab>
 
             <mat-tab *ngIf="isDezwo" [label]="'extras'">
@@ -454,7 +445,7 @@ import { standartZonesHB } from '../common/zones';
               </div>
             </mat-tab>
           </mat-tab-group>
-          <hr *ngIf="config" />
+          <div class="backend-section">
           <!-- backend settings -->
           <div class="option w4060" style="min-width: 700px">
             <label> backend-ip/url </label>
@@ -520,7 +511,8 @@ import { standartZonesHB } from '../common/zones';
               </div>
             </div>
           </div>
-          <div class="w-100 flex justify-between">
+          </div>
+          <div class="dialog-footer">
             <button mat-raised-button class="fex-button" matDialogClose (click)="save()">speichern</button>
             <button mat-raised-button class="fex-button" matDialogClose>schließen</button>
           </div>
@@ -560,6 +552,8 @@ import { standartZonesHB } from '../common/zones';
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        color: $fex-dark;
+        font-size: 13px;
       }
 
       .option:not(.small) > label {
@@ -654,6 +648,48 @@ import { standartZonesHB } from '../common/zones';
 
       mat-tab > div {
         width: 40em;
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid rgba(92, 56, 142, 0.07);
+        margin: 0;
+      }
+
+      .col-header {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: $fex-dark;
+        opacity: 0.5;
+        padding: 14px 0 6px;
+      }
+
+      .price-col {
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 0 8px;
+      }
+
+      .price-col:last-child {
+        border-right: none;
+      }
+
+      .backend-section {
+        padding: 12px 16px 0;
+        border-top: 1px solid rgba(92, 56, 142, 0.08);
+        background: rgba(92, 56, 142, 0.02);
+      }
+
+      .dialog-footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        border-top: 1px solid rgba(92, 56, 142, 0.1);
+        background: rgba(92, 56, 142, 0.03);
+        margin-top: 4px;
       }
     `
   ]
