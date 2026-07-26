@@ -110,8 +110,10 @@ export class NewClientDialogComponent implements OnInit {
   onSaveClicked(): void {
     this.saveAttempted = true;
     this.saveAttemptCount += 1;
-    if (!this.canSave()) this.streetSearch.triggerError();
-    return;
+    if (!this.canSave()) {
+      this.streetSearch.triggerError();
+      return;
+    }
     this.save();
   }
 
