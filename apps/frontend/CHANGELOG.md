@@ -1,28 +1,34 @@
-# Changelog
+# changelog
+
+## v1.5.1
+
+### features
+
+### improvements
 
 ## v1.5.0
 
-### Features
-- client *stammblatt* can be exported as PDF
+### features
+- client *stammblatt* can be exported as pdf
 - locations can be deactivated — deactivated locations no longer appear in search results
 - client view uses tabs instead of expansion panels
 - unsaved changes guard for client editing
 - confirmation dialog when changing billing address asks whether locations should be updated, old location will get deactivated
 - input validation with shake animation on invalid submit
 - restructured special price dialog
-- removed bing/azure geocoding, switched to autocomplete API
+- removed bing/azure geocoding, switched to autocomplete api
 
-### Improvements
+### improvements
 - price on tourplan shows tooltip whether it was calculated via street routing or air-line distance
-- client list reflects URL query terms in the search bar
-- search input reflects search word in URL bar
+- client list reflects url query terms in the search bar
+- search input reflects search word in url bar
 - cargo type now visible when highlights are hidden
-- minor layout fixes and UI improvements
+- minor layout fixes and ui improvements
 
-### Fixes
+### fixes
 - posttour names
 - zone options were not displayed
-- null crash in `Shift.startTimeGuess` when accessing `startTimes` map
+- null crash in `shift.starttimeguess` when accessing `starttimes` map
 - expenses handling
 - issue when entering new client from clients page
 - memory leaks
@@ -31,31 +37,31 @@
 
 ## v1.4.6
 
-### Features
+### features
 - notes can now be marked as `done`
 
 ---
 
 ## v1.4.5
 
-### Features
+### features
 - added *außenring*: a zone that is subtractive / is being triggered when left
 
-### Improvements
-- upgrade to material 15 UI elements + layout changes
+### improvements
+- upgrade to material 15 ui elements + layout changes
 - removed bing/azure for geocoding
 
 ---
 
 ## v1.4.4
 
-### Features
-- displaying `README.md` in `einstellungen > information`
+### features
+- displaying `readme.md` in `einstellungen > information`
 
-### Improvements
+### improvements
 - more improvements to shift view: layout changes
 
-### Fixes
+### fixes
 - when opening newtour view via `anmeldung` time was set to `0:00`, now `8:00`
 - shift end times were not saved correctly
 
@@ -63,69 +69,69 @@
 
 ## v1.4.3
 
-### Features
+### features
 - finished shift now linked in name of messenger in check-in view > closed shifts
 - more shift right click options
 
-### Fixes
+### fixes
 - when adding new shift, only shift types available that match `messenger.dispatcher` status
 - `shifts-overview`: no page reload when adding/deleting shifts
 - `shifts-overview`: hours didn't get recalculated when a shift was edited
-- minor UI fixes
+- minor ui fixes
 
 ---
 
 ## v1.4.2
 
-### Features
+### features
 - messengers in shifts view can be filtered to the ones having shifts
 - version tag now visible in menu bar
-- `Shifttype.ag` added
+- `shifttype.ag` added
 - compiled backend added
 
-### Improvements
+### improvements
 - search improvements
 - shift table now refreshing when deleting shifts from it
 
-### Fixes
-- `Shifttype.kitah` removed
+### fixes
+- `shifttype.kitah` removed
 - dispatcher-only people were not to be found
 - center of route is outside of inclusive but inside of exclusive zone
 - adding shift button in shifts view not working properly
-- minor UI changes
+- minor ui changes
 
 ---
 
 ## v1.4.1
 
-### Features
+### features
 - "exclusive zones" available (currently hardcoded to work only on the name "außenring")
 - minimum wage can be configured in options
 - new shifts overview available in side menu
 
-### Fixes
+### fixes
 - minor fixes and typos
 
 ---
 
 ## v1.4.0
 
-### Features
-- street navigation via OSM available as toggle button in planning view
+### features
+- street navigation via osm available as toggle button in planning view
 
-### Improvements
+### improvements
 - small layout changes
 
-### Fixes
-- red pin now showing up when `job.clientInvolved = false`
+### fixes
+- red pin now showing up when `job.clientinvolved = false`
 
 ---
 
 ## v1.3.10
 
-### Features
+### features
 - introduced changelog 🥳
 
-### Fixes
-- wrong API call while creating zone
+### fixes
+- wrong api call while creating zone
 - map would not open to show a zone
