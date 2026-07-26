@@ -22,7 +22,8 @@ export class FexRules implements PriceStrategy {
     set.branches.forEach((b) => res.add(this.calcBranchPrice(b, noZones)));
     set.price = res;
     let job = set.branches[0].job;
-    if (job.outerRing) {
+    if (job.center.zone?.exclusive) {
+      job.outerRing = job.center.zone;
       res.add(job.outerRing.price);
     }
 
