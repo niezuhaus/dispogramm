@@ -5,6 +5,11 @@
 ### features
 
 ### improvements
+- ui redo check-in dialog and shifts page
+
+### fixes
+- messengers don't show up in list anymore after selected for check-in
+- outer ring was not added up, when center station was outside of outer ring
 
 ## v1.5.0
 
