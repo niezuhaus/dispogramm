@@ -24,28 +24,30 @@ apps/
 
 ## Installation
 
-### 1. Set up MongoDB
+### Quick start (recommended)
 
-Start a MongoDB instance on the default port (27017). You can use a [Docker container](https://hub.docker.com/_/mongo):
-
-```bash
-docker run -d -p 27017:27017 mongo
-```
-
-### 2. Clone the repository
+The whole stack — frontend, backend, and MongoDB — is defined in a single [docker-compose.yml](docker-compose.yml) at the repo root:
 
 ```bash
 git clone git@github.com:niezuhaus/dispogramm.git
+cd dispogramm
+docker compose up
 ```
 
-### 3. Start the backend
+Access the app at `localhost` (port 80). This is the fastest way to get dispogramm running and matches how it's deployed in production.
+
+### Development setup
+
+For active frontend/backend development with hot-reload, run the pieces separately instead.
+
+#### 1. Start the backend + MongoDB
 
 ```bash
 cd apps/backend
 docker compose up
 ```
 
-Or without Docker (requires Java 11 + Maven 3.8+):
+Or without Docker (requires Java 11 + Maven 3.8+), against a MongoDB instance on the default port (27017):
 
 ```bash
 cd apps/backend
@@ -54,7 +56,7 @@ mvn -pl backend spring-boot:run
 
 The backend runs on `localhost:8081`.
 
-### 4. Start the frontend
+#### 2. Start the frontend
 
 ```bash
 cd apps/frontend
@@ -63,14 +65,6 @@ npm run start
 ```
 
 Access the app at `localhost:4200`.
-
-For production, build and host the output:
-
-```bash
-cd apps/frontend
-npm run build
-# serve contents of apps/frontend/dist/dispogramm
-```
 
 ---
 
