@@ -58,6 +58,7 @@ apps/frontend/test-results/
 apps/frontend/playwright-report/
 apps/frontend/blob-report/
 apps/frontend/playwright/.cache/
+.playwright-mcp/
 
 # ── middleware-api-proxy (apps/middleware-api-proxy/) ─────────────────────────
 
