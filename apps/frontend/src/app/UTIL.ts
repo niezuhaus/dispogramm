@@ -105,27 +105,13 @@ export function removeItem(key: string): void {
 // UI
 
 export function corners(positions: IPoint[]): LngLatBounds {
+  const longitudes = positions.map((o) => o.longitude);
+  const latitudes = positions.map((o) => o.latitude);
+  // LngLatBounds' array form is [sw, ne]. Passing [ne, sw] yields west > east, which maplibre
+  // reads as a box wrapping ~360° around the globe — fitBounds then zooms out to the whole world.
   return new LngLatBounds([
-    [
-      Math.max.apply(
-        Math,
-        positions.map((o) => o.longitude)
-      ),
-      Math.max.apply(
-        Math,
-        positions.map((o) => o.latitude)
-      )
-    ],
-    [
-      Math.min.apply(
-        Math,
-        positions.map((o) => o.longitude)
-      ),
-      Math.min.apply(
-        Math,
-        positions.map((o) => o.latitude)
-      )
-    ]
+    [Math.min.apply(Math, longitudes), Math.min.apply(Math, latitudes)],
+    [Math.max.apply(Math, longitudes), Math.max.apply(Math, latitudes)]
   ]);
 }
 
