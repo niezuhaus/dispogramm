@@ -106,13 +106,12 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     drawMap.addControl(this.mapboxDraw, 'top-left');
 
     if (this.zone.id && this.zone.polygon) {
-      this.mapGL
-        .on('load', () => {
-          this.addToMap(this.zone.polygon);
-        })
-        .fitBounds(bbox(this.zone.polygon) as LngLatBoundsLike, {
-          padding: { left: 50, top: 50, right: 50, bottom: 50 }
-        });
+      this.mapGL.on('load', () => {
+        this.addToMap(this.zone.polygon);
+      });
+      this.mapGL.fitBounds(bbox(this.zone.polygon) as LngLatBoundsLike, {
+        padding: { left: 50, top: 50, right: 50, bottom: 50 }
+      });
     }
 
     drawMap.on('draw.update', (e: { features: Feature<Polygon>[] }) => {
