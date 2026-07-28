@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { CanDeactivate } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -11,7 +10,7 @@ export interface HasUnsavedChanges {
 }
 
 @Injectable({ providedIn: 'root' })
-export class UnsavedChangesGuard implements CanDeactivate<HasUnsavedChanges> {
+export class UnsavedChangesGuard {
   constructor(private dialog: MatDialog) {}
 
   canDeactivate(component: HasUnsavedChanges): Observable<boolean> | boolean {
