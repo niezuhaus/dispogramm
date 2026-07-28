@@ -415,17 +415,17 @@ import { standartZonesHB } from '../common/zones';
                 </div>
               </div>
               <div class="option w2080">
-                <label> mapbox </label>
+                <label> maptiler </label>
                 <div>
                   <mat-form-field style="width: 450px">
                     <input
                       matInput
                       [type]="isDezwo ? 'text' : 'password'"
-                      #mapboxApiKey
-                      (focusin)="mapboxApiKey.select()"
-                      [(ngModel)]="config.api.mapbox"
-                      (change)="changedStrings.set('mapboxApiKey', mapboxApiKey.value); reloadPage = true"
-                      (keyup)="changedStrings.set('mapboxApiKey', mapboxApiKey.value)"
+                      #maptilerApiKey
+                      (focusin)="maptilerApiKey.select()"
+                      [(ngModel)]="config.api.maptiler"
+                      (change)="changedStrings.set('maptilerApiKey', maptilerApiKey.value); reloadPage = true"
+                      (keyup)="changedStrings.set('maptilerApiKey', maptilerApiKey.value)"
                     />
                   </mat-form-field>
                 </div>

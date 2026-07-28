@@ -208,10 +208,10 @@ export interface ConfigDataContract {
      */
     geoapify: string;
     /**
-     * token to access mapbox map-data
-     * to generate a new token click <a href="https://account.mapbox.com/access-tokens/">here</a>
+     * API key to access MapTiler map-data
+     * to generate a new key click <a href="https://cloud.maptiler.com/account/keys/">here</a>
      */
-    mapbox: string;
+    maptiler: string;
   };
   workingDays: number;
   nearbyDist: number;

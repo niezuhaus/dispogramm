@@ -4,6 +4,17 @@
 @import 'src/lib/core/theming/_palette.scss';
 @import '@angular/material/theming';
 @import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+
+// @mapbox/mapbox-gl-draw classes its control container '.mapboxgl-ctrl', unaware that
+// maplibre-gl.css renamed the class it uses to re-enable pointer-events on controls to
+// '.maplibregl-ctrl' (corner containers set pointer-events: none and only restore it for
+// that class). Without this, draw's buttons render but never receive clicks.
+.maplibregl-ctrl-top-left .mapboxgl-ctrl,
+.maplibregl-ctrl-top-right .mapboxgl-ctrl,
+.maplibregl-ctrl-bottom-left .mapboxgl-ctrl,
+.maplibregl-ctrl-bottom-right .mapboxgl-ctrl {
+  pointer-events: auto;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnDestroy, 
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Zone } from '../classes/Zone';
 import { GC } from '../common/GC';
-import { LngLatBoundsLike, Map } from 'mapbox-gl';
+import { LngLatBoundsLike, Map } from 'maplibre-gl';
 import { initMap } from '../UTIL';
 import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf';
@@ -99,7 +99,11 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    this.mapGL.addControl(this.mapboxDraw);
+    // @mapbox/mapbox-gl-draw's types are hard-wired to mapbox-gl's Map/event types via
+    // module augmentation, which doesn't apply to maplibre-gl. Runtime behavior is unaffected
+    // (MapLibre fires the same custom draw.* events); cast narrowly at this boundary only.
+    const drawMap = this.mapGL as any;
+    drawMap.addControl(this.mapboxDraw, 'top-left');
 
     if (this.zone.id && this.zone.polygon) {
       this.mapGL
@@ -111,15 +115,15 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    this.mapGL.on('draw.update', (e: { features: Feature<Polygon>[] }) => {
+    drawMap.on('draw.update', (e: { features: Feature<Polygon>[] }) => {
       this.zone._coordinates = e.features[0].geometry.coordinates[0];
     });
 
-    this.mapGL.on('draw.create', (e: { features: Feature<Polygon>[] }) => {
+    drawMap.on('draw.create', (e: { features: Feature<Polygon>[] }) => {
       this.zone._coordinates = e.features[0].geometry.coordinates[0];
     });
 
-    this.mapGL.on('draw.delete', (e: Feature<Polygon>[]) => {
+    drawMap.on('draw.delete', (e: Feature<Polygon>[]) => {
       this.zone._coordinates = (this.mapboxDraw.getAll().features as Feature<Polygon>[]).map((f) => f.geometry.coordinates[0])[0];
     });
   }

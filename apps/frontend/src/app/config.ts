@@ -5,5 +5,5 @@ export const config = {
   VAPID_PUBLIC_KEY: process.env['VAPID_PUBLIC_KEY'] || '',
   lexOfficeApiKey: process.env['LEXOFFICE_API_KEY'] || '',
   geoapifyApiKey: process.env['GEOAPIFY_API_KEY'] || '',
-  mapboxApiKey: process.env['MAPBOX_API_KEY'] || ''
+  maptilerApiKey: process.env['MAPTILER_API_KEY'] || ''
 };

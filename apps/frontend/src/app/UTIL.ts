@@ -1,15 +1,13 @@
 import { IPoint } from './common/interfaces';
-import mapboxgl, { Map, LngLat, LngLatBounds, NavigationControl, Marker, GeoJSONSource } from 'mapbox-gl';
+import { Map, LngLat, LngLatBounds, NavigationControl, Marker, GeoJSONSource } from 'maplibre-gl';
 import { GC } from './common/GC';
 import { degrees2radians, Position, radians2degrees } from '@turf/turf';
 import { Geolocation } from './classes/Geolocation';
 
-// mapboxgl.map
+// maplibregl.map
 
 export function initMap(options?: { lnglat: LngLat; zoom: number; container: string | HTMLElement }): Map {
-  mapboxgl.accessToken = GC.config.api.mapbox;
-
-  const style = GC.MAPBOX_STYLE;
+  const style = `https://api.maptiler.com/maps/${GC.MAPTILER_STYLE_ID}/style.json?key=${GC.config.api.maptiler}`;
 
   let map: Map;
   try {

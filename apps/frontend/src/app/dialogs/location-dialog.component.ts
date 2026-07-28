@@ -7,7 +7,7 @@ import { Job } from '../classes/Job';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { initMap, setMarker } from '../UTIL';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
-import mapboxgl, { LngLat } from 'mapbox-gl';
+import maplibregl, { LngLat } from 'maplibre-gl';
 import { GC } from '../common/GC';
 import { SearchinputComponent } from '../views/newtour/inputfield/searchinput/searchinput.component';
 import { AreYouSureDialogComponent } from './are-you-sure-dialog.component';
@@ -161,8 +161,8 @@ export class LocationDialogComponent implements OnInit, OnDestroy {
   saveAttemptMatcher: ErrorStateMatcher;
 
   loaded = false;
-  marker: mapboxgl.Marker;
-  map: mapboxgl.Map;
+  marker: maplibregl.Marker;
+  map: maplibregl.Map;
   dataSource: MatTableDataSource<Job>;
   displayedColumns: string[] = ['description', 'traveldist', 'price'];
 

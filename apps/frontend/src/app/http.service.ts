@@ -55,7 +55,7 @@ export class HttpService {
   private lexAuthHeader: HttpHeaders;
   private backendAuthHeader: HttpHeaders;
   private GEOAPIFY_API_KEY: string;
-  private MAPBOX_API_KEY: string;
+  private MAPTILER_API_KEY: string;
 
   constructor(
     private http: HttpClient,
@@ -74,12 +74,12 @@ export class HttpService {
     });
   }
 
-  set keys(keys: { lex: string; geoapify: string; mapbox: string }) {
+  set keys(keys: { lex: string; geoapify: string; maptiler: string }) {
     this.lexAuthHeader = new HttpHeaders({
       Authorization: `Bearer ${keys.lex}`
     });
     this.GEOAPIFY_API_KEY = keys.geoapify;
-    this.MAPBOX_API_KEY = keys.mapbox;
+    this.MAPTILER_API_KEY = keys.maptiler;
   }
 
   public static _filterLocationsByAny(list: Geolocation[], value: string): Geolocation[] {

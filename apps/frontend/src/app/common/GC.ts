@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, Observable, of, zip } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { LngLat } from 'mapbox-gl';
+import { LngLat } from 'maplibre-gl';
 import { map } from 'rxjs/operators';
 import { OSMGeocoder } from '../views/newtour/inputfield/searchinput/searchinput.component';
 import { getBoolean, getItem, setItem } from '../UTIL';
@@ -54,9 +54,9 @@ export class GC {
   public static geocoders: GeoCodingStrategy[] = [new OSMGeocoder()];
 
   /**
-   * the mapbox map style
+   * the MapTiler map style id (see https://cloud.maptiler.com/maps/)
    */
-  public static readonly MAPBOX_STYLE = 'mapbox://styles/niezuhaus/ckzog53n000kg14l8r2fuhjx3';
+  public static readonly MAPTILER_STYLE_ID = 'basic-v2';
   /**
    * @todo use the key to push notifications in browser
    */
@@ -350,7 +350,7 @@ export class GC {
       next: () => {
         GC.loadConfig(http).subscribe(() => {
           GC.config = GC.readConfig();
-          if (!GC.config.api.mapbox || !GC.config.api.geoapify) {
+          if (!GC.config.api.maptiler || !GC.config.api.geoapify) {
             GC.apiKeyMissing = true;
             return;
           }
@@ -461,7 +461,7 @@ export class GC {
       api: {
         lex: GC.readString('lexOfficeApiKey') || config.lexOfficeApiKey,
         geoapify: GC.readString('geoapifyApiKey') || config.geoapifyApiKey,
-        mapbox: GC.readString('mapboxApiKey') || config.mapboxApiKey
+        maptiler: GC.readString('maptilerApiKey') || config.maptilerApiKey
       },
       workingDays: GC.readNumber('workingDays') || 21.3,
       nearbyDist: GC.readNumber('nearbyDist') || 150,
@@ -535,7 +535,6 @@ export class GC {
     }
     return undefined;
   }
-
 
   private static readString(key: string): string {
     return GC.rawConfigsMap.get(key);

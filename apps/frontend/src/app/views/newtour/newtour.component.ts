@@ -12,8 +12,8 @@ import { SearchinputComponent } from './inputfield/searchinput/searchinput.compo
 import { ActivatedRoute } from '@angular/router';
 import { LocationDialogComponent } from '../../dialogs/location-dialog.component';
 import { Location } from '@angular/common';
-import * as mapboxgl from 'mapbox-gl';
-import { GeoJSONSource, LngLat, Marker, Popup } from 'mapbox-gl';
+import * as maplibregl from 'maplibre-gl';
+import { GeoJSONSource, LngLat, Marker, Popup } from 'maplibre-gl';
 import { GC } from '../../common/GC';
 import { Price } from '../../classes/Price';
 import { Job, RegularJob } from '../../classes/Job';
@@ -50,7 +50,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   focussedInput: SearchinputComponent = null;
 
   // MAP VARIABLES
-  mapGL: mapboxgl.Map;
+  mapGL: maplibregl.Map;
   markerGL: Marker[] = [];
   popUpGL: Popup[] = [];
   mapboxDraw: MapboxDraw;
@@ -430,8 +430,12 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
       displayControlsDefault: false,
       defaultMode: 'draw_polygon'
     });
-    this.mapGL.addControl(this.mapboxDraw);
-    this.mapGL.on('draw.modechange', (event: { mode: string }) => {
+    // @mapbox/mapbox-gl-draw's types are hard-wired to mapbox-gl's Map/event types via
+    // module augmentation, which doesn't apply to maplibre-gl. Runtime behavior is unaffected
+    // (MapLibre fires the same custom draw.* events); cast narrowly at this boundary only.
+    const drawMap = this.mapGL as any;
+    drawMap.addControl(this.mapboxDraw, 'top-left');
+    drawMap.on('draw.modechange', (event: { mode: string }) => {
       switch (event.mode) {
         case 'draw_polygon':
           this.reverseGeocodingActivated = false;
@@ -453,9 +457,9 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     if (this.staticMode) {
       this.mapboxDraw.changeMode('static');
     }
-    this.mapGL.on('draw.create', (event) => this.createPolygons(event));
-    this.mapGL.on('draw.delete', (event) => {});
-    this.mapGL.on('draw.update', (event) => this.updatePolygons(event));
+    drawMap.on('draw.create', (event: any) => this.createPolygons(event));
+    drawMap.on('draw.delete', (event: any) => {});
+    drawMap.on('draw.update', (event: any) => this.updatePolygons(event));
 
     // show zones
     this.mapGL.on('load', () => {
@@ -663,7 +667,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
    * @param coos
    */
   drawLine(id: string, coos: Position[]): void {
-    const source: GeoJSONSource = this.mapGL.getSource(id) as GeoJSONSource;
+    const source: GeoJSONSource = this.mapGL.getSource(id) as unknown as GeoJSONSource;
     if (source) {
       source.setData({
         type: 'Feature',
@@ -819,7 +823,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     const popup = new Popup({
       closeButton: false,
       closeOnClick: false,
-      offset: new mapboxgl.Point(0, -41)
+      offset: [0, -41] as [number, number]
     });
     if (station.street && station.zipCode) {
       popup
