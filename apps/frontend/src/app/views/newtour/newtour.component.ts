@@ -19,9 +19,10 @@ import { Price } from '../../classes/Price';
 import { Job, RegularJob } from '../../classes/Job';
 import { RegularJobDialogComponent } from '../../dialogs/regular-job-dialog.component';
 import { NewClientDialogComponent } from '../../dialogs/new-client-dialog.component';
-import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
+import { GeoJSONStoreFeatures, TerraDraw, TerraDrawPolygonMode } from 'terra-draw';
+import { TerraDrawMapLibreGLAdapter } from 'terra-draw-maplibre-gl-adapter';
 import { ZoneDialogComponent } from '../../dialogs/zone-dialog.component';
-import { Feature, lineString, polygon, Polygon, Position } from '@turf/turf';
+import { lineString, polygon, Polygon, Position } from '@turf/turf';
 import { Geolocation, Station } from '../../classes/Geolocation';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CheckInDialog } from '../../dialogs/shifts-dialog/check-in-dialog.component';
@@ -53,10 +54,10 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   mapGL: maplibregl.Map;
   markerGL: Marker[] = [];
   popUpGL: Popup[] = [];
-  mapboxDraw: MapboxDraw;
+  terraDraw: TerraDraw;
   locationPopUpOpen: boolean;
   polygon: Position[][];
-  polygonIds = new Map<string, string>();
+  polygonIds = new Map<string, string | number>();
 
   private destroy$ = new Subject<void>();
 
@@ -189,6 +190,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.terraDraw?.stop();
     this.mapGL.remove();
   }
 
@@ -422,49 +424,36 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     if (!this.mapGL) {
       return;
     }
-    let modes = MapboxDraw.modes;
-    // @ts-ignore
-    modes.static = require('@mapbox/mapbox-gl-draw-static-mode');
-
-    this.mapboxDraw = new MapboxDraw({
-      displayControlsDefault: false,
-      defaultMode: 'draw_polygon'
+    // terra-draw always registers a built-in 'static' mode (features render, nothing is
+    // interactive), so the polygon mode is the only one we need to declare ourselves.
+    this.terraDraw = new TerraDraw({
+      adapter: new TerraDrawMapLibreGLAdapter({ map: this.mapGL }),
+      modes: [new TerraDrawPolygonMode()]
     });
-    // @mapbox/mapbox-gl-draw's types are hard-wired to mapbox-gl's Map/event types via
-    // module augmentation, which doesn't apply to maplibre-gl. Runtime behavior is unaffected
-    // (MapLibre fires the same custom draw.* events); cast narrowly at this boundary only.
-    const drawMap = this.mapGL as any;
-    drawMap.addControl(this.mapboxDraw, 'top-left');
-    drawMap.on('draw.modechange', (event: { mode: string }) => {
-      switch (event.mode) {
-        case 'draw_polygon':
-          this.reverseGeocodingActivated = false;
-          break;
-
-        case 'direct_select':
-          this.reverseGeocodingActivated = false;
-          break;
-
-        case 'static':
-          this.reverseGeocodingActivated = true;
-          break;
-
-        default:
-          this.reverseGeocodingActivated = true;
-          break;
+    this.terraDraw.on('finish', (id) => {
+      const geometry = this.terraDraw.getSnapshotFeature(id)?.geometry;
+      if (geometry?.type === 'Polygon') {
+        this.createPolygons(geometry as Polygon);
       }
     });
-    if (this.staticMode) {
-      this.mapboxDraw.changeMode('static');
-    }
-    drawMap.on('draw.create', (event: any) => this.createPolygons(event));
-    drawMap.on('draw.delete', (event: any) => {});
-    drawMap.on('draw.update', (event: any) => this.updatePolygons(event));
+    this.terraDraw.on('change', (ids, type) => {
+      if (type !== 'update') {
+        return;
+      }
+      const geometry = this.terraDraw.getSnapshotFeature(ids[0])?.geometry;
+      if (geometry?.type === 'Polygon') {
+        this.updatePolygons(geometry as Polygon);
+      }
+    });
 
     // show zones
     this.mapGL.on('load', () => {
       this.loaded = true;
       this.mapGL.resize();
+      // terra-draw's adapter adds its own sources and layers when it starts, so it can only be
+      // started once the style has finished loading — and before anything calls addFeatures().
+      this.terraDraw.start();
+      this.setDrawMode(this.staticMode ? 'static' : 'polygon');
       this.setPointWithPopUp([{ position: [8.80472, 53.08906], name: 'FEX' }]); // FEX
       if (GC.config.showZonesPermanently) {
         GC.zones.forEach((z) => {
@@ -525,10 +514,18 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     });
   }
 
-  createPolygons(features: Polygon[]): void {
-    const f = features[features.length - 1];
-    console.log(this.mapboxDraw.getAll().features);
-    const zone = new Zone({ id: null, name: '', _coordinates: f.coordinates[0] });
+  /**
+   * terra-draw has no mode-change event of its own — every transition goes through here, so this
+   * is also where the reverse-geocoding flag is kept in sync (clicking the map geocodes only when
+   * the user isn't drawing).
+   */
+  setDrawMode(mode: 'static' | 'polygon'): void {
+    this.terraDraw.setMode(mode);
+    this.reverseGeocodingActivated = mode === 'static';
+  }
+
+  createPolygons(geometry: Polygon): void {
+    const zone = new Zone({ id: null, name: '', _coordinates: geometry.coordinates[0] });
     const dialog = GC.dialog.open(ZoneDialogComponent, {
       data: {
         zone: zone
@@ -569,9 +566,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     });
   }
 
-  updatePolygons(features: { features: Feature<Polygon>[] }): void {
-    this.polygon = features.features[0].geometry.coordinates;
-    console.log(this.polygon);
+  updatePolygons(geometry: Polygon): void {
+    this.polygon = geometry.coordinates;
   }
 
   toggleWeserPart(south: boolean): void {
@@ -600,16 +596,16 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   toggleObject(name: string, coordinates: Position[], line: boolean): void {
     const id = this.polygonIds.get(name);
     if (!id) {
-      this.polygonIds.set(
-        name,
-        this.mapboxDraw.add(
-          line
-            ? lineString(coordinates) // todo ? is it right?
-            : polygon([coordinates])
-        )[0]
-      );
+      // terra-draw requires every feature to carry an id and a properties.mode naming a
+      // registered mode; 'static' renders it without making it editable.
+      const featureId = this.terraDraw.getFeatureId();
+      const feature = line
+        ? lineString(coordinates) // todo ? is it right?
+        : polygon([coordinates]);
+      this.terraDraw.addFeatures([{ ...feature, id: featureId, properties: { mode: 'static' } } as GeoJSONStoreFeatures]);
+      this.polygonIds.set(name, featureId);
     } else {
-      this.mapboxDraw.delete(id);
+      this.terraDraw.removeFeatures([id]);
       this.polygonIds.delete(name);
       if (!line) {
         this.mapGL.removeLayer(name);
@@ -620,7 +616,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
 
   deleteZones(): void {
     this.polygonIds.forEach((id, name) => {
-      this.mapboxDraw.delete(id);
+      this.terraDraw.removeFeatures([id]);
       this.polygonIds.delete(name);
       this.mapGL.removeLayer(name);
       if (this.mapGL.getSource(name)) {
