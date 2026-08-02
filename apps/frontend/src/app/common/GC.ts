@@ -56,7 +56,7 @@ export class GC {
   /**
    * the MapTiler map style id (see https://cloud.maptiler.com/maps/)
    */
-  public static readonly MAPTILER_STYLE_ID = 'basic-v2';
+  public static readonly MAPTILER_STYLE_ID = '019fbff5-603d-7c67-8d42-a5472cae7bce';
   /**
    * @todo use the key to push notifications in browser
    */

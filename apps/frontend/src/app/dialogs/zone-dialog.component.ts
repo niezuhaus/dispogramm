@@ -4,8 +4,9 @@ import { Zone } from '../classes/Zone';
 import { GC } from '../common/GC';
 import { LngLatBoundsLike, Map } from 'maplibre-gl';
 import { initMap } from '../UTIL';
-import * as MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { bbox, Feature, MultiPolygon, polygon, Polygon, union } from '@turf/turf';
+import { GeoJSONStoreFeatures, TerraDraw, TerraDrawPolygonMode, TerraDrawSelectMode } from 'terra-draw';
+import { TerraDrawMapLibreGLAdapter } from 'terra-draw-maplibre-gl-adapter';
+import { bbox, Feature, MultiPolygon, Polygon, Position } from '@turf/turf';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state-matcher';
 
@@ -32,6 +33,15 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
 
             <div id="mapcontainer">
               <div #map id="map"></div>
+              <!-- terra-draw ships no controls of its own, so the draw/delete buttons live here -->
+              <div class="draw-controls">
+                <button mat-mini-fab class="draw-button" matTooltip="zone zeichnen" (click)="drawPolygon()">
+                  <i class="bi bi-pentagon"></i>
+                </button>
+                <button mat-mini-fab class="draw-button" matTooltip="zone löschen" [disabled]="!zone.polygon" (click)="deletePolygon()">
+                  <i class="bi bi-trash-fill"></i>
+                </button>
+              </div>
             </div>
 
             <div class="flex flex-column">
@@ -44,6 +54,8 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
   `,
   styles: [
     `
+      @import 'src/const.scss';
+
       #mapcontainer {
         position: relative;
         width: 100%;
@@ -53,15 +65,28 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
       #map {
         height: 60vh;
       }
+
+      .draw-controls {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .draw-button:not([disabled]) {
+        background-color: $fex-dark;
+        color: white;
+      }
     `
   ]
 })
 export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   confirm = new EventEmitter<Zone>();
   mapGL: Map;
-  mapboxDraw: MapboxDraw;
+  terraDraw: TerraDraw;
   zone: Zone;
-  polygonIds: string[] = [];
   saveAttempted = false;
   saveAttemptCount = 0;
   saveAttemptMatcher: ErrorStateMatcher;
@@ -81,6 +106,7 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {}
 
   ngOnDestroy(): void {
+    this.terraDraw?.stop();
     this.mapGL?.remove();
   }
 
@@ -91,46 +117,97 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
       container: 'map'
     });
 
-    this.mapboxDraw = new MapboxDraw({
-      displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        trash: true
+    this.terraDraw = new TerraDraw({
+      adapter: new TerraDrawMapLibreGLAdapter({ map: this.mapGL }),
+      modes: [
+        new TerraDrawPolygonMode(),
+        // the flags spell out what mapbox-gl-draw allowed implicitly: move the zone as a whole,
+        // drag its corners, add one via the midpoints and remove one again.
+        new TerraDrawSelectMode({
+          flags: {
+            polygon: {
+              feature: {
+                draggable: true,
+                coordinates: { midpoints: true, draggable: true, deletable: true }
+              }
+            }
+          }
+        })
+      ]
+    });
+
+    this.terraDraw.on('finish', (id) => {
+      // a zone owns exactly one polygon, so a freshly drawn one replaces whatever was there
+      const stale = this.terraDraw
+        .getSnapshot()
+        .filter((f) => f.id !== id && f.properties?.['mode'] === 'polygon')
+        .map((f) => f.id);
+      if (stale.length) {
+        this.terraDraw.removeFeatures(stale);
+      }
+      this.readCoordinates([id]);
+      // terra-draw stays in the mode it was set to; dropping back to selection is what makes the
+      // polygon editable right after drawing it, the way mapbox-gl-draw behaved.
+      this.terraDraw.setMode('select');
+    });
+
+    this.terraDraw.on('change', (ids, type) => {
+      if (type === 'update') {
+        this.readCoordinates(ids);
       }
     });
 
-    // @mapbox/mapbox-gl-draw's types are hard-wired to mapbox-gl's Map/event types via
-    // module augmentation, which doesn't apply to maplibre-gl. Runtime behavior is unaffected
-    // (MapLibre fires the same custom draw.* events); cast narrowly at this boundary only.
-    const drawMap = this.mapGL as any;
-    drawMap.addControl(this.mapboxDraw, 'top-left');
+    this.mapGL.on('load', () => {
+      // the adapter registers its own sources and layers on start, so the style has to be up
+      // first — and start() has to precede any addFeatures() call.
+      this.terraDraw.start();
+      this.terraDraw.setMode('select');
+      if (this.zone.id && this.zone.polygon) {
+        this.addToMap(this.zone.polygon);
+      }
+    });
 
     if (this.zone.id && this.zone.polygon) {
-      this.mapGL.on('load', () => {
-        this.addToMap(this.zone.polygon);
-      });
       this.mapGL.fitBounds(bbox(this.zone.polygon) as LngLatBoundsLike, {
         padding: { left: 50, top: 50, right: 50, bottom: 50 }
       });
     }
-
-    drawMap.on('draw.update', (e: { features: Feature<Polygon>[] }) => {
-      this.zone._coordinates = e.features[0].geometry.coordinates[0];
-    });
-
-    drawMap.on('draw.create', (e: { features: Feature<Polygon>[] }) => {
-      this.zone._coordinates = e.features[0].geometry.coordinates[0];
-    });
-
-    drawMap.on('draw.delete', (e: Feature<Polygon>[]) => {
-      this.zone._coordinates = (this.mapboxDraw.getAll().features as Feature<Polygon>[]).map((f) => f.geometry.coordinates[0])[0];
-    });
   }
 
-  addToMap(polygon: Feature<Polygon | MultiPolygon>) {
-    this.zone.polygon = union(this.zone.polygon, polygon);
-    this.mapboxDraw.deleteAll();
-    this.mapboxDraw.add(this.zone.polygon);
+  /** puts the map into drawing mode — the drawn polygon replaces the current one when finished */
+  drawPolygon(): void {
+    this.terraDraw.setMode('polygon');
+  }
+
+  deletePolygon(): void {
+    this.terraDraw.clear();
+    this.terraDraw.setMode('select');
+    // the setter clears `coordinates` too; assigning an empty ring would throw in turf's polygon()
+    this.zone.polygon = null;
+  }
+
+  /**
+   * loads the zone's saved polygon into the draw layer. terra-draw needs an id and a
+   * properties.mode naming a registered mode on every feature handed to it — 'polygon' is what
+   * ties the feature to the select mode's flags above.
+   */
+  addToMap(feature: Feature<Polygon | MultiPolygon>): void {
+    if (feature.geometry.type !== 'Polygon') {
+      return;
+    }
+    this.terraDraw.clear();
+    this.terraDraw.addFeatures([{ ...feature, id: this.terraDraw.getFeatureId(), properties: { mode: 'polygon' } } as GeoJSONStoreFeatures]);
+  }
+
+  /**
+   * select mode reports its own selection points alongside the polygon, so pick the polygon out
+   * rather than trusting the first id.
+   */
+  private readCoordinates(ids: (string | number)[]): void {
+    const drawn = ids.map((id) => this.terraDraw.getSnapshotFeature(id)).find((f) => f?.geometry.type === 'Polygon');
+    if (drawn) {
+      this.zone._coordinates = drawn.geometry.coordinates[0] as Position[];
+    }
   }
 
   canSave(): boolean {

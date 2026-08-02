@@ -19,10 +19,10 @@ import { Price } from '../../classes/Price';
 import { Job, RegularJob } from '../../classes/Job';
 import { RegularJobDialogComponent } from '../../dialogs/regular-job-dialog.component';
 import { NewClientDialogComponent } from '../../dialogs/new-client-dialog.component';
-import { GeoJSONStoreFeatures, TerraDraw, TerraDrawPolygonMode } from 'terra-draw';
+import { TerraDraw, TerraDrawPolygonMode } from 'terra-draw';
 import { TerraDrawMapLibreGLAdapter } from 'terra-draw-maplibre-gl-adapter';
 import { ZoneDialogComponent } from '../../dialogs/zone-dialog.component';
-import { lineString, polygon, Polygon, Position } from '@turf/turf';
+import { Feature, lineString, LineString, polygon, Polygon, Position } from '@turf/turf';
 import { Geolocation, Station } from '../../classes/Geolocation';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CheckInDialog } from '../../dialogs/shifts-dialog/check-in-dialog.component';
@@ -30,6 +30,18 @@ import { TitleComponent } from '../app.component';
 import { Zones } from '../../common/zones';
 import { AreYouSureDialogComponent } from '../../dialogs/are-you-sure-dialog.component';
 import { Branch } from 'src/app/classes/Branch';
+
+/**
+ * outer ring for an exclusive zone's inverted fill. Latitudes stop at the web-mercator cutoff
+ * rather than ±90, which maplibre cannot project.
+ */
+const WORLD_RING: Position[] = [
+  [-180, -85],
+  [180, -85],
+  [180, 85],
+  [-180, 85],
+  [-180, -85]
+];
 
 @Component({
   selector: 'newtour',
@@ -57,7 +69,8 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
   terraDraw: TerraDraw;
   locationPopUpOpen: boolean;
   polygon: Position[][];
-  polygonIds = new Map<string, string | number>();
+  /** names of the zone/river overlays currently on the map — see toggleObject */
+  shownObjects = new Set<string>();
 
   private destroy$ = new Subject<void>();
 
@@ -199,18 +212,24 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
    * @param id the id of the shown to be shown
    */
   loadJobById(id: string): void {
-    GC.http.getJob(id).pipe(takeUntil(this.destroy$)).subscribe((job) => {
-      this.job = new Job(job).init();
-      this.mapGL.on('load', () => {
-        this.createUI(this.job);
-        this.refresh({ zoom: true, pushPrice: job.price });
-      });
-      if (job.regularJobId) {
-        GC.http.getRegularJob(job.regularJobId).pipe(takeUntil(this.destroy$)).subscribe((rj) => {
-          this.job.regularJob = rj;
+    GC.http
+      .getJob(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((job) => {
+        this.job = new Job(job).init();
+        this.mapGL.on('load', () => {
+          this.createUI(this.job);
+          this.refresh({ zoom: true, pushPrice: job.price });
         });
-      }
-    });
+        if (job.regularJobId) {
+          GC.http
+            .getRegularJob(job.regularJobId)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((rj) => {
+              this.job.regularJob = rj;
+            });
+        }
+      });
   }
 
   /**
@@ -424,8 +443,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     if (!this.mapGL) {
       return;
     }
-    // terra-draw always registers a built-in 'static' mode (features render, nothing is
-    // interactive), so the polygon mode is the only one we need to declare ourselves.
+
     this.terraDraw = new TerraDraw({
       adapter: new TerraDrawMapLibreGLAdapter({ map: this.mapGL }),
       modes: [new TerraDrawPolygonMode()]
@@ -572,7 +590,7 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
 
   toggleWeserPart(south: boolean): void {
     const arm = south ? Zones.weserParts.south : Zones.weserParts.east;
-    this.toggleObject(south ? 'werdersee' : 'weser', [arm[0]], true);
+    this.toggleObject(south ? 'werdersee' : 'weser', arm, true);
   }
 
   toggleZone(name: string) {
@@ -580,8 +598,10 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     if (!zone) {
       return;
     }
-    const id = this.polygonIds.get(name);
-    if (!id) {
+    const wasShown = this.shownObjects.has(name);
+    this.toggleObject(name, zone._coordinates, false, zone.exclusive);
+    // added after the shape so the label sits on top of the fill rather than under it
+    if (!wasShown) {
       let coos = [
         [8.81066, 53.08874],
         [8.78625, 53.09249]
@@ -590,39 +610,71 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
         drawText(this.mapGL, name, coos[zone.index]);
       }
     }
-    this.toggleObject(name, zone._coordinates, false);
   }
 
-  toggleObject(name: string, coordinates: Position[], line: boolean): void {
-    const id = this.polygonIds.get(name);
-    if (!id) {
-      // terra-draw requires every feature to carry an id and a properties.mode naming a
-      // registered mode; 'static' renders it without making it editable.
-      const featureId = this.terraDraw.getFeatureId();
-      const feature = line
-        ? lineString(coordinates) // todo ? is it right?
-        : polygon([coordinates]);
-      this.terraDraw.addFeatures([{ ...feature, id: featureId, properties: { mode: 'static' } } as GeoJSONStoreFeatures]);
-      this.polygonIds.set(name, featureId);
-    } else {
-      this.terraDraw.removeFeatures([id]);
-      this.polygonIds.delete(name);
-      if (!line) {
-        this.mapGL.removeLayer(name);
-        this.mapGL.removeSource(name);
-      }
+  /**
+   * shows or hides a zone/river overlay. `exclusive` zones price everything *outside* their border,
+   * so their fill is inverted: the polygon spans the whole world and carries the zone as a hole,
+   * which makes the shaded area the area the price applies to.
+   */
+  toggleObject(name: string, coordinates: Position[], line: boolean, exclusive = false): void {
+    if (this.shownObjects.has(name)) {
+      this.removeObject(name);
+      return;
     }
+
+    // the outline is a separate LineString so it traces the zone border only — drawing a line layer
+    // straight off an inverted fill would trace the world rectangle as well.
+    const features: (Feature<Polygon> | Feature<LineString>)[] = line
+      ? [lineString(coordinates)]
+      : [polygon(exclusive ? [WORLD_RING, coordinates] : [coordinates]), lineString(coordinates)];
+    this.mapGL.addSource(`${name}-shape`, {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: features }
+    });
+    if (!line) {
+      this.mapGL.addLayer({
+        id: `${name}-fill`,
+        type: 'fill',
+        source: `${name}-shape`,
+        filter: ['==', ['geometry-type'], 'Polygon'],
+        paint: {
+          'fill-color': '#000',
+          'fill-opacity': 0.08
+        }
+      });
+    }
+    this.mapGL.addLayer({
+      id: `${name}-outline`,
+      type: 'line',
+      source: `${name}-shape`,
+      filter: ['==', ['geometry-type'], 'LineString'],
+      paint: {
+        'line-color': '#000',
+        'line-width': 2,
+        'line-opacity': 0.4
+      }
+    });
+    this.shownObjects.add(name);
+  }
+
+  /** drops every layer and source a toggled overlay owns, including its label from `drawText` */
+  private removeObject(name: string): void {
+    [`${name}-fill`, `${name}-outline`, name].forEach((id) => {
+      if (this.mapGL.getLayer(id)) {
+        this.mapGL.removeLayer(id);
+      }
+    });
+    [`${name}-shape`, name].forEach((id) => {
+      if (this.mapGL.getSource(id)) {
+        this.mapGL.removeSource(id);
+      }
+    });
+    this.shownObjects.delete(name);
   }
 
   deleteZones(): void {
-    this.polygonIds.forEach((id, name) => {
-      this.terraDraw.removeFeatures([id]);
-      this.polygonIds.delete(name);
-      this.mapGL.removeLayer(name);
-      if (this.mapGL.getSource(name)) {
-        this.mapGL.removeSource(name);
-      }
-    });
+    [...this.shownObjects].forEach((name) => this.removeObject(name));
   }
 
   /** draws a continuous line between the points of a given array */
@@ -1143,9 +1195,11 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
 
   switchBillingMode(): void {
     if (!this.job.client?.clientId) {
-      this.openClientDialog(this.job.center).componentInstance.saved.pipe(take(1)).subscribe(() => {
-        this.job.billingTour = !this.job.billingTour;
-      });
+      this.openClientDialog(this.job.center)
+        .componentInstance.saved.pipe(take(1))
+        .subscribe(() => {
+          this.job.billingTour = !this.job.billingTour;
+        });
     } else {
       this.job.billingTour = !this.job.billingTour;
     }

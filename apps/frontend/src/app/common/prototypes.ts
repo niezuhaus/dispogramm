@@ -782,6 +782,25 @@ String.prototype.editDistance = function (other: string): number {
   return costs[s2.length];
 };
 
+/**
+ * Plain assignment to a built-in prototype creates an *enumerable* property, so every extension
+ * above would show up in any `for...in` over an array/string/date — including ones inside third
+ * party libraries. maplibre's style validator iterates the style's `sprite` array with `for...in`
+ * and then validates each key as a sprite entry, which surfaced as
+ * `sprite[move]: object expected, function found` (one error per extension).
+ *
+ * Native prototype methods are all non-enumerable, so anything still enumerable here was added by
+ * this file — hide it the same way the built-ins are hidden.
+ */
+[Array.prototype, Date.prototype, Number.prototype, String.prototype].forEach((proto) => {
+  Object.getOwnPropertyNames(proto).forEach((name) => {
+    const descriptor = Object.getOwnPropertyDescriptor(proto, name);
+    if (descriptor?.enumerable && descriptor.configurable) {
+      Object.defineProperty(proto, name, { ...descriptor, enumerable: false });
+    }
+  });
+});
+
 /** um den material datepicker auf montag als ersten tag der woche umzustellen */
 @Injectable()
 export class CustomDateAdapter extends NativeDateAdapter {
