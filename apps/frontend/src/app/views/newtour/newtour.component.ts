@@ -438,7 +438,9 @@ export class NewtourComponent extends TitleComponent implements OnInit, AfterVie
     this.mapGL = initMap({
       lnglat: GC.INIT_MAPCENTER,
       zoom: GC.INIT_ZOOM,
-      container: 'map'
+      // the element, not the id — `getElementById` would pick whichever `#map` comes first in the
+      // document once a second map (e.g. the zone dialog's) is on screen
+      container: this.mapContainer.nativeElement
     });
     if (!this.mapGL) {
       return;

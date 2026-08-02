@@ -10,6 +10,18 @@ import { bbox, Feature, MultiPolygon, Polygon, Position } from '@turf/turf';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state-matcher';
 
+/**
+ * mirrors how a zone is painted in the newtour map (see `toggleObject` there), so a zone looks the
+ * same while it is being edited here as it does on the tour map afterwards.
+ */
+const ZONE_FILL_COLOR = '#000000';
+const ZONE_FILL_OPACITY = 0.08;
+const ZONE_OUTLINE_COLOR = '#000000';
+const ZONE_OUTLINE_OPACITY = 0.4;
+const ZONE_OUTLINE_WIDTH = 2;
+/** newtour has no editing handles to copy, so they take the brand colour ($fex-dark) instead */
+const HANDLE_COLOR = '#5c388e';
+
 @Component({
   selector: 'app-zone-dialog',
   template: `
@@ -32,7 +44,8 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
             </div>
 
             <div id="mapcontainer">
-              <div #map id="map"></div>
+              <!-- id must stay unique in the document: newtour's map container is the one called "map" -->
+              <div #map id="zoneMap"></div>
               <!-- terra-draw ships no controls of its own, so the draw/delete buttons live here -->
               <div class="draw-controls">
                 <button mat-mini-fab class="draw-button" matTooltip="zone zeichnen" (click)="drawPolygon()">
@@ -62,7 +75,7 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
         max-height: 60vh;
       }
 
-      #map {
+      #zoneMap {
         height: 60vh;
       }
 
@@ -114,13 +127,23 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mapGL = initMap({
       lnglat: GC.INIT_MAPCENTER,
       zoom: GC.INIT_ZOOM,
-      container: 'map'
+      container: this.mapContainer.nativeElement
     });
 
     this.terraDraw = new TerraDraw({
       adapter: new TerraDrawMapLibreGLAdapter({ map: this.mapGL }),
       modes: [
-        new TerraDrawPolygonMode(),
+        new TerraDrawPolygonMode({
+          styles: {
+            fillColor: ZONE_FILL_COLOR,
+            fillOpacity: ZONE_FILL_OPACITY,
+            outlineColor: ZONE_OUTLINE_COLOR,
+            outlineOpacity: ZONE_OUTLINE_OPACITY,
+            outlineWidth: ZONE_OUTLINE_WIDTH,
+            closingPointColor: HANDLE_COLOR,
+            closingPointOutlineColor: '#ffffff'
+          }
+        }),
         // the flags spell out what mapbox-gl-draw allowed implicitly: move the zone as a whole,
         // drag its corners, add one via the midpoints and remove one again.
         new TerraDrawSelectMode({
@@ -131,6 +154,23 @@ export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
                 coordinates: { midpoints: true, draggable: true, deletable: true }
               }
             }
+          },
+          styles: {
+            selectedPolygonColor: ZONE_FILL_COLOR,
+            selectedPolygonFillOpacity: ZONE_FILL_OPACITY,
+            selectedPolygonOutlineColor: ZONE_OUTLINE_COLOR,
+            selectedPolygonOutlineOpacity: ZONE_OUTLINE_OPACITY,
+            selectedPolygonOutlineWidth: ZONE_OUTLINE_WIDTH,
+            // corner handles: solid, midpoints (add-a-corner) faded, so the two read apart
+            selectionPointColor: HANDLE_COLOR,
+            selectionPointOutlineColor: '#ffffff',
+            selectionPointWidth: 6,
+            selectionPointOutlineWidth: 2,
+            midPointColor: HANDLE_COLOR,
+            midPointOutlineColor: '#ffffff',
+            midPointOpacity: 0.5,
+            midPointWidth: 4,
+            midPointOutlineWidth: 1
           }
         })
       ]
