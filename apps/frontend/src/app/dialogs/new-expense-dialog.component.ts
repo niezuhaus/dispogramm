@@ -39,7 +39,8 @@ import { Expense } from '../classes/Expense';
       </mat-tab>
     </mat-tab-group>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class NewExpenseDialogComponent implements OnInit {
   expense = new Expense();

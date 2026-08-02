@@ -181,7 +181,8 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
         min-width: 90px;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class RegularJobDialogComponent implements OnInit {
   regularJob: RegularJob;

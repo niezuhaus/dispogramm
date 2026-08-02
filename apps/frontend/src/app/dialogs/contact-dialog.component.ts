@@ -48,7 +48,8 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
       </mat-tab-group>
     </div>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class ContactDialogComponent implements OnInit {
   contact: Contact = new Contact();

@@ -84,7 +84,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
       </button>
     </div>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class ShiftComponent implements OnInit {
   numberChanged = new EventEmitter<{ messenger: Messenger; number: number }>();

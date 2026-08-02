@@ -19,7 +19,8 @@ import { DateRange } from '@angular/material/datepicker';
       </mat-tab>
     </mat-tab-group>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class CalendarRangeDialogComponent {
   range: DateRange<Date>;

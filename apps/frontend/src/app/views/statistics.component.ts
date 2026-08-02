@@ -16,7 +16,8 @@ import { TitleComponent } from './app.component';
       <svg id="day" style="width: 100%; height: 500px"></svg>
     </div>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class StatisticsComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
   override title: 'statistiken';

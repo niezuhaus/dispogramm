@@ -17,7 +17,8 @@ import { Option } from 'src/app/classes/Option';
 @Component({
   selector: 'searchinput',
   templateUrl: './searchinput.component.html',
-  styleUrls: ['./searchinput.component.scss']
+  styleUrls: ['./searchinput.component.scss'],
+  standalone: false
 })
 export class SearchinputComponent implements OnInit, AfterViewInit {
   constructor(private injector: Injector) {}

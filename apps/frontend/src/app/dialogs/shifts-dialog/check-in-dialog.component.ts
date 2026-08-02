@@ -255,7 +255,8 @@ import { NewShiftComponent } from './new-shift.component';
         background-color: $fex-light !important;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class CheckInDialog implements AfterViewInit {
   dispatcherShift: Shift = null;

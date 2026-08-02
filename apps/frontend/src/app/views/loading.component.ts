@@ -71,7 +71,8 @@ import { ConfigDialogComponent } from '../dialogs/config-dialog.component';
             margin: unset;
           }
         `
-  ]
+  ],
+  standalone: false
 })
 export class LoadingComponent implements OnInit {
   firstCounter = 10;

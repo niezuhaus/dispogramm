@@ -34,7 +34,8 @@ import { take, takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'tourplan',
   templateUrl: './tourplan.component.html',
-  styleUrls: ['./tourplan.component.scss']
+  styleUrls: ['./tourplan.component.scss'],
+  standalone: false
 })
 export class TourplanComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
   override title = 'tourenzettel';

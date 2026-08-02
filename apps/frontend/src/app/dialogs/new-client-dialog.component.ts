@@ -69,7 +69,8 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
       </mat-tab-group>
     </div>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class NewClientDialogComponent implements OnInit {
   saved = new EventEmitter<{ c: Client; l: Geolocation }>();

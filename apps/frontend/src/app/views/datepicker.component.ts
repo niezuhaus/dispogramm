@@ -41,7 +41,8 @@ import { MatDatepicker } from '@angular/material/datepicker';
       </div>
     </div>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class DatepickerComponent implements OnInit {
   today = this.dateAdapter.today();

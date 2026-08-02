@@ -34,7 +34,8 @@ import { Shift } from '../../classes/Shift';
       <div *ngIf="disabled" class="ml-3 fex-warn">bereits eingecheckt</div>
     </div>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class NewShiftComponent implements OnInit {
   shift: Shift;

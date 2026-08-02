@@ -310,7 +310,8 @@ import { LocationDialogComponent } from '../dialogs/location-dialog.component';
         outline: 3px solid #494949;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class RightClickMenuComponent implements OnInit {
   @Input() messenger: Messenger;

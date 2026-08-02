@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Input, OnChanges, Renderer2, SimpleChanges } from '@angular/core';
 
 @Directive({
-  selector: '[appShakeOnInvalidSubmit]'
+  selector: '[appShakeOnInvalidSubmit]',
+  standalone: false
 })
 export class ShakeOnInvalidSubmitDirective implements OnChanges {
   @Input('appShakeOnInvalidSubmit') submitAttempt = 0;

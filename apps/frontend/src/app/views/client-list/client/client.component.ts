@@ -23,7 +23,8 @@ import { HasUnsavedChanges } from '../../../guards/unsaved-changes.guard';
 @Component({
   selector: 'app-client',
   templateUrl: 'client.component.html',
-  styleUrls: ['client.component.scss']
+  styleUrls: ['client.component.scss'],
+  standalone: false
 })
 export class ClientComponent extends AsyncTitleComponent implements OnInit, AfterViewInit, OnDestroy, HasUnsavedChanges {
   override titleEmitter = new EventEmitter<string>();

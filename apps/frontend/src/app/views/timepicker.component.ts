@@ -30,7 +30,8 @@ import { debounceTime } from 'rxjs/operators';
             width: 105%;
           }
         `
-  ]
+  ],
+  standalone: false
 })
 export class TimepickerComponent implements OnInit {
   @ViewChild('time') timePicker: MatInput;

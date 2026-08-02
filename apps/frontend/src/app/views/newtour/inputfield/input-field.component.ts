@@ -18,7 +18,8 @@ import { Geolocation } from '../../../classes/Geolocation';
             color: $fex-dark;
           }
         `
-  ]
+  ],
+  standalone: false
 })
 export class InputFieldComponent implements OnInit {
   @Input() type: LocType;

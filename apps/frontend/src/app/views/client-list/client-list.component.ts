@@ -104,7 +104,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
       </mat-menu>
     </div>
   `,
-  styleUrls: ['./client-list.component.scss']
+  styleUrls: ['./client-list.component.scss'],
+  standalone: false
 })
 export class ClientListComponent extends TitleComponent implements OnInit, OnDestroy {
   override title = 'kund:innen';

@@ -10,7 +10,8 @@ import { Price } from '../classes/Price';
       <input #input matInput type="text" class="pr-2" [placeholder]="placeholder" [value]="value()" (click)="input.select()" (keyup)="touched.emit(true); price.setByString(input.value, false)" />
     </mat-form-field>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class PriceInputComponent implements OnInit {
   @Input() type: PriceType; // 0 = netto, 1 = brutto, 2 = paypal

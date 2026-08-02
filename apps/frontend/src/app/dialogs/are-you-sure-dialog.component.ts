@@ -156,7 +156,8 @@ import { TourplanItem } from '../classes/TourplanItem';
         display: none;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class AreYouSureDialogComponent {
   confirm = new EventEmitter<boolean | Messenger>();

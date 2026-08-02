@@ -93,7 +93,8 @@ const HANDLE_COLOR = '#5c388e';
         color: white;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class ZoneDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   confirm = new EventEmitter<Zone>();

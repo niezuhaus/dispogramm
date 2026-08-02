@@ -106,7 +106,8 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
       </div>
     </div>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class MessengerDialogComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

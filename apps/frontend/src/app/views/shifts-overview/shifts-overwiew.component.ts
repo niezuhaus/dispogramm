@@ -260,7 +260,8 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
         margin-right: 12px;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class ShiftsOverwiewComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
   override title = 'schichten';

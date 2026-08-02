@@ -251,7 +251,8 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
       ),
       transition('collapsed <=> expanded', animate('200ms ease-in-out'))
     ])
-  ]
+  ],
+  standalone: false
 })
 export class ShiftTableComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

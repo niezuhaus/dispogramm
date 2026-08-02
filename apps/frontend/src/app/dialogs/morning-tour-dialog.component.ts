@@ -90,7 +90,8 @@ import { TourplanItem } from '../classes/TourplanItem';
       </mat-tab>
     </mat-tab-group>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class MorningTourDialogComponent implements OnInit {
   menuTopLeftPosition = { x: 0, y: 0 };

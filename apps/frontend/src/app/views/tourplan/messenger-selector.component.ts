@@ -83,7 +83,8 @@ import { TourplanItem } from '../../classes/TourplanItem';
         color: $gray;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class MessengerSelectorComponent implements OnInit {
   edit = false;

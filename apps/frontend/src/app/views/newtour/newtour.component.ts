@@ -46,7 +46,8 @@ const WORLD_RING: Position[] = [
 @Component({
   selector: 'newtour',
   templateUrl: './newtour.component.html',
-  styleUrls: ['./newtour.component.scss']
+  styleUrls: ['./newtour.component.scss'],
+  standalone: false
 })
 export class NewtourComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
   override title = 'neue tour erstellen';

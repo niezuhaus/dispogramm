@@ -35,7 +35,8 @@ var noop = () => {
       // this demo, I don't need to use the forwardRef() wrapper to reference the
       // Class that hasn't been defined yet.
     }
-  ]
+  ],
+  standalone: false
 })
 export class NgModelSuggestionsDirective implements ControlValueAccessor {
   public suggestions: string[];

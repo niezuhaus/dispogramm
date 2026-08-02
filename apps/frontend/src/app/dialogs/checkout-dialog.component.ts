@@ -203,7 +203,8 @@ import { FormControl, Validators } from '@angular/forms';
         // border-radius: 14px;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class CheckoutDialogComponent implements OnInit {
   dataSource: MatTableDataSource<Job>;

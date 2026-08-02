@@ -27,7 +27,8 @@ import { Component, Input, OnInit } from '@angular/core';
       <div class="handlebars"></div>
     </div>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class BikeComponent implements OnInit {
   @Input() running: boolean;

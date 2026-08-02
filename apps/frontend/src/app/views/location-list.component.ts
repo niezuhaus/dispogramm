@@ -125,7 +125,8 @@ export class FilterLocationsWithClient implements LocationFilterStrategy {
         text-decoration: line-through;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class LocationListComponent extends TitleComponent implements OnInit {
   override title = 'standorte';

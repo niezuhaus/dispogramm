@@ -20,7 +20,8 @@ import { GC } from '../../../common/GC';
       </div>
     </div>
   `,
-  styles: []
+  styles: [],
+  standalone: false
 })
 export class MessengerViewComponent {
   @Input() list: Messenger[];

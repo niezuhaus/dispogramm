@@ -692,7 +692,8 @@ import { standartZonesHB } from '../common/zones';
         margin-top: 4px;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class ConfigDialogComponent implements OnDestroy {
   private destroy$ = new Subject<void>();

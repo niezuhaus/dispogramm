@@ -11,7 +11,8 @@ import { TourplanItem } from '../../../classes/TourplanItem';
 @Component({
   selector: 'description',
   templateUrl: './description.component.html',
-  styleUrls: ['./description.component.scss']
+  styleUrls: ['./description.component.scss'],
+  standalone: false
 })
 export class DescriptionComponent implements OnInit {
   @Input() item: TourplanItem;

@@ -161,7 +161,8 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
         margin-top: 2px;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class ContainerComponent implements OnInit {
   @Input() client: Client;

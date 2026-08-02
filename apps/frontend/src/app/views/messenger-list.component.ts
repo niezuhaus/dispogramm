@@ -77,7 +77,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
         opacity: 50%;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class MessengerListComponent extends TitleComponent implements OnInit {
   override title = 'kurier:innen';

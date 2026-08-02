@@ -150,7 +150,8 @@ import { Client } from '../classes/Client';
         height: 25vh;
       }
     `
-  ]
+  ],
+  standalone: false
 })
 export class LocationDialogComponent implements OnInit, OnDestroy {
   client = new Client();

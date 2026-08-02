@@ -12,7 +12,8 @@ import { Note } from '../../classes/Note';
 @Component({
   selector: 'app-weekplan',
   templateUrl: './weekplan.component.html',
-  styleUrls: ['./weekplan.component.scss']
+  styleUrls: ['./weekplan.component.scss'],
+  standalone: false
 })
 export class WeekplanComponent extends TitleComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatMenuTrigger) matMenuTrigger: MatMenuTrigger;
