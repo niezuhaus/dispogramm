@@ -252,7 +252,7 @@ export class ClientComponent extends AsyncTitleComponent implements OnInit, Afte
         calls = [GC.http.updateClient(this.client)];
       }
 
-      if (!!this.newStreet && this.locations.map((loc) => loc.street).has(this.clientBackup.street)) {
+      if (!!this.newStreet && this.locations.map((loc) => loc.street).includes(this.clientBackup.street)) {
         const dialog = GC.dialog.open(AreYouSureDialogComponent, {
           data: {
             headline: `soll die neue adresse als standort hinzugefügt werden?`,

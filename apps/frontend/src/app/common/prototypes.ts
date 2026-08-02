@@ -8,18 +8,16 @@ import { Price } from '../classes/Price';
 declare global {
   interface Array<T> {
     /**
-     * moves an item in an array to a new index.
-     * @example [2, 5, 3, 8, 1].move(3, 1) => [2, 8, 5, 3, 1];
-     * @param from index of the preferred item to move
-     * @param to index new index of the item
-     */
-    move(from: number, to: number): Array<T>;
-
-    /**
-     * will deepcopy an array by using JSON.stringify() and JSON.parse()
+     * deep-copies the array, delegating to each item's own copy() where it has one and falling
+     * back to structuredClone for plain data
      */
     copy(): Array<T>;
 
+    /**
+     * removes the first item matching `item` — by id when both sides carry one, by identity
+     * otherwise, so arrays of plain values work too
+     * @returns whether something was removed
+     */
     findAndRemove(item: T): boolean;
 
     /**
@@ -31,31 +29,14 @@ declare global {
 
     findAndReplace(this: Array<IdObject>, item: IdObject): boolean;
 
+    /** the last item, or null when the array is empty */
     last(): T;
 
     sum(this: Array<number>): number;
 
-    getIndex(item: any): number;
-
     perm(): T[][];
 
-    /**
-     * returns a new array which contains all object that are present in both arrays
-     * the items get compared only by their id property
-     * @param array the array to intersect with
-     */
-    intersect<T extends IdObject>(this: Array<T>, array: T[]): T[];
-
-    /**
-     * returns a new array which contains all object that are not present in the provided array
-     * the items get compared only by their id property
-     * @param array the array to diff from
-     */
-    diff<T extends IdObject>(this: Array<T>, array: T[]): T[];
-
     pushArray<T>(this: Array<T>, array: T[]): T[];
-
-    has(obj: T): boolean;
   }
 
   interface Date {
@@ -281,14 +262,14 @@ declare global {
   }
 }
 
-Array.prototype.move = function (from: number, to: number) {
-  return this.splice(to, 0, this.splice(from, 1)[0]);
-};
 Array.prototype.copy = function () {
   return this.map((item) => (item && typeof item.copy === 'function' ? item.copy() : structuredClone(item)));
 };
 Array.prototype.findAndRemove = function (item) {
-  let index = this.findIndex((i) => item.id == i.id) || this.findIndex((i) => item == i);
+  // an id match wins, but only when both sides actually have one — callers also pass plain strings
+  // (recent backend IPs, street names), where identity is the only thing to go on.
+  const byId = item?.id != null ? this.findIndex((i) => i?.id != null && i.id === item.id) : -1;
+  const index = byId >= 0 ? byId : this.indexOf(item);
   if (index >= 0) {
     this.splice(index, 1);
     return true;
@@ -308,15 +289,12 @@ Array.prototype.findAndReplace = function (this: Array<IdObject>, item: IdObject
   return false;
 };
 Array.prototype.last = function () {
-  return this[this.length - 1] || null;
+  // `|| null` here used to swallow a falsy last element (0, '', false)
+  return this.length ? this[this.length - 1] : null;
 };
 
 Array.prototype.sum = function () {
   return this.reduce((a, b) => a + b, 0).round(2);
-};
-
-Array.prototype.getIndex = function (item: any) {
-  return this.findIndex((i) => i === item);
 };
 
 Array.prototype.perm = function () {
@@ -337,24 +315,12 @@ Array.prototype.perm = function () {
   return res;
 };
 
-Array.prototype.intersect = function <T extends IdObject>(this: Array<T>, array: T[]) {
-  return this.filter((item) => array.map((i) => i.id).includes(item.id));
-};
-
-Array.prototype.diff = function <T extends IdObject>(this: Array<T>, array: T[]) {
-  return this.filter((item) => !array.map((i) => i.id).includes(item.id));
-};
-
 Array.prototype.pushArray = function <T>(this: Array<T>, array: T[]) {
   if (!array) return this;
   array.forEach((item) => {
     this.push(item);
   });
   return this;
-};
-
-Array.prototype.has = function <T>(obj: T) {
-  return this.indexOf(obj) >= 0;
 };
 
 Date.prototype.timestamp = function () {
