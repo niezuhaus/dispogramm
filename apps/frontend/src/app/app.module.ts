@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './views/app.component';
 import { InputFieldComponent } from './views/newtour/inputfield/input-field.component';
@@ -117,12 +117,12 @@ import { ActiveLocationsPipe } from './common/active-locations.pipe';
     ShiftTableComponent,
     ActiveLocationsPipe
   ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    HttpClientModule,
     BrowserAnimationsModule,
     MatCheckboxModule,
     MatSliderModule,
@@ -157,7 +157,11 @@ import { ActiveLocationsPipe } from './common/active-locations.pipe';
     MatSidenavModule,
     AppCommonModule
   ],
-  providers: [HttpService, { provide: MatPaginatorIntl, useClass: fexPaginator }, { provide: DateAdapter, useClass: CustomDateAdapter }],
-  bootstrap: [AppComponent]
+  providers: [
+    HttpService,
+    { provide: MatPaginatorIntl, useClass: fexPaginator },
+    { provide: DateAdapter, useClass: CustomDateAdapter },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule {}
