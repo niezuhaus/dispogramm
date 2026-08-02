@@ -16,6 +16,9 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    // "bundler" (the Angular 20 default) resolves types through each package's `exports` map.
+    // @turf/turf 6.5 has no `types` condition there, so its declarations become invisible and
+    // every turf import fails with TS7016. Revisit when turf moves to v7.
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
