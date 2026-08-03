@@ -63,7 +63,7 @@ export class GC {
   /**
    * @todo use the key to push notifications in browser
    */
-  public static readonly VAPID_PUBLIC_KEY = config.VAPID_PUBLIC_KEY;
+  // public static readonly VAPID_PUBLIC_KEY = config.VAPID_PUBLIC_KEY;
 
   /**
    * fallback value for the initialization of some prices that get set up very early
@@ -462,7 +462,7 @@ export class GC {
         hideDeactivated: GC.readBoolean('hideDeactivatedLocations') === undefined ? true : GC.readBoolean('hideDeactivatedLocations')
       },
       api: {
-        lex: GC.readString('lexOfficeApiKey') || config.lexOfficeApiKey,
+        lex: GC.readString('lexOfficeApiKey'), // || config.lexOfficeApiKey,
         geoapify: GC.readString('geoapifyApiKey') || config.geoapifyApiKey,
         maptiler: GC.readString('maptilerApiKey') || config.maptilerApiKey
       },
