@@ -12,7 +12,7 @@ import { Geolocation } from '../../../classes/Geolocation';
   templateUrl: './input-field.component.html',
   styles: [
     `
-          @import '../../../../const.scss';
+          @use '../../../../const.scss' as *;
     
           .blue {
             color: $fex-dark;

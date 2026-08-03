@@ -1,4 +1,4 @@
-@import "../../../../const";
+@use "../../../../const" as *;
 p {
   display: flex;
   flex-direction: row;

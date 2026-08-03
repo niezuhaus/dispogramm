@@ -295,7 +295,7 @@ import { LocationDialogComponent } from '../dialogs/location-dialog.component';
   `,
   styles: [
     `
-      @import '/src/const.scss';
+      @use 'src/const.scss' as *;
 
       .colour {
         width: 30px;

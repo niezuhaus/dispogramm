@@ -1,7 +1,9 @@
 @use '@angular/material' as mat;
+@use 'src/const.scss' as *;
+@use 'src/lib/core/theming/_palette.scss' as *;
+// Plain CSS, so it stays an @import — @use only loads Sass files. Safe to sit after the @use
+// rules above: both emit variables only, so the output order is unchanged.
 @import 'bootstrap-icons/font/bootstrap-icons.css';
-@import 'src/const.scss';
-@import 'src/lib/core/theming/_palette.scss';
 
 @tailwind base;
 @tailwind components;

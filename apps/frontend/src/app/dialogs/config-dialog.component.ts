@@ -537,7 +537,7 @@ import { standartZonesHB } from '../common/zones';
   `,
   styles: [
     `
-      @import '../../const';
+      @use '../../const' as *;
 
       .option {
         display: flex;

@@ -71,7 +71,7 @@ import { TourplanItem } from '../../classes/TourplanItem';
   `,
   styles: [
     `
-      @import '../../../const.scss';
+      @use '../../../const.scss' as *;
 
       .active {
         background: #8363b5;

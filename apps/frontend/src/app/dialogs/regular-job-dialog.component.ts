@@ -165,7 +165,7 @@ import { SaveAttemptErrorStateMatcher } from '../common/save-attempt-error-state
   `,
   styles: [
     `
-      @import '../../const.scss';
+      @use '../../const.scss' as *;
 
       h3 {
         color: $fex-dark;

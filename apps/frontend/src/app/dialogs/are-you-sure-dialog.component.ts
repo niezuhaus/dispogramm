@@ -73,7 +73,7 @@ import { TourplanItem } from '../classes/TourplanItem';
   `,
   styles: [
     `
-      @import '/src/const.scss';
+      @use 'src/const.scss' as *;
 
       .dialog-wrap {
         display: flex;

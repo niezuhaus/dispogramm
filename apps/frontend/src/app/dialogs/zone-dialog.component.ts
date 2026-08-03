@@ -67,7 +67,7 @@ const HANDLE_COLOR = '#5c388e';
   `,
   styles: [
     `
-      @import 'src/const.scss';
+      @use 'src/const.scss' as *;
 
       #mapcontainer {
         position: relative;

@@ -150,7 +150,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   `,
   styles: [
     `
-      @import '../../const';
+      @use '../../const' as *;
 
       .table-container {
         overflow: hidden;

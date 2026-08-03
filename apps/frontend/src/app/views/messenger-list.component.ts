@@ -51,7 +51,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
   `,
   styles: [
     `
-      @import '../../const.scss';
+      @use '../../const.scss' as *;
 
       .out_container {
         margin: auto;

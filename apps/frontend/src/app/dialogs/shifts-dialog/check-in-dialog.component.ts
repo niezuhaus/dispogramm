@@ -110,7 +110,7 @@ import { NewShiftComponent } from './new-shift.component';
   `,
   styles: [
     `
-      @import '../../../const.scss';
+      @use '../../../const.scss' as *;
 
       * {
         display: flex;

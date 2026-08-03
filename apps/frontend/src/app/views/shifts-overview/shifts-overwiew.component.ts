@@ -83,7 +83,7 @@ import { ConfigDialogComponent } from 'src/app/dialogs/config-dialog.component';
   `,
   styles: [
     `
-      @import 'src/const.scss';
+      @use 'src/const.scss' as *;
 
       /* Top toolbar */
       .top-bar {

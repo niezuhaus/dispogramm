@@ -117,7 +117,7 @@ import { ZoneDialogComponent } from '../dialogs/zone-dialog.component';
   `,
   styles: [
     `
-      @import '../../const.scss';
+      @use '../../const.scss' as *;
 
       .container {
         border-radius: 10px;
