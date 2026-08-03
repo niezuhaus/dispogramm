@@ -1,4 +1,7 @@
-import { HttpService } from '../http.service';
+// type-only on purpose: http.service reads GC.backendIP at module scope, so a runtime import
+// here would close a cycle and throw "Cannot access 'GC' before initialization" depending on
+// which module the bundler evaluates first. GC only needs the type.
+import type { HttpService } from '../http.service';
 import { BaseExtraExtraPrice, ConfigDataContract, ExtraPriceType, GeoCodingStrategy, GroupExtraPrice, IPoint, RawConfig } from './interfaces';
 import { Job, RegularJob } from '../classes/Job';
 import { Price } from '../classes/Price';
@@ -660,7 +663,7 @@ export class GC {
 
   private static loadLocations = (http: HttpService) => {
     http.getLocationList().subscribe((locations) => {
-      locations = HttpService._prepareGeolocations(locations);
+      locations = Geolocation.prepareMany(locations);
       GC.locations = locations;
       GC.clientLocations = locations.filter((l) => l.clientId);
       GC.loadedParts.locations = true;

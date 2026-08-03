@@ -7,6 +7,9 @@ import { GC } from '../common/GC';
 import { LocationDialogComponent } from '../dialogs/location-dialog.component';
 import { Searchable } from '../common/decorators/Searchable';
 
+/** lilienthal, stuhr — the two out-of-range postcodes that still count as serviced */
+export const PLZ_EXTRA = [28865, 28816];
+
 export class Geolocation implements IdObject, Optionable {
   [key: string]: any;
   @Searchable()
@@ -48,6 +51,30 @@ export class Geolocation implements IdObject, Optionable {
       Object.assign(this, data);
     }
     this.getAddress();
+  }
+
+  /** builds a Geolocation from raw backend data and derives its price zone */
+  static prepare(data: Partial<Geolocation>): Geolocation {
+    const loc = new Geolocation(data);
+    loc.priceZone = Geolocation.findPriceZone(loc.zipCode);
+    return loc;
+  }
+
+  static prepareMany(data: Partial<Geolocation>[]): Geolocation[] {
+    return data.map((l) => Geolocation.prepare(l));
+  }
+
+  static findPriceZone(plzString: string): PriceZone {
+    const plz = parseInt(plzString);
+    return plz === PLZ_EXTRA[0]
+      ? PriceZone.lilienthal
+      : plz === PLZ_EXTRA[1]
+        ? PriceZone.stuhr
+        : plz >= 28717 && plz <= 28779
+          ? PriceZone.hbNord
+          : plz >= 28195 && plz <= 28359
+            ? PriceZone.hb
+            : PriceZone.unknown;
   }
 
   get job(): Job {
